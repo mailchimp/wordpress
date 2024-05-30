@@ -1,14 +1,15 @@
 <?php
 /*
-* Plugin Name: Mailchimp
-* Plugin URI: http://www.mailchimp.com/plugins/mailchimp-wordpress-plugin/
-* Description: The Mailchimp plugin allows you to quickly and easily add a signup form for your Mailchimp list.
-* Version: 1.5.8
+* Plugin Name:       Mailchimp
+* Plugin URI:        https://github.com/mailchimp/wordpress
+* Description:       Add a Mailchimp signup form widget to your WordPress site.
+* Version:           1.5.8
 * Requires at least: 2.8
-* Author: Mailchimp
-* Author URI: https://mailchimp.com/
-* License:      GPL-2.0-or-later
-* License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
+* Requires PHP:      5.6
+* Author:            Mailchimp
+* Author URI:        https://mailchimp.com/
+* License:           GPL-2.0-or-later
+* License URI:       https://spdx.org/licenses/GPL-2.0-or-later.html
 */
 /*  Copyright 2008-2012  Mailchimp.com  (email : api@mailchimp.com)
 
