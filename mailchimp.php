@@ -1,13 +1,14 @@
 <?php
 /*
-Plugin Name: MailChimp
-Plugin URI: http://www.mailchimp.com/plugins/mailchimp-wordpress-plugin/
-Description: The MailChimp plugin allows you to quickly and easily add a signup form for your MailChimp list.
-Version: 1.5.8
-Author: MailChimp
-Author URI: https://mailchimp.com/
+* Plugin Name: Mailchimp
+* Plugin URI: http://www.mailchimp.com/plugins/mailchimp-wordpress-plugin/
+* Description: The Mailchimp plugin allows you to quickly and easily add a signup form for your Mailchimp list.
+* Version: 1.5.8
+* Requires at least: 2.8
+* Author: Mailchimp
+* Author URI: https://mailchimp.com/
 */
-/*  Copyright 2008-2012  MailChimp.com  (email : api@mailchimp.com)
+/*  Copyright 2008-2012  Mailchimp.com  (email : api@mailchimp.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,7 +34,7 @@ define('MCSF_CAP_THRESHOLD', 'manage_options');
 // Define our location constants, both MCSF_DIR and MCSF_URL
 mailchimpSF_where_am_i();
 
-// Get our MailChimp API class in scope
+// Get our Mailchimp API class in scope
 if (!class_exists('MailChimp_API')) {
     $path = plugin_dir_path(__FILE__);
     require_once($path . 'lib/mailchimp/mailchimp.php');
@@ -73,7 +74,7 @@ add_action( 'init', 'mailchimpSF_plugin_init' );
 
 
 /**
- * Add the settings link to the MailChimp plugin row
+ * Add the settings link to the Mailchimp plugin row
  *
  * @param array $links - Links for the plugin
  * @return array - Links
@@ -124,7 +125,7 @@ function mailchimpSF_load_resources() {
 
 
 /**
- * Loads resources for the MailChimp admin page
+ * Loads resources for the Mailchimp admin page
  *
  * @return void
  */
@@ -177,7 +178,7 @@ function mailchimpSF_main_css() {
  */
 function mailchimpSF_add_pages(){
     // Add settings page for users who can edit plugins
-    add_options_page( __( 'MailChimp Setup', 'mailchimp_i18n' ), __( 'MailChimp Setup', 'mailchimp_i18n' ), MCSF_CAP_THRESHOLD, 'mailchimpSF_options', 'mailchimpSF_setup_page');
+    add_options_page( __( 'Mailchimp Setup', 'mailchimp_i18n' ), __( 'Mailchimp Setup', 'mailchimp_i18n' ), MCSF_CAP_THRESHOLD, 'mailchimpSF_options', 'mailchimpSF_setup_page');
 }
 add_action('admin_menu', 'mailchimpSF_add_pages');
 
@@ -264,7 +265,7 @@ function mailchimpSF_migrate_sopresto() {
         'timeout' => 500,
         'redirection' => 5,
         'httpversion' => '1.0',
-        'user-agent'  => 'MailChimp WordPress Plugin/' . get_bloginfo( 'url' ),
+        'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
         'body' => $body
     );
 
@@ -317,7 +318,7 @@ function mailchimpSF_auth_nonce_salt() {
 }
 
 /**
- * Creates new MailChimp API v3 object
+ * Creates new Mailchimp API v3 object
  *
  * @return MailChimp_API | false
  */
@@ -355,7 +356,7 @@ function mailchimpSF_needs_upgrade() {
 }
 
 /**
- * Deletes all mailchimp options
+ * Deletes all Mailchimp options
  **/
 function mailchimpSF_delete_setup() {
     $options = array('mc_user_id', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key', 'mc_rewards', 'mc_use_javascript', 'mc_use_datepicker', 'mc_use_unsub_link', 'mc_list_id', 'mc_list_name', 'mc_interest_groups', 'mc_merge_vars');
@@ -477,11 +478,11 @@ function mailchimpSF_save_general_form_settings() {
     /* NUKE the CSS! */
     if(isset($_POST['mc_nuke_all_styles'])) {
         update_option('mc_nuke_all_styles', true);
-        $msg = '<p class="success_msg">'.__('MailChimp CSS turned Off!', 'mailchimp_i18n').'</p>';
+        $msg = '<p class="success_msg">'.__('Mailchimp CSS turned Off!', 'mailchimp_i18n').'</p>';
         mailchimpSF_global_msg($msg);
     }elseif (get_option('mc_nuke_all_styles') !== false) {
         update_option('mc_nuke_all_styles', false);
-        $msg = '<p class="success_msg">'.__('MailChimp CSS turned On!', 'mailchimp_i18n').'</p>';
+        $msg = '<p class="success_msg">'.__('Mailchimp CSS turned On!', 'mailchimp_i18n').'</p>';
         mailchimpSF_global_msg($msg);
     }
 
@@ -627,7 +628,7 @@ function mailchimpSF_change_list_if_necessary() {
                     count($mv)
                 ).' '.
                 __('from your list').' "'.$list_name.'"<br/><br/>'.
-                __('Now you should either Turn On the MailChimp Widget or change your options below, then turn it on.', 'mailchimp_i18n').'</p>';
+                __('Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp_i18n').'</p>';
             mailchimpSF_global_msg($msg);
         }
     }
