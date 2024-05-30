@@ -1,15 +1,16 @@
-=== MailChimp List Subscribe Form ===
-Contributors: MailChimp
-Tags: mailchimp, email, newsletter, signup, marketing, plugin, widget
-Requires at least: 2.8
+=== Mailchimp List Subscribe Form ===
+Contributors: Mailchimp
+Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 4.5
-Stable tag: 1.5.8
+Stable tag:   1.5.8
+
+Add a Mailchimp signup form widget to your WordPress site.
 
 == Description ==
 
-Use the MailChimp List Subscribe plugin to quickly add a MailChimp signup form widget to your WordPress 2.8 or higher site. 
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site. 
 
-After installation, you’ll log in with your API key, select your MailChimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
@@ -18,16 +19,17 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 This section describes how to install the plugin and get started using it.
 
 = Version 2.8+ =
+
 1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Navigate to **Settings** click **MailChimp Setup**.
-4. Enter your MailChimp API Key and let the plugin verify it.
-5. Select the list where you want to send new MailChimp subscribers.
+3. Navigate to **Settings** click **Mailchimp Setup**.
+4. Enter your Mailchimp API Key and let the plugin verify it.
+5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: turn **MonkeyRewards** on or off.
-7. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the MailChimp Widget into one of your Widget Areas.
-
+7. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 
 = Advanced =
+
 If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
 
 WordPress v2.8 or higher: 
@@ -47,7 +49,7 @@ Note: in some environments you will need to install the Exec_PHP plugin to use t
 
 == Upgrading ==
 
-If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `MailChimp Widget` back into the sidebar, visit the MailChimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
 == Internationalization (i18n) ==
 Currently we have the plugin configured so it can be easily translated and the following languages supported:
@@ -87,8 +89,8 @@ If your language is not listed above, feel free to create a translation. Here ar
 
 == Screenshots ==
 
-1. Entering your MailChimp login info
-2. Selecting your MailChimp list
+1. Entering your Mailchimp login info
+2. Selecting your Mailchimp list
 3. Configuring your Signup Form display format (optional)
 4. Configuring extra fields on your Signup Form (optional)
 5. An example Signup Form Widget
@@ -99,7 +101,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 If you are updating from v1.4.x, you will need to re-authorize with an API key.
 
 = 1.5 =
-Updates the MailChimp API version, adds double/single opt-in toggle.
+Updates the Mailchimp API version, adds double/single opt-in toggle.
 
 = 1.4.2 =
 add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
@@ -108,7 +110,7 @@ add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
 Fix for checkbox weirdness on 3.8
 
 = 1.4 =
-Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a MailChimp account.
+Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a Mailchimp account.
 
 = 1.3 =
 Now using OAuth flow within plugin for user authentication
@@ -152,18 +154,18 @@ Added support for multiple interest groups, field formatting based on type and d
 = 1.5.3 =
 * Fix PHP7 compatibility issue
 * Cut down on size of API requests for users with large lists.
-* Fix CSS issue on removing MailChimp style.
+* Fix CSS issue on removing Mailchimp style.
 
 = 1.5.2 =
 * General bugfixes for merge fields.
 * When reinitializing, update merge field values.
 
 = 1.5.1 =
-* Bugfix for fatal error in MailChimp lib
+* Bugfix for fatal error in Mailchimp lib
 
 = 1.5 =
-* Upgrade to MailChimp API v3.0
-* Remove OAuth2 middle layer and use MailChimp API keys
+* Upgrade to Mailchimp API v3.0
+* Remove OAuth2 middle layer and use Mailchimp API keys
 * Include double/single opt-in toggle.
 
 = 1.4.1 =
@@ -202,7 +204,7 @@ Added support for multiple interest groups, field formatting based on type and d
 
 = 1.2.6 =
 * Fixed bug with "Settings" link appearing on all plugins (props Jason Lane)
-* Resolved issue with unnecessary calls to the MailChimp API during upgrade check
+* Resolved issue with unnecessary calls to the Mailchimp API during upgrade check
 * Resolved PHP warning when there weren't any interest groups
 
 = 1.2.5 =
@@ -230,4 +232,3 @@ Added support for multiple interest groups, field formatting based on type and d
 = 1.2 =
 * Recommended Upgrade, please see "Upgrading" section of readme.
 * Security and various other improvements
-
