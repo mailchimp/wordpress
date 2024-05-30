@@ -54,7 +54,8 @@ Note: in some environments you will need to install the Exec_PHP plugin to use t
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
 == Internationalization (i18n) ==
-Currently we have the plugin configured so it can be easily translated and the following languages supported:
+
+Currently we have the plugin configured so it can be translated and the following languages supported:
 
 * bg_BG - Bulgarian in Bulgaria (thanks to [SiteGround](http://www.siteground.com/wordpress-hosting.htm) for contributing)
 * cs_CZ - Czech in the Czech Republic (thanks to [Peter Kahoun](http://kahi.cz/) for contributing)
@@ -82,8 +83,8 @@ Currently we have the plugin configured so it can be easily translated and the f
 If your language is not listed above, feel free to create a translation. Here are the basic steps:
 
 1. Copy "mailchimp_i18n-en_US.po" to "mailchimp_i18n-LANG_COUNTRY.po" - fill in LANG and COUNTRY with whatever you use for WPLANG in wp-config.php
-2. Grab a transalation editor. [POedit](http://www.poedit.net/) works for us
-3. Translate each line - if you need some context, just open up mailchimp.php and search for the line number or text
+2. Grab a translation editor. [POedit](http://www.poedit.net/) works for us
+3. Translate each line - if you need some context, open up mailchimp.php and search for the line number or text
 4. [Fork](http://help.github.com/fork-a-repo/) the [repository on github](https://github.com/crowdfavorite/wp-mailchimp)
 5. [Clone](http://help.github.com/remotes/#clone) the _develop_ branch
 6. Add the appropriately named files to the /po/ directory and edit the /readme.txt to include how you'd like to be attributed
@@ -97,47 +98,11 @@ If your language is not listed above, feel free to create a translation. Here ar
 4. Configuring extra fields on your Signup Form (optional)
 5. An example Signup Form Widget
 
-== Upgrade Notice ==
-
-= 1.5.5 =
-If you are updating from v1.4.x, you will need to re-authorize with an API key.
-
-= 1.5 =
-Updates the Mailchimp API version, adds double/single opt-in toggle.
-
-= 1.4.2 =
-add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
-
-= 1.4.1 =
-Fix for checkbox weirdness on 3.8
-
-= 1.4 =
-Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a Mailchimp account.
-
-= 1.3 =
-Now using OAuth flow within plugin for user authentication
-
-Admin UI refresh
-
-= 1.2.11 =
-Merged pull request from https://github.com/headshift/wp-mailchimp adding additional translation strings.
-
-= 1.2.10 =
-Fixed submission error when apostrophes are present
-
-= 1.2.8=
-Fixes bug where entire phone numbers were only being deposited in the area code portion
-
-= 1.2.6 =
-Fixes major bug with "Settings" link on Plugins screen.
-
-= 1.2.5 =
-Added support for multiple interest groups, field formatting based on type and date picker.
-
 == Changelog ==
+
 = 1.5.8 =
 * Fix PHP warning for merge tags.
-* Fix double slashes on resoures being loaded
+* Fix double slashes on resources being loaded
 * Update Readme.txt link
 
 = 1.5.7 =
@@ -160,7 +125,7 @@ Added support for multiple interest groups, field formatting based on type and d
 
 = 1.5.2 =
 * General bugfixes for merge fields.
-* When reinitializing, update merge field values.
+* When re-initializing, update merge field values.
 
 = 1.5.1 =
 * Bugfix for fatal error in Mailchimp lib
@@ -175,7 +140,7 @@ Added support for multiple interest groups, field formatting based on type and d
 
 = 1.4 =
 * Developer Mode "Kitchen Sink" takes over plugin for local development
-* Developer Mode has filters of changable content
+* Developer Mode has filters of changeable content
 * Fix bug related to required US phone validation
 
 = 1.3 =
@@ -234,3 +199,40 @@ Added support for multiple interest groups, field formatting based on type and d
 = 1.2 =
 * Recommended Upgrade, please see "Upgrading" section of readme.
 * Security and various other improvements
+
+== Upgrade Notice ==
+
+= 1.5.5 =
+If you are updating from v1.4.x, you will need to re-authorize with an API key.
+
+= 1.5 =
+Updates the Mailchimp API version, adds double/single opt-in toggle.
+
+= 1.4.2 =
+add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
+
+= 1.4.1 =
+Fix for checkbox weirdness on 3.8
+
+= 1.4 =
+Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a Mailchimp account.
+
+= 1.3 =
+Now using OAuth flow within plugin for user authentication
+
+Admin UI refresh
+
+= 1.2.11 =
+Merged pull request from https://github.com/headshift/wp-mailchimp adding additional translation strings.
+
+= 1.2.10 =
+Fixed submission error when apostrophes are present
+
+= 1.2.8=
+Fixes bug where entire phone numbers were only being deposited in the area code portion
+
+= 1.2.6 =
+Fixes major bug with "Settings" link on Plugins screen.
+
+= 1.2.5 =
+Added support for multiple interest groups, field formatting based on type and date picker.
