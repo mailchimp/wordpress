@@ -7,7 +7,7 @@
     "authors": [
         {
             "name": "Mailchimp",
-            "email": "opensource@mailchimp.com"
+            "email": "api@mailchimp.com"
         }
     ],
     "prefer-stable": true,
