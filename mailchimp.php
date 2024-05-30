@@ -7,6 +7,8 @@
 * Requires at least: 2.8
 * Author: Mailchimp
 * Author URI: https://mailchimp.com/
+* License:      GPL-2.0-or-later
+* License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 */
 /*  Copyright 2008-2012  Mailchimp.com  (email : api@mailchimp.com)
 
