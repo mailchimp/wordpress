@@ -1,7 +1,7 @@
 <div class="wrap">
 
     <div class="mailchimp-header">
-        <h2><?php esc_html_e('MailChimp List Setup', 'mailchimp_i18n');?> </h2>
+        <h2><?php esc_html_e('Mailchimp List Setup', 'mailchimp_i18n');?> </h2>
     </div>
 <?php
 
@@ -24,13 +24,13 @@ if (!$user || !get_option('mc_api_key')) {
 ?>
     <div>
         <h3 class="mc-h2"><?php esc_html_e('Log In', 'mailchimp_i18n');?></h3>
-        <p class="mc-p" style="width: 40%;line-height: 21px;"><?php echo __('To get started, we’ll need to access your MailChimp account with an <a href="http://kb.mailchimp.com/integrations/api-integrations/about-api-keys">API Key</a>. Paste your MailChimp API key, and click <strong>Connect</strong> to continue.
+        <p class="mc-p" style="width: 40%;line-height: 21px;"><?php echo __('To get started, we’ll need to access your Mailchimp account with an <a href="http://kb.mailchimp.com/integrations/api-integrations/about-api-keys">API Key</a>. Paste your Mailchimp API key, and click <strong>Connect</strong> to continue.
 ', 'mailchimp_i18n'); ?></p>
         <p class="mc-a">
             <?php
             echo sprintf(
                 '%1$s <a href="http://www.mailchimp.com/signup/" target="_blank">%2$s</a>',
-                esc_html(__("Don't have a MailChimp account?", 'mailchimp_i18n')),
+                esc_html(__("Don't have a Mailchimp account?", 'mailchimp_i18n')),
                 esc_html(__('Try one for Free!', 'mailchimp_i18n'))
             );
             ?>
@@ -40,7 +40,7 @@ if (!$user || !get_option('mc_api_key')) {
             <table class="widefat mc-widefat mc-api">
             <form method="POST" action="">
                 <tr valign="top">
-                    <th scope="row" class="mailchimp-connect"><?php esc_html_e('Connect to MailChimp', 'mailchimp_i18n'); ?></th>
+                    <th scope="row" class="mailchimp-connect"><?php esc_html_e('Connect to Mailchimp', 'mailchimp_i18n'); ?></th>
                     <td>
                         <input type="hidden" name="mcsf_action" value="login"/>
                         <input type="password" name="mailchimpSF_api_key" placeholder="API Key">
@@ -61,7 +61,7 @@ if (!$user || !get_option('mc_api_key')) {
 <!--<div class="notes_msg">
         <strong><?php esc_html_e('Notes', 'mailchimp_i18n'); ?>:</strong>
         <ul>
-            <li><?php esc_html_e('Changing your settings at MailChimp.com may cause this to stop working.', 'mailchimp_i18n'); ?></li>
+            <li><?php esc_html_e('Changing your settings at Mailchimp.com may cause this to stop working.', 'mailchimp_i18n'); ?></li>
             <li><?php esc_html_e('If you change your login to a different account, the info you have setup below will be erased.', 'mailchimp_i18n'); ?></li>
             <li><?php esc_html_e('If any of that happens, no biggie - just reconfigure your login and the items below...', 'mailchimp_i18n'); ?></li>
         </ul>
@@ -100,7 +100,7 @@ if ($api){
 
 <div>
 
-    <p class="mc-p"><?php esc_html_e('Please select the MailChimp list you’d like to connect to your form.', 'mailchimp_i18n'); ?></p>
+    <p class="mc-p"><?php esc_html_e('Please select the Mailchimp list you’d like to connect to your form.', 'mailchimp_i18n'); ?></p>
     <p class="mc-list-note"><strong><?php esc_html_e('Note:', 'mailchimp_i18n'); ?></strong> <?php esc_html_e('Updating your list will not remove list settings in this plugin, but changing lists will.', 'mailchimp_i18n'); ?></p>
 
     <form method="post" action="options-general.php?page=mailchimpSF_options">
@@ -115,7 +115,7 @@ if ($api){
                 <?php
                 echo sprintf(
                     esc_html(__("Uh-oh, you don't have any lists defined! Please visit %s, login, and setup a list before using this tool!", 'mailchimp_i18n')),
-                    "<a href='http://www.mailchimp.com/'>MailChimp</a>"
+                    "<a href='http://www.mailchimp.com/'>Mailchimp</a>"
                 );
                 ?>
             </span>
@@ -166,7 +166,7 @@ else {
     </form>
 </p>
 <h3><?php esc_html_e('Subscribe Form Widget Settings for this List', 'mailchimp_i18n'); ?>:</h3>
-<h4><?php esc_html_e('Selected MailChimp List', 'mailchimp_i18n'); ?>: <?php echo esc_html(get_option('mc_list_name')); ?></h4>
+<h4><?php esc_html_e('Selected Mailchimp List', 'mailchimp_i18n'); ?>: <?php echo esc_html(get_option('mc_list_name')); ?></h4>
 <?php
 }
 
@@ -213,8 +213,8 @@ if (get_option('mc_list_id') == '') return;
 <input type="submit" value="<?php esc_attr_e('Update Subscribe Form Settings', 'mailchimp_i18n'); ?>" class="button mc-submit" /><br/>
 
 <table class="widefat mc-widefat mc-nuke-styling">
-<tr><th colspan="2">Remove MailChimp CSS</th></tr>
-<tr class="mc-internal-heading"><th><label for="mc_nuke_all_styles"><?php esc_html_e('Remove CSS');?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked(get_option('mc_nuke_all_styles'), true);?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e('This will disable all MailChimp CSS, so it’s recommended for WordPress experts only.');?></td></tr>
+<tr><th colspan="2">Remove Mailchimp CSS</th></tr>
+<tr class="mc-internal-heading"><th><label for="mc_nuke_all_styles"><?php esc_html_e('Remove CSS');?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked(get_option('mc_nuke_all_styles'), true);?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e('This will disable all Mailchimp CSS, so it’s recommended for WordPress experts only.');?></td></tr>
 </table>
 <?php if(get_option('mc_nuke_all_styles') == true) {
     ?>
@@ -223,7 +223,7 @@ if (get_option('mc_list_id') == '') return;
         <table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling">
     <?php } ?>
     <tr><th colspan="2">Custom Styling</th></tr>
-    <tr class="mc-turned-on"><th><label for="mc_custom_style"><?php esc_html_e('Enabled?', 'mailchimp_i18n'); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_custom_style" id="mc_custom_style"<?php checked(get_option('mc_custom_style'), 'on'); ?> /><?php esc_html_e('Edit the default MailChimp CSS style.');?></td></tr>
+    <tr class="mc-turned-on"><th><label for="mc_custom_style"><?php esc_html_e('Enabled?', 'mailchimp_i18n'); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_custom_style" id="mc_custom_style"<?php checked(get_option('mc_custom_style'), 'on'); ?> /><?php esc_html_e('Edit the default Mailchimp CSS style.');?></td></tr>
 
     <tr><th><?php esc_html_e('Border Width (px)', 'mailchimp_i18n'); ?></th><td><span class="mc-pre-input"></span><input type="text" name="mc_form_border_width" size="3" maxlength="3" value="<?php echo esc_attr(get_option('mc_form_border_width')); ?>"/>
         <em><?php esc_html_e('Set to 0 for no border, do not enter', 'mailchimp_i18n'); ?> px</em>
@@ -247,7 +247,7 @@ if (get_option('mc_list_id') == '') return;
     <tr valign="top">
         <th scope="row"><?php esc_html_e('MonkeyRewards', 'mailchimp_i18n'); ?>?</th>
         <td><input name="mc_rewards" type="checkbox"<?php if (get_option('mc_rewards')=='on' || get_option('mc_rewards')=='' ) { echo ' checked="checked"'; } ?> id="mc_rewards" class="code" />
-            <em><label for="mc_rewards"><?php echo __('We’ll add a "powered by MailChimp" link to your form that will help you earn <a href="http://kb.mailchimp.com/accounts/account-setup/monkeyrewards-credits" target="_blank">MonkeyRewards</a>. You can turn it off at any time.', 'mailchimp_i18n'); ?></label></em>
+            <em><label for="mc_rewards"><?php echo __('We’ll add a "powered by Mailchimp" link to your form that will help you earn <a href="http://kb.mailchimp.com/accounts/account-setup/monkeyrewards-credits" target="_blank">MonkeyRewards</a>. You can turn it off at any time.', 'mailchimp_i18n'); ?></label></em>
         </td>
     </tr>
     
@@ -407,7 +407,7 @@ if (get_option('mc_list_id') == '') return;
             </tr>
             <tr valign="top">
                 <th scope="row">.widget-title</th>
-                <td>This styles the title of your MailChimp widget. <i>Modifying this class will affect your other widget titles.</i></td>
+                <td>This styles the title of your Mailchimp widget. <i>Modifying this class will affect your other widget titles.</i></td>
             </tr>
             <tr valign="top">
                 <th scope="row">#mc_signup</th>
