@@ -1,0 +1,28 @@
+{
+  "name": "@mailchimp/wordpress",
+  "version": "1.5.8",
+  "description": "Add a Mailchimp signup form widget to your WordPress site.",
+  "homepage": "https://github.com/mailchimp/wordpress",
+  "bugs": {
+    "url": "https://github.com/mailchimp/wordpress/issues"
+  },
+  "license": "GPL-2.0-or-later",
+  "author": {
+    "name": "Mailchimp",
+    "email": "api@mailchimp.com",
+    "url": "https://mailchimp.com",
+    "role": "developer"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mailchimp/wordpress.git"
+  },
+  "scripts": {
+    "format-js": "10up-toolkit format-js js",
+    "lint-js": "10up-toolkit lint-js js",
+    "lint-style": "10up-toolkit lint-style css"
+  },
+  "devDependencies": {
+    "10up-toolkit": "^6.1.0"
+  }
+}
