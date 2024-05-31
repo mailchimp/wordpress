@@ -42,7 +42,7 @@ class MailChimp_API {
             'timeout'     => 5,
             'redirection' => 5,
             'httpversion' => '1.1',
-            'user-agent'  => 'MailChimp WordPress Plugin/' . get_bloginfo('url'),
+            'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo('url'),
             'headers'     => array("Authorization" => 'apikey ' . $this->key)
         );
 
@@ -67,7 +67,7 @@ class MailChimp_API {
             'timeout' => 5,
             'redirection' => 5,
             'httpversion' => '1.1',
-            'user-agent'  => 'MailChimp WordPress Plugin/' . get_bloginfo( 'url' ),
+            'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
             'headers'     => array("Authorization" => 'apikey ' . $this->key),
             'body' => json_encode($body)
         );
