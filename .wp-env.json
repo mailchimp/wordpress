@@ -1,0 +1,14 @@
+{
+  "core": null,
+  "plugins": ["."],
+  "env": {
+    "tests": {
+      "mappings": {
+        "wp-cli.yml": "./tests/bin/wp-cli.yml"
+      }
+    }
+  },
+  "lifecycleScripts": {
+    "afterStart": "bash ./tests/bin/initialize.sh"
+  }
+}

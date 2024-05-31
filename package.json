@@ -18,11 +18,22 @@
     "url": "https://github.com/mailchimp/wordpress.git"
   },
   "scripts": {
+    "cypress:open": "cypress open --config-file tests/cypress/config.js --e2e --browser chrome",
+    "cypress:run": "cypress run --config-file tests/cypress/config.js",
+    "env": "wp-env",
+    "env:start": "wp-env start",
+    "env:stop": "wp-env stop",
+    "env:destroy": "wp-env destroy",
     "format-js": "10up-toolkit format-js js",
     "lint-js": "10up-toolkit lint-js js",
     "lint-style": "10up-toolkit lint-style css"
   },
   "devDependencies": {
-    "10up-toolkit": "^6.1.0"
+    "10up-toolkit": "^6.1.0",
+    "@10up/cypress-wp-utils": "^0.3.0",
+    "@wordpress/env": "^9.10.0",
+    "cypress": "^13.10.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
+    "mochawesome-json-to-md": "^0.7.2"
   }
 }

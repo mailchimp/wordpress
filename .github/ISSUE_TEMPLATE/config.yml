@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+    - name: General support request
+      url: https://wordpress.org/support/plugin/mailchimp/
+      about: For general support requests, create a new topic in the WordPress.org support forum.
+    - name: Mailchimp Help Center
+      url: https://mailchimp.com/help/
+      about: Browse by topic or search by feature for 24/7 help with any stage of your business journey.
+    - name: Contact Mailchimp
+      url: https://mailchimp.com/contact/
+      about: To contact Mailchimp about a different topic, please use one of the methods listed here.
