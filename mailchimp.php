@@ -1,7 +1,7 @@
 <?php
 /*
 * Plugin Name:       Mailchimp
-* Plugin URI:        https://github.com/mailchimp/wordpress
+* Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
 * Description:       Add a Mailchimp signup form widget to your WordPress site.
 * Version:           1.5.8
 * Requires at least: 2.8
