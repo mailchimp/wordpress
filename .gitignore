@@ -1,0 +1,16 @@
+node_modules
+.DS_Store
+.idea*
+vendor/*
+release/*
+dist/*
+docs-built
+.phpunit.result.cache
+/.wp-env.override.json
+
+tests/cypress/videos
+tests/cypress/screenshots
+tests/cypress/reports
+tests/cypress/downloads
+
+mailchimp.zip

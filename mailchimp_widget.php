@@ -1,6 +1,6 @@
 <?php
 /**
- * Displays a MailChimp Signup Form
+ * Displays a Mailchimp Signup Form
  **/
 function mailchimpSF_signup_form($args = array()) {
 	extract($args);
@@ -13,7 +13,7 @@ function mailchimpSF_signup_form($args = array()) {
 		echo $before_widget;
 		?>
 		<div class="mc_error_msg">
-			<?php echo __('Sorry, there was a problem loading your MailChimp details. Please navigate to <strong>Settings</strong> and click <strong>MailChimp Setup</strong> to try again.', 'mailchimp_i18n'); ?>
+			<?php echo __('Sorry, there was a problem loading your Mailchimp details. Please navigate to <strong>Settings</strong> and click <strong>Mailchimp Setup</strong> to try again.', 'mailchimp_i18n'); ?>
 		</div>
 		<?php
 		echo $after_widget;
@@ -249,7 +249,7 @@ function mailchimpSF_signup_form($args = array()) {
 			?>
 			<br/>
 			<div id="mc_display_rewards" align="center">
-				<?php esc_html_e('powered by', 'mailchimp_i18n'); ?> <a href="<?php echo esc_url('http://www.mailchimp.com/affiliates/?aid='.$user['account_id'].'&amp;afl=1'); ?>">MailChimp</a>!
+				<?php esc_html_e('powered by', 'mailchimp_i18n'); ?> <a href="<?php echo esc_url('http://www.mailchimp.com/affiliates/?aid='.$user['account_id'].'&amp;afl=1'); ?>">Mailchimp</a>!
 			</div><!-- /mc_display_rewards -->
 			<?php
 		}
@@ -467,16 +467,16 @@ function mailchimp_form_field($var, $num_fields) {
 }
 
 /**
- * MailChimp Subscribe Box widget class
+ * Mailchimp Subscribe Box widget class
  */
 
 class mailchimpSF_Widget extends WP_Widget {
 
 	function __construct() {
 		$widget_ops = array( 
-			'description' => __('Displays a MailChimp Subscribe box', 'mailchimp_i18n')
+			'description' => __('Displays a Mailchimp Subscribe box', 'mailchimp_i18n')
 		);
-		parent::__construct('mailchimpSF_widget', __('MailChimp Widget', 'mailchimp_i18n'), $widget_ops);
+		parent::__construct('mailchimpSF_widget', __('Mailchimp Widget', 'mailchimp_i18n'), $widget_ops);
 	}
 	function widget( $args, $instance ) {
 		if (!is_array($instance)) {
