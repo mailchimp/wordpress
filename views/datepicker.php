@@ -1,4 +1,7 @@
 <?php
+foreach(array(1,2) as $num) {
+    echo $num;
+}
 ?>
 <script type="text/javascript">
         jQuery(function($) {
