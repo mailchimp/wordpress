@@ -3,7 +3,7 @@
     "description": "Add a Mailchimp signup form widget to your WordPress site.",
     "type": "wordpress-plugin",
     "homepage": "https://github.com/mailchimp/wordpress",
-	"license": "GPL-2.0-or-later",
+    "license": "GPL-2.0-or-later",
     "authors": [
         {
             "name": "Mailchimp",
