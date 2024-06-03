@@ -17,3 +17,5 @@
 /phpcs-compat.xml export-ignore
 /phpcs.xml export-ignore
 /README.md export-ignore
+/SECURITY.md export-ignore
+/stylelint.config.js export-ignore
