@@ -1,3 +1,11 @@
+<?php
+/**
+ * Datepicker interactivity initialization.
+ *
+ * @package Mailchimp
+ */
+
+?>
 <script type="text/javascript">
 	jQuery(function($) {
 		$('.date-pick').each(function() {

@@ -39,11 +39,11 @@ WordPress v2.8 or higher:
 
 If you are adding it inside a php code block, pop this in:
 
-` mailchimpSF_signup_form(); `
+` mailchimp_sf_signup_form(); `
 
 Or, if you are dropping it in between a bunch of HTML, use this:
 
-`<?php mailchimpSF_signup_form(); ?>`
+`<?php mailchimp_sf_signup_form(); ?>`
 
 Where ever you want it to show up.
 
@@ -183,7 +183,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 * Version bump for proper listing on wordpress.org
 
 = 1.2.3 =
-* Change mailchimpSF_where_am_i() to use plugins_url() in place of WP_PLUGIN_URL to take SSL into account when delivering assets (props John LeBlanc)
+* Change mailchimp_sf_where_am_i() to use plugins_url() in place of WP_PLUGIN_URL to take SSL into account when delivering assets (props John LeBlanc)
 * Update MCAPI wrapper to bring back PHP4 support (note: PHP 5.2 to be required starting with WordPress 3.2)
 
 = 1.2.2 =

@@ -1,23 +1,39 @@
 <?php
 /**
  * Home for Backwards Compatibility Functions
+ *
+ * @package Mailchimp
  */
 
 /* Form Display Functions */
 if ( ! function_exists( 'mc_display_widget' ) ) {
-	function mc_display_widget( $args = array() ) {
-		mailchimpSF_signup_form( $args );
+
+	/**
+	 * Alias for `mailchimp_sf_signup_form`
+	 *
+	 * @param array $args Signup form args.
+	 * @return void
+	 */
+	function mc_display_widget( $args = array() ): void {
+		mailchimp_sf_signup_form( $args );
 	}
 }
-if ( ! function_exists( 'mailchimpSF_display_widget' ) ) {
-	function mailchimpSF_display_widget( $args = array() ) {
-		mailchimpSF_signup_form( $args );
+if ( ! function_exists( 'mailchimp_sf_display_widget' ) ) {
+
+	/**
+	 * Alias for `mailchimp_sf_signup_form`
+	 *
+	 * @param array $args Signup form args.
+	 * @return void
+	 */
+	function mailchimp_sf_display_widget( $args = array() ): void {
+		mailchimp_sf_signup_form( $args );
 	}
 }
 
 
 /* Shortcodes */
-add_shortcode( 'mailchimpsf_widget', 'mailchimpSF_shortcode' );
+add_shortcode( 'mailchimpsf_widget', 'mailchimp_sf_shortcode' );
 
 
 /* Functions for < WP 3.0 Compat */
@@ -63,7 +79,7 @@ if ( ! function_exists( 'get_home_url' ) ) {
 	function get_home_url( $blog_id = null, $path = '', $scheme = null ) {
 		$orig_scheme = $scheme;
 
-		if ( ! in_array( $scheme, array( 'http', 'https' ) ) ) {
+		if ( ! in_array( $scheme, array( 'http', 'https' ), true ) ) {
 			$scheme = is_ssl() && ! is_admin() ? 'https' : 'http';
 		}
 

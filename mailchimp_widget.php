@@ -1,27 +1,50 @@
 <?php
 /**
+ * Mailchimp widget
+ *
+ * @package Mailchimp
+ */
+
+/**
  * Displays a Mailchimp Signup Form
- **/
-function mailchimpSF_signup_form( $args = array() ) {
-	extract( $args );
+ *
+ * @param array $args Args
+ * @return void
+ */
+function mailchimp_sf_signup_form( $args = array() ) {
+
+	$before_title  = $args['before_title'];
+	$after_title   = $args['after_title'];
+	$before_widget = $args['before_widget'];
+	$after_widget  = $args['after_widget'];
 
 	$mv  = get_option( 'mc_merge_vars' );
 	$igs = get_option( 'mc_interest_groups' );
 
 	// See if we have valid Merge Vars
 	if ( ! is_array( $mv ) ) {
-		echo $before_widget;
+		echo wp_kses_post( $before_widget );
 		?>
 		<div class="mc_error_msg">
-			<?php echo __( 'Sorry, there was a problem loading your Mailchimp details. Please navigate to <strong>Settings</strong> and click <strong>Mailchimp Setup</strong> to try again.', 'mailchimp_i18n' ); ?>
+			<?php
+			echo wp_kses(
+				__(
+					'Sorry, there was a problem loading your Mailchimp details. Please navigate to <strong>Settings</strong> and click <strong>Mailchimp Setup</strong> to try again.',
+					'mailchimp_i18n',
+				),
+				[
+					'strong' => [],
+				]
+			);
+			?>
 		</div>
 		<?php
-		echo $after_widget;
+		echo wp_kses_post( $after_widget );
 		return;
 	}
 
 	if ( ! empty( $before_widget ) ) {
-		echo $before_widget;
+		echo wp_kses_post( $before_widget );
 	}
 
 	$header = get_option( 'mc_header_content' );
@@ -29,18 +52,18 @@ function mailchimpSF_signup_form( $args = array() ) {
 	// See if we have custom header content
 	if ( ! empty( $header ) ) {
 		// See if we need to wrap the header content in our own div
-		if ( strlen( $header ) == strlen( strip_tags( $header ) ) ) {
-			echo ! empty( $before_title ) ? $before_title : '<div class="mc_custom_border_hdr">';
-			echo $header; // don't escape $header b/c it may have HTML allowed
-			echo ! empty( $after_title ) ? $after_title : '</div><!-- /mc_custom_border_hdr -->';
+		if ( strlen( $header ) === strlen( wp_strip_all_tags( $header ) ) ) {
+			echo ! empty( $before_title ) ? wp_kses_post( $before_title ) : '<div class="mc_custom_border_hdr">';
+			echo wp_kses_post( $header ); // don't escape $header b/c it may have HTML allowed
+			echo ! empty( $after_title ) ? wp_kses_post( $after_title ) : '</div><!-- /mc_custom_border_hdr -->';
 		} else {
-			echo $header; // don't escape $header b/c it may have HTML allowed
+			echo wp_kses_post( $header ); // don't escape $header b/c it may have HTML allowed
 		}
 	}
 
 	$sub_heading = trim( get_option( 'mc_subheader_content' ) );
 
-	if ( get_option( 'mc_nuke_all_styles' ) != true ) {
+	if ( get_option( 'mc_nuke_all_styles' ) !== true ) {
 		?>
 	<style>
 		.widget_mailchimpsf_widget .widget-title {
@@ -130,7 +153,7 @@ function mailchimpSF_signup_form( $args = array() ) {
 	if ( $sub_heading ) {
 		?>
 		<div id="mc_subheader">
-			<?php echo $sub_heading; ?>
+			<?php echo esc_html( $sub_heading ); ?>
 		</div><!-- /mc_subheader -->
 		<?php
 	}
@@ -139,16 +162,16 @@ function mailchimpSF_signup_form( $args = array() ) {
 	<div class="mc_form_inside">
 
 		<div class="updated" id="mc_message">
-			<?php echo mailchimpSF_global_msg(); ?>
+			<?php echo esc_html( mailchimp_sf_global_msg() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		</div><!-- /mc_message -->
 
 		<?php
 		// don't show the "required" stuff if there's only 1 field to display.
 		$num_fields = 0;
-		foreach ( (array) $mv as $var ) {
-			$opt = 'mc_mv_' . $var['tag'];
-			if ( $var['required'] || get_option( $opt ) == 'on' ) {
-				$num_fields++;
+		foreach ( (array) $mv as $mv_var ) {
+			$opt = 'mc_mv_' . $mv_var['tag'];
+			if ( $mv_var['required'] || get_option( $opt ) === 'on' ) {
+				++$num_fields;
 			}
 		}
 
@@ -158,11 +181,11 @@ function mailchimpSF_signup_form( $args = array() ) {
 		}
 
 		// Loop over our vars, and output the ones that are set to display
-		foreach ( $mv as $var ) {
-			if ( ! $var['public'] ) {
-				echo '<div style="display:none;">' . mailchimp_form_field( $var, $num_fields ) . '</div>';
+		foreach ( $mv as $mv_var ) {
+			if ( ! $mv_var['public'] ) {
+				echo '<div style="display:none;">' . mailchimp_form_field( $mv_var, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			} else {
-				echo mailchimp_form_field( $var, $num_fields );
+				echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			}
 		}
 
@@ -179,8 +202,8 @@ function mailchimpSF_signup_form( $args = array() ) {
 		if ( is_array( $igs ) && ! empty( $igs ) ) {
 			foreach ( $igs as $ig ) {
 				if ( is_array( $ig ) && isset( $ig['id'] ) ) {
-					if ( ( $igs && get_option( 'mc_show_interest_groups_' . $ig['id'] ) == 'on' ) ) {
-						if ( 'hidden' != $ig['type'] ) {
+					if ( ( $igs && get_option( 'mc_show_interest_groups_' . $ig['id'] ) === 'on' ) ) {
+						if ( 'hidden' !== $ig['type'] ) {
 							?>
 							<div class="mc_interests_header">
 								<?php echo esc_html( $ig['title'] ); ?>
@@ -208,11 +231,11 @@ function mailchimpSF_signup_form( $args = array() ) {
 		if ( get_option( 'mc_email_type_option' ) ) {
 			?>
 		<div class="mergeRow">
-			<label class="mc_email_format"><?php _e( 'Preferred Format', 'mailchimp_i18n' ); ?></label>
+			<label class="mc_email_format"><?php echo esc_html__( 'Preferred Format', 'mailchimp_i18n' ); ?></label>
 			<div class="field-group groups mc_email_options">
 				<ul class="mc_list">
-					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php _e( 'HTML', 'mailchimp_i18n' ); ?></label></li>
-					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php _e( 'Text', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php echo esc_html__( 'HTML', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php echo esc_html__( 'Text', 'mailchimp_i18n' ); ?></label></li>
 				</ul>
 			</div>
 		</div>
@@ -230,8 +253,8 @@ function mailchimpSF_signup_form( $args = array() ) {
 
 		<?php
 		$user = get_option( 'mc_user' );
-		if ( $user && get_option( 'mc_use_unsub_link' ) == 'on' ) {
-			$api  = mailchimpSF_get_api();
+		if ( $user && get_option( 'mc_use_unsub_link' ) === 'on' ) {
+			$api  = mailchimp_sf_get_api();
 			$host = 'http://' . $api->datacenter . '.list-manage.com';
 			?>
 			<div id="mc_unsub_link" align="center">
@@ -239,7 +262,7 @@ function mailchimpSF_signup_form( $args = array() ) {
 			</div><!-- /mc_unsub_link -->
 			<?php
 		}
-		if ( $user && get_option( 'mc_rewards' ) == 'on' ) {
+		if ( $user && get_option( 'mc_rewards' ) === 'on' ) {
 			?>
 			<br/>
 			<div id="mc_display_rewards" align="center">
@@ -254,7 +277,7 @@ function mailchimpSF_signup_form( $args = array() ) {
 </div><!-- /mc_signup_container -->
 	<?php
 	if ( ! empty( $after_widget ) ) {
-		echo $after_widget;
+		echo wp_kses_post( $after_widget );
 	}
 }
 
@@ -281,7 +304,7 @@ function mailchimp_interest_group_field( $ig ) {
 				<input type="checkbox" name="' . esc_attr( $set_name . '[' . $interest_id . ']' ) . '" id="' . esc_attr( 'mc_interest_' . $ig['id'] . '_' . $interest_id ) . '" class="mc_interest" value="' . esc_attr( $interest_name ) . '" />
 				<label for="' . esc_attr( 'mc_interest_' . $ig['id'] . '_' . $interest_id ) . '" class="mc_interest_label">' . esc_html( $interest_name ) . '</label>
 				<br/>';
-				$i++;
+				++$i;
 			}
 			break;
 		case 'radio':
@@ -315,27 +338,27 @@ function mailchimp_interest_group_field( $ig ) {
 				$html         .= '
 				<input type="checkbox" name="' . esc_attr( $set_name . '[' . $i . ']' ) . '" id="' . esc_attr( 'mc_interest_' . $ig['id'] . '_' . $interest_id ) . '" class="mc_interest" value="' . esc_attr( $interest_name ) . '" />
 				<label for="' . esc_attr( 'mc_interest_' . $ig['id'] . '_' . $interest_id ) . '" class="mc_interest_label">' . esc_html( $interest_name ) . '</label>';
-				$i++;
+				++$i;
 			}
 			break;
 	}
-	echo $html;
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 }
 
 /**
  * Generate and display markup for form fields
  *
- * @param array $var Array containing informaoin about the field
+ * @param array $data Array containing informaoin about the field
  * @param int   $num_fields The number of fields total we'll be generating markup for. Used in calculating required text logic
  * @return string
  */
-function mailchimp_form_field( $var, $num_fields ) {
-	$opt  = 'mc_mv_' . $var['tag'];
+function mailchimp_form_field( $data, $num_fields ) {
+	$opt  = 'mc_mv_' . $data['tag'];
 	$html = '';
 	// See if that var is set as required, or turned on (for display)
-	if ( $var['required'] || get_option( $opt ) == 'on' ) {
-		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $var['type'] ) . '">' . esc_html( $var['name'] );
-		if ( $var['required'] && $num_fields > 1 ) {
+	if ( $data['required'] || get_option( $opt ) === 'on' ) {
+		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $data['name'] );
+		if ( $data['required'] && $num_fields > 1 ) {
 			$label .= '<span class="mc_required">*</span>';
 		}
 		$label .= '</label>';
@@ -343,19 +366,19 @@ function mailchimp_form_field( $var, $num_fields ) {
 		$html .= '
 <div class="mc_merge_var">
 		' . $label;
-		switch ( $var['type'] ) {
+		switch ( $data['type'] ) {
 			case 'date':
 				$html .= '
-	<input type="text" size="18" placeholder="' . esc_attr( $var['default_value'] ) . '" data-format="' . esc_attr( $var['options']['date_format'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="date-pick mc_input"/>';
+	<input type="text" size="18" placeholder="' . esc_attr( $data['default_value'] ) . '" data-format="' . esc_attr( $data['options']['date_format'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="date-pick mc_input"/>';
 				break;
 			case 'radio':
-				if ( is_array( $var['options']['choices'] ) ) {
+				if ( is_array( $data['options']['choices'] ) ) {
 					$html .= '
 	<ul class="mc_list">';
-					foreach ( $var['options']['choices'] as $key => $value ) {
+					foreach ( $data['options']['choices'] as $key => $value ) {
 						$html .= '
 		<li>
-			<input type="radio" id="' . esc_attr( $opt . '_' . $key ) . '" name="' . esc_attr( $opt ) . '" class="mc_radio" value="' . $value . '"' . checked( $var['default_value'], $value, false ) . ' />
+			<input type="radio" id="' . esc_attr( $opt . '_' . $key ) . '" name="' . esc_attr( $opt ) . '" class="mc_radio" value="' . $value . '"' . checked( $data['default_value'], $value, false ) . ' />
 			<label for="' . esc_attr( $opt . '_' . $key ) . '" class="mc_radio_label">' . esc_html( $value ) . '</label>
 		</li>';
 					}
@@ -364,12 +387,12 @@ function mailchimp_form_field( $var, $num_fields ) {
 				}
 				break;
 			case 'dropdown':
-				if ( is_array( $var['options']['choices'] ) ) {
+				if ( is_array( $data['options']['choices'] ) ) {
 					$html .= '
 		<select id="' . esc_attr( $opt ) . '" name="' . esc_attr( $opt ) . '" class="mc_select">';
-					foreach ( $var['options']['choices'] as $value ) {
+					foreach ( $data['options']['choices'] as $value ) {
 						$html .= '
-		<option value="' . esc_attr( $value ) . '"' . selected( $value, $var['default_value'], false ) . '>' . esc_html( $value ) . '</option>';
+		<option value="' . esc_attr( $value ) . '"' . selected( $value, $data['default_value'], false ) . '>' . esc_html( $value ) . '</option>';
 					}
 					$html .= '
 	</select>';
@@ -377,7 +400,7 @@ function mailchimp_form_field( $var, $num_fields ) {
 				break;
 			case 'birthday':
 				$html .= '
-	<input type="text" size="18" placeholder="' . esc_attr( $var['default_value'] ) . '" data-format="' . esc_attr( $var['options']['date_format'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="birthdate-pick mc_input"/>';
+	<input type="text" size="18" placeholder="' . esc_attr( $data['default_value'] ) . '" data-format="' . esc_attr( $data['options']['date_format'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="birthdate-pick mc_input"/>';
 				break;
 			case 'birthday-old':
 				$days   = range( 1, 31 );
@@ -432,7 +455,7 @@ function mailchimp_form_field( $var, $num_fields ) {
 	<select name="' . esc_attr( $opt . '[country]' ) . '" id="' . esc_attr( $opt . '-country' ) . '">';
 				foreach ( $countries as $country_code => $country_name ) {
 					$html .= '
-		<option value="' . esc_attr( $country_code ) . '"' . selected( $country_code, $var['options']['default_country'], false ) . '>' . esc_html( $country_name ) . '</option>';
+		<option value="' . esc_attr( $country_code ) . '"' . selected( $country_code, $data['options']['default_country'], false ) . '>' . esc_html( $country_name ) . '</option>';
 				}
 				$html .= '
 	</select>';
@@ -442,7 +465,7 @@ function mailchimp_form_field( $var, $num_fields ) {
 	<input type="text" size="18" maxlength="5" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input" />';
 				break;
 			case 'phone':
-				if ( 'US' == $var['options']['phone_format'] ) {
+				if ( 'US' === $data['options']['phone_format'] ) {
 					$html .= '
 			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[area]' ) . '" id="' . esc_attr( $opt . '-area' ) . '" class="mc_input mc_phone" />
 			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[detail1]' ) . '" id="' . esc_attr( $opt . '-detail1' ) . '" class="mc_input mc_phone" />
@@ -461,11 +484,11 @@ function mailchimp_form_field( $var, $num_fields ) {
 			case 'number':
 			default:
 				$html .= '
-	<input type="text" size="18" placeholder="' . esc_html( $var['default_value'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input"/>';
+	<input type="text" size="18" placeholder="' . esc_attr( $data['default_value'] ) . '" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input"/>';
 				break;
 		}
-		if ( ! empty( $var['help_text'] ) ) {
-			$html .= '<span class="mc_help">' . esc_html( $var['help_text'] ) . '</span>';
+		if ( ! empty( $data['help_text'] ) ) {
+			$html .= '<span class="mc_help">' . esc_html( $data['help_text'] ) . '</span>';
 		}
 		$html .= '
 </div><!-- /mc_merge_var -->';
@@ -477,29 +500,50 @@ function mailchimp_form_field( $var, $num_fields ) {
 /**
  * Mailchimp Subscribe Box widget class
  */
-class mailchimpSF_Widget extends WP_Widget {
+class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.SeparateFunctionsFromOO.Mixed */ {
 
-	function __construct() {
+	/**
+	 * Initialize class
+	 */
+	public function __construct() {
 		$widget_ops = array(
 			'description' => __( 'Displays a Mailchimp Subscribe box', 'mailchimp_i18n' ),
 		);
-		parent::__construct( 'mailchimpSF_widget', __( 'Mailchimp Widget', 'mailchimp_i18n' ), $widget_ops );
+		parent::__construct( 'Mailchimp_SF_Widget', __( 'Mailchimp Widget', 'mailchimp_i18n' ), $widget_ops );
 	}
 
-	function widget( $args, $instance ) {
+	/**
+	 * Echoes the widget content.
+	 *
+	 * @param array $args     Display arguments including 'before_title', 'after_title',
+	 *                        'before_widget', and 'after_widget'.
+	 * @param array $instance The settings for the particular instance of the widget.
+	 * @return void
+	 */
+	public function widget( $args, $instance ) {
 		if ( ! is_array( $instance ) ) {
 			$instance = array();
 		}
-		mailchimpSF_signup_form( array_merge( $args, $instance ) );
+		mailchimp_sf_signup_form( array_merge( $args, $instance ) );
 	}
 
-	function form( $instance ) {
+	/**
+	 * Outputs the settings update form.
+	 *
+	 * @param array $instance Current settings.
+	 */
+	public function form( $instance ) {
 		?>
-<p>Great work! Your widget is ready to go — just head <a href="<?php echo admin_url( 'options-general.php?page=mailchimpSF_options' ); ?>">over here</a> if you'd like to adjust your settings.</p>
+<p>Great work! Your widget is ready to go — just head <a href="<?php echo esc_url( admin_url( 'options-general.php?page=mailchimp_sf_options' ) ); ?>">over here</a> if you'd like to adjust your settings.</p>
 		<?php
 	}
 }
 
+/**
+ * Return country list
+ *
+ * @return array
+ */
 function mailchimp_country_list() {
 	return array(
 		'164' => __( 'USA', 'mailchimp_i18n' ),

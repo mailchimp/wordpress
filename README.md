@@ -43,11 +43,11 @@ WordPress v2.8 or higher:
 
 If you are adding it inside a php code block, pop this in:
 
-` mailchimpSF_signup_form(); `
+` mailchimp_sf_signup_form(); `
 
 Or, if you are dropping it in between a bunch of HTML, use this:
 
-`<?php mailchimpSF_signup_form(); ?>`
+`<?php mailchimp_sf_signup_form(); ?>`
 
 Where ever you want it to show up.
 

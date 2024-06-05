@@ -1,23 +1,77 @@
 <?php
+/**
+ * Handles Mailchimp API authorization.
+ *
+ * @package Mailchimp
+ */
 
+/**
+ * Handles Mailchimp API authorization.
+ */
 class MailChimp_API {
 
+	/**
+	 * The API key
+	 *
+	 * @var string
+	 */
 	public $key;
+
+	/**
+	 * The API key
+	 *
+	 * @var string
+	 */
+	public $api_key;
+
+	/**
+	 * The API url
+	 *
+	 * @var string
+	 */
+	public $api_url;
+
+	/**
+	 * The datacenter.
+	 *
+	 * @var string
+	 */
 	public $datacenter;
 
-	public function __construct( $api_key ) {
+	/**
+	 * Initialize the class
+	 *
+	 * @param  string $api_key The API key.
+	 * @throws Exception If no api key is set
+	 */
+	public function __construct( string $api_key ) {
 		$api_key = trim( $api_key );
 		if ( ! $api_key ) {
-			throw new Exception( __( 'Invalid API Key: ' . $api_key ) );
+			throw new Exception(
+				esc_html(
+					sprintf(
+						// translators: placeholder is an api key
+						__( 'Invalid API Key: %s', 'mailchimp_i18n' ),
+						$api_key
+					)
+				)
+			);
 		}
 
 		$this->key        = $api_key;
 		$dc               = explode( '-', $api_key );
 		$this->datacenter = empty( $dc[1] ) ? 'us1' : $dc[1];
 		$this->api_url    = 'https://' . $this->datacenter . '.api.mailchimp.com/3.0/';
-		return;
 	}
 
+	/**
+	 * Get endpoint.
+	 *
+	 * @param string  $endpoint The Mailchimp endpoint.
+	 * @param integer $count The count to retrieve.
+	 * @param array   $fields The fields to retrieve.
+	 * @return mixed
+	 */
 	public function get( $endpoint, $count = 10, $fields = array() ) {
 		$query_params = '';
 
@@ -47,7 +101,7 @@ class MailChimp_API {
 
 		$request = wp_remote_get( $url, $args );
 
-		if ( is_array( $request ) && 200 == $request['response']['code'] ) {
+		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
 			return json_decode( $request['body'], true );
 		} elseif ( is_array( $request ) && $request['response']['code'] ) {
 			$error = json_decode( $request['body'], true );
@@ -58,6 +112,14 @@ class MailChimp_API {
 		}
 	}
 
+	/**
+	 * Sends request to Mailchimp endpoint.
+	 *
+	 * @param string $endpoint The endpoint to send the request.
+	 * @param string $body The body of the request
+	 * @param string $method The request method.
+	 * @return mixed
+	 */
 	public function post( $endpoint, $body, $method = 'POST' ) {
 		$url = $this->api_url . $endpoint;
 
@@ -68,11 +130,11 @@ class MailChimp_API {
 			'httpversion' => '1.1',
 			'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
 			'headers'     => array( 'Authorization' => 'apikey ' . $this->key ),
-			'body'        => json_encode( $body ),
+			'body'        => wp_json_encode( $body ),
 		);
 		$request = wp_remote_post( $url, $args );
 
-		if ( is_array( $request ) && 200 == $request['response']['code'] ) {
+		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
 			return json_decode( $request['body'], true );
 		} else {
 			if ( is_wp_error( $request ) ) {
@@ -86,7 +148,7 @@ class MailChimp_API {
 					// Email address doesn't come back from the API, so if something's wrong, it's that.
 					$field_name                   = 'Email Address';
 					$body['errors'][0]['message'] = 'Please fill out a valid email address.';
-				} elseif ( $merge['tag'] == $body['errors'][0]['field'] ) {
+				} elseif ( $merge['tag'] === $body['errors'][0]['field'] ) {
 					$field_name = $merge['name'];
 				}
 			}
