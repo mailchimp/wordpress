@@ -55,6 +55,8 @@ Where ever you want it to show up.
 
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
+If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
+
 ## Internationalization (i18n)
 
 Currently we have the plugin configured so it can be translated and the following languages supported:

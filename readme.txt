@@ -98,6 +98,9 @@ If your language is not listed above, feel free to create a translation. Here ar
 
 == Changelog ==
 
+= 1.6.0 =
+* Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
+
 = 1.5.8 =
 * Fix PHP warning for merge tags.
 * Fix double slashes on resources being loaded
