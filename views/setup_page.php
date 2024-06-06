@@ -205,7 +205,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 	<tr valign="top">
 		<th scope="row"><?php esc_html_e( 'Header', 'mailchimp_i18n' ); ?></th>
 		<td>
-			<textarea name="mc_header_content" rows="2" cols="70"><?php echo esc_html( get_option( 'mc_header_content' ) ); ?></textarea><br/>
+			<textarea name="mc_header_content" rows="2" cols="70"><?php echo wp_kses_post( get_option( 'mc_header_content' ) ); ?></textarea><br/>
 			<?php esc_html_e( 'Add your own text, HTML markup (including image links), or keep it blank.', 'mailchimp_i18n' ); ?>
 		</td>
 	</tr>
@@ -213,7 +213,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 	<tr valign="top">
 		<th scope="row"><?php esc_html_e( 'Sub-header', 'mailchimp_i18n' ); ?></th>
 		<td>
-			<textarea name="mc_subheader_content" rows="2" cols="70"><?php echo esc_html( get_option( 'mc_subheader_content' ) ); ?></textarea><br/>
+			<textarea name="mc_subheader_content" rows="2" cols="70"><?php echo wp_kses_post( get_option( 'mc_subheader_content' ) ); ?></textarea><br/>
 			<?php esc_html_e( 'Add your own text, HTML markup (including image links), or keep it blank.', 'mailchimp_i18n' ); ?>.<br/>
 			<?php esc_html_e( 'This will be displayed under the heading and above the form.', 'mailchimp_i18n' ); ?>
 		</td>

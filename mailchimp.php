@@ -573,11 +573,11 @@ function mailchimp_sf_save_general_form_settings() {
 		mailchimp_sf_global_msg( $msg );
 	}
 
-	$content = isset( $_POST['mc_header_content'] ) ? sanitize_text_field( wp_unslash( $_POST['mc_header_content'] ) ) : '';
+	$content = isset( $_POST['mc_header_content'] ) ? wp_kses_post( wp_unslash( $_POST['mc_header_content'] ) ) : '';
 	$content = str_replace( "\r\n", '<br/>', $content );
 	update_option( 'mc_header_content', $content );
 
-	$content = isset( $_POST['mc_subheader_content'] ) ? sanitize_text_field( wp_unslash( $_POST['mc_subheader_content'] ) ) : '';
+	$content = isset( $_POST['mc_subheader_content'] ) ? wp_kses_post( wp_unslash( $_POST['mc_subheader_content'] ) ) : '';
 	$content = str_replace( "\r\n", '<br/>', $content );
 	update_option( 'mc_subheader_content', $content );
 
