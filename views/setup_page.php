@@ -21,9 +21,8 @@ mailchimp_sf_change_list_if_necessary();
 
 // Display our success/error message(s) if have them
 if ( mailchimp_sf_global_msg() !== '' ) {
-	// Message has already been html escaped, so we don't want to 2x escape it here
 	?>
-	<div id="mc_message" class=""><?php echo esc_html( mailchimp_sf_global_msg() ); ?></div>
+	<div id="mc_message" class=""><?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?></div>
 	<?php
 }
 

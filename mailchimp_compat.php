@@ -14,7 +14,7 @@ if ( ! function_exists( 'mc_display_widget' ) ) {
 	 * @param array $args Signup form args.
 	 * @return void
 	 */
-	function mc_display_widget( $args = array() ): void {
+	function mc_display_widget( $args = array() ) {
 		mailchimp_sf_signup_form( $args );
 	}
 }
@@ -26,7 +26,7 @@ if ( ! function_exists( 'mailchimp_sf_display_widget' ) ) {
 	 * @param array $args Signup form args.
 	 * @return void
 	 */
-	function mailchimp_sf_display_widget( $args = array() ): void {
+	function mailchimp_sf_display_widget( $args = array() ) {
 		mailchimp_sf_signup_form( $args );
 	}
 }

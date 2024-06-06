@@ -44,7 +44,7 @@ class MailChimp_API {
 	 * @param  string $api_key The API key.
 	 * @throws Exception If no api key is set
 	 */
-	public function __construct( string $api_key ) {
+	public function __construct( $api_key ) {
 		$api_key = trim( $api_key );
 		if ( ! $api_key ) {
 			throw new Exception(

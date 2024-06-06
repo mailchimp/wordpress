@@ -30,7 +30,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			echo wp_kses(
 				__(
 					'Sorry, there was a problem loading your Mailchimp details. Please navigate to <strong>Settings</strong> and click <strong>Mailchimp Setup</strong> to try again.',
-					'mailchimp_i18n',
+					'mailchimp_i18n'
 				),
 				[
 					'strong' => [],
@@ -54,10 +54,10 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		// See if we need to wrap the header content in our own div
 		if ( strlen( $header ) === strlen( wp_strip_all_tags( $header ) ) ) {
 			echo ! empty( $before_title ) ? wp_kses_post( $before_title ) : '<div class="mc_custom_border_hdr">';
-			echo wp_kses_post( $header ); // don't escape $header b/c it may have HTML allowed
+			echo wp_kses_post( $header );
 			echo ! empty( $after_title ) ? wp_kses_post( $after_title ) : '</div><!-- /mc_custom_border_hdr -->';
 		} else {
-			echo wp_kses_post( $header ); // don't escape $header b/c it may have HTML allowed
+			echo wp_kses_post( $header );
 		}
 	}
 
@@ -153,7 +153,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	if ( $sub_heading ) {
 		?>
 		<div id="mc_subheader">
-			<?php echo esc_html( $sub_heading ); ?>
+			<?php echo wp_kses_post( $sub_heading ); ?>
 		</div><!-- /mc_subheader -->
 		<?php
 	}
@@ -162,7 +162,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	<div class="mc_form_inside">
 
 		<div class="updated" id="mc_message">
-			<?php echo esc_html( mailchimp_sf_global_msg() ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
 		</div><!-- /mc_message -->
 
 		<?php
@@ -183,9 +183,9 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		// Loop over our vars, and output the ones that are set to display
 		foreach ( $mv as $mv_var ) {
 			if ( ! $mv_var['public'] ) {
-				echo '<div style="display:none;">' . mailchimp_form_field( $mv_var, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo '<div style="display:none;">' . mailchimp_form_field( $mv_var, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 			} else {
-				echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 			}
 		}
 
@@ -231,11 +231,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		if ( get_option( 'mc_email_type_option' ) ) {
 			?>
 		<div class="mergeRow">
-			<label class="mc_email_format"><?php echo esc_html__( 'Preferred Format', 'mailchimp_i18n' ); ?></label>
+			<label class="mc_email_format"><?php esc_html_e( 'Preferred Format', 'mailchimp_i18n' ); ?></label>
 			<div class="field-group groups mc_email_options">
 				<ul class="mc_list">
-					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php echo esc_html__( 'HTML', 'mailchimp_i18n' ); ?></label></li>
-					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php echo esc_html__( 'Text', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php esc_html_e( 'HTML', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_( 'Text', 'mailchimp_i18n' ); ?></label></li>
 				</ul>
 			</div>
 		</div>
@@ -342,7 +342,7 @@ function mailchimp_interest_group_field( $ig ) {
 			}
 			break;
 	}
-	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	echo $html; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because html is previously escaped
 }
 
 /**

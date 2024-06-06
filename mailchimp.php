@@ -85,14 +85,14 @@ add_action( 'init', 'mailchimp_sf_plugin_init' );
  * @param array $links - Links for the plugin
  * @return array - Links
  */
-function mailchimp_sd_plugin_action_links( $links ) {
+function mailchimp_sf_plugin_action_links( $links ) {
 	$settings_page = add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'options-general.php' ) );
 	$settings_link = '<a href="' . esc_url( $settings_page ) . '">' . __( 'Settings', 'mailchimp_i18n' ) . '</a>';
 	array_unshift( $links, $settings_link );
 	return $links;
 }
 
-add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'mailchimp_sd_plugin_action_links', 10, 1 );
+add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'mailchimp_sf_plugin_action_links', 10, 1 );
 
 /**
  * Loads the appropriate JS and CSS resources depending on
@@ -165,8 +165,8 @@ if ( get_option( 'mc_use_datepicker' ) === 'on' && ! is_admin() ) {
  * @return void
  */
 function mailchimp_sf_early_request_handler() {
-	if ( isset( $_GET['mcsf_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		switch ( $_GET['mcsf_action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	if ( isset( $_GET['mcsf_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
+		switch ( $_GET['mcsf_action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
 			case 'main_css':
 				header( 'Content-type: text/css' );
 				mailchimp_sf_main_css();
@@ -277,8 +277,7 @@ function mailchimp_sf_request_handler() {
 						if ( ! headers_sent() ) { // just in case...
 							header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT', true, 200 );
 						}
-						// Don't esc_html this, b/c we've already escaped it
-						echo mailchimp_sf_global_msg(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+						echo wp_kses_post( mailchimp_sf_global_msg() );
 						exit;
 				}
 		}
@@ -1132,7 +1131,7 @@ function mailchimp_sf_groups_submit( $igs ) {
 						$ig_ids = array_map(
 							'sanitize_text_field',
 							array_keys(
-								stripslashes_deep( $_POST['group'][ $ig_id ] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+								stripslashes_deep( $_POST['group'][ $ig_id ] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- ignoring becuase this is sanitized through array_map above
 							)
 						);
 						foreach ( $ig_ids as $id ) {
@@ -1203,7 +1202,7 @@ function mailchimp_sf_verify_key( $api ) {
 function mailchimp_sf_update_profile_url( $email ) {
 	$dc = get_option( 'mc_datacenter' );
 	// This is the expected encoding for emails.
-	$eid     = base64_encode( $email ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
+	$eid     = base64_encode( $email ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode -- ignoring because this is the expected data for the endpoint
 	$user    = get_option( 'mc_user' );
 	$list_id = get_option( 'mc_list_id' );
 	$url     = 'http://' . $dc . '.list-manage.com/subscribe/send-email?u=' . $user['account_id'] . '&id=' . $list_id . '&e=' . $eid;
