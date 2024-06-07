@@ -123,7 +123,7 @@ function mailchimp_sf_load_resources() {
 		wp_enqueue_style( 'flick', MCSF_URL . 'css/flick/flick.css', array(), MCSF_VER );
 
 		// Datepicker JS
-		wp_enqueue_script( 'datepicker', MCSF_URL . 'js/datepicker.js', array( 'jquery', 'jquery-ui-core' ), MCSF_VER, true );
+		wp_enqueue_script( 'jquery-ui-datepicker' );
 	}
 
 	if ( get_option( 'mc_nuke_all_styles' ) !== true ) {
