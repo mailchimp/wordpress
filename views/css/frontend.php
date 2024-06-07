@@ -1,3 +1,11 @@
+<?php
+/**
+ * Renders the frontend CSS stylesheet.
+ *
+ * @package Mailchimp
+ */
+
+?>
 .mc_error_msg {
 	color: red;
 	margin-bottom: 1.0em;
@@ -15,24 +23,24 @@
  * If we're utilizing custom styles
  */
 
-if ( get_option( 'mc_custom_style' ) == 'on' ) {
+if ( get_option( 'mc_custom_style' ) === 'on' ) {
 	?>
 	#mc_signup_form {
 		padding:5px;
-		border-width: <?php echo get_option( 'mc_form_border_width' ); ?>px;
-		border-style: <?php echo ( get_option( 'mc_form_border_width' ) == 0 ) ? 'none' : 'solid'; ?>;
-		border-color: #<?php echo get_option( 'mc_form_border_color' ); ?>;
-		color: #<?php echo get_option( 'mc_form_text_color' ); ?>;
-		background-color: #<?php echo get_option( 'mc_form_background' ); ?>;
+		border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
+		border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
+		border-color: #<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>;
+		color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
+		background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
 	}
 
 
 	.mc_custom_border_hdr {
-		border-width: <?php echo get_option( 'mc_header_border_width' ); ?>px;
-		border-style: <?php echo ( get_option( 'mc_header_border_width' ) == 0 ) ? 'none' : 'solid'; ?>;
-		border-color: #<?php echo get_option( 'mc_header_border_color' ); ?>;
-		color: #<?php echo get_option( 'mc_header_text_color' ); ?>;
-		background-color: #<?php echo get_option( 'mc_header_background' ); ?>;
+		border-width: <?php echo absint( get_option( 'mc_header_border_width' ) ); ?>px;
+		border-style: <?php echo ( get_option( 'mc_header_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
+		border-color: #<?php echo esc_attr( get_option( 'mc_header_border_color' ) ); ?>;
+		color: #<?php echo esc_attr( get_option( 'mc_header_text_color' ) ); ?>;
+		background-color: #<?php echo esc_attr( get_option( 'mc_header_background' ) ); ?>;
 		<!--    font-size: 1.2em;-->
 		padding:5px 10px;
 		width: 100%;

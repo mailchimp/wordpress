@@ -43,17 +43,19 @@ WordPress v2.8 or higher:
 
 If you are adding it inside a php code block, pop this in:
 
-` mailchimpSF_signup_form(); `
+` mailchimp_sf_signup_form(); `
 
 Or, if you are dropping it in between a bunch of HTML, use this:
 
-`<?php mailchimpSF_signup_form(); ?>`
+`<?php mailchimp_sf_signup_form(); ?>`
 
 Where ever you want it to show up.
 
 ## Upgrading
 
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+
+If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
 
 ## Internationalization (i18n)
 
