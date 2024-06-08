@@ -21,7 +21,10 @@
 			});
 			$('#mc_submit_type').val('js');
 		}
-		$.scrollTo('#mc_signup', { offset: { top: -28 } });
+		window.scrollTo({
+			top: document.getElementById('mc_signup').offsetTop - 28,
+			behavior: 'smooth',
+		});
 	}
 
 	$(function ($) {
