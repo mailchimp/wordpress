@@ -235,7 +235,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			<div class="field-group groups mc_email_options">
 				<ul class="mc_list">
 					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php esc_html_e( 'HTML', 'mailchimp_i18n' ); ?></label></li>
-					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_( 'Text', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_e( 'Text', 'mailchimp_i18n' ); ?></label></li>
 				</ul>
 			</div>
 		</div>
@@ -465,7 +465,7 @@ function mailchimp_form_field( $data, $num_fields ) {
 	<input type="text" size="18" maxlength="5" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input" />';
 				break;
 			case 'phone':
-				if ( 'US' === $data['options']['phone_format'] ) {
+				if ( isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'] ) {
 					$html .= '
 			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[area]' ) . '" id="' . esc_attr( $opt . '-area' ) . '" class="mc_input mc_phone" />
 			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[detail1]' ) . '" id="' . esc_attr( $opt . '-detail1' ) . '" class="mc_input mc_phone" />

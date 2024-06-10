@@ -644,6 +644,10 @@ function mailchimp_sf_change_list_if_necessary() {
 	// we *could* support paging, but few users have that many lists (and shouldn't)
 	$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 
+	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
+		return;
+	}
+
 	$lists = $lists['lists'];
 
 	if ( is_array( $lists ) && ! empty( $lists ) && isset( $_POST['mc_list_id'] ) ) {
@@ -703,7 +707,7 @@ function mailchimp_sf_change_list_if_necessary() {
  *
  * @param string $list_id List ID
  * @param bool   $new_list Whether this is a new list
- * @return void
+ * @return array
  */
 function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 	$api = mailchimp_sf_get_api();
@@ -1265,7 +1269,7 @@ function mailchimp_sf_where_am_i() {
 	// Set defaults
 	$mscf_dirbase = trailingslashit( basename( __DIR__ ) );  // Typically wp-mailchimp/ or mailchimp/
 	$mscf_dir     = trailingslashit( plugin_dir_path( __FILE__ ) );
-	$mscf_url     = trailingslashit( plugins_url( null, __FILE__ ) );
+	$mscf_url     = trailingslashit( plugins_url( '', __FILE__ ) );
 
 	// Try our hands at finding the real location
 	foreach ( $locations as $key => $loc ) {

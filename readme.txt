@@ -2,6 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 4.5
+PHP tested up to: 7.0
 Stable tag:   1.5.8
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
@@ -100,6 +101,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 
 = 1.6.0 =
 * Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
+* Bumps minimum PHP version to 7.0
 
 = 1.5.8 =
 * Fix PHP warning for merge tags.
