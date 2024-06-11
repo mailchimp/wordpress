@@ -10,7 +10,7 @@ Add a Mailchimp signup form widget to your WordPress site.
 
 == Description ==
 
-Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site. 
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site.
 
 After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
@@ -34,7 +34,7 @@ This section describes how to install the plugin and get started using it.
 
 If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
 
-WordPress v2.8 or higher: 
+WordPress v2.8 or higher:
 ` [mailchimpsf_form] `
 
 If you are adding it inside a php code block, pop this in:
@@ -100,6 +100,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 
 = 1.6.0 =
 * Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
+* Bumps minimum PHP version to 7.0
 
 = 1.5.8 =
 * Fix PHP warning for merge tags.

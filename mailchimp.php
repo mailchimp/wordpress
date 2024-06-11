@@ -5,7 +5,8 @@
  * Description:       Add a Mailchimp signup form widget to your WordPress site.
  * Version:           1.5.8
  * Requires at least: 2.8
- * Requires PHP:      5.6
+ * Requires PHP:      7.0
+ * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
  * License:           GPL-2.0-or-later
@@ -69,7 +70,7 @@ function mailchimp_sf_plugin_init() {
 
 	// Remove Sopresto check. If user does not have API key, make them authenticate.
 
-	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== true && mailchimp_sf_get_api() !== false ) {
+	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== '1' && mailchimp_sf_get_api() !== false ) {
 		mailchimp_sf_update_merge_fields();
 	}
 
@@ -126,7 +127,7 @@ function mailchimp_sf_load_resources() {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 	}
 
-	if ( get_option( 'mc_nuke_all_styles' ) !== true ) {
+	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
 		wp_enqueue_style( 'mailchimp_sf_ie_css', MCSF_URL . 'css/ie.css', array(), MCSF_VER );
 		global $wp_styles;
@@ -644,6 +645,10 @@ function mailchimp_sf_change_list_if_necessary() {
 	// we *could* support paging, but few users have that many lists (and shouldn't)
 	$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 
+	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
+		return;
+	}
+
 	$lists = $lists['lists'];
 
 	if ( is_array( $lists ) && ! empty( $lists ) && isset( $_POST['mc_list_id'] ) ) {
@@ -703,7 +708,7 @@ function mailchimp_sf_change_list_if_necessary() {
  *
  * @param string $list_id List ID
  * @param bool   $new_list Whether this is a new list
- * @return void
+ * @return array
  */
 function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 	$api = mailchimp_sf_get_api();
@@ -984,7 +989,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
 		// Handle phone number logic
-		if ( 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
+		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
 			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
@@ -1265,7 +1270,7 @@ function mailchimp_sf_where_am_i() {
 	// Set defaults
 	$mscf_dirbase = trailingslashit( basename( __DIR__ ) );  // Typically wp-mailchimp/ or mailchimp/
 	$mscf_dir     = trailingslashit( plugin_dir_path( __FILE__ ) );
-	$mscf_url     = trailingslashit( plugins_url( null, __FILE__ ) );
+	$mscf_url     = trailingslashit( plugins_url( '', __FILE__ ) );
 
 	// Try our hands at finding the real location
 	foreach ( $locations as $key => $loc ) {

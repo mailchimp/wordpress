@@ -141,8 +141,9 @@ class MailChimp_API {
 				return new WP_Error( 'mc-subscribe-error', $request->get_error_message() );
 			}
 
-			$body   = json_decode( $request['body'], true );
-			$merges = get_option( 'mc_merge_vars' );
+			$body       = json_decode( $request['body'], true );
+			$merges     = get_option( 'mc_merge_vars' );
+			$field_name = '';
 			foreach ( $merges as $merge ) {
 				if ( empty( $body['errors'] ) ) {
 					// Email address doesn't come back from the API, so if something's wrong, it's that.
