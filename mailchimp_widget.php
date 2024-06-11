@@ -63,7 +63,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 	$sub_heading = trim( get_option( 'mc_subheader_content' ) );
 
-	if ( get_option( 'mc_nuke_all_styles' ) !== true ) {
+	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		?>
 	<style>
 		.widget_mailchimpsf_widget .widget-title {

@@ -70,7 +70,7 @@ function mailchimp_sf_plugin_init() {
 
 	// Remove Sopresto check. If user does not have API key, make them authenticate.
 
-	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== true && mailchimp_sf_get_api() !== false ) {
+	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== '1' && mailchimp_sf_get_api() !== false ) {
 		mailchimp_sf_update_merge_fields();
 	}
 
@@ -127,7 +127,7 @@ function mailchimp_sf_load_resources() {
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 	}
 
-	if ( get_option( 'mc_nuke_all_styles' ) !== true ) {
+	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
 		wp_enqueue_style( 'mailchimp_sf_ie_css', MCSF_URL . 'css/ie.css', array(), MCSF_VER );
 		global $wp_styles;
