@@ -5,7 +5,8 @@
  * Description:       Add a Mailchimp signup form widget to your WordPress site.
  * Version:           1.5.8
  * Requires at least: 2.8
- * Requires PHP:      5.6
+ * Requires PHP:      7.0
+ * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
  * License:           GPL-2.0-or-later
