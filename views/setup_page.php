@@ -76,7 +76,7 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 
 	<br/>
 	<?php
-	if ( '' !== $user && $user['username'] ) {
+	if ( '' !== $user && isset( $user['username'] ) && $user['username'] ) {
 		?>
 <!--<div class="notes_msg">
 		<strong><?php esc_html_e( 'Notes', 'mailchimp_i18n' ); ?>:</strong>
@@ -233,7 +233,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 <tr><th colspan="2">Remove Mailchimp CSS</th></tr>
 <tr class="mc-internal-heading"><th><label for="mc_nuke_all_styles"><?php esc_html_e( 'Remove CSS' ); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked( get_option( 'mc_nuke_all_styles' ), true ); ?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.' ); ?></td></tr>
 </table>
-<?php if ( get_option( 'mc_nuke_all_styles' ) === true ) { ?>
+<?php if ( get_option( 'mc_nuke_all_styles' ) === '1' ) { ?>
 	<table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling" style="display:none">
 	<?php } else { ?>
 		<table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling">
@@ -331,7 +331,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 				<?php
 				$mv = get_option( 'mc_merge_vars' );
 
-				if ( count( $mv ) === 0 || ! is_array( $mv ) ) {
+				if ( ! is_array( $mv ) || count( $mv ) === 0 ) {
 					?>
 					<em><?php esc_html_e( 'No Merge Fields found.', 'mailchimp_i18n' ); ?></em>
 					<?php
