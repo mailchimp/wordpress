@@ -989,7 +989,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
 		// Handle phone number logic
-		if ( 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
+		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
 			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
