@@ -100,6 +100,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 = 1.6.0 =
 * Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
 * Bumps minimum PHP version to 7.0
+* Removes MonkeyRewards feature.
 
 = 1.5.8 =
 * Fix PHP warning for merge tags.
