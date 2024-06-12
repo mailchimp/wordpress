@@ -262,14 +262,6 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			</div><!-- /mc_unsub_link -->
 			<?php
 		}
-		if ( $user && get_option( 'mc_rewards' ) === 'on' ) {
-			?>
-			<br/>
-			<div id="mc_display_rewards" align="center">
-				<?php esc_html_e( 'powered by', 'mailchimp_i18n' ); ?> <a href="<?php echo esc_url( 'http://www.mailchimp.com/affiliates/?aid=' . $user['account_id'] . '&amp;afl=1' ); ?>">Mailchimp</a>!
-			</div><!-- /mc_display_rewards -->
-			<?php
-		}
 		?>
 
 	</div><!-- /mc_form_inside -->

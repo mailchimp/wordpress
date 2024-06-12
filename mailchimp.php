@@ -34,7 +34,7 @@
  */
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.5.8' );
+define( 'MCSF_VER', '1.6.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -53,6 +53,9 @@ require_once 'mailchimp_widget.php';
 
 // includes the backwards compatibility functions
 require_once 'mailchimp_compat.php';
+
+// Upgrade routines.
+require_once 'mailchimp_upgrade.php';
 
 /**
  * Do the following plugin setup steps here
@@ -414,7 +417,6 @@ function mailchimp_sf_delete_setup() {
 		'mc_sopresto_user',
 		'mc_sopresto_public_key',
 		'mc_sopresto_secret_key',
-		'mc_rewards',
 		'mc_use_javascript',
 		'mc_use_datepicker',
 		'mc_use_unsub_link',
@@ -501,15 +503,6 @@ function mailchimp_sf_set_form_defaults( $list_name = '' ) {
 function mailchimp_sf_save_general_form_settings() {
 
 	// IF NOT DEV MODE
-	if ( isset( $_POST['mc_rewards'] ) ) {
-		update_option( 'mc_rewards', 'on' );
-		$msg = '<p class="success_msg">' . __( 'Monkey Rewards turned On!', 'mailchimp_i18n' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	} elseif ( get_option( 'mc_rewards' ) !== 'off' ) {
-		update_option( 'mc_rewards', 'off' );
-		$msg = '<p class="success_msg">' . __( 'Monkey Rewards turned Off!', 'mailchimp_i18n' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	}
 	if ( isset( $_POST['mc_use_javascript'] ) ) {
 		update_option( 'mc_use_javascript', 'on' );
 		$msg = '<p class="success_msg">' . __( 'Fancy Javascript submission turned On!', 'mailchimp_i18n' ) . '</p>';

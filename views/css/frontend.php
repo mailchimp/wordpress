@@ -55,7 +55,6 @@ if ( get_option( 'mc_custom_style' ) === 'on' ) {
 	#mc-indicates-required {
 		width:100%;
 	}
-	#mc_display_rewards {}
 	.mc_interests_header {
 		font-weight:bold;
 	}
