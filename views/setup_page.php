@@ -260,27 +260,6 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 
 <table class="widefat mc-widefat">
 	<tr><th colspan="2">List Options</th></tr>
-	<tr valign="top">
-		<th scope="row"><?php esc_html_e( 'MonkeyRewards', 'mailchimp_i18n' ); ?>?</th>
-		<td><input name="mc_rewards" type="checkbox"<?php if ( get_option( 'mc_rewards' ) === 'on' || get_option( 'mc_rewards' ) === '' ) { echo ' checked="checked"'; } ?> id="mc_rewards" class="code" />
-			<em><label for="mc_rewards">
-				<?php
-				echo wp_kses(
-					__(
-						'We\'ll add a "powered by Mailchimp" link to your form that will help you earn <a href="http://kb.mailchimp.com/accounts/account-setup/monkeyrewards-credits" target="_blank">MonkeyRewards</a>. You can turn it off at any time.',
-						'mailchimp_i18n'
-					),
-					[
-						'a' => [
-							'href',
-							'target',
-						],
-					]
-				);
-				?>
-			</label></em>
-		</td>
-	</tr>
 
 	<tr valign="top">
 		<th scope="row"><?php esc_html_e( 'Use JavaScript Support?', 'mailchimp_i18n' ); ?></th>
