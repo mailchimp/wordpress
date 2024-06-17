@@ -35,7 +35,7 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 	?>
 	<div>
 		<h3 class="mc-h2"><?php esc_html_e( 'Log In', 'mailchimp_i18n' ); ?></h3>
-		<p class="mc-p" style="width: 40%;line-height: 21px;">
+		<p class="mc-p" style="width: 40%;">
 		<?php
 			echo wp_kses(
 				__(
@@ -44,7 +44,7 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 				),
 				[
 					'a'      => [
-						'href',
+						'href' => [],
 					],
 					'strong' => [],
 				]
