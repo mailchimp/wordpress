@@ -128,7 +128,6 @@ function mailchimp_sf_load_resources() {
 
 	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
-		wp_enqueue_style( 'mailchimp_sf_ie_css', MCSF_URL . 'css/ie.css', array(), MCSF_VER );
 		global $wp_styles;
 		$wp_styles->add_data( 'mailchimp_sf_ie_css', 'conditional', 'IE' );
 	}
