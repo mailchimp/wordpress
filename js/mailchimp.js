@@ -1,4 +1,4 @@
-/* Form submission functions for the MailChimp Widget */
+/* Form submission functions for the Mailchimp Widget */
 (function ($) {
 	function mc_beforeForm() {
 		// Disable the submit button
