@@ -29,10 +29,10 @@
     "lint-style": "10up-toolkit lint-style css"
   },
   "devDependencies": {
-    "10up-toolkit": "^6.1.0",
+    "10up-toolkit": "^6.2.0",
     "@10up/cypress-wp-utils": "^0.3.0",
-    "@wordpress/env": "^10.0.0",
-    "cypress": "^13.10.0",
+    "@wordpress/env": "^10.1.0",
+    "cypress": "^13.11.0",
     "cypress-mochawesome-reporter": "^3.8.2",
     "mochawesome-json-to-md": "^0.7.2"
   }
