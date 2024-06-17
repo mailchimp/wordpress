@@ -27,8 +27,7 @@ This section describes how to install the plugin and get started using it.
 3. Navigate to **Settings** click **Mailchimp Setup**.
 4. Enter your Mailchimp API Key and let the plugin verify it.
 5. Select the list where you want to send new Mailchimp subscribers.
-6. Optional: turn **MonkeyRewards** on or off.
-7. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
+6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 
 = Advanced =
 
@@ -101,6 +100,7 @@ If your language is not listed above, feel free to create a translation. Here ar
 = 1.6.0 =
 * Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
 * Bumps minimum PHP version to 7.0
+* Removes MonkeyRewards feature.
 
 = 1.5.8 =
 * Fix PHP warning for merge tags.
