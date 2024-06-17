@@ -405,7 +405,8 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 						if ( ! $mv_var['required'] ) {
 							$opt = 'mc_mv_' . $mv_var['tag'];
 							?>
-						<label class="screen-reader-text" for="<?php echo esc_attr( $opt ); ?>"><?php
+						<label class="screen-reader-text" for="<?php echo esc_attr( $opt ); ?>">
+							<?php
 							echo esc_html(
 								sprintf(
 									// translators: placeholder is name of field
@@ -413,7 +414,8 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 									$mv_var['name']
 								)
 							);
-						?></label>
+							?>
+							</label>
 						<input name="<?php echo esc_attr( $opt ); ?>" type="checkbox" id="<?php echo esc_attr( $opt ); ?>" class="code"<?php checked( get_option( $opt ), 'on' ); ?> />
 							<?php
 						} else {
