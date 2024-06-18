@@ -131,7 +131,6 @@ function mailchimp_sf_load_resources() {
 
 	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
-		wp_enqueue_style( 'mailchimp_sf_ie_css', MCSF_URL . 'css/ie.css', array(), MCSF_VER );
 		global $wp_styles;
 		$wp_styles->add_data( 'mailchimp_sf_ie_css', 'conditional', 'IE' );
 	}
@@ -228,14 +227,14 @@ function mailchimp_sf_request_handler() {
 				try {
 					$api = new MailChimp_API( $key );
 				} catch ( Exception $e ) {
-					$msg = '<strong class="mc_error_msg">' . $e->getMessage() . '</strong>';
+					$msg = '<strong class="error_msg">' . $e->getMessage() . '</strong>';
 					mailchimp_sf_global_msg( $msg );
 					break;
 				}
 
 				$key = mailchimp_sf_verify_key( $api );
 				if ( is_wp_error( $key ) ) {
-					$msg = '<strong class="mc_error_msg">' . $key->get_error_message() . '</strong>';
+					$msg = '<strong class="error_msg">' . $key->get_error_message() . '</strong>';
 					mailchimp_sf_global_msg( $msg );
 				}
 

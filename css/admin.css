@@ -1,89 +1,114 @@
-/* 	Logged Out
-	---------------------------------------------------------------  */
-
-
-/* 	Errors
-	---------------------------------------------------------------  */
-
-.error_msg { 
-	background: #fadbd5;
-	border: 1px solid #db3a1b;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	box-sizing: border-box;
-	color: #373737; 
-	font-size: 12px;
-	line-height: 16px;
-	margin: 12px 0;
-	padding: 9px;
-	width: 900px;
+:root {
+	--mailchimp-color-text: #241c15;
+	--mailchimp-color-white: #fff;
+	--mailchimp-color-border: #ffe01b;
+	--mailchimp-color-header-bg: #fbeeca;
+	--mailchimp-color-link: #007c89;
+	--mailchimp-color-text-light: #373737;
+	--mailchimp-color-text-lightest: #5d5c5d;
+	--mailchimp-max-width: 56.25rem; /* 900 pixels */
 }
+
+.error_msg,
 .success_msg,
-.notes_msg { 
-	background: #fff3d4;
-	border: 1px solid #febe12;
-	-webkit-border-radius: 6px;
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-	box-sizing: border-box;
-	color: #373737; 
-	font-size: 12px;
-	line-height: 16px;
-	margin: 12px 0;
-	padding: 9px;
-	width: 900px;
+.notes_msg,
+table.mc-user,
+.mc-list-row,
+.mc-list-note,
+.mc-section {
+	max-width: 900px;
+	width: 100%;
 }
 
-/* 	User
-	---------------------------------------------------------------  */
+/* Header */
+.mailchimp-header {
+	align-items: center;
+	background-color: var(--mailchimp-color-white);
+	border-top: 2px solid var(--mailchimp-color-border);
+	box-sizing: border-box;
+	display: flex;
+	gap: 1rem;
+	justify-content: space-between;
+	max-width: var(--mailchimp-max-width);
+	padding: 0.75rem 1rem;
+}
 
+/* Sections */
+table.mc-widefat {
+	background: var(--mailchimp-color-white);
+	border: 2px solid var(--mailchimp-color-header-bg) !important;
+	border-radius: 6px;
+	margin: 2.75rem 0 2.25rem;
+}
+
+table.mc-widefat tr:first-child {
+	background: var(--mailchimp-color-header-bg);
+}
+
+table.mc-widefat tr:first-child th {
+	color: var(--mailchimp-color-text);
+	font-weight: 500;
+}
+
+/* Buttons */
+#wpbody .button {
+	border-color: var(--mailchimp-color-link);
+	color: var(--mailchimp-color-link);
+}
+
+.error_msg {
+	--mailchimp-error-bg: #fadbd5;
+	--mailchimp-error-border: #db3a1b;
+	background: var(--mailchimp-error-bg);
+	border: 1px solid var(--mailchimp-error-border);
+	border-radius: 6px;
+	box-sizing: border-box;
+	color: var(--mailchimp-color-text);
+	font-size: 0.75rem;
+	line-height: 1;
+	margin: 12px 0;
+	padding: 9px;
+}
+
+.success_msg,
+.notes_msg {
+	background: var(--mailchimp-color-header-bg);
+	border-radius: 6px;
+	box-sizing: border-box;
+	color: var(--mailchimp-color-text-light);
+	font-size: 0.75rem;
+	line-height: 1;
+	margin: 12px 0;
+	padding: 9px;
+}
+
+/* User */
 table.mc-user {
-	width: 900px;
 	margin-top: 19px;
 }
+
 table.mc-user tr {
+	border: 1px solid var(--mailchimp-color-link);
+	border-radius: 6px;
 	float: right;
 }
+
 .mc-user td:first-of-type {
-	border-top: 1px solid #6dc5dc;
-	border-bottom: 1px solid #6dc5dc;
-	border-left: 1px solid #6dc5dc;
-	-webkit-border-top-left-radius: 6px;
-	-webkit-border-bottom-left-radius: 6px;
-	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-bottomleft: 6px;
-	border-top-left-radius: 6px;
-	border-bottom-left-radius: 6px;
-	min-width: 200px;
-	font-weight: normal !important;
+	font-weight: 400 !important;
+	padding-right: 1rem;
 }
+
 .mc-user td:last-of-type {
-	border-top: 1px solid #6dc5dc;
-	border-right: 1px solid #6dc5dc;
-	border-bottom: 1px solid #6dc5dc;
-	-webkit-border-top-right-radius: 6px;
-	-webkit-border-bottom-right-radius: 6px;
-	-moz-border-radius-topright: 6px;
-	-moz-border-radius-bottomright: 6px;
-	border-top-right-radius: 6px;
-	border-bottom-right-radius: 6px;
 	min-width: 75px;
 }
 
 .mc-user h3 {
-	font-weight: normal;
+	font-weight: 400;
 	text-indent: 9px;
-	font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
 }
 
-
-
-/* 	List Selection
-	---------------------------------------------------------------  */
-
+/* List Selection */
 .mc-list-row {
-	width: 900px;
 	margin-bottom: 12px;
 }
 
@@ -91,98 +116,67 @@ table.mc-user tr {
 	min-width: 200px;
 	padding: 12px 12px 12px 0;
 }
+
 .mc-list-row td:last-of-type {
-	width: 80px;
 	padding: 12px 12px 12px 0;
+	width: 80px;
 }
 
 .mc-list-note {
-	color: #5D5C5D;	
-	font-size: 13px;
-	font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-weight: normal;
-	padding: 0 0 18px;
+	border-bottom: 2px solid var(--mailchimp-color-text);
+	color: var(--mailchimp-color-text-lightest);
+	font-size: 0.8125rem;
+	font-weight: 400;
 	margin-bottom: 8px;
 	margin-top: 7px;
-	border-bottom: 2px solid #95D1C4;
-	width: 900px;
+	padding: 0 0 18px;
 }
+
 table.mc-list-select {
 	margin-bottom: -40px;
 }
 
-/* 	Headings
-	---------------------------------------------------------------  */
+/* Headings */
+.mailchimp-header h1 {
+	font-weight: 600;
+	margin: 0.75em 0;
+	padding: 0;
+}
+
+.mailchimp-header h1,
+.mc-h2,
+.mc-h3,
+.mc-p {
+	color: var(--mailchimp-color-text);
+}
 
 .mc-h2 {
-	color: #373737;	
-	font-size: 26px;
+	font-size: 1.625rem;
 	margin-bottom: 0;
 }
 
 .mc-h3 {
-	color: #52BAD5;
-	font-size: 18px;
+	border-bottom: 2px solid var(--mailchimp-color-text);
+	font-size: 1.125rem;
 	margin-bottom: 12px;
-	border-bottom: 2px solid #6DC5DC;
-	padding-bottom: 12px;
 	margin-top: 36px;
+	padding-bottom: 12px;
 }
 
 .mc-p {
-	color: #373737;	
-	font-size: 16px;
-	font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-weight: normal;
+	font-size: 1rem;
+	font-weight: 400;
 	margin-bottom: 0;
 }
 
-.mc-a {
-	color: #5D5C5D;	
-	font-size: 14px;
-	font-family: "HelveticaNeue-Regular", "Helvetica Neue Regular", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-weight: normal;
-	margin-bottom: 0;	
+.mc-p a {
+	color: var(--mailchimp-color-link);
+	font-weight: 400;
 }
 
-/* 	Header
-	---------------------------------------------------------------  */
-
-.mailchimp-header {
-	background: url(images/mailchimp-header.png) no-repeat;
-	background-size: 900px 96px;
-	height: 96px;
-	width: 900px;
-	margin-top: 19px;
-}
-
-.mailchimp-header h2 {
-	float: right;
-	margin-top: 50px;
-	margin-right: 12px;
-	font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-weight: 700;
-	color: #fff !important;
-	text-shadow: none;
-	font-size: 26px !important;
-}
-
-
-/* 	Table 
-	---------------------------------------------------------------  */
-
-table.mc-widefat {
-	background: #fff !important;
-	border: 2px solid #95D1C4 !important;
-	-webkit-border-radius: 6px !important;
-	-moz-border-radius: 6px !important;
-	border-radius: 6px !important;
-	margin: 44px 0 36px;
-}
+/* Table */
 table.mc-widefat td,
 table.mc-widefat th {
-	border-bottom: 1px solid #C5E5DE !important;
-	border-top: none !important;
 	padding: 18px;
 	text-align: left;
 	text-shadow: none;
@@ -194,24 +188,23 @@ table.mc-widefat .last-row th {
 }
 
 table.mc-widefat th {
-	color: #373737 !important;
-	font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-weight: 700;
-	width: 130px;	
+	color: var(--mailchimp-color-text-light) !important;
+	font-weight: 700 !important;
+	width: 130px;
 }
 
 table.mc-widefat td label {
-	padding-left: 24px;
 	display: block;
-	margin-top: -17px;
+	font-size: 0.75rem;
 	font-style: normal;
-	font-size: 12px;
+	margin-top: -17px;
+	padding-left: 24px;
 }
 
 table.mc-widefat td {
-	color: #5D5C5D !important;
-	font-size: 12px;
-	line-height: 18px !important;
+	color: var(--mailchimp-color-text-lightest) !important;
+	font-size: 0.75rem;
+	line-height: 1.125 !important;
 }
 
 table.mc-widefat td input {
@@ -219,105 +212,29 @@ table.mc-widefat td input {
 	font-style: normal;
 }
 
-
-table.mc-widefat tr:first-child {
-	background: #95D1C4 !important;
-}
-table.mc-widefat tr:first-child th {
-	color: #fff !important;
-	font-family: "HelveticaNeue-Bold", "Helvetica Neue Bold", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif; 
-	font-size: 16px;
-	margin-left: 9px;
-	text-shadow: none;	
-	border-bottom: none !important;
-}
-
-
-.mc-internal-heading {
-	background: rgba(197,229,222,0.25) !important;	
-}
-table.mc-widefat tr.mc-internal-heading th {
-	text-shadow: none !important;
-	color: #449A88 !important;
-}
-
-tr.mc-turned-on th {
-	color: #449A88 !important;	
-}
-.mc-custom-styling em,
-.mc-custom-styling td {
-	font-style: normal;
-	font-size: 13px;
-}
-
-.mc-custom-styling td span.mc-pre-input {
-	width: 14px;
-	display: inline-block;
-}
-
-.mc-custom-styling td input {
-	width: 70px;
-	margin-right: 7px;
-}
-.mc-custom-styling td input[type="checkbox"] {
-	width: auto;
-	margin-right: 7px;
-}
-
-
-
-
-.mc-widefat.mc-blue {
-	background: #fff !important;
-	border: 2px solid #6DC5DC !important;	
-}
-
-table.mc-widefat.mc-blue td,
-table.mc-widefat.mc-blue th {
-	border-bottom: 1px solid #B1E0EC !important;
-}
-table.mc-widefat.mc-blue tr:first-child {
-	background: #6DC5DC !important;
-}
-
-.mc-widefat.mc-yellow {
-	background: #fff !important;
-	border: 2px solid #FEDE88 !important;	
-}
-
-table.mc-widefat.mc-yellow td,
-table.mc-widefat.mc-yellow th {
-	border-bottom: 1px solid #FFE8AA !important;
-}
-table.mc-widefat.mc-yellow tr:first-child {
-	background: #FEDE88 !important;
-}
-
-
-
-.mc-widefat.mc-api {
-	border: 2px solid #95D1C4 !important;	
-}
-
 table.mc-widefat.mc-api {
+	border-radius: 6px;
 	margin-bottom: 19px;
 	margin-top: 19px;
 }
+
 table.mc-widefat.mc-api td,
 table.mc-widefat.mc-api th {
 	border-bottom: none !important;
 }
+
 table.mc-widefat.mc-api tr:first-child {
-	background: #95D1C4 !important;
+	background: var(--mailchimp-color-header-bg) !important;
 }
 
 a.mc-api-key {
-	color: #fff;
+	color: var(--mailchimp-color-white);
 	display: block;
 	margin-top: 3px;
 }
+
 a.mc-api-key:hover {
-	color: #fff;
+	color: var(--mailchimp-color-white);
 	text-decoration: underline;
 }
 
@@ -325,35 +242,15 @@ a.mc-api-key:hover {
 	margin-bottom: 19px;
 }
 
-
 .mc-submit {
-	float: right;
 	clear: both;
+	float: right;
 }
 
-
-.mailchimp-login {
-	background: #449A88;
-	color: #fff;
-	text-transform: capitalize;
-	padding: 8px 72px;
-	border-radius: 4px;
-	font-weight: 600;
-	font-size: 14px;
-	border-bottom: 2px solid #72C1B0;
-	margin-top: 2px;
-	position: relative;
-	box-sizing: border-box;
-}
-.mailchimp-login:hover {
-	background: #72C1B0;
-	border-color: #449A88;
-	color: #fff;
-}
 th.mailchimp-connect {
 	width: 100% !important;
 }
 
-#wpfooter {
-	margin-left: 0 !important;
+#mc-message {
+	margin-top: 26px;
 }
