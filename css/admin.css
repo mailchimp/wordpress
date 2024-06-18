@@ -9,6 +9,17 @@
 	--mailchimp-max-width: 56.25rem; /* 900 pixels */
 }
 
+.error_msg,
+.success_msg,
+.notes_msg,
+table.mc-user,
+.mc-list-row,
+.mc-list-note,
+.mc-section {
+	max-width: 900px;
+	width: 100%;
+}
+
 /* Header */
 .mailchimp-header {
 	align-items: center;
@@ -57,7 +68,6 @@ table.mc-widefat tr:first-child th {
 	line-height: 1;
 	margin: 12px 0;
 	padding: 9px;
-	width: 900px;
 }
 
 .success_msg,
@@ -70,13 +80,11 @@ table.mc-widefat tr:first-child th {
 	line-height: 1;
 	margin: 12px 0;
 	padding: 9px;
-	width: 900px;
 }
 
 /* User */
 table.mc-user {
 	margin-top: 19px;
-	width: 900px;
 }
 
 table.mc-user tr {
@@ -102,7 +110,6 @@ table.mc-user tr {
 /* List Selection */
 .mc-list-row {
 	margin-bottom: 12px;
-	width: 900px;
 }
 
 .mc-list-row td:first-of-type {
@@ -123,7 +130,6 @@ table.mc-user tr {
 	margin-bottom: 8px;
 	margin-top: 7px;
 	padding: 0 0 18px;
-	width: 900px;
 }
 
 table.mc-list-select {
@@ -131,7 +137,13 @@ table.mc-list-select {
 }
 
 /* Headings */
-.mailchimp-header h2,
+.mailchimp-header h1 {
+	font-weight: 600;
+	margin: 0.75em 0;
+	padding: 0;
+}
+
+.mailchimp-header h1,
 .mc-h2,
 .mc-h3,
 .mc-p {
@@ -157,11 +169,9 @@ table.mc-list-select {
 	margin-bottom: 0;
 }
 
-.mc-a {
+.mc-p a {
 	color: var(--mailchimp-color-link);
-	font-size: 0.875rem;
 	font-weight: 400;
-	margin-bottom: 0;
 }
 
 /* Table */
@@ -179,7 +189,7 @@ table.mc-widefat .last-row th {
 
 table.mc-widefat th {
 	color: var(--mailchimp-color-text-light) !important;
-	font-weight: 700;
+	font-weight: 700 !important;
 	width: 130px;
 }
 
@@ -241,6 +251,6 @@ th.mailchimp-connect {
 	width: 100% !important;
 }
 
-#wpfooter {
-	margin-left: 0 !important;
+#mc-message {
+	margin-top: 26px;
 }
