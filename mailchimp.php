@@ -90,8 +90,8 @@ add_action( 'init', 'mailchimp_sf_plugin_init' );
  * @return array - Links
  */
 function mailchimp_sf_plugin_action_links( $links ) {
-	$settings_page = add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'options-general.php' ) );
-	$settings_link = '<a href="' . esc_url( $settings_page ) . '">' . __( 'Settings', 'mailchimp_i18n' ) . '</a>';
+	$settings_page = add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) );
+	$settings_link = '<a href="' . esc_url( $settings_page ) . '">' . esc_html__( 'Settings', 'mailchimp_i18n' ) . '</a>';
 	array_unshift( $links, $settings_link );
 	return $links;
 }
