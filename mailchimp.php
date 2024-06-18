@@ -227,14 +227,14 @@ function mailchimp_sf_request_handler() {
 				try {
 					$api = new MailChimp_API( $key );
 				} catch ( Exception $e ) {
-					$msg = '<strong class="mc_error_msg">' . $e->getMessage() . '</strong>';
+					$msg = '<strong class="error_msg">' . $e->getMessage() . '</strong>';
 					mailchimp_sf_global_msg( $msg );
 					break;
 				}
 
 				$key = mailchimp_sf_verify_key( $api );
 				if ( is_wp_error( $key ) ) {
-					$msg = '<strong class="mc_error_msg">' . $key->get_error_message() . '</strong>';
+					$msg = '<strong class="error_msg">' . $key->get_error_message() . '</strong>';
 					mailchimp_sf_global_msg( $msg );
 				}
 

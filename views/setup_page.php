@@ -132,7 +132,7 @@ if ( $api ) {
 
 		if ( count( $lists ) === 0 ) {
 			?>
-			<span class='error_msg'>
+			<div class="error_msg">
 				<?php
 				printf(
 					// translators: placeholder is a link to Mailchimp
@@ -140,7 +140,7 @@ if ( $api ) {
 					"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
 				);
 				?>
-			</span>
+			</div>
 			<?php
 		} else {
 			?>
