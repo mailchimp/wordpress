@@ -26,14 +26,26 @@
     "env:destroy": "wp-env destroy",
     "format-js": "10up-toolkit format-js js",
     "lint-js": "10up-toolkit lint-js js",
-    "lint-style": "10up-toolkit lint-style css"
+    "lint-style": "10up-toolkit lint-style css",
+    "start": "10up-toolkit build --watch",
+    "build": "10up-toolkit build"
   },
   "devDependencies": {
-    "10up-toolkit": "^6.2.0",
     "@10up/cypress-wp-utils": "^0.3.0",
     "@wordpress/env": "^10.1.0",
+    "10up-toolkit": "^6.2.0",
     "cypress": "^13.11.0",
     "cypress-mochawesome-reporter": "^3.8.2",
     "mochawesome-json-to-md": "^0.7.2"
+  },
+  "10up-toolkit": {
+    "entry": {
+      "blocks": "./includes/blocks/blocks.js"
+    }
+  },
+  "dependencies": {
+    "@wordpress/block-editor": "^13.1.0",
+    "@wordpress/i18n": "^5.1.0",
+    "@wordpress/server-side-render": "^5.1.0"
   }
 }

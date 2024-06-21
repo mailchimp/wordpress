@@ -526,7 +526,7 @@ class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.Sepa
 	 */
 	public function form( $instance ) {
 		?>
-<p>Great work! Your widget is ready to go — just head <a href="<?php echo esc_url( admin_url( 'options-general.php?page=mailchimp_sf_options' ) ); ?>">over here</a> if you'd like to adjust your settings.</p>
+<p>Great work! Your widget is ready to go — just head <a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>">over here</a> if you'd like to adjust your settings.</p>
 		<?php
 	}
 }
