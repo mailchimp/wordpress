@@ -16,6 +16,12 @@ After installation, you’ll log in with your API key, select your Mailchimp lis
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
+== Frequently Asked Questions ==
+
+= Can I have multiple forms on one page? =
+
+No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
+
 == Installation ==
 
 This section describes how to install the plugin and get started using it.
