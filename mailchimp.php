@@ -77,7 +77,7 @@ function mailchimp_sf_plugin_init() {
 		mailchimp_sf_update_merge_fields();
 	}
 
-	// This is a test change.
+	// This is a test change!
 
 	// Bring in our appropriate JS and CSS resources
 	mailchimp_sf_load_resources();
