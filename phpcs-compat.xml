@@ -13,6 +13,6 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 	<exclude-pattern>*/po/*</exclude-pattern>
 
-	<config name="minimum_supported_wp_version" value="6.0"/>
+	<config name="minimum_supported_wp_version" value="6.1"/>
 	<config name="testVersion" value="7.0-"/>
 </ruleset>
