@@ -18,6 +18,12 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 ![Configuring extra fields on your Signup Form (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
+## Frequently Asked Questions
+
+### Can I have multiple forms on one page?
+
+No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
+
 ## Installation
 
 This section describes how to install the plugin and get started using it.
