@@ -71,6 +71,8 @@ if ( get_option( 'mc_custom_style' ) === 'on' ) {
 	}
 	ul.mc_list {
 		list-style-type: none;
+		margin-left: 0;
+		padding-left: 0;
 	}
 	ul.mc_list li {
 		font-size: 12px;
