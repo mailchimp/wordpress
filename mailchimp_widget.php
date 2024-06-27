@@ -86,6 +86,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		-moz-box-sizing: border-box;
 		-webkit-box-sizing: border-box;
 		box-sizing: border-box;
+		padding: 10px 8px;
 		width: 100%;
 	}
 	.mc_input.mc_phone {
@@ -93,6 +94,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	}
 	select.mc_select {
 		margin-top: 0.5em;
+		padding: 10px 8px;
 		width: 100%;
 	}
 	.mc_address_label {
@@ -101,6 +103,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		display: block;
 	}
 	.mc_address_label ~ select {
+		padding: 10px 8px;
 		width: 100%;
 	}
 	.mc_list li {
@@ -117,6 +120,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	}
 	#mc_signup_submit {
 		margin-top: 1.5em;
+		padding: 10px 8px;
 		width: 80%;
 	}
 	#mc_unsub_link a {
