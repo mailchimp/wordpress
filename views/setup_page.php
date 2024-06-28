@@ -124,7 +124,7 @@ if ( $api ) {
 	<p class="mc-p"><?php esc_html_e( 'Please select the Mailchimp list you\'d like to connect to your form.', 'mailchimp' ); ?></p>
 	<p class="mc-list-note"><strong><?php esc_html_e( 'Note:', 'mailchimp' ); ?></strong> <?php esc_html_e( 'Updating your list will not remove list settings in this plugin, but changing lists will.', 'mailchimp' ); ?></p>
 
-	<form method="post" action="options-general.php?page=mailchimp_sf_options">
+	<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 		<?php
 		// we *could* support paging, but few users have that many lists (and shouldn't)
 		$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
@@ -179,7 +179,7 @@ if ( $api ) {
 	?>
 
 <p class="submit">
-	<form method="post" action="options-general.php?page=mailchimp_sf_options">
+	<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 		<input type="hidden" name="mcsf_action" value="reset_list" />
 		<input type="submit" name="reset_list" value="<?php esc_attr_e( 'Reset List Options and Select again', 'mailchimp' ); ?>" class="button" />
 		<?php wp_nonce_field( 'reset_mailchimp_list', '_mcsf_nonce_action' ); ?>
@@ -200,7 +200,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 ?>
 
 <div>
-<form method="post" action="options-general.php?page=mailchimp_sf_options">
+<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 <div class="mc-section">
 <input type="hidden" name="mcsf_action" value="change_form_settings">
 <?php wp_nonce_field( 'update_general_form_settings', '_mcsf_nonce_action' ); ?>
