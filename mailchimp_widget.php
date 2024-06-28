@@ -45,9 +45,12 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		<?php
 		if ( ! empty( $after_widget ) ) {
 			echo wp_kses_post( $after_widget );
-		} else {
+		}
+
+		if ( empty( $before_widget ) ) {
 			echo '</div>';
 		}
+
 		return;
 	}
 
@@ -284,7 +287,9 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	<?php
 	if ( ! empty( $after_widget ) ) {
 		echo wp_kses_post( $after_widget );
-	} else {
+	}
+
+	if ( empty( $before_widget ) ) {
 		echo '</div>';
 	}
 }
