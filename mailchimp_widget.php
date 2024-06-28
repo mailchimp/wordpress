@@ -23,6 +23,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 	// See if we have valid Merge Vars
 	if ( ! is_array( $mv ) ) {
+		echo '<div class="mc_container">';
 		echo wp_kses_post( $before_widget );
 		?>
 		<div class="mc_error_msg">
@@ -40,8 +41,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		</div>
 		<?php
 		echo wp_kses_post( $after_widget );
+		echo '</div>';
 		return;
 	}
+
+	echo '<div class="mc_container">';
 
 	if ( ! empty( $before_widget ) ) {
 		echo wp_kses_post( $before_widget );
@@ -72,7 +76,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	}
 	#mc_subheader {
 		line-height: 1.25em;
-		margin-bottom: 18px;
+		margin: 18px 0;
 	}
 	.mc_merge_var {
 		margin-bottom: 1.0em;
@@ -275,6 +279,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	if ( ! empty( $after_widget ) ) {
 		echo wp_kses_post( $after_widget );
 	}
+
+	echo '</div>';
 }
 
 /**
