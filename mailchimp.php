@@ -635,7 +635,7 @@ function mailchimp_sf_save_general_form_settings() {
  **/
 function mailchimp_sf_change_list_if_necessary() {
 	if ( empty( $_POST['mc_list_id'] ) ) {
-		$msg = '<p class="error_msg">' . esc_html( __( 'Please choose a valid list', 'mailchimp_i18n' ) ) . '</p>';
+		$msg = '<p class="error_msg">' . esc_html__( 'Please choose a valid list', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 		return;
 	}
