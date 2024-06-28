@@ -50,8 +50,8 @@ class MailChimp_API {
 			throw new Exception(
 				esc_html(
 					sprintf(
-						// translators: placeholder is an api key
-						__( 'Invalid API Key: %s', 'mailchimp_i18n' ),
+						/* translators: %s: api key */
+						__( 'Invalid API Key: %s', 'mailchimp' ),
 						$api_key
 					)
 				)
