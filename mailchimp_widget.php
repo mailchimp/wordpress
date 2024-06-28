@@ -30,7 +30,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			echo wp_kses(
 				__(
 					'Sorry, there was a problem loading your Mailchimp details. Please navigate to <strong>Settings</strong> and click <strong>Mailchimp Setup</strong> to try again.',
-					'mailchimp_i18n'
+					'mailchimp'
 				),
 				[
 					'strong' => [],
@@ -197,7 +197,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		if ( $num_fields > 1 ) {
 			?>
 			<div id="mc-indicates-required">
-				* = <?php esc_html_e( 'required field', 'mailchimp_i18n' ); ?>
+				* = <?php esc_html_e( 'required field', 'mailchimp' ); ?>
 			</div><!-- /mc-indicates-required -->
 			<?php
 		}
@@ -235,11 +235,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		if ( get_option( 'mc_email_type_option' ) ) {
 			?>
 		<div class="mergeRow">
-			<label class="mc_email_format"><?php esc_html_e( 'Preferred Format', 'mailchimp_i18n' ); ?></label>
+			<label class="mc_email_format"><?php esc_html_e( 'Preferred Format', 'mailchimp' ); ?></label>
 			<div class="field-group groups mc_email_options">
 				<ul class="mc_list">
-					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php esc_html_e( 'HTML', 'mailchimp_i18n' ); ?></label></li>
-					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_e( 'Text', 'mailchimp_i18n' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php esc_html_e( 'HTML', 'mailchimp' ); ?></label></li>
+					<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_e( 'Text', 'mailchimp' ); ?></label></li>
 				</ul>
 			</div>
 		</div>
@@ -262,7 +262,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			$host = 'http://' . $api->datacenter . '.list-manage.com';
 			?>
 			<div id="mc_unsub_link" align="center">
-				<a href="<?php echo esc_url( $host . '/unsubscribe/?u=' . $user['account_id'] . '&amp;id=' . get_option( 'mc_list_id' ) ); ?>" target="_blank"><?php esc_html_e( 'unsubscribe from list', 'mailchimp_i18n' ); ?></a>
+				<a href="<?php echo esc_url( $host . '/unsubscribe/?u=' . $user['account_id'] . '&amp;id=' . get_option( 'mc_list_id' ) ); ?>" target="_blank"><?php esc_html_e( 'unsubscribe from list', 'mailchimp' ); ?></a>
 			</div><!-- /mc_unsub_link -->
 			<?php
 		}
@@ -401,18 +401,18 @@ function mailchimp_form_field( $data, $num_fields ) {
 			case 'birthday-old':
 				$days   = range( 1, 31 );
 				$months = array(
-					__( 'January', 'mailchimp_i18n' ),
-					__( 'February', 'mailchimp_i18n' ),
-					__( 'March', 'mailchimp_i18n' ),
-					__( 'April', 'mailchimp_i18n' ),
-					__( 'May', 'mailchimp_i18n' ),
-					__( 'June', 'mailchimp_i18n' ),
-					__( 'July', 'mailchimp_i18n' ),
-					__( 'August', 'mailchimp_i18n' ),
-					__( 'September', 'mailchimp_i18n' ),
-					__( 'October', 'mailchimp_i18n' ),
-					__( 'November', 'mailchimp_i18n' ),
-					__( 'December', 'mailchimp_i18n' ),
+					esc_html__( 'January', 'mailchimp' ),
+					esc_html__( 'February', 'mailchimp' ),
+					esc_html__( 'March', 'mailchimp' ),
+					esc_html__( 'April', 'mailchimp' ),
+					esc_html__( 'May', 'mailchimp' ),
+					esc_html__( 'June', 'mailchimp' ),
+					esc_html__( 'July', 'mailchimp' ),
+					esc_html__( 'August', 'mailchimp' ),
+					esc_html__( 'September', 'mailchimp' ),
+					esc_html__( 'October', 'mailchimp' ),
+					esc_html__( 'November', 'mailchimp' ),
+					esc_html__( 'December', 'mailchimp' ),
 				);
 
 				$html .= '
@@ -437,17 +437,17 @@ function mailchimp_form_field( $data, $num_fields ) {
 				$countries = mailchimp_country_list();
 				$html     .= '
 
-	<label for="' . esc_attr( $opt . '-addr1' ) . '" class="mc_address_label">' . __( 'Street Address', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-addr1' ) . '" class="mc_address_label">' . esc_html__( 'Street Address', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[addr1]' ) . '" id="' . esc_attr( $opt . '-addr1' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-addr2' ) . '" class="mc_address_label">' . __( 'Address Line 2', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-addr2' ) . '" class="mc_address_label">' . esc_html__( 'Address Line 2', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[addr2]' ) . '" id="' . esc_attr( $opt . '-addr2' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-city' ) . '" class="mc_address_label">' . __( 'City', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-city' ) . '" class="mc_address_label">' . esc_html__( 'City', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[city]' ) . '" id="' . esc_attr( $opt . '-city' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-state' ) . '" class="mc_address_label">' . __( 'State', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-state' ) . '" class="mc_address_label">' . esc_html__( 'State', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[state]' ) . '" id="' . esc_attr( $opt . '-state' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-zip' ) . '" class="mc_address_label">' . __( 'Zip / Postal', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-zip' ) . '" class="mc_address_label">' . esc_html__( 'Zip / Postal', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" maxlength="5" name="' . esc_attr( $opt . '[zip]' ) . '" id="' . esc_attr( $opt . '-zip' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-country' ) . '" class="mc_address_label">' . __( 'Country', 'mailchimp_i18n' ) . '</label>
+	<label for="' . esc_attr( $opt . '-country' ) . '" class="mc_address_label">' . esc_html__( 'Country', 'mailchimp' ) . '</label>
 	<select name="' . esc_attr( $opt . '[country]' ) . '" id="' . esc_attr( $opt . '-country' ) . '">';
 				foreach ( $countries as $country_code => $country_name ) {
 					$html .= '
@@ -503,9 +503,9 @@ class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.Sepa
 	 */
 	public function __construct() {
 		$widget_ops = array(
-			'description' => __( 'Displays a Mailchimp Subscribe box', 'mailchimp_i18n' ),
+			'description' => __( 'Displays a Mailchimp Subscribe box', 'mailchimp' ),
 		);
-		parent::__construct( 'Mailchimp_SF_Widget', __( 'Mailchimp Widget', 'mailchimp_i18n' ), $widget_ops );
+		parent::__construct( 'Mailchimp_SF_Widget', __( 'Mailchimp Widget', 'mailchimp' ), $widget_ops );
 	}
 
 	/**
@@ -530,7 +530,25 @@ class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.Sepa
 	 */
 	public function form( $instance ) {
 		?>
-<p>Great work! Your widget is ready to go — just head <a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>">over here</a> if you'd like to adjust your settings.</p>
+<p>
+		<?php
+		echo wp_kses(
+			sprintf(
+				/* translators: 1: admin url */
+				__(
+					'Great work! Your widget is ready to go — just head <a href="%1$s">over here</a> if you\'d like to adjust your settings.',
+					'mailchimp'
+				),
+				esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) )
+			),
+			[
+				'a' => [
+					'href' => [],
+				],
+			]
+		);
+		?>
+</p>
 		<?php
 	}
 }
@@ -542,198 +560,198 @@ class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.Sepa
  */
 function mailchimp_country_list() {
 	return array(
-		'164' => __( 'USA', 'mailchimp_i18n' ),
-		'286' => __( 'Aaland Islands', 'mailchimp_i18n' ),
-		'274' => __( 'Afghanistan', 'mailchimp_i18n' ),
-		'2'   => __( 'Albania', 'mailchimp_i18n' ),
-		'3'   => __( 'Algeria', 'mailchimp_i18n' ),
-		'178' => __( 'American Samoa', 'mailchimp_i18n' ),
-		'4'   => __( 'Andorra', 'mailchimp_i18n' ),
-		'5'   => __( 'Angola', 'mailchimp_i18n' ),
-		'176' => __( 'Anguilla', 'mailchimp_i18n' ),
-		'175' => __( 'Antigua And Barbuda', 'mailchimp_i18n' ),
-		'6'   => __( 'Argentina', 'mailchimp_i18n' ),
-		'7'   => __( 'Armenia', 'mailchimp_i18n' ),
-		'179' => __( 'Aruba', 'mailchimp_i18n' ),
-		'8'   => __( 'Australia', 'mailchimp_i18n' ),
-		'9'   => __( 'Austria', 'mailchimp_i18n' ),
-		'10'  => __( 'Azerbaijan', 'mailchimp_i18n' ),
-		'11'  => __( 'Bahamas', 'mailchimp_i18n' ),
-		'12'  => __( 'Bahrain', 'mailchimp_i18n' ),
-		'13'  => __( 'Bangladesh', 'mailchimp_i18n' ),
-		'14'  => __( 'Barbados', 'mailchimp_i18n' ),
-		'15'  => __( 'Belarus', 'mailchimp_i18n' ),
-		'16'  => __( 'Belgium', 'mailchimp_i18n' ),
-		'17'  => __( 'Belize', 'mailchimp_i18n' ),
-		'18'  => __( 'Benin', 'mailchimp_i18n' ),
-		'19'  => __( 'Bermuda', 'mailchimp_i18n' ),
-		'20'  => __( 'Bhutan', 'mailchimp_i18n' ),
-		'21'  => __( 'Bolivia', 'mailchimp_i18n' ),
-		'22'  => __( 'Bosnia and Herzegovina', 'mailchimp_i18n' ),
-		'23'  => __( 'Botswana', 'mailchimp_i18n' ),
-		'24'  => __( 'Brazil', 'mailchimp_i18n' ),
-		'180' => __( 'Brunei Darussalam', 'mailchimp_i18n' ),
-		'25'  => __( 'Bulgaria', 'mailchimp_i18n' ),
-		'26'  => __( 'Burkina Faso', 'mailchimp_i18n' ),
-		'27'  => __( 'Burundi', 'mailchimp_i18n' ),
-		'28'  => __( 'Cambodia', 'mailchimp_i18n' ),
-		'29'  => __( 'Cameroon', 'mailchimp_i18n' ),
-		'30'  => __( 'Canada', 'mailchimp_i18n' ),
-		'31'  => __( 'Cape Verde', 'mailchimp_i18n' ),
-		'32'  => __( 'Cayman Islands', 'mailchimp_i18n' ),
-		'33'  => __( 'Central African Republic', 'mailchimp_i18n' ),
-		'34'  => __( 'Chad', 'mailchimp_i18n' ),
-		'35'  => __( 'Chile', 'mailchimp_i18n' ),
-		'36'  => __( 'China', 'mailchimp_i18n' ),
-		'37'  => __( 'Colombia', 'mailchimp_i18n' ),
-		'38'  => __( 'Congo', 'mailchimp_i18n' ),
-		'183' => __( 'Cook Islands', 'mailchimp_i18n' ),
-		'268' => __( 'Costa Rica', 'mailchimp_i18n' ),
-		'275' => __( 'Cote D\'Ivoire', 'mailchimp_i18n' ),
-		'40'  => __( 'Croatia', 'mailchimp_i18n' ),
-		'276' => __( 'Cuba', 'mailchimp_i18n' ),
-		'41'  => __( 'Cyprus', 'mailchimp_i18n' ),
-		'42'  => __( 'Czech Republic', 'mailchimp_i18n' ),
-		'43'  => __( 'Denmark', 'mailchimp_i18n' ),
-		'44'  => __( 'Djibouti', 'mailchimp_i18n' ),
-		'289' => __( 'Dominica', 'mailchimp_i18n' ),
-		'187' => __( 'Dominican Republic', 'mailchimp_i18n' ),
-		'233' => __( 'East Timor', 'mailchimp_i18n' ),
-		'45'  => __( 'Ecuador', 'mailchimp_i18n' ),
-		'46'  => __( 'Egypt', 'mailchimp_i18n' ),
-		'47'  => __( 'El Salvador', 'mailchimp_i18n' ),
-		'48'  => __( 'Equatorial Guinea', 'mailchimp_i18n' ),
-		'49'  => __( 'Eritrea', 'mailchimp_i18n' ),
-		'50'  => __( 'Estonia', 'mailchimp_i18n' ),
-		'51'  => __( 'Ethiopia', 'mailchimp_i18n' ),
-		'191' => __( 'Faroe Islands', 'mailchimp_i18n' ),
-		'52'  => __( 'Fiji', 'mailchimp_i18n' ),
-		'53'  => __( 'Finland', 'mailchimp_i18n' ),
-		'54'  => __( 'France', 'mailchimp_i18n' ),
-		'277' => __( 'French Polynesia', 'mailchimp_i18n' ),
-		'59'  => __( 'Germany', 'mailchimp_i18n' ),
-		'60'  => __( 'Ghana', 'mailchimp_i18n' ),
-		'194' => __( 'Gibraltar', 'mailchimp_i18n' ),
-		'61'  => __( 'Greece', 'mailchimp_i18n' ),
-		'195' => __( 'Greenland', 'mailchimp_i18n' ),
-		'192' => __( 'Grenada', 'mailchimp_i18n' ),
-		'62'  => __( 'Guam', 'mailchimp_i18n' ),
-		'198' => __( 'Guatemala', 'mailchimp_i18n' ),
-		'270' => __( 'Guernsey', 'mailchimp_i18n' ),
-		'65'  => __( 'Guyana', 'mailchimp_i18n' ),
-		'200' => __( 'Haiti', 'mailchimp_i18n' ),
-		'66'  => __( 'Honduras', 'mailchimp_i18n' ),
-		'67'  => __( 'Hong Kong', 'mailchimp_i18n' ),
-		'68'  => __( 'Hungary', 'mailchimp_i18n' ),
-		'69'  => __( 'Iceland', 'mailchimp_i18n' ),
-		'70'  => __( 'India', 'mailchimp_i18n' ),
-		'71'  => __( 'Indonesia', 'mailchimp_i18n' ),
-		'278' => __( 'Iran', 'mailchimp_i18n' ),
-		'279' => __( 'Iraq', 'mailchimp_i18n' ),
-		'74'  => __( 'Ireland', 'mailchimp_i18n' ),
-		'75'  => __( 'Israel', 'mailchimp_i18n' ),
-		'76'  => __( 'Italy', 'mailchimp_i18n' ),
-		'202' => __( 'Jamaica', 'mailchimp_i18n' ),
-		'78'  => __( 'Japan', 'mailchimp_i18n' ),
-		'288' => __( 'Jersey  (Channel Islands)', 'mailchimp_i18n' ),
-		'79'  => __( 'Jordan', 'mailchimp_i18n' ),
-		'80'  => __( 'Kazakhstan', 'mailchimp_i18n' ),
-		'81'  => __( 'Kenya', 'mailchimp_i18n' ),
-		'82'  => __( 'Kuwait', 'mailchimp_i18n' ),
-		'83'  => __( 'Kyrgyzstan', 'mailchimp_i18n' ),
-		'84'  => __( 'Lao People\'s Democratic Republic', 'mailchimp_i18n' ),
-		'85'  => __( 'Latvia', 'mailchimp_i18n' ),
-		'86'  => __( 'Lebanon', 'mailchimp_i18n' ),
-		'281' => __( 'Libya', 'mailchimp_i18n' ),
-		'90'  => __( 'Liechtenstein', 'mailchimp_i18n' ),
-		'91'  => __( 'Lithuania', 'mailchimp_i18n' ),
-		'92'  => __( 'Luxembourg', 'mailchimp_i18n' ),
-		'208' => __( 'Macau', 'mailchimp_i18n' ),
-		'93'  => __( 'Macedonia', 'mailchimp_i18n' ),
-		'94'  => __( 'Madagascar', 'mailchimp_i18n' ),
-		'95'  => __( 'Malawi', 'mailchimp_i18n' ),
-		'96'  => __( 'Malaysia', 'mailchimp_i18n' ),
-		'97'  => __( 'Maldives', 'mailchimp_i18n' ),
-		'98'  => __( 'Mali', 'mailchimp_i18n' ),
-		'99'  => __( 'Malta', 'mailchimp_i18n' ),
-		'212' => __( 'Mauritius', 'mailchimp_i18n' ),
-		'101' => __( 'Mexico', 'mailchimp_i18n' ),
-		'102' => __( 'Moldova, Republic of', 'mailchimp_i18n' ),
-		'103' => __( 'Monaco', 'mailchimp_i18n' ),
-		'104' => __( 'Mongolia', 'mailchimp_i18n' ),
-		'290' => __( 'Montenegro', 'mailchimp_i18n' ),
-		'105' => __( 'Morocco', 'mailchimp_i18n' ),
-		'106' => __( 'Mozambique', 'mailchimp_i18n' ),
-		'242' => __( 'Myanmar', 'mailchimp_i18n' ),
-		'107' => __( 'Namibia', 'mailchimp_i18n' ),
-		'108' => __( 'Nepal', 'mailchimp_i18n' ),
-		'109' => __( 'Netherlands', 'mailchimp_i18n' ),
-		'110' => __( 'Netherlands Antilles', 'mailchimp_i18n' ),
-		'213' => __( 'New Caledonia', 'mailchimp_i18n' ),
-		'111' => __( 'New Zealand', 'mailchimp_i18n' ),
-		'112' => __( 'Nicaragua', 'mailchimp_i18n' ),
-		'113' => __( 'Niger', 'mailchimp_i18n' ),
-		'114' => __( 'Nigeria', 'mailchimp_i18n' ),
-		'272' => __( 'North Korea', 'mailchimp_i18n' ),
-		'116' => __( 'Norway', 'mailchimp_i18n' ),
-		'117' => __( 'Oman', 'mailchimp_i18n' ),
-		'118' => __( 'Pakistan', 'mailchimp_i18n' ),
-		'222' => __( 'Palau', 'mailchimp_i18n' ),
-		'282' => __( 'Palestine', 'mailchimp_i18n' ),
-		'119' => __( 'Panama', 'mailchimp_i18n' ),
-		'219' => __( 'Papua New Guinea', 'mailchimp_i18n' ),
-		'120' => __( 'Paraguay', 'mailchimp_i18n' ),
-		'121' => __( 'Peru', 'mailchimp_i18n' ),
-		'122' => __( 'Philippines', 'mailchimp_i18n' ),
-		'123' => __( 'Poland', 'mailchimp_i18n' ),
-		'124' => __( 'Portugal', 'mailchimp_i18n' ),
-		'126' => __( 'Qatar', 'mailchimp_i18n' ),
-		'58'  => __( 'Republic of Georgia', 'mailchimp_i18n' ),
-		'128' => __( 'Romania', 'mailchimp_i18n' ),
-		'129' => __( 'Russia', 'mailchimp_i18n' ),
-		'130' => __( 'Rwanda', 'mailchimp_i18n' ),
-		'205' => __( 'Saint Kitts and Nevis', 'mailchimp_i18n' ),
-		'206' => __( 'Saint Lucia', 'mailchimp_i18n' ),
-		'132' => __( 'Samoa (Independent)', 'mailchimp_i18n' ),
-		'227' => __( 'San Marino', 'mailchimp_i18n' ),
-		'133' => __( 'Saudi Arabia', 'mailchimp_i18n' ),
-		'134' => __( 'Senegal', 'mailchimp_i18n' ),
-		'266' => __( 'Serbia', 'mailchimp_i18n' ),
-		'135' => __( 'Seychelles', 'mailchimp_i18n' ),
-		'137' => __( 'Singapore', 'mailchimp_i18n' ),
-		'138' => __( 'Slovakia', 'mailchimp_i18n' ),
-		'139' => __( 'Slovenia', 'mailchimp_i18n' ),
-		'223' => __( 'Solomon Islands', 'mailchimp_i18n' ),
-		'141' => __( 'South Africa', 'mailchimp_i18n' ),
-		'142' => __( 'South Korea', 'mailchimp_i18n' ),
-		'143' => __( 'Spain', 'mailchimp_i18n' ),
-		'144' => __( 'Sri Lanka', 'mailchimp_i18n' ),
-		'293' => __( 'Sudan', 'mailchimp_i18n' ),
-		'146' => __( 'Suriname', 'mailchimp_i18n' ),
-		'147' => __( 'Swaziland', 'mailchimp_i18n' ),
-		'148' => __( 'Sweden', 'mailchimp_i18n' ),
-		'149' => __( 'Switzerland', 'mailchimp_i18n' ),
-		'152' => __( 'Taiwan', 'mailchimp_i18n' ),
-		'153' => __( 'Tanzania', 'mailchimp_i18n' ),
-		'154' => __( 'Thailand', 'mailchimp_i18n' ),
-		'155' => __( 'Togo', 'mailchimp_i18n' ),
-		'232' => __( 'Tonga', 'mailchimp_i18n' ),
-		'234' => __( 'Trinidad and Tobago', 'mailchimp_i18n' ),
-		'156' => __( 'Tunisia', 'mailchimp_i18n' ),
-		'157' => __( 'Turkey', 'mailchimp_i18n' ),
-		'287' => __( 'Turks &amp; Caicos Islands', 'mailchimp_i18n' ),
-		'159' => __( 'Uganda', 'mailchimp_i18n' ),
-		'161' => __( 'Ukraine', 'mailchimp_i18n' ),
-		'162' => __( 'United Arab Emirates', 'mailchimp_i18n' ),
-		'262' => __( 'United Kingdom', 'mailchimp_i18n' ),
-		'163' => __( 'Uruguay', 'mailchimp_i18n' ),
-		'239' => __( 'Vanuatu', 'mailchimp_i18n' ),
-		'166' => __( 'Vatican City State (Holy See)', 'mailchimp_i18n' ),
-		'167' => __( 'Venezuela', 'mailchimp_i18n' ),
-		'168' => __( 'Vietnam', 'mailchimp_i18n' ),
-		'169' => __( 'Virgin Islands (British)', 'mailchimp_i18n' ),
-		'238' => __( 'Virgin Islands (U.S.)', 'mailchimp_i18n' ),
-		'173' => __( 'Zambia', 'mailchimp_i18n' ),
-		'174' => __( 'Zimbabwe', 'mailchimp_i18n' ),
+		'164' => __( 'USA', 'mailchimp' ),
+		'286' => __( 'Aaland Islands', 'mailchimp' ),
+		'274' => __( 'Afghanistan', 'mailchimp' ),
+		'2'   => __( 'Albania', 'mailchimp' ),
+		'3'   => __( 'Algeria', 'mailchimp' ),
+		'178' => __( 'American Samoa', 'mailchimp' ),
+		'4'   => __( 'Andorra', 'mailchimp' ),
+		'5'   => __( 'Angola', 'mailchimp' ),
+		'176' => __( 'Anguilla', 'mailchimp' ),
+		'175' => __( 'Antigua And Barbuda', 'mailchimp' ),
+		'6'   => __( 'Argentina', 'mailchimp' ),
+		'7'   => __( 'Armenia', 'mailchimp' ),
+		'179' => __( 'Aruba', 'mailchimp' ),
+		'8'   => __( 'Australia', 'mailchimp' ),
+		'9'   => __( 'Austria', 'mailchimp' ),
+		'10'  => __( 'Azerbaijan', 'mailchimp' ),
+		'11'  => __( 'Bahamas', 'mailchimp' ),
+		'12'  => __( 'Bahrain', 'mailchimp' ),
+		'13'  => __( 'Bangladesh', 'mailchimp' ),
+		'14'  => __( 'Barbados', 'mailchimp' ),
+		'15'  => __( 'Belarus', 'mailchimp' ),
+		'16'  => __( 'Belgium', 'mailchimp' ),
+		'17'  => __( 'Belize', 'mailchimp' ),
+		'18'  => __( 'Benin', 'mailchimp' ),
+		'19'  => __( 'Bermuda', 'mailchimp' ),
+		'20'  => __( 'Bhutan', 'mailchimp' ),
+		'21'  => __( 'Bolivia', 'mailchimp' ),
+		'22'  => __( 'Bosnia and Herzegovina', 'mailchimp' ),
+		'23'  => __( 'Botswana', 'mailchimp' ),
+		'24'  => __( 'Brazil', 'mailchimp' ),
+		'180' => __( 'Brunei Darussalam', 'mailchimp' ),
+		'25'  => __( 'Bulgaria', 'mailchimp' ),
+		'26'  => __( 'Burkina Faso', 'mailchimp' ),
+		'27'  => __( 'Burundi', 'mailchimp' ),
+		'28'  => __( 'Cambodia', 'mailchimp' ),
+		'29'  => __( 'Cameroon', 'mailchimp' ),
+		'30'  => __( 'Canada', 'mailchimp' ),
+		'31'  => __( 'Cape Verde', 'mailchimp' ),
+		'32'  => __( 'Cayman Islands', 'mailchimp' ),
+		'33'  => __( 'Central African Republic', 'mailchimp' ),
+		'34'  => __( 'Chad', 'mailchimp' ),
+		'35'  => __( 'Chile', 'mailchimp' ),
+		'36'  => __( 'China', 'mailchimp' ),
+		'37'  => __( 'Colombia', 'mailchimp' ),
+		'38'  => __( 'Congo', 'mailchimp' ),
+		'183' => __( 'Cook Islands', 'mailchimp' ),
+		'268' => __( 'Costa Rica', 'mailchimp' ),
+		'275' => __( 'Cote D\'Ivoire', 'mailchimp' ),
+		'40'  => __( 'Croatia', 'mailchimp' ),
+		'276' => __( 'Cuba', 'mailchimp' ),
+		'41'  => __( 'Cyprus', 'mailchimp' ),
+		'42'  => __( 'Czech Republic', 'mailchimp' ),
+		'43'  => __( 'Denmark', 'mailchimp' ),
+		'44'  => __( 'Djibouti', 'mailchimp' ),
+		'289' => __( 'Dominica', 'mailchimp' ),
+		'187' => __( 'Dominican Republic', 'mailchimp' ),
+		'233' => __( 'East Timor', 'mailchimp' ),
+		'45'  => __( 'Ecuador', 'mailchimp' ),
+		'46'  => __( 'Egypt', 'mailchimp' ),
+		'47'  => __( 'El Salvador', 'mailchimp' ),
+		'48'  => __( 'Equatorial Guinea', 'mailchimp' ),
+		'49'  => __( 'Eritrea', 'mailchimp' ),
+		'50'  => __( 'Estonia', 'mailchimp' ),
+		'51'  => __( 'Ethiopia', 'mailchimp' ),
+		'191' => __( 'Faroe Islands', 'mailchimp' ),
+		'52'  => __( 'Fiji', 'mailchimp' ),
+		'53'  => __( 'Finland', 'mailchimp' ),
+		'54'  => __( 'France', 'mailchimp' ),
+		'277' => __( 'French Polynesia', 'mailchimp' ),
+		'59'  => __( 'Germany', 'mailchimp' ),
+		'60'  => __( 'Ghana', 'mailchimp' ),
+		'194' => __( 'Gibraltar', 'mailchimp' ),
+		'61'  => __( 'Greece', 'mailchimp' ),
+		'195' => __( 'Greenland', 'mailchimp' ),
+		'192' => __( 'Grenada', 'mailchimp' ),
+		'62'  => __( 'Guam', 'mailchimp' ),
+		'198' => __( 'Guatemala', 'mailchimp' ),
+		'270' => __( 'Guernsey', 'mailchimp' ),
+		'65'  => __( 'Guyana', 'mailchimp' ),
+		'200' => __( 'Haiti', 'mailchimp' ),
+		'66'  => __( 'Honduras', 'mailchimp' ),
+		'67'  => __( 'Hong Kong', 'mailchimp' ),
+		'68'  => __( 'Hungary', 'mailchimp' ),
+		'69'  => __( 'Iceland', 'mailchimp' ),
+		'70'  => __( 'India', 'mailchimp' ),
+		'71'  => __( 'Indonesia', 'mailchimp' ),
+		'278' => __( 'Iran', 'mailchimp' ),
+		'279' => __( 'Iraq', 'mailchimp' ),
+		'74'  => __( 'Ireland', 'mailchimp' ),
+		'75'  => __( 'Israel', 'mailchimp' ),
+		'76'  => __( 'Italy', 'mailchimp' ),
+		'202' => __( 'Jamaica', 'mailchimp' ),
+		'78'  => __( 'Japan', 'mailchimp' ),
+		'288' => __( 'Jersey  (Channel Islands)', 'mailchimp' ),
+		'79'  => __( 'Jordan', 'mailchimp' ),
+		'80'  => __( 'Kazakhstan', 'mailchimp' ),
+		'81'  => __( 'Kenya', 'mailchimp' ),
+		'82'  => __( 'Kuwait', 'mailchimp' ),
+		'83'  => __( 'Kyrgyzstan', 'mailchimp' ),
+		'84'  => __( 'Lao People\'s Democratic Republic', 'mailchimp' ),
+		'85'  => __( 'Latvia', 'mailchimp' ),
+		'86'  => __( 'Lebanon', 'mailchimp' ),
+		'281' => __( 'Libya', 'mailchimp' ),
+		'90'  => __( 'Liechtenstein', 'mailchimp' ),
+		'91'  => __( 'Lithuania', 'mailchimp' ),
+		'92'  => __( 'Luxembourg', 'mailchimp' ),
+		'208' => __( 'Macau', 'mailchimp' ),
+		'93'  => __( 'Macedonia', 'mailchimp' ),
+		'94'  => __( 'Madagascar', 'mailchimp' ),
+		'95'  => __( 'Malawi', 'mailchimp' ),
+		'96'  => __( 'Malaysia', 'mailchimp' ),
+		'97'  => __( 'Maldives', 'mailchimp' ),
+		'98'  => __( 'Mali', 'mailchimp' ),
+		'99'  => __( 'Malta', 'mailchimp' ),
+		'212' => __( 'Mauritius', 'mailchimp' ),
+		'101' => __( 'Mexico', 'mailchimp' ),
+		'102' => __( 'Moldova, Republic of', 'mailchimp' ),
+		'103' => __( 'Monaco', 'mailchimp' ),
+		'104' => __( 'Mongolia', 'mailchimp' ),
+		'290' => __( 'Montenegro', 'mailchimp' ),
+		'105' => __( 'Morocco', 'mailchimp' ),
+		'106' => __( 'Mozambique', 'mailchimp' ),
+		'242' => __( 'Myanmar', 'mailchimp' ),
+		'107' => __( 'Namibia', 'mailchimp' ),
+		'108' => __( 'Nepal', 'mailchimp' ),
+		'109' => __( 'Netherlands', 'mailchimp' ),
+		'110' => __( 'Netherlands Antilles', 'mailchimp' ),
+		'213' => __( 'New Caledonia', 'mailchimp' ),
+		'111' => __( 'New Zealand', 'mailchimp' ),
+		'112' => __( 'Nicaragua', 'mailchimp' ),
+		'113' => __( 'Niger', 'mailchimp' ),
+		'114' => __( 'Nigeria', 'mailchimp' ),
+		'272' => __( 'North Korea', 'mailchimp' ),
+		'116' => __( 'Norway', 'mailchimp' ),
+		'117' => __( 'Oman', 'mailchimp' ),
+		'118' => __( 'Pakistan', 'mailchimp' ),
+		'222' => __( 'Palau', 'mailchimp' ),
+		'282' => __( 'Palestine', 'mailchimp' ),
+		'119' => __( 'Panama', 'mailchimp' ),
+		'219' => __( 'Papua New Guinea', 'mailchimp' ),
+		'120' => __( 'Paraguay', 'mailchimp' ),
+		'121' => __( 'Peru', 'mailchimp' ),
+		'122' => __( 'Philippines', 'mailchimp' ),
+		'123' => __( 'Poland', 'mailchimp' ),
+		'124' => __( 'Portugal', 'mailchimp' ),
+		'126' => __( 'Qatar', 'mailchimp' ),
+		'58'  => __( 'Republic of Georgia', 'mailchimp' ),
+		'128' => __( 'Romania', 'mailchimp' ),
+		'129' => __( 'Russia', 'mailchimp' ),
+		'130' => __( 'Rwanda', 'mailchimp' ),
+		'205' => __( 'Saint Kitts and Nevis', 'mailchimp' ),
+		'206' => __( 'Saint Lucia', 'mailchimp' ),
+		'132' => __( 'Samoa (Independent)', 'mailchimp' ),
+		'227' => __( 'San Marino', 'mailchimp' ),
+		'133' => __( 'Saudi Arabia', 'mailchimp' ),
+		'134' => __( 'Senegal', 'mailchimp' ),
+		'266' => __( 'Serbia', 'mailchimp' ),
+		'135' => __( 'Seychelles', 'mailchimp' ),
+		'137' => __( 'Singapore', 'mailchimp' ),
+		'138' => __( 'Slovakia', 'mailchimp' ),
+		'139' => __( 'Slovenia', 'mailchimp' ),
+		'223' => __( 'Solomon Islands', 'mailchimp' ),
+		'141' => __( 'South Africa', 'mailchimp' ),
+		'142' => __( 'South Korea', 'mailchimp' ),
+		'143' => __( 'Spain', 'mailchimp' ),
+		'144' => __( 'Sri Lanka', 'mailchimp' ),
+		'293' => __( 'Sudan', 'mailchimp' ),
+		'146' => __( 'Suriname', 'mailchimp' ),
+		'147' => __( 'Swaziland', 'mailchimp' ),
+		'148' => __( 'Sweden', 'mailchimp' ),
+		'149' => __( 'Switzerland', 'mailchimp' ),
+		'152' => __( 'Taiwan', 'mailchimp' ),
+		'153' => __( 'Tanzania', 'mailchimp' ),
+		'154' => __( 'Thailand', 'mailchimp' ),
+		'155' => __( 'Togo', 'mailchimp' ),
+		'232' => __( 'Tonga', 'mailchimp' ),
+		'234' => __( 'Trinidad and Tobago', 'mailchimp' ),
+		'156' => __( 'Tunisia', 'mailchimp' ),
+		'157' => __( 'Turkey', 'mailchimp' ),
+		'287' => __( 'Turks &amp; Caicos Islands', 'mailchimp' ),
+		'159' => __( 'Uganda', 'mailchimp' ),
+		'161' => __( 'Ukraine', 'mailchimp' ),
+		'162' => __( 'United Arab Emirates', 'mailchimp' ),
+		'262' => __( 'United Kingdom', 'mailchimp' ),
+		'163' => __( 'Uruguay', 'mailchimp' ),
+		'239' => __( 'Vanuatu', 'mailchimp' ),
+		'166' => __( 'Vatican City State (Holy See)', 'mailchimp' ),
+		'167' => __( 'Venezuela', 'mailchimp' ),
+		'168' => __( 'Vietnam', 'mailchimp' ),
+		'169' => __( 'Virgin Islands (British)', 'mailchimp' ),
+		'238' => __( 'Virgin Islands (U.S.)', 'mailchimp' ),
+		'173' => __( 'Zambia', 'mailchimp' ),
+		'174' => __( 'Zimbabwe', 'mailchimp' ),
 	);
 }

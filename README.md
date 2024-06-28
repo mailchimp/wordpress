@@ -89,16 +89,6 @@ Currently we have the plugin configured so it can be translated and the followin
 * sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
 * tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
 
-If your language is not listed above, feel free to create a translation. Here are the basic steps:
-
-1. Copy "mailchimp_i18n-en_US.po" to "mailchimp_i18n-LANG_COUNTRY.po" - fill in LANG and COUNTRY with whatever you use for WPLANG in wp-config.php
-2. Grab a translation editor. [POedit](http://www.poedit.net/) works for us
-3. Translate each line - if you need some context, open up mailchimp.php and search for the line number or text
-4. [Fork](http://help.github.com/fork-a-repo/) the [repository on github](https://github.com/mailchimp/wordpress)
-5. [Clone](http://help.github.com/remotes/#clone) the _develop_ branch
-6. Add the appropriately named files to the /po/ directory and edit the /readme.txt to include how you'd like to be attributed
-7. Make a [pull request](http://help.github.com/send-pull-requests/)
-
 ## Support Level
 
 **Active:** Mailchimp is actively working on this, and we expect to continue work for the foreseeable future including keeping tested up to the most recent version of WordPress.  Bug reports, feature requests, questions, and pull requests are welcome.
