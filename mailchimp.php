@@ -634,6 +634,12 @@ function mailchimp_sf_save_general_form_settings() {
  * Sees if the user changed the list, and updates options accordingly
  **/
 function mailchimp_sf_change_list_if_necessary() {
+	if ( empty( $_POST['mc_list_id'] ) ) {
+		$msg = '<p class="error_msg">' . esc_html( __( 'Please choose a valid list', 'mailchimp_i18n' ) ) . '</p>';
+		mailchimp_sf_global_msg( $msg );
+		return;
+	}
+
 	// Simple permission check before going through all this
 	if ( ! current_user_can( MCSF_CAP_THRESHOLD ) ) { return; }
 
@@ -649,7 +655,7 @@ function mailchimp_sf_change_list_if_necessary() {
 
 	$lists = $lists['lists'];
 
-	if ( is_array( $lists ) && ! empty( $lists ) && isset( $_POST['mc_list_id'] ) ) {
+	if ( is_array( $lists ) && ! empty( $lists ) ) {
 
 		/**
 		 * If our incoming list ID (the one chosen in the select dropdown)
