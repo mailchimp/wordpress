@@ -61,7 +61,6 @@ require_once 'mailchimp_upgrade.php';
 /**
  * Do the following plugin setup steps here
  *
- * Internationalization
  * Resource (JS & CSS) enqueuing
  *
  * @return void
@@ -200,8 +199,8 @@ function mailchimp_sf_main_css() {
 function mailchimp_sf_add_pages() {
 	// Add settings page for users who can edit plugins
 	add_menu_page(
-		__( 'Mailchimp Setup', 'mailchimp' ),
-		__( 'Mailchimp', 'mailchimp' ),
+		esc_html__( 'Mailchimp Setup', 'mailchimp' ),
+		esc_html__( 'Mailchimp', 'mailchimp' ),
 		MCSF_CAP_THRESHOLD,
 		'mailchimp_sf_options',
 		'mailchimp_sf_setup_page',
@@ -479,8 +478,8 @@ function mailchimp_sf_global_msg( $msg = null ) {
  * @return void
  */
 function mailchimp_sf_set_form_defaults( $list_name = '' ) {
-	update_option( 'mc_header_content', __( 'Sign up for', 'mailchimp' ) . ' ' . $list_name );
-	update_option( 'mc_submit_text', __( 'Subscribe', 'mailchimp' ) );
+	update_option( 'mc_header_content', esc_html__( 'Sign up for', 'mailchimp' ) . ' ' . $list_name );
+	update_option( 'mc_submit_text', esc_html__( 'Subscribe', 'mailchimp' ) );
 
 	update_option( 'mc_use_datepicker', 'on' );
 	update_option( 'mc_custom_style', 'off' );
@@ -508,64 +507,64 @@ function mailchimp_sf_save_general_form_settings() {
 	// IF NOT DEV MODE
 	if ( isset( $_POST['mc_use_javascript'] ) ) {
 		update_option( 'mc_use_javascript', 'on' );
-		$msg = '<p class="success_msg">' . __( 'Fancy Javascript submission turned On!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Fancy Javascript submission turned On!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_use_javascript' ) !== 'off' ) {
 		update_option( 'mc_use_javascript', 'off' );
-		$msg = '<p class="success_msg">' . __( 'Fancy Javascript submission turned Off!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Fancy Javascript submission turned Off!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
 	if ( isset( $_POST['mc_use_datepicker'] ) ) {
 		update_option( 'mc_use_datepicker', 'on' );
-		$msg = '<p class="success_msg">' . __( 'Datepicker turned On!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Datepicker turned On!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_use_datepicker' ) !== 'off' ) {
 		update_option( 'mc_use_datepicker', 'off' );
-		$msg = '<p class="success_msg">' . __( 'Datepicker turned Off!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Datepicker turned Off!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
 	/*Enable double optin toggle*/
 	if ( isset( $_POST['mc_double_optin'] ) ) {
 		update_option( 'mc_double_optin', true );
-		$msg = '<p class="success_msg">' . __( 'Double opt-in turned On!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Double opt-in turned On!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_double_optin' ) !== false ) {
 		update_option( 'mc_double_optin', false );
-		$msg = '<p class="success_msg">' . __( 'Double opt-in turned Off!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Double opt-in turned Off!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
 	/* NUKE the CSS! */
 	if ( isset( $_POST['mc_nuke_all_styles'] ) ) {
 		update_option( 'mc_nuke_all_styles', true );
-		$msg = '<p class="success_msg">' . __( 'Mailchimp CSS turned Off!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Mailchimp CSS turned Off!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_nuke_all_styles' ) !== false ) {
 		update_option( 'mc_nuke_all_styles', false );
-		$msg = '<p class="success_msg">' . __( 'Mailchimp CSS turned On!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Mailchimp CSS turned On!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
 	/* Update existing */
 	if ( isset( $_POST['mc_update_existing'] ) ) {
 		update_option( 'mc_update_existing', true );
-		$msg = '<p class="success_msg">' . __( 'Update existing subscribers turned On!' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Update existing subscribers turned On!' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_update_existing' ) !== false ) {
 		update_option( 'mc_update_existing', false );
-		$msg = '<p class="success_msg">' . __( 'Update existing subscribers turned Off!' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Update existing subscribers turned Off!' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
 	if ( isset( $_POST['mc_use_unsub_link'] ) ) {
 		update_option( 'mc_use_unsub_link', 'on' );
-		$msg = '<p class="success_msg">' . __( 'Unsubscribe link turned On!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Unsubscribe link turned On!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	} elseif ( get_option( 'mc_use_unsub_link' ) !== 'off' ) {
 		update_option( 'mc_use_unsub_link', 'off' );
-		$msg = '<p class="success_msg">' . __( 'Unsubscribe link turned Off!', 'mailchimp' ) . '</p>';
+		$msg = '<p class="success_msg">' . esc_html__( 'Unsubscribe link turned Off!', 'mailchimp' ) . '</p>';
 		mailchimp_sf_global_msg( $msg );
 	}
 
@@ -623,7 +622,7 @@ function mailchimp_sf_save_general_form_settings() {
 		}
 	}
 
-	$msg = '<p class="success_msg">' . esc_html( __( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' ) ) . '</p>';
+	$msg = '<p class="success_msg">' . esc_html__( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' ) . '</p>';
 	mailchimp_sf_global_msg( $msg );
 }
 
@@ -682,7 +681,7 @@ function mailchimp_sf_change_list_if_necessary() {
 			$igs_text = ' ';
 			if ( is_array( $igs ) ) {
 				/* translators: %s: count (number) */
-				$igs_text .= sprintf( __( 'and %s Sets of Interest Groups', 'mailchimp' ), count( $igs ) );
+				$igs_text .= sprintf( esc_html__( 'and %s Sets of Interest Groups', 'mailchimp' ), count( $igs ) );
 			}
 
 			$msg = '<p class="success_msg">' .
@@ -691,8 +690,9 @@ function mailchimp_sf_change_list_if_necessary() {
 					__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
 					count( $mv )
 				) . ' ' .
-				__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
-				__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' ) . '</p>';
+				esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
+				esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' ) . '</p>';
+
 			mailchimp_sf_global_msg( $msg );
 		}
 	}
@@ -735,7 +735,7 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 function mailchimp_sf_add_email_field( $merge ) {
 	$email = array(
 		'tag'           => 'EMAIL',
-		'name'          => __( 'Email Address', 'mailchimp' ),
+		'name'          => esc_html__( 'Email Address', 'mailchimp' ),
 		'type'          => 'email',
 		'required'      => true,
 		'public'        => true,
@@ -903,7 +903,7 @@ function mailchimp_sf_signup_submit() {
 				),
 				[
 					'a' => [
-						'href',
+						'href' => [],
 					],
 				]
 			)
@@ -917,7 +917,7 @@ function mailchimp_sf_signup_submit() {
 
 	// If update existing is turned off and the subscriber exists, error out.
 	if ( get_option( 'mc_update_existing' ) === false && 'subscribed' === $status ) {
-		$msg   = 'This email address is already subscribed to the list.';
+		$msg   = esc_html__( 'This email address is already subscribed to the list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
 		mailchimp_sf_global_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
 		return false;
@@ -934,10 +934,10 @@ function mailchimp_sf_signup_submit() {
 	}
 
 	if ( 'subscribed' === $retval['status'] ) {
-		$esc = __( 'Success, you\'ve been signed up.', 'mailchimp' );
+		$esc = esc_html__( 'Success, you\'ve been signed up.', 'mailchimp' );
 		$msg = "<strong class='mc_success_msg'>{$esc}</strong>";
 	} else {
-		$esc = __( 'Success, you\'ve been signed up! Please look for our confirmation email.', 'mailchimp' );
+		$esc = esc_html__( 'Success, you\'ve been signed up! Please look for our confirmation email.', 'mailchimp' );
 		$msg = "<strong class='mc_success_msg'>{$esc}</strong>";
 	}
 
@@ -1042,7 +1042,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		if ( 'Y' === $mv_var['required'] && trim( $opt_val ) === '' ) {
 			/* translators: %s: field name */
-			$message = sprintf( __( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
+			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
 			$error   = new WP_Error( 'missing_required_field', $message );
 			return $error;
 		} elseif ( 'EMAIL' !== $tag ) {
@@ -1074,7 +1074,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 
 	if ( ! preg_match( '/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A', $opt_val ) ) {
 		/* translators: %s: field name */
-		$message = sprintf( __( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
+		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
 		$error   = new WP_Error( 'mc_phone_validation', $message );
 		return $error;
 	}
@@ -1093,7 +1093,7 @@ function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
 	if ( 'Y' === $data['required'] ) {
 		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
 			/* translators: %s: field name */
-			$message = sprintf( __( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
+			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
 			$error   = new WP_Error( 'invalid_address_merge', $message );
 			return $error;
 		}
@@ -1219,7 +1219,7 @@ function mailchimp_sf_verify_key( $api ) {
 		update_option( 'mc_datacenter', $api->datacenter );
 
 	} else {
-		$msg = __( 'API Key must belong to "Owner", "Admin", or "Manager."', 'mailchimp' );
+		$msg = esc_html__( 'API Key must belong to "Owner", "Admin", or "Manager."', 'mailchimp' );
 		return new WP_Error( 'mc-invalid-role', $msg );
 	}
 }

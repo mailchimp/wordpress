@@ -55,8 +55,8 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 			<?php
 			printf(
 				'%1$s <a href="http://www.mailchimp.com/signup/" target="_blank">%2$s</a>',
-				esc_html( __( 'Don\'t have a Mailchimp account?', 'mailchimp' ) ),
-				esc_html( __( 'Try one for Free!', 'mailchimp' ) )
+				esc_html__( 'Don\'t have a Mailchimp account?', 'mailchimp' ),
+				esc_html__( 'Try one for Free!', 'mailchimp' )
 			);
 			?>
 		</p>
@@ -67,10 +67,10 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 					<th scope="row" class="mailchimp-connect"><?php esc_html_e( 'Connect to Mailchimp', 'mailchimp' ); ?></th>
 					<td>
 						<input type="hidden" name="mcsf_action" value="login"/>
-						<input type="password" name="mailchimp_sf_api_key" placeholder="API Key">
+						<input type="password" name="mailchimp_sf_api_key" placeholder="<?php esc_attr_e( 'API Key', 'mailchimp' ); ?>">
 					</td>
 					<td>
-						<input class="button mc-submit" type="submit" value="Connect">
+						<input class="button mc-submit" type="submit" value="<?php esc_attr_e( 'Connect', 'mailchimp' ); ?>">
 					</td>
 				</tr>
 			</form>
@@ -136,7 +136,7 @@ if ( $api ) {
 				<?php
 				printf(
 					/* translators: %s: link to Mailchimp */
-					esc_html( __( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ) ),
+					esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
 					"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
 				);
 				?>
@@ -206,7 +206,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 <?php wp_nonce_field( 'update_general_form_settings', '_mcsf_nonce_action' ); ?>
 
 <table class="widefat mc-widefat mc-label-options">
-	<tr><th colspan="2">Content Options</th></tr>
+	<tr><th colspan="2"><?php esc_html_e( 'Content Options', 'mailchimp' ); ?></th></tr>
 	<tr valign="top">
 		<th scope="row">
 			<label for="mc_header_content"><?php esc_html_e( 'Header', 'mailchimp' ); ?></label>
@@ -223,7 +223,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 		</th>
 		<td>
 			<textarea class="widefat" id="mc_subheader_content" name="mc_subheader_content" rows="2"><?php echo wp_kses_post( get_option( 'mc_subheader_content' ) ); ?></textarea><br/>
-			<?php esc_html_e( 'Add your own text, HTML markup (including image links), or keep it blank.', 'mailchimp' ); ?>.<br/>
+			<?php esc_html_e( 'Add your own text, HTML markup (including image links), or keep it blank.', 'mailchimp' ); ?><br/>
 			<?php esc_html_e( 'This will be displayed under the heading and above the form.', 'mailchimp' ); ?>
 		</td>
 	</tr>
@@ -241,7 +241,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 <input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mc-submit" /><br/>
 
 <table class="widefat mc-widefat mc-nuke-styling">
-<tr><th colspan="2">Remove Mailchimp CSS</th></tr>
+<tr><th colspan="2"><?php esc_html_e( 'Remove Mailchimp CSS', 'mailchimp' ); ?></th></tr>
 <tr><th><label for="mc_nuke_all_styles"><?php esc_html_e( 'Remove CSS' ); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked( get_option( 'mc_nuke_all_styles' ), true ); ?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.' ); ?></td></tr>
 </table>
 <?php if ( get_option( 'mc_nuke_all_styles' ) === '1' ) { ?>
@@ -250,7 +250,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 		<table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling">
 	<?php } ?>
 	<tr>
-		<th colspan="2">Custom Styling</th>
+		<th colspan="2"><?php esc_html_e( 'Custom Styling', 'mailchimp' ); ?></th>
 	</tr>
 	<tr>
 		<th>
@@ -307,7 +307,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 
 
 <table class="widefat mc-widefat">
-	<tr><th colspan="2">List Options</th></tr>
+	<tr><th colspan="2"><?php esc_html_e( 'List Options', 'mailchimp' ); ?></th></tr>
 
 	<tr valign="top">
 		<th scope="row"><?php esc_html_e( 'Use JavaScript Support?', 'mailchimp' ); ?></th>
@@ -472,50 +472,59 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 				?>
 				<div class="mc-section" style="margin-top: 35px;">
 					<table class="widefat mc-widefat">
-						<tr><th colspan="2">CSS Cheat Sheet</th></tr>
+						<tr><th colspan="2"><?php esc_html_e( 'CSS Cheat Sheet', 'mailchimp' ); ?></th></tr>
 						<tr valign="top">
 							<th scope="row">.widget_mailchimpsf_widget </th>
-							<td>This targets the entire widget container.</td>
+							<td><?php esc_html_e( 'This targets the entire widget container.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.widget-title</th>
-							<td>This styles the title of your Mailchimp widget. <i>Modifying this class will affect your other widget titles.</i></td>
+							<td>
+								<?php
+								echo wp_kses(
+									__( 'This styles the title of your Mailchimp widget. <i>Modifying this class will affect your other widget titles.</i>', 'mailchimp' ),
+									[
+										'i' => [],
+									]
+								);
+								?>
+							</td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">#mc_signup</th>
-							<td>This targets the entirity of the widget beneath the widget title.</td>
+							<td><?php esc_html_e( 'This targets the entirity of the widget beneath the widget title.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">#mc_subheader</th>
-							<td>This styles the subheader text.</td>
+							<td><?php esc_html_e( 'This styles the subheader text.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.mc_form_inside</th>
-							<td>The guts and main container for the all of the form elements (the entirety of the widget minus the header and the sub header).</td>
+							<td><?php esc_html_e( 'The guts and main container for the all of the form elements (the entirety of the widget minus the header and the sub header).', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.mc_header</th>
-							<td>This targets the label above the input fields.</td>
+							<td><?php esc_html_e( 'This targets the label above the input fields.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.mc_input</th>
-							<td>This attaches to the input fields.</td>
+							<td><?php esc_html_e( 'This attaches to the input fields.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.mc_header_address</th>
-							<td>This is the label above an address group.</td>
+							<td><?php esc_html_e( 'This is the label above an address group.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">.mc_radio_label</th>
-							<td>These are the labels associated with radio buttons.</td>
+							<td><?php esc_html_e( 'These are the labels associated with radio buttons.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">#mc-indicates-required</th>
-							<td>This targets the “Indicates Required Field” text.</td>
+							<td><?php esc_html_e( 'This targets the “Indicates Required Field” text.', 'mailchimp' ); ?></td>
 						</tr>
 						<tr valign="top">
 							<th scope="row">#mc_signup_submit</th>
-							<td>Use this to style the submit button.</td>
+							<td><?php esc_html_e( 'Use this to style the submit button.', 'mailchimp' ); ?></td>
 						</tr>
 					</table>
 				</div>

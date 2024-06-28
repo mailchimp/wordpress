@@ -401,18 +401,18 @@ function mailchimp_form_field( $data, $num_fields ) {
 			case 'birthday-old':
 				$days   = range( 1, 31 );
 				$months = array(
-					__( 'January', 'mailchimp' ),
-					__( 'February', 'mailchimp' ),
-					__( 'March', 'mailchimp' ),
-					__( 'April', 'mailchimp' ),
-					__( 'May', 'mailchimp' ),
-					__( 'June', 'mailchimp' ),
-					__( 'July', 'mailchimp' ),
-					__( 'August', 'mailchimp' ),
-					__( 'September', 'mailchimp' ),
-					__( 'October', 'mailchimp' ),
-					__( 'November', 'mailchimp' ),
-					__( 'December', 'mailchimp' ),
+					esc_html__( 'January', 'mailchimp' ),
+					esc_html__( 'February', 'mailchimp' ),
+					esc_html__( 'March', 'mailchimp' ),
+					esc_html__( 'April', 'mailchimp' ),
+					esc_html__( 'May', 'mailchimp' ),
+					esc_html__( 'June', 'mailchimp' ),
+					esc_html__( 'July', 'mailchimp' ),
+					esc_html__( 'August', 'mailchimp' ),
+					esc_html__( 'September', 'mailchimp' ),
+					esc_html__( 'October', 'mailchimp' ),
+					esc_html__( 'November', 'mailchimp' ),
+					esc_html__( 'December', 'mailchimp' ),
 				);
 
 				$html .= '
@@ -437,17 +437,17 @@ function mailchimp_form_field( $data, $num_fields ) {
 				$countries = mailchimp_country_list();
 				$html     .= '
 
-	<label for="' . esc_attr( $opt . '-addr1' ) . '" class="mc_address_label">' . __( 'Street Address', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-addr1' ) . '" class="mc_address_label">' . esc_html__( 'Street Address', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[addr1]' ) . '" id="' . esc_attr( $opt . '-addr1' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-addr2' ) . '" class="mc_address_label">' . __( 'Address Line 2', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-addr2' ) . '" class="mc_address_label">' . esc_html__( 'Address Line 2', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[addr2]' ) . '" id="' . esc_attr( $opt . '-addr2' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-city' ) . '" class="mc_address_label">' . __( 'City', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-city' ) . '" class="mc_address_label">' . esc_html__( 'City', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[city]' ) . '" id="' . esc_attr( $opt . '-city' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-state' ) . '" class="mc_address_label">' . __( 'State', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-state' ) . '" class="mc_address_label">' . esc_html__( 'State', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" name="' . esc_attr( $opt . '[state]' ) . '" id="' . esc_attr( $opt . '-state' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-zip' ) . '" class="mc_address_label">' . __( 'Zip / Postal', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-zip' ) . '" class="mc_address_label">' . esc_html__( 'Zip / Postal', 'mailchimp' ) . '</label>
 	<input type="text" size="18" value="" maxlength="5" name="' . esc_attr( $opt . '[zip]' ) . '" id="' . esc_attr( $opt . '-zip' ) . '" class="mc_input" />
-	<label for="' . esc_attr( $opt . '-country' ) . '" class="mc_address_label">' . __( 'Country', 'mailchimp' ) . '</label>
+	<label for="' . esc_attr( $opt . '-country' ) . '" class="mc_address_label">' . esc_html__( 'Country', 'mailchimp' ) . '</label>
 	<select name="' . esc_attr( $opt . '[country]' ) . '" id="' . esc_attr( $opt . '-country' ) . '">';
 				foreach ( $countries as $country_code => $country_name ) {
 					$html .= '
@@ -530,7 +530,25 @@ class Mailchimp_SF_Widget extends WP_Widget /* phpcs:ignore Universal.Files.Sepa
 	 */
 	public function form( $instance ) {
 		?>
-<p>Great work! Your widget is ready to go — just head <a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>">over here</a> if you'd like to adjust your settings.</p>
+<p>
+		<?php
+		echo wp_kses(
+			sprintf(
+				/* translators: 1: admin url */
+				__(
+					'Great work! Your widget is ready to go — just head <a href="%1$s">over here</a> if you\'d like to adjust your settings.',
+					'mailchimp'
+				),
+				esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) )
+			),
+			[
+				'a' => [
+					'href' => [],
+				],
+			]
+		);
+		?>
+</p>
 		<?php
 	}
 }
