@@ -31,8 +31,8 @@ export const BlockEdit = ({ isSelected }) => {
 			{isSelected || isDisallowedThemeSSR ? (
 				<Placeholder
 					icon={Icon}
-					label={__('Mailchimp Block', 'mailchimp_i18n')}
-					instructions={__('Great work! Your block is ready to go.', 'mailchimp_i18n')}
+					label={__('Mailchimp Block', 'mailchimp')}
+					instructions={__('Great work! Your block is ready to go.', 'mailchimp')}
 				>
 					<div>
 						<Button
@@ -42,7 +42,7 @@ export const BlockEdit = ({ isSelected }) => {
 						>
 							{__(
 								"Head over here if you'd like to adjust your settings.",
-								'mailchimp_i18n',
+								'mailchimp',
 							)}
 						</Button>
 					</div>

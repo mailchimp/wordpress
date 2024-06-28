@@ -35,7 +35,7 @@
 			"text": true
 		}
 	},
-	"textdomain": "mailchimp_i18n",
+	"textdomain": "mailchimp",
 	"editorScript": "file:./index.js",
 	"render": "file:./markup.php",
 	"editorStyle": "file:./editor.css"
