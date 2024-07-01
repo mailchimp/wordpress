@@ -6,13 +6,13 @@ Stable tag:   1.5.8
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
-Add a Mailchimp signup form widget to your WordPress site.
+Add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 == Description ==
 
-Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site.
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
-After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the block, widget, or shortcode to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
@@ -20,7 +20,7 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 = Can I have multiple forms on one page? =
 
-No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
+No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
 
 == Installation ==
 
@@ -30,23 +30,23 @@ This section describes how to install the plugin and get started using it.
 
 1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Navigate to **Settings** click **Mailchimp Setup**.
+3. Navigate to the **Mailchimp** menu.
 4. Enter your Mailchimp API Key and let the plugin verify it.
 5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 
 = Advanced =
 
-If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
+If you have a custom-coded sidebar or something that prevents enabling widgets through the WordPress GUI, complete these steps instead.
 
 WordPress v2.8 or higher:
 ` [mailchimpsf_form] `
 
-If you are adding it inside a php code block, pop this in:
+If you are adding it inside a php code block, add this:
 
 ` mailchimp_sf_signup_form(); `
 
-Or, if you are dropping it in between a bunch of HTML, use this:
+Or, if you are adding it within HTML, use this:
 
 `<?php mailchimp_sf_signup_form(); ?>`
 

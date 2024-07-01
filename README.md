@@ -1,16 +1,16 @@
 # Mailchimp List Subscribe Form
 
-> Add a Mailchimp signup form widget to your WordPress site.
+> Add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 [![Support Level](https://img.shields.io/badge/support-active-green.svg?label=Support)](#support-level) [![GPL-2.0-or-later License](https://img.shields.io/github/license/mailchimp/wordpress?label=License)](https://github.com/mailchimp/wordpress/blob/develop/LICENSE.md) ![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/mailchimp?label=Version) ![WordPress Minimum](https://img.shields.io/wordpress/plugin/wp-version/mailchimp?label=WordPress%20minimum) ![PHP Minimum](https://img.shields.io/wordpress/plugin/required-php/mailchimp?label=PHP%20minimum) ![WordPress Tested Up To](https://img.shields.io/wordpress/plugin/tested/mailchimp?label=WordPress) [![E2E Cypress Tests](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml) [![PHP Compatibility](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml) [![PHP Linting](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml) [![JS Linting](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml) 
 
 ## Overview
 
-Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site.
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 ![An example Signup Form Widget](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-5.jpg?raw=true)
 
-After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the block, widget, or shortcode to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 ![Configuring your Signup Form display format (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-3.jpg?raw=true)
 
@@ -22,7 +22,7 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 ### Can I have multiple forms on one page?
 
-No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
+No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
 
 ## Installation
 
@@ -32,7 +32,7 @@ This section describes how to install the plugin and get started using it.
 
 1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
 2. Activate the plugin through the **Plugins** menu in WordPress
-3. Navigate to **Settings** click **Mailchimp Setup**.
+3. Navigate to the **Mailchimp** menu.
 4. Enter your Mailchimp API Key and let the plugin verify it.
 5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
@@ -41,16 +41,16 @@ This section describes how to install the plugin and get started using it.
 
 ### Advanced
 
-If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
+If you have a custom-coded sidebar or something that prevent enabling widgets through the WordPress GUI, complete these steps instead.
 
 WordPress v2.8 or higher: 
 ` [mailchimpsf_form] `
 
-If you are adding it inside a php code block, pop this in:
+If you are adding it inside a php code block, add this:
 
 ` mailchimp_sf_signup_form(); `
 
-Or, if you are dropping it in between a bunch of HTML, use this:
+Or, if you are adding it within HTML, use this:
 
 `<?php mailchimp_sf_signup_form(); ?>`
 
