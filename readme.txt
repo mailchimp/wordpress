@@ -28,12 +28,13 @@ This section describes how to install the plugin and get started using it.
 
 = Version 2.8+ =
 
-1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
-2. Activate the plugin through the **Plugins** menu in WordPress
+1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`.
+2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Navigate to the **Mailchimp** menu.
 4. Enter your Mailchimp API Key and let the plugin verify it.
 5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
+7. Optional: adjust frontend site display with available CSS options.
 
 = Advanced =
 
@@ -85,11 +86,14 @@ Currently we have the plugin configured so it can be translated and the followin
 
 == Screenshots ==
 
-1. Entering your Mailchimp login info
-2. Selecting your Mailchimp list
-3. Configuring your Signup Form display format (optional)
-4. Configuring extra fields on your Signup Form (optional)
-5. An example Signup Form Widget
+1. Mailchimp List Subscribe Form block within the block inserter.
+2. Mailchimp Block default state.
+3. Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.
+4. Connecting your Mailchimp account to WordPress via API Key.
+5. Logged in to your Mailchimp account and selecting a list to connect to.
+6. Configuring your Signup Form display format (optional).
+7. Configuring extra fields on your Signup Form (optional).
+8. CSS options for styling your Signup Form.
 
 == Changelog ==
 
