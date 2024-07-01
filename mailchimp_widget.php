@@ -83,6 +83,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		line-height: 1.4em;
 		margin-bottom: 0.75em;
 	}
+	.mc_custom_border_hdr,
 	#mc_subheader {
 		line-height: 1.25em;
 		margin: 18px 0;
