@@ -13,6 +13,17 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Setup node version and npm cache
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+
+    - name: Build
+      run: |
+        npm ci --no-optional
+        npm run build
+
     - name: WordPress Plugin Deploy
       id: deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
