@@ -1223,7 +1223,7 @@ function mailchimp_sf_verify_key( $api ) {
 
 	// Might as well set this data if we have it already.
 	$valid_roles = array( 'owner', 'admin', 'manager' );
-	if ( in_array( $user['role'], $valid_roles, true ) ) {
+	if ( isset( $user['role'] ) && in_array( $user['role'], $valid_roles, true ) ) {
 		update_option( 'mc_api_key', $api->key );
 		update_option( 'mc_user', $user );
 		update_option( 'mc_datacenter', $api->datacenter );

@@ -18,13 +18,6 @@ class MailChimp_API {
 	public $key;
 
 	/**
-	 * The API key
-	 *
-	 * @var string
-	 */
-	public $api_key;
-
-	/**
 	 * The API url
 	 *
 	 * @var string
@@ -100,6 +93,10 @@ class MailChimp_API {
 		);
 
 		$request = wp_remote_get( $url, $args );
+
+		if ( is_wp_error( $request ) ) {
+			return $request;
+		}
 
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
 			return json_decode( $request['body'], true );
