@@ -22,6 +22,10 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
 
+= How can I translate “MailChimp List Subscribe Form”? =
+
+Internationalization (i18n) is available on GlotPress at [https://translate.wordpress.org/projects/wp-plugins/mailchimp/](https://translate.wordpress.org/projects/wp-plugins/mailchimp/).  Any assistance [translating the plugin](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) is greatly appreciated!
+
 == Installation ==
 
 This section describes how to install the plugin and get started using it.
@@ -56,33 +60,6 @@ Or, if you are adding it within HTML, use this:
 `<?php mailchimp_sf_signup_form(); ?>`
 
 Where ever you want it to show up.
-
-== Internationalization (i18n) ==
-
-Currently we have the plugin configured so it can be translated and the following languages supported:
-
-* bg_BG - Bulgarian in Bulgaria (thanks to [SiteGround](http://www.siteground.com/wordpress-hosting.htm) for contributing)
-* cs_CZ - Czech in the Czech Republic (thanks to [Peter Kahoun](http://kahi.cz/) for contributing)
-* da_DK - Danish in Denmark (thanks to Jan Lund for contributing)
-* de_DE - German in Germany (thanks to Michael Jaekel for contributing)
-* el_GR - Modern Greek in Greece (thanks to Ιωάννης Δημοφέρλιας (John Dimoferlias) for contributing)
-* en_US - English in the U.S.
-* es_CL - Spanish in Chile (thanks to Tomás Nader for contributing)
-* es_ES - Spanish in Spain (thanks to [Claudia Mansilla](http://cricava.com/) for contributing)
-* et_ET - Estonian in Estonia (thanks to [Helen Urbanik](http://www.motomaania.ee/) for contributing)
-* fr_FR - French in France (thanks to [Maxime Toulliou](http://www.maximetoulliou.com/) for contributing)
-* he_IL - Hebrew in Israel (thanks to [שגיב בית](http://www.sagive.co.il) for contributing)
-* hu_HU - Hungarian in Hungary (thanks to Okostobi for contributing)
-* it_IT - Italian in Italy (thanks to [Stefan Des](http://www.stefandes.com) for contributing)
-* ko_KR - Korean (thanks to 백선기 (SK Baek)  for contributing)
-* nb_NO - Norwegian (thanks to [Alexander Roterud aka Defrag](http://www.tigerpews.com) for contributing)
-* nl_BE - Dutch (thanks to [Filip Stas](http://suddenelfilio.net/) for contributing)
-* pt_BR - Portuguese in Brazil (thanks to Maria Manoela Porto for contributing)
-* pt_PT - Portuguese in Portugal (thanks to [Tiago Faria](http://xroot.org) for contributing)
-* ro_RO - Romanian in Romania (thanks to Alexandru Armin Roșu for contributing)
-* ru_RU - Russian in the Russian Federation (thanks to [Илья](http://fatcow.com) for contributing)
-* sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
-* tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
 
 == Screenshots ==
 
