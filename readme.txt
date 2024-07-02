@@ -36,7 +36,11 @@ This section describes how to install the plugin and get started using it.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 7. Optional: adjust frontend site display with available CSS options.
 
-= Advanced =
+== Upgrading ==
+
+If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+
+== Advanced ==
 
 If you have a custom-coded sidebar or something that prevents enabling widgets through the WordPress GUI, complete these steps instead.
 
@@ -52,10 +56,6 @@ Or, if you are adding it within HTML, use this:
 `<?php mailchimp_sf_signup_form(); ?>`
 
 Where ever you want it to show up.
-
-== Upgrading ==
-
-If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
 == Internationalization (i18n) ==
 

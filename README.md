@@ -18,12 +18,6 @@ After installation, you’ll log in with your API key, select your Mailchimp lis
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
-## Frequently Asked Questions
-
-### Can I have multiple forms on one page?
-
-No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
-
 ## Installation
 
 This section describes how to install the plugin and get started using it.
@@ -53,7 +47,13 @@ This section describes how to install the plugin and get started using it.
 
 ![CSS options for styling your Signup Form.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-8.jpg?raw=true)
 
-### Advanced
+## Upgrading
+
+If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+
+If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
+
+## Advanced Usage
 
 If you have a custom-coded sidebar or something that prevent enabling widgets through the WordPress GUI, complete these steps instead.
 
@@ -70,11 +70,11 @@ Or, if you are adding it within HTML, use this:
 
 Where ever you want it to show up.
 
-## Upgrading
+## Frequently Asked Questions
 
-If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+### Can I have multiple forms on one page?
 
-If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
+No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
 
 ## Internationalization (i18n)
 
