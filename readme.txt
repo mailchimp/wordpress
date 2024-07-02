@@ -97,112 +97,44 @@ Currently we have the plugin configured so it can be translated and the followin
 
 == Changelog ==
 
-= 1.6.0 =
-* Deprecated function `mailchimpSF_signup_form`. Function `mailchimp_sf_signup_form` should be used instead.
-* Bumps minimum PHP version to 7.0
-* Removes MonkeyRewards feature.
+= 1.6.0 - 2024-07-XX =
 
-= 1.5.8 =
-* Fix PHP warning for merge tags.
-* Fix double slashes on resources being loaded
-* Update Readme.txt link
+**Note this version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.**
 
-= 1.5.7 =
-* Fix undefined variable notice.
-* Fix HTML submission message.
+* **Added:** Mailchimp List Subscribe Form custom block (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#35](https://github.com/mailchimp/wordpress/pull/35), [#38](https://github.com/mailchimp/wordpress/pull/38)).
+* **Added:** PHP 8.3 compatibility and minimum PHP version of 7.0 (props [@nateconley](https://github.com/nateconley), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#26](https://github.com/mailchimp/wordpress/pull/26)).
+* **Added:** WordPress 6.5 compatibility (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Added:** Created a `LICENSE.md` file and sets the license in the plugin to `GPL-2.0-or-later` (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Added:** Plugin icon and banner assets (props [@eddieshrake](https://github.com/eddieshrake), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#28](https://github.com/mailchimp/wordpress/pull/28)).
+* **Changed:** Moved settings page and link to top-level WP Admin menu item (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#29](https://github.com/mailchimp/wordpress/pull/29), [#33](https://github.com/mailchimp/wordpress/pull/33)).
+* **Changed:** Admin styles to match updated Mailchimp brand guidelines (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Changed:** Replaced references of MailChimp to Mailchimp except where those references are explicitly functional code (to limit the additional class/function updates needed) (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Updated `readme.txt` and `mailchimp.php` header values to the WP.org standards (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Moved screenshots into a new `.wordpress-org` directory (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Moved translations to [GlotPress](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#39](https://github.com/mailchimp/wordpress/pull/39)).
+* **Deprecated:** Function `mailchimpSF_signup_form` deprecated in favor of `mailchimp_sf_signup_form` (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter) via [#24](https://github.com/mailchimp/wordpress/pull/24)).
+* **Deprecated:** jQuery scrollTo (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Support for WordPress < 6.1.1 (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Polyfills for WordPress < 2.8.0 (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Monkey Rewards integration (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#30](https://github.com/mailchimp/wordpress/pull/30)).
+* **Removed:** IE-specific admin stylesheet (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Fixed:** Formatting from linting checks (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter) via [#23](https://github.com/mailchimp/wordpress/pull/23)).
+* **Fixed:** Datepicker display on frontend (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#25](https://github.com/mailchimp/wordpress/pull/25)).
+* **Fixed:** Accessibility for admin settings page (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Fixed:** Properly handle the scenario where a non-valid list is updated (props [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@nateconley](https://github.com/nateconley), [@vikrampm1](https://github.com/vikrampm1) via [#40](https://github.com/mailchimp/wordpress/pull/40)).
+* **Fixed:** Ensure the custom block and shortcode both have consistent spacing (props [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@nateconley](https://github.com/nateconley), [@vikrampm1](https://github.com/vikrampm1) via [#41](https://github.com/mailchimp/wordpress/pull/41)).
 
-= 1.5.6 =
-* Fixes short array notation which caused a fatal error in older PHP versions.
+= 1.5.8 - 2022-09-26 =
+* **Changed:** Updated `readme.txt` link.
+* **Fixed:* PHP warning for merge tags.
+* **Fixed:** Double slashes on resources being loaded.
 
-= 1.5.5 =
-* Fix timeout error on activation.
-
-= 1.5.4 =
-* Set optional value for API wrapper.
-
-= 1.5.3 =
-* Fix PHP7 compatibility issue
-* Cut down on size of API requests for users with large lists.
-* Fix CSS issue on removing Mailchimp style.
-
-= 1.5.2 =
-* General bugfixes for merge fields.
-* When re-initializing, update merge field values.
-
-= 1.5.1 =
-* Bugfix for fatal error in Mailchimp lib
-
-= 1.5 =
-* Upgrade to Mailchimp API v3.0
-* Remove OAuth2 middle layer and use Mailchimp API keys
-* Include double/single opt-in toggle.
-
-= 1.4.1 =
-* Update styles to be compatible with upcoming 3.8 wp-admin changes
-
-= 1.4 =
-* Developer Mode "Kitchen Sink" takes over plugin for local development
-* Developer Mode has filters of changeable content
-* Fix bug related to required US phone validation
-
-= 1.3 =
-* Now using OAuth flow for user authentication
-* Admin UI refresh
-
-= 1.2.14 =
-* Add link to edit profile within error when duplicate signup occurs
-
-= 1.2.13 =
-* Fixed bug preventing address fields from submitting correctly.
-
-= 1.2.12 =
-* Update spanish language files (es_ES and es_MX)
-
-= 1.2.9 =
-* Fixed bug where multiple checkbox type interest groups were returning an invalid error
-* Fixed bug where assets were not enqueueing properly if the plugin directory was not set to 'mailchimp'. Now supports any directory name.
-
-= 1.2.8 =
-* Fixed bug where entire phone numbers were only being deposited in the area code portion
-
-= 1.2.7 =
-* CSS should now always load correctly on the front end
-* Adding Hebrew and Romanian language support
-* Updating translation contribution instructions
-* Tested version is now 3.3.1
-
-= 1.2.6 =
-* Fixed bug with "Settings" link appearing on all plugins (props Jason Lane)
-* Resolved issue with unnecessary calls to the Mailchimp API during upgrade check
-* Resolved PHP warning when there weren't any interest groups
-
-= 1.2.5 =
-* Field formatting based on type
-* Support for multiple interest groups (a data upgrade procedure must be run by visiting the WordPress dashboard)
-* Added jQuery datepicker option to be used with dates.
-* Added a handful of new translations
-* Fixing various PHP notices and deprecated functions (props Jeffry Ghazally)
-
-= 1.2.4 =
-* Version bump for proper listing on wordpress.org
-
-= 1.2.3 =
-* Change mailchimp_sf_where_am_i() to use plugins_url() in place of WP_PLUGIN_URL to take SSL into account when delivering assets (props John LeBlanc)
-* Update MCAPI wrapper to bring back PHP4 support (note: PHP 5.2 to be required starting with WordPress 3.2)
-
-= 1.2.2 =
-* Change MCAPI wrapper to use a more unique class name, v1.3 of the API, and a much lighter client library
-
-= 1.2.1 =
-* Fixed internationalization path bug.
-* Fixed instances where i18n functions weren't necessary in admin.
-* Added more strings to be translated.
-
-= 1.2 =
-* Recommended Upgrade, please see "Upgrading" section of readme.
-* Security and various other improvements
+[View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+This version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.
 
 = 1.5.5 =
 If you are updating from v1.4.x, you will need to re-authorize with an API key.
