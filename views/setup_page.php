@@ -75,6 +75,11 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 				</tr>
 			</form>
 			</table>
+			<div class="mailchimp-sf-oauth-section">
+				<!-- TODO: Update design and content here -->
+				<button class="button" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
+				<p><span class="oauth-error"></span></p>
+			</div>
 		</div>
 	</div>
 

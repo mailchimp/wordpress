@@ -58,6 +58,11 @@ require_once 'mailchimp_compat.php';
 // Upgrade routines.
 require_once 'mailchimp_upgrade.php';
 
+// Init Admin functions
+require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-admin.php';
+$admin = new MailChimp_Admin();
+$admin->init();
+
 /**
  * Do the following plugin setup steps here
  *
@@ -146,6 +151,18 @@ function mailchimp_admin_page_scripts( $hook_suffix ) {
 
 	wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array(), true );
 	wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
+	wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery' ), MCSF_VER, true );
+
+	wp_localize_script(
+		'mailchimp_sf_admin',
+		'mailchimp_sf_admin_params',
+		array(
+			'ajax_url'           => esc_url( admin_url( 'admin-ajax.php' ) ),
+			'oauth_start_nonce'  => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+			'oauth_finish_nonce' => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+			'oauth_window_name'  => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+		)
+	);
 }
 
 add_action( 'admin_enqueue_scripts', 'mailchimp_admin_page_scripts', 10, 1 );
