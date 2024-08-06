@@ -61,15 +61,15 @@ class MailChimp_API {
 
 		// No data center provided, so we'll assume it's in the API key.
 		if ( ! $data_center ) {
-			$this->key              = $access_token;
-			$dc                     = explode( '-', $access_token );
-			$this->datacenter       = empty( $dc[1] ) ? 'us1' : $dc[1];
+			$this->key        = $access_token;
+			$dc               = explode( '-', $access_token );
+			$this->datacenter = empty( $dc[1] ) ? 'us1' : $dc[1];
 		} else {
-			$this->access_token  = $access_token;
-			$this->datacenter    = $data_center;
+			$this->access_token = $access_token;
+			$this->datacenter   = $data_center;
 		}
 
-		$this->api_url    = 'https://' . $this->datacenter . '.api.mailchimp.com/3.0/';
+		$this->api_url = 'https://' . $this->datacenter . '.api.mailchimp.com/3.0/';
 	}
 
 	/**

@@ -67,7 +67,7 @@ class MailChimp_Data_Encryption {
 			return false;
 		}
 
-		return base64_encode( $iv . $raw_value );
+		return base64_encode( $iv . $raw_value ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_encode
 	}
 
 	/**
@@ -85,7 +85,7 @@ class MailChimp_Data_Encryption {
 			return $raw_value;
 		}
 
-		$decoded_value = base64_decode( $raw_value, true );
+		$decoded_value = base64_decode( $raw_value, true ); // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.obfuscation_base64_decode
 
 		if ( false === $decoded_value ) {
 			return $raw_value;
