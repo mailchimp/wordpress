@@ -31,7 +31,7 @@ if ( mailchimp_sf_global_msg() !== '' ) {
 }
 
 // If we don't have an API Key, do a login form
-if ( ! $user || ! get_option( 'mc_api_key' ) ) {
+if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_token() ) ) {
 	?>
 	<div>
 		<h3 class="mc-h2"><?php esc_html_e( 'Log In', 'mailchimp' ); ?></h3>

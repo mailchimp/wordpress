@@ -124,7 +124,7 @@ class MailChimp_Admin {
 			if ( $result && ! empty( $result['access_token'] ) && ! empty( $result['data_center'] ) ) {
 				// Clean up the old data.
 				delete_option( 'mailchimp_sf_access_token' );
-				delete_option( 'mailchimp_sf_data_center' );
+				delete_option( 'mc_datacenter' );
 
 				delete_site_transient( 'mailchimp_sf_oauth_secret' );
 
@@ -172,7 +172,7 @@ class MailChimp_Admin {
 			$access_token    = $data_encryption->encrypt( $access_token );
 
 			update_option( 'mailchimp_sf_access_token', $access_token );
-			update_option( 'mailchimp_sf_data_center', $data_center );
+			update_option( 'mc_datacenter', $data_center );
 			update_option( 'mc_user', $user );
 			return true;
 

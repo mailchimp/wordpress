@@ -49,6 +49,9 @@ if ( ! class_exists( 'MailChimp_API' ) ) {
 	require_once $path . 'lib/mailchimp/mailchimp.php';
 }
 
+// Encryption utility class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-data-encryption.php';
+
 // includes the widget code so it can be easily called either normally or via ajax
 require_once 'mailchimp_widget.php';
 
@@ -58,8 +61,8 @@ require_once 'mailchimp_compat.php';
 // Upgrade routines.
 require_once 'mailchimp_upgrade.php';
 
-// Init Admin functions
-require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-admin.php';
+// Init Admin functions.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new MailChimp_Admin();
 $admin->init();
 
@@ -149,18 +152,22 @@ function mailchimp_admin_page_scripts( $hook_suffix ) {
 		return;
 	}
 
-	wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array(), true );
+	wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
 	wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-	wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery' ), MCSF_VER, true );
+	wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
 
 	wp_localize_script(
 		'mailchimp_sf_admin',
 		'mailchimp_sf_admin_params',
 		array(
-			'ajax_url'           => esc_url( admin_url( 'admin-ajax.php' ) ),
-			'oauth_start_nonce'  => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
-			'oauth_finish_nonce' => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
-			'oauth_window_name'  => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
+			'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+			'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+			'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+			'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
+			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
+			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
+			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
 		)
 	);
 }
@@ -263,7 +270,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
@@ -398,6 +405,14 @@ function mailchimp_sf_auth_nonce_salt() {
  * @return MailChimp_API | false
  */
 function mailchimp_sf_get_api() {
+	// Check for the access token first.
+	$access_token = mailchimp_sf_get_access_token();
+	$data_center  = get_option( 'mc_datacenter' );
+	if ( ! empty( $access_token ) && ! empty( $data_center ) ) {
+		return new MailChimp_API( $access_token, $data_center );
+	}
+
+	// Check for the API key if the access token is not available.
 	$key = get_option( 'mc_api_key' );
 	if ( $key ) {
 		return new MailChimp_API( $key );
@@ -1409,4 +1424,17 @@ function mailchimp_sf_create_nonce( $action = -1 ) {
 	$i     = wp_nonce_tick();
 
 	return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+}
+
+/**
+ * Get Mailchimp Access Token.
+ *
+ * @since x.x.x
+ * @return string|bool
+ */
+function mailchimp_sf_get_access_token() {
+	$access_token    = get_option( 'mailchimp_sf_access_token' );
+	$data_encryption = new MailChimp_Data_Encryption();
+
+	return $data_encryption->decrypt( $access_token );
 }
