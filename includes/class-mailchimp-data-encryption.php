@@ -128,7 +128,7 @@ class MailChimp_Data_Encryption {
 	/**
 	 * Gets the default encryption salt to use.
 	 *
-	 * @since 1.0.0
+	 * @since x.x.x
 	 *
 	 * @return string Encryption salt.
 	 */

@@ -25,8 +25,31 @@
 		const popup = window.open(startUrl, params.oauth_window_name, windowOptions);
 
 		if (popup == null) {
-			// TODO: Handle popup blocked.
-			console.error('Popup blocked. Please enable popups for this site.');
+			// Show modal if popup is blocked.
+			$('#login-popup-blocked-modal').dialog({
+				modal: true,
+				title: params.modal_title,
+				width: 480,
+				buttons: [
+					{
+						text: params.modal_button_cancel,
+						class: 'button-secondary',
+						click() {
+							$(this).dialog('close');
+						},
+					},
+					{
+						text: params.modal_button_try_again,
+						class: 'button-primary',
+						click() {
+							$(this).dialog('close');
+							openMailChimpOauthPopup(token);
+						},
+						style: 'margin-left: 10px;',
+					},
+				],
+			});
+			$(spinner).removeClass('is-active');
 		} else {
 			// Handle popup opened.
 			const oauthInterval = window.setInterval(function () {

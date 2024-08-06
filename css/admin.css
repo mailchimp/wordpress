@@ -262,3 +262,8 @@ th.mailchimp-connect {
 	display: block;
 	color: #db3a1b;
 }
+
+.mailchimp-sf-oauth-connect-wrapper {
+	display: flex;
+	text-align: right;
+}
