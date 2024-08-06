@@ -2,6 +2,8 @@
 (function ($) {
 	const params = window.mailchimp_sf_admin_params || {};
 	const oauthBaseUrl = 'https://woocommerce.mailchimpapp.com';
+	const spinner = '.mailchimp-sf-oauth-connect-wrapper .spinner';
+	const errorSelector = '.mailchimp-sf-oauth-section .oauth-error';
 
 	/**
 	 * Open Mailchimp OAuth popup.
@@ -31,7 +33,6 @@
 				if (popup.closed) {
 					// Clear interval.
 					window.clearInterval(oauthInterval);
-					// TODO: Hide/show error/loading messages.
 
 					// Check status of OAuth connection.
 					$.post(`${oauthBaseUrl}/api/status/${token}`, function (statusData) {
@@ -52,9 +53,17 @@
 										'Error calling OAuth finish endpoint. Data:',
 										finishResponse,
 									);
+									if (finishResponse.data && finishResponse.data.message) {
+										$(errorSelector).html(finishResponse.data.message);
+									} else {
+										$(errorSelector).html(params.generic_error);
+									}
+									$(errorSelector).show();
 								}
 							}).fail(function () {
 								console.error('Error calling OAuth finish endpoint.');
+								$(errorSelector).html(params.generic_error);
+								$(errorSelector).show();
 							});
 						} else {
 							console.log(
@@ -62,8 +71,12 @@
 								statusData,
 							);
 						}
+						$(spinner).removeClass('is-active');
 					}).fail(function () {
+						$(errorSelector).html(params.generic_error);
+						$(errorSelector).show();
 						console.error('Error calling OAuth status endpoint.');
+						$(spinner).removeClass('is-active');
 					});
 				}
 			}, 250);
@@ -73,7 +86,10 @@
 	$(window).on('load', function () {
 		// Mailchimp OAuth connection.
 		$('#mailchimp_sf_oauth_connect').click(function () {
-			$('.mailchimp-sf-oauth-section .oauth-error').html('');
+			$(errorSelector).hide();
+			$(errorSelector).html('');
+			$(spinner).addClass('is-active');
+
 			$.post(
 				params.ajax_url,
 				{
@@ -85,23 +101,19 @@
 						// Open Mailchimp OAuth popup.
 						openMailChimpOauthPopup(response.data.token);
 					} else {
-						// eslint-disable-next-line no-console
-						console.error(response.data);
 						if (response.data && response.data.message) {
-							$('.mailchimp-sf-oauth-section .oauth-error').html(
-								response.data.message,
-							);
+							$(errorSelector).html(response.data.message);
 						} else {
-							$('.mailchimp-sf-oauth-section .oauth-error').html(
-								'An error occurred. Please try again.',
-							);
+							$(errorSelector).html(params.generic_error);
 						}
+						$(errorSelector).show();
+						$(spinner).removeClass('is-active');
 					}
 				},
 			).fail(function () {
-				$('.mailchimp-sf-oauth-section .oauth-error').html(
-					'An error occurred. Please try again.',
-				);
+				$(errorSelector).html(params.generic_error);
+				$(errorSelector).show();
+				$(spinner).removeClass('is-active');
 			});
 		});
 	});

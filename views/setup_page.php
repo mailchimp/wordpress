@@ -39,13 +39,10 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 		<?php
 			echo wp_kses(
 				__(
-					'To get started, we\'ll need to access your Mailchimp account with an <a href="http://kb.mailchimp.com/integrations/api-integrations/about-api-keys">API Key</a>. Paste your Mailchimp API key, and click <strong>Connect</strong> to continue.',
+					'To get started, we\'ll need to connect your Mailchimp account. Click <strong>Connect Account</strong> to continue.',
 					'mailchimp'
 				),
 				[
-					'a'      => [
-						'href' => [],
-					],
 					'strong' => [],
 				]
 			);
@@ -60,7 +57,7 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 			);
 			?>
 		</p>
-		<div class="mc-section">
+		<div class="mc-section"> <!-- TODO:remove this -->
 			<table class="widefat mc-widefat mc-api">
 			<form method="POST" action="">
 				<tr valign="top">
@@ -75,11 +72,20 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 				</tr>
 			</form>
 			</table>
-			<div class="mailchimp-sf-oauth-section">
-				<!-- TODO: Update design and content here -->
-				<button class="button" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
-				<p><span class="oauth-error"></span></p>
-			</div>
+		</div>
+		<div class="mc-section mailchimp-sf-oauth-section">
+			<table class="widefat mc-widefat mc-api">
+				<tr valign="top">
+					<th scope="row" class="mailchimp-connect"><?php esc_html_e( 'Connect to Mailchimp', 'mailchimp' ); ?></th>
+					<td>
+						<div class="mailchimp-sf-oauth-connect-wrapper">
+							<span class="spinner"></span>
+							<button class="button" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
+						</div>
+					</td>
+				</tr>
+			</table>
+			<p class="oauth-error error_msg" style="display:none;"></p>
 		</div>
 	</div>
 
