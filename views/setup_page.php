@@ -57,22 +57,6 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 			);
 			?>
 		</p>
-		<div class="mc-section"> <!-- TODO:remove this -->
-			<table class="widefat mc-widefat mc-api">
-			<form method="POST" action="">
-				<tr valign="top">
-					<th scope="row" class="mailchimp-connect"><?php esc_html_e( 'Connect to Mailchimp', 'mailchimp' ); ?></th>
-					<td>
-						<input type="hidden" name="mcsf_action" value="login"/>
-						<input type="password" name="mailchimp_sf_api_key" placeholder="<?php esc_attr_e( 'API Key', 'mailchimp' ); ?>">
-					</td>
-					<td>
-						<input class="button mc-submit" type="submit" value="<?php esc_attr_e( 'Connect', 'mailchimp' ); ?>">
-					</td>
-				</tr>
-			</form>
-			</table>
-		</div>
 		<div class="mc-section mailchimp-sf-oauth-section">
 			<table class="widefat mc-widefat mc-api">
 				<tr valign="top">

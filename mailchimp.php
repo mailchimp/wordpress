@@ -241,24 +241,6 @@ add_action( 'admin_menu', 'mailchimp_sf_add_pages' );
 function mailchimp_sf_request_handler() {
 	if ( isset( $_POST['mcsf_action'] ) ) {
 		switch ( $_POST['mcsf_action'] ) {
-			case 'login':
-				$key = isset( $_POST['mailchimp_sf_api_key'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_api_key'] ) ) ) : '';
-
-				try {
-					$api = new MailChimp_API( $key );
-				} catch ( Exception $e ) {
-					$msg = '<strong class="error_msg">' . $e->getMessage() . '</strong>';
-					mailchimp_sf_global_msg( $msg );
-					break;
-				}
-
-				$key = mailchimp_sf_verify_key( $api );
-				if ( is_wp_error( $key ) ) {
-					$msg = '<strong class="error_msg">' . $key->get_error_message() . '</strong>';
-					mailchimp_sf_global_msg( $msg );
-				}
-
-				break;
 			case 'logout':
 				// Check capability & Verify nonce
 				if (
