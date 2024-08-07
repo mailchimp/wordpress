@@ -2,7 +2,7 @@
 /**
  * Class responsible for encrypting and decrypting data.
  *
- * @package   Mailchimp
+ * @package Mailchimp
  */
 
 // Exit if accessed directly.
@@ -121,7 +121,7 @@ class MailChimp_Data_Encryption {
 			return LOGGED_IN_KEY;
 		}
 
-		// If this is reached, you're either not on a live site or have a serious security issue.
+		// Ideally this default is never used but we have it just in case.
 		return 'vJgwa_qf0u(k!uir[rB);g;DciNAKuX;+q&`A+z&m6kX3Y|$q.U3:Q>!$)6CA+=O';
 	}
 
@@ -141,7 +141,7 @@ class MailChimp_Data_Encryption {
 			return LOGGED_IN_SALT;
 		}
 
-		// If this is reached, you're either not on a live site or have a serious security issue.
+		// Ideally this default is never used but we have it just in case.
 		return '|qhC}/w6q+$V`H>wM:AtNpg/{s)g<k{F:WMcvJJD[K6c_Kb1OEy^Yx7f|$Ovm+X|';
 	}
 }

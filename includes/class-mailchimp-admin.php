@@ -37,8 +37,9 @@ class MailChimp_Admin {
 
 	/**
 	 * Start the OAuth process.
+	 *
 	 * This function is called via AJAX.
-	 * It start the OAuth process by the calling the oAuth middleware server and responding the response to the front-end.
+	 * It starts the OAuth process by the calling the OAuth middleware server and sending the response to the front-end.
 	 */
 	public function start_oauth_process() {
 		// Validate the nonce and permissions.
@@ -86,8 +87,9 @@ class MailChimp_Admin {
 
 	/**
 	 * Finish the OAuth process.
+	 *
 	 * This function is called via AJAX.
-	 * This function finishes the OAuth process by the sending temporary token back to the oAuth server.
+	 * This function finishes the OAuth process by the sending a temporary token back to the OAuth server.
 	 */
 	public function finish_oauth_process() {
 		// Validate the nonce and permissions.
