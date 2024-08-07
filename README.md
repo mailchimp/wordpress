@@ -18,20 +18,20 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 ![Configuring extra fields on your Signup Form (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
-## Access token Encryption
+## Access Token Encryption
 
-The plugin stores the OAuth access token in the WordPress database and encrypts it for security. To ensure encryption and decryption work properly, the plugin needs access to certain security constants that should remain unchanged.
+Starting in version 1.6.0, authentication has changed to use OAuth. As part of this process, we retrieve an access token that can be used to make API requests. To provide a high-level of security, this access token is encrypted before being stored in the WordPress database. In order to ensure this access token can be decrypted when used, the plugin relies on certain security constants that should remain unchanged.
 
-By default, the plugin uses the `LOGGED_IN_KEY` and `LOGGED_IN_SALT` constants from the wp-config.php file. These usually work well. However, if another plugin or mechanism regularly updates these constants, the plugin will have trouble decrypting the access token and you’ll need to reconnect your Mailchimp account.
+With no additional configuration, we use the standard `LOGGED_IN_KEY` and `LOGGED_IN_SALT` constants that are normally set in your site's `wp-config.php` file. Some sites make use of security plugins that rotate these constants on a periodic basis. When this happens, we won't be able to decrypt the access token and you’ll need to reconnect your Mailchimp account to generate a new access token.
 
-To prevent such issues, it is recommended to define two additional constants in your wp-config.php file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from https://api.wordpress.org/secret-key/1.1/salt/ and use them. You should have additional code like the following in your wp-config.php file:
+To prevent such issues, it is recommended to define two additional constants in your site's `wp-config.php` file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from [here](https://api.wordpress.org/secret-key/1.1/salt/) and use them. You'll end up with additional code like the following in your `wp-config.php` file:
 
 ```php
 define( 'MAILCHIMP_SF_ENCRYPTION_KEY', 'put your unique phrase here' );
 define( 'MAILCHIMP_SF_ENCRYPTION_SALT', 'put your unique phrase here' );
 ```
 
-If you add these constants after the plugin is already configured, the plugin will use the new constants, which may cause issues. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. If you prefer new values, you will need to reconnect your Mailchimp account.
+If these constants are added after you've already authenticated with Mailchimp, you will need to reconnect your account. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` (if they exist) to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT` respectively.
 
 ## Frequently Asked Questions
 
@@ -56,7 +56,7 @@ This section describes how to install the plugin and get started using it.
 
 ### Advanced
 
-If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
+If you have a custom coded sidebar or bells and whistles that prevent enabling widgets through the WordPress GUI, complete these steps instead.
 
 WordPress v2.8 or higher:
 ` [mailchimpsf_form] `
