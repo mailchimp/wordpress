@@ -46,7 +46,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Encrypts a value.
 	 *
-	 * If a user-based key is set, that key is used. Otherwise the default key is used.
+	 * If a user-based key is set, that is used. Otherwise the default key is used.
 	 *
 	 * @since x.x.x
 	 *
@@ -73,7 +73,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Decrypts a value.
 	 *
-	 * If a user-based key is set, that key is used. Otherwise the default key is used.
+	 * If a user-based key is set, that is used. Otherwise the default key is used.
 	 *
 	 * @since x.x.x
 	 *

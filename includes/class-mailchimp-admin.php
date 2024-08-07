@@ -1,6 +1,6 @@
 <?php
 /**
- * Class responsible for Admin side functionalities.
+ * Class responsible for admin side functionalities.
  *
  * @package Mailchimp
  */
@@ -34,12 +34,13 @@ class Mailchimp_Admin {
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
 	}
 
-
 	/**
 	 * Start the OAuth process.
 	 *
 	 * This function is called via AJAX.
-	 * It starts the OAuth process by the calling the OAuth middleware server and sending the response to the front-end.
+	 *
+	 * It starts the OAuth process by the calling the OAuth middleware
+	 * server and sending the response to the front-end.
 	 */
 	public function start_oauth_process() {
 		// Validate the nonce and permissions.
@@ -89,7 +90,9 @@ class Mailchimp_Admin {
 	 * Finish the OAuth process.
 	 *
 	 * This function is called via AJAX.
-	 * This function finishes the OAuth process by the sending a temporary token back to the OAuth server.
+	 *
+	 * This function finishes the OAuth process by the sending
+	 * a temporary token back to the OAuth server.
 	 */
 	public function finish_oauth_process() {
 		// Validate the nonce and permissions.
@@ -199,7 +202,7 @@ class Mailchimp_Admin {
 			return;
 		}
 
-		// display a notice if the access token is invalid/revoked.
+		// Display a notice if the access token is invalid/revoked.
 		?>
 		<div class="notice notice-warning is-dismissible">
 			<p>
@@ -221,7 +224,7 @@ class Mailchimp_Admin {
 	/**
 	 * Sanitize variables using sanitize_text_field.
 	 *
-	 * Arrays are sanitized recursively, Non-scalar values are ignored.
+	 * Arrays are sanitized recursively, non-scalar values are ignored.
 	 *
 	 * @param string|array $data Data to sanitize.
 	 * @return string|array
