@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MailChimp_Admin
+ * Class Mailchimp_Admin
  *
  * @since x.x.x
  */
-class MailChimp_Admin {
+class Mailchimp_Admin {
 
 	/**
 	 * The OAuth base endpoint
@@ -125,11 +125,6 @@ class MailChimp_Admin {
 			// Save the access token and data center.
 			$result = json_decode( $response['body'], true );
 			if ( $result && ! empty( $result['access_token'] ) && ! empty( $result['data_center'] ) ) {
-				// Clean up the old data.
-				delete_option( 'mailchimp_sf_access_token' );
-				delete_option( 'mailchimp_sf_auth_error' );
-				delete_option( 'mc_datacenter' );
-
 				delete_site_transient( 'mailchimp_sf_oauth_secret' );
 
 				// Verify the token.
@@ -172,12 +167,16 @@ class MailChimp_Admin {
 		// Might as well set this data if we have it already.
 		$valid_roles = array( 'owner', 'admin', 'manager' );
 		if ( isset( $user['role'] ) && in_array( $user['role'], $valid_roles, true ) ) {
-			$data_encryption = new MailChimp_Data_Encryption();
-			$access_token    = $data_encryption->encrypt( $access_token );
+			$data_encryption = new Mailchimp_Data_Encryption();
 
-			update_option( 'mailchimp_sf_access_token', $access_token );
-			update_option( 'mc_datacenter', $data_center );
-			update_option( 'mc_user', $user );
+			// Clean up the old data.
+			delete_option( 'mailchimp_sf_access_token' );
+			delete_option( 'mailchimp_sf_auth_error' );
+			delete_option( 'mc_datacenter' );
+
+			update_option( 'mailchimp_sf_access_token', $data_encryption->encrypt( $access_token ) );
+			update_option( 'mc_datacenter', sanitize_text_field( $data_center ) );
+			update_option( 'mc_user', $this->sanitize_data( $user ) );
 			return true;
 
 		} else {
@@ -192,24 +191,46 @@ class MailChimp_Admin {
 	 * @since x.x.x
 	 */
 	public function admin_notices() {
-		// display a notice if the access token is invalid/revoked.
-		if ( get_option( 'mailchimp_sf_auth_error', false ) && current_user_can( 'manage_options' ) && get_option( 'mailchimp_sf_access_token', '' ) ) {
-			?>
-			<div class="notice notice-warning is-dismissible">
-				<p>
-					<?php
-					$message = sprintf(
-						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
-						__( 'Heads up! There may be a problem with your connection to Mailchimp. Please %1$sre-connect%2$s your Mailchimp account to fix the issue.', 'mailchimp' ),
-						'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
-						'</a>'
-					);
+		if (
+			! get_option( 'mailchimp_sf_auth_error', false ) ||
+			! current_user_can( 'manage_options' ) ||
+			! get_option( 'mailchimp_sf_access_token', '' )
+		) {
+			return;
+		}
 
-					echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
-					?>
-				</p>
-			</div>
-			<?php
+		// display a notice if the access token is invalid/revoked.
+		?>
+		<div class="notice notice-warning is-dismissible">
+			<p>
+				<?php
+				$message = sprintf(
+					/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
+					__( 'Heads up! There may be a problem with your connection to Mailchimp. Please %1$sre-connect%2$s your Mailchimp account to fix the issue.', 'mailchimp' ),
+					'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
+					'</a>'
+				);
+
+				echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
+				?>
+			</p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Sanitize variables using sanitize_text_field.
+	 *
+	 * Arrays are sanitized recursively, Non-scalar values are ignored.
+	 *
+	 * @param string|array $data Data to sanitize.
+	 * @return string|array
+	 */
+	public function sanitize_data( $data ) {
+		if ( is_array( $data ) ) {
+			return array_map( array( $this, 'sanitize_data' ), $data );
+		} else {
+			return is_scalar( $data ) ? sanitize_text_field( $data ) : $data;
 		}
 	}
 }

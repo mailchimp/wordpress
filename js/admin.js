@@ -10,7 +10,7 @@
 	 *
 	 * @param {string} token - Token from the Oauth service.
 	 */
-	function openMailChimpOauthPopup(token) {
+	function openMailchimpOauthPopup(token) {
 		const startUrl = oauthBaseUrl + '/auth/start/' + token;
 		const width = 800;
 		const height = 600;
@@ -52,7 +52,7 @@
 						click() {
 							$(this).dialog('close');
 							$(spinner).addClass('is-active');
-							openMailChimpOauthPopup(token);
+							openMailchimpOauthPopup(token);
 						},
 						style: 'margin-left: 10px;',
 					},
@@ -134,7 +134,7 @@
 				function (response) {
 					if (response.success && response.data && response.data.token) {
 						// Open Mailchimp OAuth popup.
-						openMailChimpOauthPopup(response.data.token);
+						openMailchimpOauthPopup(response.data.token);
 					} else {
 						if (response.data && response.data.message) {
 							$(errorSelector).html(response.data.message);

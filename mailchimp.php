@@ -63,7 +63,7 @@ require_once 'mailchimp_upgrade.php';
 
 // Init Admin functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
-$admin = new MailChimp_Admin();
+$admin = new Mailchimp_Admin();
 $admin->init();
 
 /**
@@ -1416,7 +1416,7 @@ function mailchimp_sf_create_nonce( $action = -1 ) {
  */
 function mailchimp_sf_get_access_token() {
 	$access_token    = get_option( 'mailchimp_sf_access_token' );
-	$data_encryption = new MailChimp_Data_Encryption();
+	$data_encryption = new Mailchimp_Data_Encryption();
 
 	return $data_encryption->decrypt( $access_token );
 }

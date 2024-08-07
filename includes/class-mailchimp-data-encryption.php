@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class MailChimp_Data_Encryption
+ * Class Mailchimp_Data_Encryption
  *
  * @since x.x.x
  */
-class MailChimp_Data_Encryption {
+class Mailchimp_Data_Encryption {
 
 	/**
 	 * Key to use for encryption.

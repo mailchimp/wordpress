@@ -72,11 +72,6 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 			<p class="oauth-error error_msg" style="display:none;"></p>
 			<div id="login-popup-blocked-modal" style="display:none;">
 				<p><?php esc_html_e( 'Please allow your browser to show popups for this page.', 'mailchimp' ); ?></p>
-				<div class="footer">
-					<a href="https://mailchimp.com/help/enable-pop-ups-in-your-browser/"><!--TODO: This link not working fix this. -->
-						<?php esc_html_e( 'How to Enable Pop-ups in Your Browser', 'mailchimp' ); ?>
-					</a>
-				</div>
 			</div>
 		</div>
 	</div>
