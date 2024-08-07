@@ -2,7 +2,7 @@
 
 > Add a Mailchimp signup form widget to your WordPress site.
 
-[![Support Level](https://img.shields.io/badge/support-active-green.svg?label=Support)](#support-level) [![GPL-2.0-or-later License](https://img.shields.io/github/license/mailchimp/wordpress?label=License)](https://github.com/mailchimp/wordpress/blob/develop/LICENSE.md) ![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/mailchimp?label=Version) ![WordPress Minimum](https://img.shields.io/wordpress/plugin/wp-version/mailchimp?label=WordPress%20minimum) ![PHP Minimum](https://img.shields.io/wordpress/plugin/required-php/mailchimp?label=PHP%20minimum) ![WordPress Tested Up To](https://img.shields.io/wordpress/plugin/tested/mailchimp?label=WordPress) [![E2E Cypress Tests](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml) [![PHP Compatibility](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml) [![PHP Linting](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml) [![JS Linting](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml) 
+[![Support Level](https://img.shields.io/badge/support-active-green.svg?label=Support)](#support-level) [![GPL-2.0-or-later License](https://img.shields.io/github/license/mailchimp/wordpress?label=License)](https://github.com/mailchimp/wordpress/blob/develop/LICENSE.md) ![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/mailchimp?label=Version) ![WordPress Minimum](https://img.shields.io/wordpress/plugin/wp-version/mailchimp?label=WordPress%20minimum) ![PHP Minimum](https://img.shields.io/wordpress/plugin/required-php/mailchimp?label=PHP%20minimum) ![WordPress Tested Up To](https://img.shields.io/wordpress/plugin/tested/mailchimp?label=WordPress) [![E2E Cypress Tests](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml) [![PHP Compatibility](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml) [![PHP Linting](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml) [![JS Linting](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml)
 
 ## Overview
 
@@ -24,6 +24,21 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
 
+## Access token Encryption
+
+The plugin stores the OAuth access token in the WordPress database and encrypts it for security. To ensure encryption and decryption work properly, the plugin needs access to certain security constants that should remain unchanged.
+
+By default, the plugin uses the `LOGGED_IN_KEY` and `LOGGED_IN_SALT` constants from the wp-config.php file. These usually work well. However, if another plugin or mechanism regularly updates these constants, the plugin will have trouble decrypting the access token and you’ll need to reconnect your Mailchimp account.
+
+To prevent such issues, it is recommended to define two additional constants in your wp-config.php file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from https://api.wordpress.org/secret-key/1.1/salt/ and use them. You should have additional code like the following in your wp-config.php file:
+
+```php
+define( 'MAILCHIMP_SF_ENCRYPTION_KEY', 'put your unique phrase here' );
+define( 'MAILCHIMP_SF_ENCRYPTION_SALT', 'put your unique phrase here' );
+```
+
+If you add these constants after the plugin is already configured, the plugin will use the new constants, which may cause issues. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. If you prefer new values, you will need to reconnect your Mailchimp account.
+
 ## Installation
 
 This section describes how to install the plugin and get started using it.
@@ -43,7 +58,7 @@ This section describes how to install the plugin and get started using it.
 
 If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
 
-WordPress v2.8 or higher: 
+WordPress v2.8 or higher:
 ` [mailchimpsf_form] `
 
 If you are adding it inside a php code block, pop this in:
