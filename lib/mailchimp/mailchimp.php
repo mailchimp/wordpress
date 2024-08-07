@@ -108,7 +108,7 @@ class MailChimp_API {
 		}
 
 		$args = array(
-			'timeout'     => 5,
+			'timeout'     => 10,
 			'redirection' => 5,
 			'httpversion' => '1.1',
 			'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
@@ -158,7 +158,7 @@ class MailChimp_API {
 
 		$args    = array(
 			'method'      => $method,
-			'timeout'     => 5,
+			'timeout'     => 10,
 			'redirection' => 5,
 			'httpversion' => '1.1',
 			'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
