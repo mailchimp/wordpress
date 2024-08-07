@@ -51,6 +51,7 @@
 						class: 'button-primary',
 						click() {
 							$(this).dialog('close');
+							$(spinner).addClass('is-active');
 							openMailChimpOauthPopup(token);
 						},
 						style: 'margin-left: 10px;',
