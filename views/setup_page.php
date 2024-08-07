@@ -131,6 +131,23 @@ if ( $api ) {
 		<?php
 		// we *could* support paging, but few users have that many lists (and shouldn't)
 		$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
+
+		if ( is_wp_error( $lists ) ) {
+			?>
+			<div class="error_msg">
+				<?php
+				printf(
+					/* translators: %s: error message */
+					esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
+					esc_html( $lists->get_error_message() )
+				);
+				?>
+			</div>
+			</div> <!-- Close parent div as well. -->
+			<?php
+			return;
+		}
+
 		$lists = $lists['lists'];
 
 		if ( count( $lists ) === 0 ) {
