@@ -35,11 +35,12 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 	?>
 	<div>
 		<h3 class="mc-h2"><?php esc_html_e( 'Log In', 'mailchimp' ); ?></h3>
-		<p class="mc-p" style="width: 40%;">
+		<p class="mc-p"><?php esc_html_e( 'To get started, we\'ll need to connect your Mailchimp account.', 'mailchimp' ); ?></p>
+		<p class="mc-p" style="max-width: var(--mailchimp-max-width);">
 		<?php
 			echo wp_kses(
 				__(
-					'To get started, we\'ll need to connect your Mailchimp account. Click <strong>Connect Account</strong> to continue.',
+					'Please click the <strong>Connect Account</strong> button to connect this WordPress site with your Mailchimp account. Once you complete the Mailchimp login in the pop-up window that appears, this page will refresh to show the Mailchimp List Subscribe Form settings.',
 					'mailchimp'
 				),
 				[
