@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable prefer-template, no-console */
 (function ($) {
 	const params = window.mailchimp_sf_admin_params || {};
 	const oauthBaseUrl = 'https://woocommerce.mailchimpapp.com';
@@ -11,15 +11,23 @@
 	 * @param {string} token - Token from the Oauth service.
 	 */
 	function openMailChimpOauthPopup(token) {
-		const startUrl = `${oauthBaseUrl}/auth/start/${token}`;
+		const startUrl = oauthBaseUrl + '/auth/start/' + token;
 		const width = 800;
 		const height = 600;
 		const screenSizes = window.screen || { width: 1024, height: 768 };
 		const left = (screenSizes.width - width) / 2;
 		const top = (screenSizes.height - height) / 4;
-		const windowOptions = `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=${
-			width
-		}, height=${height}, top=${top}, left=${left}, domain=${oauthBaseUrl.replace('https://', '')}`;
+		const windowOptions =
+			'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' +
+			width +
+			', height=' +
+			height +
+			', top=' +
+			top +
+			', left=' +
+			left +
+			', domain=' +
+			oauthBaseUrl.replace('https://', '');
 
 		// Open Mailchimp OAuth popup.
 		const popup = window.open(startUrl, params.oauth_window_name, windowOptions);
@@ -58,7 +66,8 @@
 					window.clearInterval(oauthInterval);
 
 					// Check status of OAuth connection.
-					$.post(`${oauthBaseUrl}/api/status/${token}`, function (statusData) {
+					const statusUrl = oauthBaseUrl + '/api/status/' + token;
+					$.post(statusUrl, function (statusData) {
 						if (statusData && statusData.status === 'accepted') {
 							const finishData = {
 								action: 'mailchimp_sf_oauth_finish',
@@ -83,18 +92,20 @@
 									}
 									$(errorSelector).show();
 								}
+								$(spinner).removeClass('is-active');
 							}).fail(function () {
 								console.error('Error calling OAuth finish endpoint.');
 								$(errorSelector).html(params.generic_error);
 								$(errorSelector).show();
+								$(spinner).removeClass('is-active');
 							});
 						} else {
 							console.log(
 								'Error calling OAuth status endpoint. No credentials provided at login popup? Data:',
 								statusData,
 							);
+							$(spinner).removeClass('is-active');
 						}
-						$(spinner).removeClass('is-active');
 					}).fail(function () {
 						$(errorSelector).html(params.generic_error);
 						$(errorSelector).show();
