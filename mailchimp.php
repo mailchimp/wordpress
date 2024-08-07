@@ -1415,8 +1415,18 @@ function mailchimp_sf_create_nonce( $action = -1 ) {
  * @return string|bool
  */
 function mailchimp_sf_get_access_token() {
-	$access_token    = get_option( 'mailchimp_sf_access_token' );
-	$data_encryption = new Mailchimp_Data_Encryption();
+	$access_token = get_option( 'mailchimp_sf_access_token' );
+	if ( empty( $access_token ) ) {
+		return false;
+	}
 
-	return $data_encryption->decrypt( $access_token );
+	$data_encryption = new Mailchimp_Data_Encryption();
+	$access_token    = $data_encryption->decrypt( $access_token );
+
+	// If decryption fails, display notice to user to re-authenticate.
+	if ( false === $access_token ) {
+		update_option( 'mailchimp_sf_auth_error', true );
+	}
+
+	return $access_token;
 }
