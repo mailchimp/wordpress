@@ -124,6 +124,11 @@ class MailChimp_API {
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
 			return json_decode( $request['body'], true );
 		} elseif ( is_array( $request ) && $request['response']['code'] ) {
+			// Check if Access Token is invalid/revoked.
+			if ( in_array( $request['response']['code'], array( 401, 403 ), true ) ) {
+				update_option( 'mailchimp_sf_auth_error', true );
+			}
+
 			$error = json_decode( $request['body'], true );
 			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] );
 			return $error;
@@ -167,6 +172,11 @@ class MailChimp_API {
 		} else {
 			if ( is_wp_error( $request ) ) {
 				return new WP_Error( 'mc-subscribe-error', $request->get_error_message() );
+			}
+
+			// Check if Access Token is invalid/revoked.
+			if ( is_array( $request ) && in_array( $request['response']['code'], array( 401, 403 ), true ) ) {
+				update_option( 'mailchimp_sf_auth_error', true );
 			}
 
 			$body       = json_decode( $request['body'], true );

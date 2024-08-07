@@ -29,6 +29,7 @@ class MailChimp_Admin {
 	 * Initialize the class
 	 */
 	public function init() {
+		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_start', array( $this, 'start_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
 	}
@@ -124,6 +125,7 @@ class MailChimp_Admin {
 			if ( $result && ! empty( $result['access_token'] ) && ! empty( $result['data_center'] ) ) {
 				// Clean up the old data.
 				delete_option( 'mailchimp_sf_access_token' );
+				delete_option( 'mailchimp_sf_auth_error' );
 				delete_option( 'mc_datacenter' );
 
 				delete_site_transient( 'mailchimp_sf_oauth_secret' );
@@ -179,6 +181,33 @@ class MailChimp_Admin {
 		} else {
 			$msg = esc_html__( 'API Key must belong to "Owner", "Admin", or "Manager."', 'mailchimp' );
 			return new WP_Error( 'mailchimp-sf-invalid-role', $msg );
+		}
+	}
+
+	/**
+	 * Display admin notices.
+	 *
+	 * @since x.x.x
+	 */
+	public function admin_notices() {
+		// display a notice if the access token is invalid/revoked.
+		if ( get_option( 'mailchimp_sf_auth_error', false ) && current_user_can( 'manage_options' ) && get_option( 'mailchimp_sf_access_token', '' ) ) {
+			?>
+			<div class="notice notice-warning is-dismissible">
+				<p>
+					<?php
+					$message = sprintf(
+						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
+						__( 'Heads up! There may be a problem with your connection to Mailchimp. Please %1$sre-connect%2$s your Mailchimp account to fix the issue.', 'mailchimp' ),
+						'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
+						'</a>'
+					);
+
+					echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
+					?>
+				</p>
+			</div>
+			<?php
 		}
 	}
 }
