@@ -18,12 +18,6 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 ![Configuring extra fields on your Signup Form (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
-## Frequently Asked Questions
-
-### Can I have multiple forms on one page?
-
-No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
-
 ## Access token Encryption
 
 The plugin stores the OAuth access token in the WordPress database and encrypts it for security. To ensure encryption and decryption work properly, the plugin needs access to certain security constants that should remain unchanged.
@@ -38,6 +32,12 @@ define( 'MAILCHIMP_SF_ENCRYPTION_SALT', 'put your unique phrase here' );
 ```
 
 If you add these constants after the plugin is already configured, the plugin will use the new constants, which may cause issues. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. If you prefer new values, you will need to reconnect your Mailchimp account.
+
+## Frequently Asked Questions
+
+### Can I have multiple forms on one page?
+
+No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
 
 ## Installation
 
