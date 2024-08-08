@@ -13,6 +13,9 @@ jobs:
   cypress:
     name: ${{ matrix.core.name }}
     runs-on: ubuntu-latest
+    env:
+      CYPRESS_MAILCHIMP_USERNAME: ${{ secrets.MAILCHIMP_USERNAME }}
+      CYPRESS_MAILCHIMP_PASSWORD: ${{ secrets.MAILCHIMP_PASSWORD }}
     strategy:
       matrix:
         core:
