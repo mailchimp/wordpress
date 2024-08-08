@@ -1,7 +1,6 @@
 /* eslint-disable prefer-template, no-console */
 (function ($) {
 	const params = window.mailchimp_sf_admin_params || {};
-	const oauthBaseUrl = 'https://woocommerce.mailchimpapp.com';
 	const spinner = '.mailchimp-sf-oauth-connect-wrapper .spinner';
 	const errorSelector = '.mailchimp-sf-oauth-section .oauth-error';
 
@@ -11,7 +10,7 @@
 	 * @param {string} token - Token from the Oauth service.
 	 */
 	function openMailchimpOauthPopup(token) {
-		const startUrl = oauthBaseUrl + '/auth/start/' + token;
+		const startUrl = params.oauth_url + '/auth/start/' + token;
 		const width = 800;
 		const height = 600;
 		const screenSizes = window.screen || { width: 1024, height: 768 };
@@ -27,7 +26,7 @@
 			', left=' +
 			left +
 			', domain=' +
-			oauthBaseUrl.replace('https://', '');
+			params.oauth_url.replace('https://', '');
 
 		// Open Mailchimp OAuth popup.
 		const popup = window.open(startUrl, params.oauth_window_name, windowOptions);
@@ -67,7 +66,7 @@
 					window.clearInterval(oauthInterval);
 
 					// Check status of OAuth connection.
-					const statusUrl = oauthBaseUrl + '/api/status/' + token;
+					const statusUrl = params.oauth_url + '/api/status/' + token;
 					$.post(statusUrl, function (statusData) {
 						if (statusData && statusData.status === 'accepted') {
 							const finishData = {

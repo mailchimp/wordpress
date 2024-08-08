@@ -140,41 +140,6 @@ function mailchimp_sf_load_resources() {
 	}
 }
 
-
-/**
- * Loads resources for the Mailchimp admin page
- *
- * @param string $hook_suffix The current admin page.
- * @return void
- */
-function mailchimp_admin_page_scripts( $hook_suffix ) {
-	if ( 'toplevel_page_mailchimp_sf_options' !== $hook_suffix ) {
-		return;
-	}
-
-	wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
-	wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-	wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
-
-	wp_localize_script(
-		'mailchimp_sf_admin',
-		'mailchimp_sf_admin_params',
-		array(
-			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
-			'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
-			'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
-			'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
-			'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
-			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
-			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
-			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
-		)
-	);
-}
-
-add_action( 'admin_enqueue_scripts', 'mailchimp_admin_page_scripts', 10, 1 );
-
-
 /**
  * Loads jQuery Datepicker for the date-pick class
  **/

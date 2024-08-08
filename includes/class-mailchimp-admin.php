@@ -32,6 +32,8 @@ class Mailchimp_Admin {
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_start', array( $this, 'start_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
+
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 	}
 
 
@@ -232,5 +234,37 @@ class Mailchimp_Admin {
 		} else {
 			return is_scalar( $data ) ? sanitize_text_field( $data ) : $data;
 		}
+	}
+
+	/**
+	 * Enqueue scripts/styles for the Mailchimp admin page
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 * @return void
+	 */
+	public function enqueue_admin_page_scripts( $hook_suffix ) {
+		if ( 'toplevel_page_mailchimp_sf_options' !== $hook_suffix ) {
+			return;
+		}
+
+		wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
+		wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
+		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
+
+		wp_localize_script(
+			'mailchimp_sf_admin',
+			'mailchimp_sf_admin_params',
+			array(
+				'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
+				'oauth_url'              => esc_url( $this->oauth_url ),
+				'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+				'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+				'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+				'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
+				'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
+				'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
+				'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
+			)
+		);
 	}
 }
