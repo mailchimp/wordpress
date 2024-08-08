@@ -70,15 +70,12 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify content options
-		cy.visit(`/?p=${shortcodePostId}`);
-		cy.get('.mc_custom_border_hdr').contains(header);
-		cy.get('#mc_subheader').contains(subHeader);
-		cy.get('#mc_signup_submit').contains(button);
-
-		cy.visit(`/?p=${blockPostId}`);
-		cy.get('.mc_custom_border_hdr').contains(header);
-		cy.get('#mc_subheader').contains(subHeader);
-		cy.get('#mc_signup_submit').contains(button);
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('.mc_custom_border_hdr').contains(header);
+			cy.get('#mc_subheader').contains(subHeader);
+			cy.get('#mc_signup_submit').contains(button);
+		});
 	});
 
 	it('Admin can remove mailchimp CSS', () => {
@@ -88,11 +85,10 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		cy.visit(`/?p=${shortcodePostId}`);
-		cy.get('#mc_subheader').should('not.have.css', 'margin-bottom', '18px');
-
-		cy.visit(`/?p=${blockPostId}`);
-		cy.get('#mc_subheader').should('not.have.css', 'margin-bottom', '18px');
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_subheader').should('not.have.css', 'margin-bottom', '18px');
+		});
 
 		// Enable mailchimp CSS.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
@@ -100,15 +96,14 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		cy.visit(`/?p=${shortcodePostId}`);
-		cy.get('#mc_subheader').should('have.css', 'margin-bottom', '18px');
-
-		cy.visit(`/?p=${blockPostId}`);
-		cy.get('#mc_subheader').should('have.css', 'margin-bottom', '18px');
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_subheader').should('have.css', 'margin-bottom', '18px');
+		});
 	});
 
 	it('Admin can set custom styling on signup form', () => {
-		// Remove mailchimp CSS.
+		// Enable custom styling and set values.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_custom_style').check();
 		cy.get('#mc_form_border_width').clear().type('10');
@@ -118,21 +113,80 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		cy.visit(`/?p=${shortcodePostId}`);
-		cy.get('#mc_signup form').should('have.css', 'border-width', '10px');
-		cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
-		cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
-		cy.get('#mc_signup form').should('have.css', 'background-color', 'rgb(0, 255, 0)');
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_signup form').should('have.css', 'border-width', '10px');
+			cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
+			cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
+			cy.get('#mc_signup form').should('have.css', 'background-color', 'rgb(0, 255, 0)');
+		});
 
-		cy.visit(`/?p=${blockPostId}`);
-		cy.get('#mc_signup form').should('have.css', 'border-width', '10px');
-		cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
-		cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
-		cy.get('#mc_signup form').should('have.css', 'background-color', 'rgb(0, 255, 0)');
-
-		// Enable mailchimp CSS.
+		// Reset
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_custom_style').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	});
+
+	it('Admin can set Merge Fields Included settings', () => {
+		// Remove mailchimp CSS.
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_mv_FNAME').uncheck();
+		cy.get('#mc_mv_LNAME').uncheck();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_mv_FNAME').should('not.exist');
+			cy.get('#mc_mv_LNAME').should('not.exist');
+		});
+
+		// Reset
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_mv_FNAME').check();
+		cy.get('#mc_mv_LNAME').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_mv_FNAME').should('exist');
+			cy.get('#mc_mv_LNAME').should('exist');
+		});
+	});
+
+	it('Admin can set list options settings', () => {
+		// Remove mailchimp CSS.
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_use_javascript').uncheck();
+		cy.get('#mc_use_datepicker').uncheck();
+		cy.get('#mc_use_unsub_link').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_submit_type').should('have.value', 'html');
+			cy.get('#mc_mv_BIRTHDAY').should('not.have.class', 'hasDatepicker');
+			cy.get('#mc_mv_BIRTHDAY').click();
+			cy.get('#ui-datepicker-div').should('not.exist');
+			cy.get('#mc_unsub_link').should('exist');
+		});
+
+		// Reset
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_use_javascript').check();
+		cy.get('#mc_use_datepicker').check();
+		cy.get('#mc_use_unsub_link').uncheck();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		[shortcodePostId, blockPostId].forEach((postId) => {
+			cy.visit(`/?p=${postId}`);
+			cy.get('#mc_submit_type').should('have.value', 'js');
+			cy.get('#mc_mv_BIRTHDAY').should('have.class', 'hasDatepicker');
+			cy.get('#mc_mv_BIRTHDAY').click();
+			cy.get('#ui-datepicker-div').should('exist');
+			cy.get('#mc_unsub_link').should('not.exist');
+		});
 	});
 });
