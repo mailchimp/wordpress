@@ -40,7 +40,7 @@ describe('Admin can update plugin settings', () => {
 	it('Admin can create a Signup form using Mailchimp block', () => {
 		const postTitle = 'Mailchimp signup form - Block';
 		const beforeSave = () => {
-			cy.insertBlock('mailchimp/mailchimp');
+			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
 			if (post) {
