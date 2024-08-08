@@ -29,7 +29,7 @@ describe('Admin can connect to "Mailchimp" Account', () => {
 		cy.wait(8000); // Not a best practice, but did not find a better way to handle this.
 
 		cy.popup().find('input#submitButton').click();
-		cy.wait(10000);
+		cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 
 		cy.get('.mc-user h3').contains('Logged in as: ');
 		cy.get('input[value="Logout"]').should('exist');
