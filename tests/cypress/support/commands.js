@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite
@@ -44,7 +45,6 @@ Cypress.Commands.add('capturePopup', () => {
  * Returns a wrapped body of a captured popup
  */
 Cypress.Commands.add('popup', () => {
-	console.log('state', state.popup);
 	const popup = Cypress.$(state.popup.document);
 	return cy.wrap(popup.contents().find('body'));
 });
