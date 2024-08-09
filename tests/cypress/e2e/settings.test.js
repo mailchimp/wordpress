@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 describe('Admin can update plugin settings', () => {
-	let shortcodePostId = 0;
-	let blockPostId = 0;
+	let shortcodePostURL = '/mailchimp-signup-form-shortcode';
+	let blockPostPostURL = '/mailchimp-signup-form-block';
 
 	before(() => {
 		cy.login();
@@ -25,8 +25,8 @@ describe('Admin can update plugin settings', () => {
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
 			if (post) {
-				shortcodePostId = post.id;
-				cy.visit(`/?p=${shortcodePostId}`);
+				shortcodePostURL = `/?p=${post.id}`;
+				cy.visit(shortcodePostURL);
 				cy.get('#mc_signup').should('exist');
 				cy.get('#mc_mv_EMAIL').should('exist');
 				cy.get('#mc_signup_submit').should('exist');
@@ -42,10 +42,10 @@ describe('Admin can update plugin settings', () => {
 		const beforeSave = () => {
 			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
 		};
-		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
-			if (post) {
-				blockPostId = post.id;
-				cy.visit(`/?p=${shortcodePostId}`);
+		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
+			if (postBlock) {
+				blockPostPostURL = `/?p=${postBlock.id}`;
+				cy.visit(blockPostPostURL);
 				cy.get('#mc_signup').should('exist');
 				cy.get('#mc_mv_EMAIL').should('exist');
 				cy.get('#mc_signup_submit').should('exist');
@@ -70,8 +70,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify content options
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('.mc_custom_border_hdr').contains(header);
 			cy.get('#mc_subheader').contains(subHeader);
 			cy.get('#mc_signup_submit').contains(button);
@@ -85,8 +85,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_subheader').should('not.have.css', 'margin-bottom', '18px');
 		});
 
@@ -96,8 +96,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_subheader').should('have.css', 'margin-bottom', '18px');
 		});
 	});
@@ -113,8 +113,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_signup form').should('have.css', 'border-width', '10px');
 			cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
 			cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
@@ -135,8 +135,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_mv_FNAME').should('not.exist');
 			cy.get('#mc_mv_LNAME').should('not.exist');
 		});
@@ -148,8 +148,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_mv_FNAME').should('exist');
 			cy.get('#mc_mv_LNAME').should('exist');
 		});
@@ -164,8 +164,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_submit_type').should('have.value', 'html');
 			cy.get('#mc_mv_BIRTHDAY').should('not.have.class', 'hasDatepicker');
 			cy.get('#mc_mv_BIRTHDAY').click();
@@ -180,8 +180,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc_use_unsub_link').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
-		[shortcodePostId, blockPostId].forEach((postId) => {
-			cy.visit(`/?p=${postId}`);
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
 			cy.get('#mc_submit_type').should('have.value', 'js');
 			cy.get('#mc_mv_BIRTHDAY').should('have.class', 'hasDatepicker');
 			cy.get('#mc_mv_BIRTHDAY').click();
