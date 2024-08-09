@@ -7,7 +7,7 @@
 
 ?>
 <div class="wrap">
-
+	<hr class="wp-header-end">
 	<div class="mailchimp-header">
 		<svg xmlns="http://www.w3.org/2000/svg" aria-label="<?php esc_attr_e( 'Mailchimp Freddie', 'mailchimp' ); ?>" width="40" height="40" fill="none" viewBox="0 0 40 40">
 			<title><?php esc_html_e( 'Mailchimp Freddie', 'mailchimp' ); ?></title>

@@ -206,7 +206,7 @@ class Mailchimp_Admin {
 
 		// Display a notice if the access token is invalid/revoked.
 		?>
-		<div class="notice notice-warning is-dismissible">
+		<div class="notice notice-error is-dismissible">
 			<p>
 				<?php
 				$message = sprintf(

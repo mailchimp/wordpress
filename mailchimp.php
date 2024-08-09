@@ -1395,3 +1395,13 @@ function mailchimp_sf_get_access_token() {
 
 	return $access_token;
 }
+
+/**
+ * Should display Mailchimp Signup form.
+ *
+ * @since x.x.x
+ * @return bool
+ */
+function mailchimp_sf_should_display_form() {
+	return mailchimp_sf_get_api() && ! get_option( 'mailchimp_sf_auth_error' );
+}
