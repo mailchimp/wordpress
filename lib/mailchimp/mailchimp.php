@@ -122,6 +122,7 @@ class MailChimp_API {
 		}
 
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
+			delete_option( 'mailchimp_sf_auth_error' );
 			return json_decode( $request['body'], true );
 		} elseif ( is_array( $request ) && $request['response']['code'] ) {
 			// Check if Access Token is invalid/revoked.
@@ -168,6 +169,7 @@ class MailChimp_API {
 		$request = wp_remote_post( $url, $args );
 
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
+			delete_option( 'mailchimp_sf_auth_error' );
 			return json_decode( $request['body'], true );
 		} else {
 			if ( is_wp_error( $request ) ) {
