@@ -20,7 +20,10 @@ describe('Admin can update plugin settings', () => {
 		const postTitle = 'Mailchimp signup form - shortcode';
 		const beforeSave = () => {
 			cy.insertBlock('core/shortcode').then((id) => {
-				cy.get(`#${id} .blocks-shortcode__textarea`).type('[mailchimpsf_form]');
+				cy.getBlockEditor()
+					.find(`#${id} .blocks-shortcode__textarea`)
+					.clear()
+					.type('[mailchimpsf_form]');
 			});
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
@@ -41,6 +44,7 @@ describe('Admin can update plugin settings', () => {
 		const postTitle = 'Mailchimp signup form - Block';
 		const beforeSave = () => {
 			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
+			cy.wait(500);
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
 			if (postBlock) {
