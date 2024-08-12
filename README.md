@@ -104,6 +104,23 @@ Currently we have the plugin configured so it can be translated and the followin
 * sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
 * tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
 
+## E2E tests
+The `tests` directory contains end-to-end tests for the project, utilizing Cypress to run tests in an environment created using wp-env.
+
+### Pre-requisites
+- Node.js v20
+- Docker
+- Create an account in [Mailchimp](https://mailchimp.com/)
+
+### Run E2E tests in local
+1. Run `npm install`.
+2. Run `npm run build`.
+3. Run `npm run env:start`.
+4. Set Mailchimp credentials as environment variables:
+    - run `export CYPRESS_MAILCHIMP_USERNAME="your mailchimp username"`
+	- run `export CYPRESS_MAILCHIMP_PASSWORD="your mailchimp password"`
+5. Run `npm run cypress:run`. You can also run `npm run cypress:open` to run tests in UI mode.
+
 ## Support Level
 
 **Active:** Mailchimp is actively working on this, and we expect to continue work for the foreseeable future including keeping tested up to the most recent version of WordPress.  Bug reports, feature requests, questions, and pull requests are welcome.
