@@ -254,3 +254,15 @@ th.mailchimp-connect {
 #mc-message {
 	margin-top: 26px;
 }
+
+/**
+ * Mailchimp OAuth CSS
+ */
+.mailchimp-sf-oauth-section .oauth-error {
+	display: block;
+	color: #db3a1b;
+}
+
+.mailchimp-sf-oauth-connect-wrapper {
+	display: flex;
+}

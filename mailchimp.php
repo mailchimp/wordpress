@@ -49,6 +49,9 @@ if ( ! class_exists( 'MailChimp_API' ) ) {
 	require_once $path . 'lib/mailchimp/mailchimp.php';
 }
 
+// Encryption utility class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-data-encryption.php';
+
 // includes the widget code so it can be easily called either normally or via ajax
 require_once 'mailchimp_widget.php';
 
@@ -57,6 +60,11 @@ require_once 'mailchimp_compat.php';
 
 // Upgrade routines.
 require_once 'mailchimp_upgrade.php';
+
+// Init Admin functions.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
+$admin = new Mailchimp_Admin();
+$admin->init();
 
 /**
  * Do the following plugin setup steps here
@@ -132,25 +140,6 @@ function mailchimp_sf_load_resources() {
 	}
 }
 
-
-/**
- * Loads resources for the Mailchimp admin page
- *
- * @param string $hook_suffix The current admin page.
- * @return void
- */
-function mailchimp_admin_page_scripts( $hook_suffix ) {
-	if ( 'toplevel_page_mailchimp_sf_options' !== $hook_suffix ) {
-		return;
-	}
-
-	wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array(), true );
-	wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-}
-
-add_action( 'admin_enqueue_scripts', 'mailchimp_admin_page_scripts', 10, 1 );
-
-
 /**
  * Loads jQuery Datepicker for the date-pick class
  **/
@@ -217,24 +206,6 @@ add_action( 'admin_menu', 'mailchimp_sf_add_pages' );
 function mailchimp_sf_request_handler() {
 	if ( isset( $_POST['mcsf_action'] ) ) {
 		switch ( $_POST['mcsf_action'] ) {
-			case 'login':
-				$key = isset( $_POST['mailchimp_sf_api_key'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_api_key'] ) ) ) : '';
-
-				try {
-					$api = new MailChimp_API( $key );
-				} catch ( Exception $e ) {
-					$msg = '<strong class="error_msg">' . $e->getMessage() . '</strong>';
-					mailchimp_sf_global_msg( $msg );
-					break;
-				}
-
-				$key = mailchimp_sf_verify_key( $api );
-				if ( is_wp_error( $key ) ) {
-					$msg = '<strong class="error_msg">' . $key->get_error_message() . '</strong>';
-					mailchimp_sf_global_msg( $msg );
-				}
-
-				break;
 			case 'logout':
 				// Check capability & Verify nonce
 				if (
@@ -246,7 +217,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
@@ -381,6 +352,14 @@ function mailchimp_sf_auth_nonce_salt() {
  * @return MailChimp_API | false
  */
 function mailchimp_sf_get_api() {
+	// Check for the access token first.
+	$access_token = mailchimp_sf_get_access_token();
+	$data_center  = get_option( 'mc_datacenter' );
+	if ( ! empty( $access_token ) && ! empty( $data_center ) ) {
+		return new MailChimp_API( $access_token, $data_center );
+	}
+
+	// Check for the API key if the access token is not available.
 	$key = get_option( 'mc_api_key' );
 	if ( $key ) {
 		return new MailChimp_API( $key );
@@ -1392,4 +1371,37 @@ function mailchimp_sf_create_nonce( $action = -1 ) {
 	$i     = wp_nonce_tick();
 
 	return substr( wp_hash( $i . '|' . $action . '|' . $uid . '|' . $token, 'nonce' ), -12, 10 );
+}
+
+/**
+ * Get Mailchimp Access Token.
+ *
+ * @since 1.6.0
+ * @return string|bool
+ */
+function mailchimp_sf_get_access_token() {
+	$access_token = get_option( 'mailchimp_sf_access_token' );
+	if ( empty( $access_token ) ) {
+		return false;
+	}
+
+	$data_encryption = new Mailchimp_Data_Encryption();
+	$access_token    = $data_encryption->decrypt( $access_token );
+
+	// If decryption fails, display notice to user to re-authenticate.
+	if ( false === $access_token ) {
+		update_option( 'mailchimp_sf_auth_error', true );
+	}
+
+	return $access_token;
+}
+
+/**
+ * Should display Mailchimp Signup form.
+ *
+ * @since 1.6.0
+ * @return bool
+ */
+function mailchimp_sf_should_display_form() {
+	return mailchimp_sf_get_api() && ! get_option( 'mailchimp_sf_auth_error' );
 }

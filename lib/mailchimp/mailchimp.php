@@ -11,6 +11,13 @@
 class MailChimp_API {
 
 	/**
+	 * The access token.
+	 *
+	 * @var string
+	 */
+	public $access_token;
+
+	/**
 	 * The API key
 	 *
 	 * @var string
@@ -34,27 +41,35 @@ class MailChimp_API {
 	/**
 	 * Initialize the class
 	 *
-	 * @param  string $api_key The API key.
-	 * @throws Exception If no api key is set
+	 * @param  string $access_token Access token or API key. If data center is not provided, we'll assume that this is an API key.
+	 * @param  string $data_center  The data center. If not provided, we'll assume the data center is in the API key itself.
+	 * @throws Exception If no api key or access token is set
 	 */
-	public function __construct( $api_key ) {
-		$api_key = trim( $api_key );
-		if ( ! $api_key ) {
+	public function __construct( $access_token, $data_center = '' ) {
+		$access_token = trim( $access_token );
+		if ( ! $access_token ) {
 			throw new Exception(
 				esc_html(
 					sprintf(
-						/* translators: %s: api key */
-						__( 'Invalid API Key: %s', 'mailchimp' ),
-						$api_key
+						/* translators: %s: access token */
+						__( 'Invalid Access Token or API key: %s', 'mailchimp' ),
+						$access_token
 					)
 				)
 			);
 		}
 
-		$this->key        = $api_key;
-		$dc               = explode( '-', $api_key );
-		$this->datacenter = empty( $dc[1] ) ? 'us1' : $dc[1];
-		$this->api_url    = 'https://' . $this->datacenter . '.api.mailchimp.com/3.0/';
+		// No data center provided, so we'll assume it's in the API key.
+		if ( ! $data_center ) {
+			$this->key        = $access_token;
+			$dc               = explode( '-', $access_token );
+			$this->datacenter = empty( $dc[1] ) ? 'us1' : $dc[1];
+		} else {
+			$this->access_token = $access_token;
+			$this->datacenter   = $data_center;
+		}
+
+		$this->api_url = 'https://' . $this->datacenter . '.api.mailchimp.com/3.0/';
 	}
 
 	/**
@@ -84,12 +99,20 @@ class MailChimp_API {
 			$url .= "?{$query_params}";
 		}
 
+		$headers = array();
+		// If we have an access token, use that, otherwise use the API key.
+		if ( $this->access_token ) {
+			$headers['Authorization'] = 'Bearer ' . $this->access_token;
+		} else {
+			$headers['Authorization'] = 'apikey ' . $this->key;
+		}
+
 		$args = array(
-			'timeout'     => 5,
+			'timeout'     => 10,
 			'redirection' => 5,
 			'httpversion' => '1.1',
 			'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
-			'headers'     => array( 'Authorization' => 'apikey ' . $this->key ),
+			'headers'     => $headers,
 		);
 
 		$request = wp_remote_get( $url, $args );
@@ -99,8 +122,14 @@ class MailChimp_API {
 		}
 
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
+			delete_option( 'mailchimp_sf_auth_error' );
 			return json_decode( $request['body'], true );
 		} elseif ( is_array( $request ) && $request['response']['code'] ) {
+			// Check if Access Token is invalid/revoked.
+			if ( in_array( $request['response']['code'], array( 401, 403 ), true ) ) {
+				update_option( 'mailchimp_sf_auth_error', true );
+			}
+
 			$error = json_decode( $request['body'], true );
 			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] );
 			return $error;
@@ -120,22 +149,36 @@ class MailChimp_API {
 	public function post( $endpoint, $body, $method = 'POST' ) {
 		$url = $this->api_url . $endpoint;
 
+		$headers = array();
+		// If we have an access token, use that, otherwise use the API key.
+		if ( $this->access_token ) {
+			$headers['Authorization'] = 'Bearer ' . $this->access_token;
+		} else {
+			$headers['Authorization'] = 'apikey ' . $this->key;
+		}
+
 		$args    = array(
 			'method'      => $method,
-			'timeout'     => 5,
+			'timeout'     => 10,
 			'redirection' => 5,
 			'httpversion' => '1.1',
 			'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
-			'headers'     => array( 'Authorization' => 'apikey ' . $this->key ),
+			'headers'     => $headers,
 			'body'        => wp_json_encode( $body ),
 		);
 		$request = wp_remote_post( $url, $args );
 
 		if ( is_array( $request ) && 200 === $request['response']['code'] ) {
+			delete_option( 'mailchimp_sf_auth_error' );
 			return json_decode( $request['body'], true );
 		} else {
 			if ( is_wp_error( $request ) ) {
 				return new WP_Error( 'mc-subscribe-error', $request->get_error_message() );
+			}
+
+			// Check if Access Token is invalid/revoked.
+			if ( is_array( $request ) && in_array( $request['response']['code'], array( 401, 403 ), true ) ) {
+				update_option( 'mailchimp_sf_auth_error', true );
 			}
 
 			$body       = json_decode( $request['body'], true );

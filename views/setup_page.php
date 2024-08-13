@@ -7,7 +7,7 @@
 
 ?>
 <div class="wrap">
-
+	<hr class="wp-header-end">
 	<div class="mailchimp-header">
 		<svg xmlns="http://www.w3.org/2000/svg" aria-label="<?php esc_attr_e( 'Mailchimp Freddie', 'mailchimp' ); ?>" width="40" height="40" fill="none" viewBox="0 0 40 40">
 			<title><?php esc_html_e( 'Mailchimp Freddie', 'mailchimp' ); ?></title>
@@ -31,21 +31,19 @@ if ( mailchimp_sf_global_msg() !== '' ) {
 }
 
 // If we don't have an API Key, do a login form
-if ( ! $user || ! get_option( 'mc_api_key' ) ) {
+if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_token() ) ) {
 	?>
 	<div>
 		<h3 class="mc-h2"><?php esc_html_e( 'Log In', 'mailchimp' ); ?></h3>
-		<p class="mc-p" style="width: 40%;">
+		<p class="mc-p"><?php esc_html_e( 'To get started, we\'ll need to connect your Mailchimp account.', 'mailchimp' ); ?></p>
+		<p class="mc-p" style="max-width: var(--mailchimp-max-width);">
 		<?php
 			echo wp_kses(
 				__(
-					'To get started, we\'ll need to access your Mailchimp account with an <a href="http://kb.mailchimp.com/integrations/api-integrations/about-api-keys">API Key</a>. Paste your Mailchimp API key, and click <strong>Connect</strong> to continue.',
+					'Please click the <strong>Connect Account</strong> button to connect this WordPress site with your Mailchimp account. Once you complete the Mailchimp login in the pop-up window that appears, this page will refresh to show the Mailchimp List Subscribe Form settings.',
 					'mailchimp'
 				),
 				[
-					'a'      => [
-						'href' => [],
-					],
 					'strong' => [],
 				]
 			);
@@ -60,21 +58,22 @@ if ( ! $user || ! get_option( 'mc_api_key' ) ) {
 			);
 			?>
 		</p>
-		<div class="mc-section">
+		<div class="mc-section mailchimp-sf-oauth-section">
 			<table class="widefat mc-widefat mc-api">
-			<form method="POST" action="">
 				<tr valign="top">
 					<th scope="row" class="mailchimp-connect"><?php esc_html_e( 'Connect to Mailchimp', 'mailchimp' ); ?></th>
 					<td>
-						<input type="hidden" name="mcsf_action" value="login"/>
-						<input type="password" name="mailchimp_sf_api_key" placeholder="<?php esc_attr_e( 'API Key', 'mailchimp' ); ?>">
-					</td>
-					<td>
-						<input class="button mc-submit" type="submit" value="<?php esc_attr_e( 'Connect', 'mailchimp' ); ?>">
+						<div class="mailchimp-sf-oauth-connect-wrapper">
+							<span class="spinner"></span>
+							<button class="button" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
+						</div>
 					</td>
 				</tr>
-			</form>
 			</table>
+			<p class="oauth-error error_msg" style="display:none;"></p>
+			<div id="login-popup-blocked-modal" style="display:none;">
+				<p><?php esc_html_e( 'Please allow your browser to show popups for this page.', 'mailchimp' ); ?></p>
+			</div>
 		</div>
 	</div>
 
@@ -128,6 +127,23 @@ if ( $api ) {
 		<?php
 		// we *could* support paging, but few users have that many lists (and shouldn't)
 		$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
+
+		if ( is_wp_error( $lists ) ) {
+			?>
+			<div class="error_msg">
+				<?php
+				printf(
+					/* translators: %s: error message */
+					esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
+					esc_html( $lists->get_error_message() )
+				);
+				?>
+			</div>
+			</div> <!-- Close parent div as well. -->
+			<?php
+			return;
+		}
+
 		$lists = $lists['lists'];
 
 		if ( count( $lists ) === 0 ) {

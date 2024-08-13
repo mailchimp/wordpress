@@ -25,6 +25,10 @@ module.exports = defineConfig( {
 		supportFile: 'tests/cypress/support/index.js',
 		defaultCommandTimeout: 20000,
 	},
+	retries: {
+		runMode: 2,
+		openMode: 0,
+	},
 } );
 
 /**
