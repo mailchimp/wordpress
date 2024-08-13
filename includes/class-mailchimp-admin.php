@@ -13,14 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_Admin
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 class Mailchimp_Admin {
 
 	/**
 	 * The OAuth base endpoint
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	private $oauth_url = 'https://woocommerce.mailchimpapp.com';
@@ -193,7 +193,7 @@ class Mailchimp_Admin {
 	/**
 	 * Display admin notices.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	public function admin_notices() {
 		if ( ! current_user_can( 'manage_options' ) ) {

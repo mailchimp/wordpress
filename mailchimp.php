@@ -1376,7 +1376,7 @@ function mailchimp_sf_create_nonce( $action = -1 ) {
 /**
  * Get Mailchimp Access Token.
  *
- * @since x.x.x
+ * @since 1.6.0
  * @return string|bool
  */
 function mailchimp_sf_get_access_token() {
@@ -1399,7 +1399,7 @@ function mailchimp_sf_get_access_token() {
 /**
  * Should display Mailchimp Signup form.
  *
- * @since x.x.x
+ * @since 1.6.0
  * @return bool
  */
 function mailchimp_sf_should_display_form() {

@@ -13,14 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_Data_Encryption
  *
- * @since x.x.x
+ * @since 1.6.0
  */
 class Mailchimp_Data_Encryption {
 
 	/**
 	 * Key to use for encryption.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	private $key;
@@ -28,7 +28,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Salt to use for encryption.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 * @var string
 	 */
 	private $salt;
@@ -36,7 +36,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Constructor.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	public function __construct() {
 		$this->key  = $this->get_default_key();
@@ -48,7 +48,7 @@ class Mailchimp_Data_Encryption {
 	 *
 	 * If a user-based key is set, that is used. Otherwise the default key is used.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @param string $value Value to encrypt.
 	 * @return string|bool Encrypted value, or false on failure.
@@ -75,7 +75,7 @@ class Mailchimp_Data_Encryption {
 	 *
 	 * If a user-based key is set, that is used. Otherwise the default key is used.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @param string $raw_value Value to decrypt.
 	 * @return string|bool Decrypted value, or false on failure.
@@ -108,7 +108,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Gets the default encryption key to use.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @return string Default (not user-based) encryption key.
 	 */
@@ -128,7 +128,7 @@ class Mailchimp_Data_Encryption {
 	/**
 	 * Gets the default encryption salt to use.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @return string Encryption salt.
 	 */
