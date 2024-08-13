@@ -196,9 +196,32 @@ class Mailchimp_Admin {
 	 * @since x.x.x
 	 */
 	public function admin_notices() {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+
+		// Display a deprecation notice if the user is using an API key to connect with Mailchimp.
+		if ( get_option( 'mc_api_key', '' ) && ! get_option( 'mailchimp_sf_access_token', '' ) && mailchimp_sf_should_display_form() ) {
+			?>
+			<div class="notice notice-warning is-dismissible">
+				<p>
+					<?php
+					$message = sprintf(
+						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
+						__( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please log out and reconnect your Mailchimp account using the new OAuth authentication by clicking the "Connect Account" button on the %1$splugin settings%2$s page.', 'mailchimp' ),
+						'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
+						'</a>'
+					);
+
+					echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
+					?>
+				</p>
+			</div>
+			<?php
+		}
+
 		if (
 			! get_option( 'mailchimp_sf_auth_error', false ) ||
-			! current_user_can( 'manage_options' ) ||
 			! get_option( 'mailchimp_sf_access_token', '' )
 		) {
 			return;
