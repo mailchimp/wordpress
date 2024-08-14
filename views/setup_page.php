@@ -49,12 +49,13 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 			);
 		?>
 		</p>
-		<p class="mc-p">
+		<p class="mc-p" style="max-width: var(--mailchimp-max-width);">
 			<?php
-			printf(
-				'%1$s <a href="http://www.mailchimp.com/signup/" target="_blank">%2$s</a>',
-				esc_html__( 'Don\'t have a Mailchimp account?', 'mailchimp' ),
-				esc_html__( 'Try one for Free!', 'mailchimp' )
+			echo wp_kses(
+				__( 'Don\'t have a Mailchimp account? Please click the <strong>Create account</strong> button to create and connect your account with this WordPress site.', 'mailchimp' ),
+				[
+					'strong' => [],
+				]
 			);
 			?>
 		</p>
@@ -65,7 +66,8 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 					<td>
 						<div class="mailchimp-sf-oauth-connect-wrapper">
 							<span class="spinner"></span>
-							<button class="button" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
+							<button class="button button-primary" id="mailchimp_sf_oauth_connect" href="#"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
+							<button class="button button-secondary" id="mailchimp_sf_create_account_button" href="#"><?php esc_html_e( 'Create account', 'mailchimp' ); ?></button>
 						</div>
 					</td>
 				</tr>
@@ -101,7 +103,7 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 		<td>
 			<form method="post" action="">
 				<input type="hidden" name="mcsf_action" value="logout"/>
-				<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button" />
+				<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary" />
 				<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
 			</form>
 		</td>
@@ -178,7 +180,7 @@ if ( $api ) {
 				</td>
 				<td>
 					<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
-					<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button" />
+					<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button button-secondary" />
 				</td>
 			</tr>
 		</table>
@@ -197,7 +199,7 @@ if ( $api ) {
 <p class="submit">
 	<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 		<input type="hidden" name="mcsf_action" value="reset_list" />
-		<input type="submit" name="reset_list" value="<?php esc_attr_e( 'Reset List Options and Select again', 'mailchimp' ); ?>" class="button" />
+		<input type="submit" name="reset_list" value="<?php esc_attr_e( 'Reset List Options and Select again', 'mailchimp' ); ?>" class="button button-secondary" />
 		<?php wp_nonce_field( 'reset_mailchimp_list', '_mcsf_nonce_action' ); ?>
 	</form>
 </p>
@@ -254,7 +256,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 	</tr>
 </table>
 
-<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mc-submit" /><br/>
+<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
 
 <table class="widefat mc-widefat mc-nuke-styling">
 <tr><th colspan="2"><?php esc_html_e( 'Remove Mailchimp CSS', 'mailchimp' ); ?></th></tr>
@@ -319,7 +321,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 	</tr>
 </table>
 
-<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mc-submit" /><br/>
+<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
 
 
 <table class="widefat mc-widefat">
@@ -364,7 +366,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 
 <div class="mc-section">
 
-	<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mc-submit" /><br/>
+	<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
 
 	<table class='widefat mc-widefat'>
 		<tr>
@@ -425,7 +427,7 @@ if ( get_option( 'mc_list_id' ) === '' ) {
 					}
 					?>
 	</table>
-	<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mc-submit" /><br/>
+	<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
 </div>
 
 					<?php

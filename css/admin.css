@@ -51,7 +51,7 @@ table.mc-widefat tr:first-child th {
 }
 
 /* Buttons */
-#wpbody .button {
+#wpbody .button-secondary {
 	border-color: var(--mailchimp-color-link);
 	color: var(--mailchimp-color-link);
 }
@@ -265,4 +265,8 @@ th.mailchimp-connect {
 
 .mailchimp-sf-oauth-connect-wrapper {
 	display: flex;
+}
+
+#mailchimp_sf_create_account_button {
+	margin-left: 12px;
 }
