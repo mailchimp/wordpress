@@ -128,6 +128,7 @@ class MailChimp_API {
 			// Check if Access Token is invalid/revoked.
 			if ( in_array( $request['response']['code'], array( 401, 403 ), true ) ) {
 				update_option( 'mailchimp_sf_auth_error', true );
+				return new WP_Error( 'mailchimp-auth-error', esc_html__( 'Authentication failed.', 'mailchimp' ) );
 			}
 
 			$error = json_decode( $request['body'], true );
