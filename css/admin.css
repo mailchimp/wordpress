@@ -618,7 +618,7 @@ th.mailchimp-connect {
 .mailchimp-sf-form-wrapper .box.form-error input {
 	border-color: red;
 }
-.mailchimp-sf-form-wrapper .error-field:empty {
+.mailchimp-sf-form-wrapper .error-field:empty, #mailchimp-sf-create-account p.error-message:empty {
 	display: none !important;
 }
 .mailchimp-sf-form-wrapper fieldset input[type='radio'],

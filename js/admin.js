@@ -151,5 +151,208 @@
 			});
 		});
 	});
-	// eslint-disable-next-line no-undef
-})(jQuery);
+
+	/**
+	 * Create Mailchimp account Handler.
+	 */
+	$(window).on('load', function () {
+		const isCreateAccountPage = $('#mailchimp-sf-create-account').length > 0;
+		if (!isCreateAccountPage) {
+			return;
+		}
+
+		// Validate inputs.
+		const validateFormInput = (input) => {
+			let inputLabel = 'This field';
+			if (
+				$('label[for="' + input.id + '"] span').length > 0 &&
+				$('label[for="' + input.id + '"] span').text()
+			) {
+				inputLabel = $('label[for="' + input.id + '"] span')
+					.text()
+					.trim();
+				inputLabel = inputLabel.split('/')[0];
+				inputLabel = inputLabel.split('(')[0];
+			}
+			const requiredError = (params.required_error || "%s can't be blank.").replace(
+				'%s',
+				inputLabel,
+			);
+			const requiredInputs = [
+				'first_name',
+				'last_name',
+				'business_name',
+				'email',
+				'address',
+				'city',
+				'state',
+				'zip',
+			];
+			if (requiredInputs.includes(input.name) && input.value === '') {
+				return requiredError;
+			}
+
+			if (input.name === 'email') {
+				if (!input.value.includes('@') || !input.value.includes('.'))
+					return params.invalid_email;
+				if (input.value !== $('#mailchimp-sf-profile-details input#confirm_email').val())
+					return params.confirm_email_match;
+			}
+			if (input.name === 'confirm_email') {
+				if (input.value !== $('#mailchimp-sf-profile-details input#email').val())
+					return params.confirm_email_match2;
+			}
+
+			return null;
+		};
+
+		// Display errors and disable button in case of errors
+		const validateAccountForm = (errors, wrapperId, displayErrors = false) => {
+			const inputIds = Object.keys(errors);
+
+			inputIds.forEach((key) => {
+				const inputElementId = `${wrapperId} input#${key}`;
+				const errorElementId = `${wrapperId} #mailchimp-sf-${key}-error`;
+
+				if (errors[key] !== null) {
+					if (displayErrors) {
+						$(inputElementId).closest('.box').addClass('form-error');
+						$(errorElementId).text(errors[key]);
+					}
+				} else {
+					$(inputElementId).closest('.box').removeClass('form-error');
+					$(errorElementId).text('');
+				}
+			});
+			return Object.values(errors).filter((error) => error !== null).length === 0;
+		};
+
+		// Get form Errors.
+		const getFormErrors = (inputs) => {
+			const errors = {};
+			inputs.each((index, input) => {
+				errors[input.name] = validateFormInput(input);
+			});
+
+			return errors;
+		};
+
+		// Validate profile details
+		let profileDetailsInputs = $('#mailchimp-sf-profile-details input');
+		profileDetailsInputs.on('input', (e) => {
+			const input = e.target;
+
+			$(input).closest('.box').removeClass('form-error');
+			$(input).closest('.box').find('.error-field').text('');
+
+			if (input.name === 'email' || input.name === 'confirm_email') {
+				$('input#confirm_email, input#email').closest('.box').removeClass('form-error');
+				$('input#confirm_email, input#email').closest('.box').find('.error-field').text('');
+			}
+		});
+
+		// validate business address
+		let businessAddressInputs = $(
+			'#mailchimp-sf-business-address input, #mailchimp-sf-business-address select',
+		);
+		businessAddressInputs.on('input', (e) => {
+			const input = e.target;
+
+			$(input).closest('.box').removeClass('form-error');
+			$(input).closest('.box').find('.error-field').text('');
+		});
+
+		// Handle create account button click.
+		$('#mailchimp-sf-create-activate-account').click((e) => {
+			e.preventDefault();
+
+			profileDetailsInputs = $('#mailchimp-sf-profile-details input');
+			const profileErrors = getFormErrors(profileDetailsInputs);
+			const profileDetailsValid = validateAccountForm(
+				profileErrors,
+				'#mailchimp-sf-profile-details',
+				true,
+			);
+
+			businessAddressInputs = $(
+				'#mailchimp-sf-business-address input, #mailchimp-sf-business-address select',
+			);
+			const businessAddressErrors = getFormErrors(businessAddressInputs);
+			const businessAddressValid = validateAccountForm(
+				businessAddressErrors,
+				'#mailchimp-sf-business-address',
+				true,
+			);
+
+			if (profileDetailsValid && businessAddressValid) {
+				$('.mailchimp-sf-activate-account').submit();
+			}
+		});
+
+		$('.mailchimp-sf-activate-account').submit((e) => {
+			e.preventDefault();
+			$('#mailchimp-sf-create-activate-account').attr('disabled', true);
+			$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').removeClass('hidden');
+
+			const errorSelector = '#mailchimp-sf-create-account .general-error p';
+			$(errorSelector).html('');
+			const formData = $(e.target).serializeArray();
+			const formDataObject = {};
+			formData.map((obj) => {
+				const newObj = {};
+				formDataObject[obj.name] = obj.value;
+				return newObj;
+			});
+
+			const postData = {
+				email: formDataObject.email,
+				username: formDataObject.email,
+				business_name: formDataObject.business_name,
+				first_name: formDataObject.first_name,
+				last_name: formDataObject.last_name,
+				org: formDataObject.org,
+				phone_number: formDataObject.phone_number,
+				timezone: formDataObject.timezone,
+				address: {
+					address1: formDataObject.address,
+					city: formDataObject.city,
+					state: formDataObject.state,
+					zip: formDataObject.zip,
+					country: formDataObject.country,
+				},
+			};
+
+			$.post(
+				params.ajax_url,
+				{
+					action: 'mailchimp_sf_create_account',
+					data: postData,
+					nonce: params.create_account_nonce,
+				},
+				function (response) {
+					if (response.success && response.data) {
+						$('.mailchimp-sf-activate-account').addClass('hidden');
+						// TODO: wait for the login.
+					} else if (response.data && response.data.suggest_login) {
+						// TODO: handle suggest login.
+					} else if (response.data && response.data.message) {
+						$(errorSelector).html(response.data.message);
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					} else {
+						$(errorSelector).html(params.generic_error);
+						window.scrollTo({ top: 0, behavior: 'smooth' });
+					}
+					$('#mailchimp-sf-create-activate-account').attr('disabled', false);
+					$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').addClass(
+						'hidden',
+					);
+				},
+			).fail(function () {
+				$(errorSelector).html(params.generic_error);
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				$('#mailchimp-sf-create-activate-account').attr('disabled', false);
+				$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').addClass('hidden');
+			});
+		});
+	});
+})(jQuery); // eslint-disable-line no-undef

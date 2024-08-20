@@ -61,6 +61,9 @@ if ( empty( $user ) ) {
 			<form class="mailchimp-sf-activate-account">
 				<div id="mailchimp-sf-profile-details" class="mailchimp-sf-create-account-step">
 					<div class="title"><?php esc_html_e( 'Confirm your information', 'mailchimp' ) ?></div>
+					<div class="general-error">
+						<p class="error-message"></p>
+					</div>
 					<div class="subtitle"><?php esc_html_e( 'Profile details', 'mailchimp' ) ?></div>
 					<div class="mailchimp-sf-form-wrapper">
 						<fieldset>

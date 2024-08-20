@@ -32,6 +32,7 @@ class Mailchimp_Admin {
 		add_action( 'admin_notices', array( $this, 'admin_notices' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_start', array( $this, 'start_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
+		add_action( 'wp_ajax_mailchimp_sf_create_account', array( $this, 'mailchimp_create_account' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
@@ -148,6 +149,28 @@ class Mailchimp_Admin {
 		} else {
 			wp_send_json_error( $response );
 		}
+	}
+
+	/**
+	 * Create a new Mailchimp account.
+	 *
+	 * This function is called via AJAX.
+	 *
+	 * This function creates a new Mailchimp account by sending the user data to the middleware server.
+	 */
+	public function mailchimp_create_account() {
+		// Validate the nonce and permissions.
+		if (
+			! current_user_can( 'manage_options' ) ||
+			! isset( $_POST['nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mailchimp_sf_create_account_nonce' )
+		) {
+			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'mailchimp' ) ) );
+		}
+
+		// TODO: handle the signup process.
+
+		wp_send_json_success( true );
 	}
 
 	/**
@@ -278,20 +301,31 @@ class Mailchimp_Admin {
 		wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
 		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
 
+		$data = array(
+			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
+			'oauth_url'              => esc_url( $this->oauth_url ),
+			'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+			'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+			'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+			'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
+			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
+			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
+			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
+		);
+
+		// Create account page specific data.
+		if ( 'admin_page_mailchimp_sf_create_account' === $hook_suffix ) {
+			$data['create_account_nonce'] = wp_create_nonce( 'mailchimp_sf_create_account_nonce' );
+			$data['required_error']       = esc_html__( '%s  can\'t be blank.', 'mailchimp' );
+			$data['invalid_email_error']  = esc_html__( 'Insert correct email.', 'mailchimp' );
+			$data['confirm_email_match']  = esc_html__( 'Email confirmation must match confirmation email.', 'mailchimp' );
+			$data['confirm_email_match2'] = esc_html__( 'Email confirmation must match the field above.', 'mailchimp' );
+		}
+
 		wp_localize_script(
 			'mailchimp_sf_admin',
 			'mailchimp_sf_admin_params',
-			array(
-				'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
-				'oauth_url'              => esc_url( $this->oauth_url ),
-				'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
-				'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
-				'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
-				'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
-				'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
-				'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
-				'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
-			)
+			$data
 		);
 	}
 
