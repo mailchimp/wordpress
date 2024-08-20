@@ -217,7 +217,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
