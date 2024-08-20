@@ -112,7 +112,7 @@ function mailchimp_sf_load_resources() {
 	// JS
 	if ( get_option( 'mc_use_javascript' ) === 'on' ) {
 		if ( ! is_admin() ) {
-			wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
+			wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
 			// some javascript to get ajax version submitting to the proper location
 			global $wp_scripts;
 			$wp_scripts->localize(
@@ -127,7 +127,7 @@ function mailchimp_sf_load_resources() {
 
 	if ( get_option( 'mc_use_datepicker' ) === 'on' && ! is_admin() ) {
 		// Datepicker theme
-		wp_enqueue_style( 'flick', MCSF_URL . 'css/flick/flick.css', array(), MCSF_VER );
+		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 
 		// Datepicker JS
 		wp_enqueue_script( 'jquery-ui-datepicker' );

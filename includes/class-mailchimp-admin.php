@@ -389,9 +389,9 @@ class Mailchimp_Admin {
 			return;
 		}
 
-		wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
-		wp_enqueue_script( 'showMe', MCSF_URL . 'js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
+		wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'assets/css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
+		wp_enqueue_script( 'showMe', MCSF_URL . 'assets/js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
+		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
 
 		$data = array(
 			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
@@ -407,6 +407,8 @@ class Mailchimp_Admin {
 
 		// Create account page specific data.
 		if ( 'admin_page_mailchimp_sf_create_account' === $hook_suffix ) {
+			wp_enqueue_style( 'mailchimp_sf_create_account_css', MCSF_URL . 'assets/css/create-account.css', array(), MCSF_VER );
+
 			$data['create_account_nonce']      = wp_create_nonce( 'mailchimp_sf_create_account_nonce' );
 			$data['check_login_session_nonce'] = wp_create_nonce( 'mailchimp_sf_check_login_session_nonce' );
 			$data['required_error']            = esc_html__( '%s  can\'t be blank.', 'mailchimp' );
