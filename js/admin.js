@@ -155,10 +155,36 @@
 	/**
 	 * Create Mailchimp account Handler.
 	 */
+	// Waiting for login.
+	const waitingForMailchimpAccountLogin = () => {
+		const intervalId = window.setInterval(function () {
+			$.post(
+				params.ajax_url,
+				{
+					action: 'mailchimp_sf_check_login_session',
+					nonce: params.check_login_session_nonce,
+				},
+				function (response) {
+					if (response.success && response.data && response.data.logged_in) {
+						window.clearInterval(intervalId);
+						window.location.href = response.data.redirect;
+					} else {
+						console.log(response);
+					}
+				},
+			);
+		}, 10000);
+	};
+
 	$(window).on('load', function () {
 		const isCreateAccountPage = $('#mailchimp-sf-create-account').length > 0;
 		if (!isCreateAccountPage) {
 			return;
+		}
+
+		// Check if signup initiated.
+		if ($('#mailchimp-sf-create-account input[name=signup_initiated]').val() === '1') {
+			waitingForMailchimpAccountLogin();
 		}
 
 		// Validate inputs.
@@ -330,11 +356,21 @@
 					nonce: params.create_account_nonce,
 				},
 				function (response) {
+					$('.mailchimp-sf-email').text(formDataObject.email);
+					$('#mailchimp-sf-create-activate-account').attr('disabled', false);
+					$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').addClass(
+						'hidden',
+					);
+
 					if (response.success && response.data) {
 						$('.mailchimp-sf-activate-account').addClass('hidden');
-						// TODO: wait for the login.
+						$('.mailchimp-sf-confirm-email').removeClass('hidden');
+
+						// Waiting for login.
+						waitingForMailchimpAccountLogin();
 					} else if (response.data && response.data.suggest_login) {
-						// TODO: handle suggest login.
+						$('.mailchimp-sf-activate-account').addClass('hidden');
+						$('.mailchimp-sf-suggest-to-login').removeClass('hidden');
 					} else if (response.data && response.data.message) {
 						$(errorSelector).html(response.data.message);
 						window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -342,10 +378,6 @@
 						$(errorSelector).html(params.generic_error);
 						window.scrollTo({ top: 0, behavior: 'smooth' });
 					}
-					$('#mailchimp-sf-create-activate-account').attr('disabled', false);
-					$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').addClass(
-						'hidden',
-					);
 				},
 			).fail(function () {
 				$(errorSelector).html(params.generic_error);

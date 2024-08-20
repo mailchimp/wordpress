@@ -33,6 +33,7 @@ class Mailchimp_Admin {
 		add_action( 'wp_ajax_mailchimp_sf_oauth_start', array( $this, 'start_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_create_account', array( $this, 'mailchimp_create_account' ) );
+		add_action( 'wp_ajax_mailchimp_sf_check_login_session', array( $this, 'check_login_session' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
@@ -168,9 +169,100 @@ class Mailchimp_Admin {
 			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'mailchimp' ) ) );
 		}
 
-		// TODO: handle the signup process.
+		$data = isset( $_POST['data'] ) ? $this->sanitize_data( wp_unslash( $_POST['data'] ) ) : array();
+		if ( empty( $data ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'No data provided.', 'mailchimp' ) ) );
+		}
 
-		wp_send_json_success( true );
+		// Get the IP address.
+		if ( $_SERVER['REMOTE_ADDR'] == '::1' || $_SERVER['REMOTE_ADDR'] == '127.0.0.1' ) {
+			$data['ip_address'] = '127.0.0.1';
+		} else {
+			$data['ip_address'] = isset( $_SERVER['HTTP_CLIENT_IP'] ) ? $_SERVER['HTTP_CLIENT_IP'] : ( isset( $_SERVER['HTTP_X_FORWARDED_FOR'] ) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR'] );
+		}
+
+        $request_data = array(
+            'headers' => array(
+                'Content-type' => 'application/json',
+                'Accept' => 'application/json'
+            ),
+            'body'    => json_encode( $data ),
+            'timeout' => 30,
+        );
+
+		$response = wp_remote_post( $this->oauth_url . '/api/signup/', $request_data );
+		// Return the error if there is one.
+		if ( $response instanceof WP_Error ) {
+			wp_send_json_error( array( 'message' => $response->get_error_message() ) );
+		}
+
+		$response_body = json_decode( $response['body'] );
+		if ( 200 === $response['response']['code'] && true === $response_body->success ) {
+            $result = json_decode( $response['body'], true );
+
+			// Verify and save the token.
+			$verify = $this->verify_and_save_oauth_token( $result['data']['oauth_token'], $result['data']['dc'] );
+
+			if ( is_wp_error( $verify ) ) {
+				// If there is an error, send it back to the front-end.
+				wp_send_json_error( array( 'message' => $verify->get_error_message() ) );
+			}
+			update_option( 'mailchimp_sf_waiting_for_login', 'waiting' );
+			wp_send_json_success( true );
+
+        } elseif ( $response['response']['code'] == 404 ) {
+			wp_send_json_error( array( 'success' => false ) );
+
+        } else {
+            $username           = preg_replace( '/[^A-Za-z0-9\-\@\.]/', '', $_POST['data']['username'] );
+            $suggestion         = wp_remote_get( $this->oauth_url . '/api/usernames/suggestions/' . $username );
+            $suggested_username = json_decode( $suggestion['body'] )->data;
+            wp_send_json_error(
+                array(
+                    'success'            => false,
+                    'suggest_login'      => true,
+                    'suggested_username' => $suggested_username,
+                )
+            );
+        }
+	}
+
+	/**
+	 * Check the login session.
+	 *
+	 * This function is called via AJAX.
+	 *
+	 * This function checks if the user is logged in to Mailchimp which confirms the account activation.
+	 */
+	public function check_login_session() {
+		// Validate the nonce and permissions.
+		if (
+			! current_user_can( 'manage_options' ) ||
+			! isset( $_POST['nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mailchimp_sf_check_login_session_nonce' )
+		) {
+			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'mailchimp' ) ) );
+		}
+
+		$api = mailchimp_sf_get_api();
+		if ( $api ) {
+			$profile = $api->get( '' );
+			if ( is_wp_error( $profile ) ) {
+				wp_send_json_error( array( 'message' => $profile->get_error_message() ) );
+			}
+
+			$logged_in = ( ! empty( $profile['last_login'] ) );
+            if ( $logged_in ) {
+				delete_option( 'mailchimp_sf_waiting_for_login' );
+            }
+            wp_send_json_success(array(
+                'success'   => true,
+                'logged_in' => $logged_in,
+                'redirect'  => admin_url('admin.php?page=mailchimp_sf_options')
+            ));
+		} else {
+			wp_send_json_error( array( 'success' => false ) );
+		}
 	}
 
 	/**
@@ -315,11 +407,12 @@ class Mailchimp_Admin {
 
 		// Create account page specific data.
 		if ( 'admin_page_mailchimp_sf_create_account' === $hook_suffix ) {
-			$data['create_account_nonce'] = wp_create_nonce( 'mailchimp_sf_create_account_nonce' );
-			$data['required_error']       = esc_html__( '%s  can\'t be blank.', 'mailchimp' );
-			$data['invalid_email_error']  = esc_html__( 'Insert correct email.', 'mailchimp' );
-			$data['confirm_email_match']  = esc_html__( 'Email confirmation must match confirmation email.', 'mailchimp' );
-			$data['confirm_email_match2'] = esc_html__( 'Email confirmation must match the field above.', 'mailchimp' );
+			$data['create_account_nonce']      = wp_create_nonce( 'mailchimp_sf_create_account_nonce' );
+			$data['check_login_session_nonce'] = wp_create_nonce( 'mailchimp_sf_check_login_session_nonce' );
+			$data['required_error']            = esc_html__( '%s  can\'t be blank.', 'mailchimp' );
+			$data['invalid_email_error']       = esc_html__( 'Insert correct email.', 'mailchimp' );
+			$data['confirm_email_match']       = esc_html__( 'Email confirmation must match confirmation email.', 'mailchimp' );
+			$data['confirm_email_match2']      = esc_html__( 'Email confirmation must match the field above.', 'mailchimp' );
 		}
 
 		wp_localize_script(
