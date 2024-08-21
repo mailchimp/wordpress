@@ -24,7 +24,6 @@ if ( ! empty( $api ) ) {
 }
 ?>
 <div class="mailchimp-sf-create-account">
-	<input type="hidden" name="signup_initiated" value="<?php echo esc_attr( (bool) $signup_initiated ); ?>" />
 	<div class="mailchimp-sf-create-account__header flex items-center">
 		<div class="flex items-center">
 			<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -112,7 +111,7 @@ if ( ! empty( $api ) ) {
 										<span> <?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
 										<span>Optional</span>
 									</label>
-									<input type="text" id="phone_number" name="phone_number" value="<?php echo esc_attr( isset( $user->billing_phone ) ? $user->billing_phone : '' ); ?>"/>
+									<input type="text" id="phone_number" name="phone_number" value=""/>
 								</div>
 							</div>
 
@@ -326,12 +325,13 @@ if ( ! empty( $api ) ) {
 					</a>
 				</div>
 			</div>
-			<div id="mailchimp_woocommerce_options" class="mailchimp-sf-suggest-to-login hidden">
+			<div class="mailchimp-sf-suggest-to-login hidden">
 				<div class="title"><?php esc_html_e( 'Login', 'mailchimp' ); ?></div>
 				<p class="h4"><?php esc_html_e( 'It seems account with this email already created. You may try to login with this username. ', 'mailchimp' ); ?><span class="mailchimp-sf-email"></span></p>
 
-				<a id="mailchimp-connect" href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save oauth-connect"><?php esc_html_e( 'Connect', 'mailchimp' ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save"><?php esc_html_e( 'Connect', 'mailchimp' ); ?></a>
 			</div>
+			<input type="hidden" name="signup_initiated" value="<?php echo esc_attr( (bool) $signup_initiated ); ?>" />
 		</div>
 	</div>
 </div>
