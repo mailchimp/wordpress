@@ -220,7 +220,7 @@
 
 			if (input.name === 'email') {
 				if (!input.value.includes('@') || !input.value.includes('.'))
-					return params.invalid_email;
+					return params.invalid_email_error;
 				if (input.value !== $('#mailchimp-sf-profile-details input#confirm_email').val())
 					return params.confirm_email_match;
 			}
