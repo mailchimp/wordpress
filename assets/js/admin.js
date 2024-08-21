@@ -324,10 +324,8 @@
 			$(errorSelector).html('');
 			const formData = $(e.target).serializeArray();
 			const formDataObject = {};
-			formData.map((obj) => {
-				const newObj = {};
+			formData.forEach((obj) => {
 				formDataObject[obj.name] = obj.value;
-				return newObj;
 			});
 
 			const postData = {
@@ -347,6 +345,11 @@
 					country: formDataObject.country,
 				},
 			};
+
+			// Add address2 if available.
+			if (formDataObject.address2 !== '') {
+				postData.address.address2 = formDataObject.address2;
+			}
 
 			$.post(
 				params.ajax_url,
