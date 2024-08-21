@@ -67,7 +67,7 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 						<div class="mailchimp-sf-oauth-connect-wrapper">
 							<span class="spinner"></span>
 							<button class="button button-primary" id="mailchimp_sf_oauth_connect"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
-							<a class="button button-secondary" id="mailchimp_sf_create_account_button" href="<?php echo esc_url( admin_url('admin.php?page=mailchimp_sf_create_account') ); ?>"><?php esc_html_e( 'Create account', 'mailchimp' ); ?></a>
+							<a class="button button-secondary" id="mailchimp_sf_create_account_button" href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_create_account' ) ); ?>"><?php esc_html_e( 'Create account', 'mailchimp' ); ?></a>
 						</div>
 					</td>
 				</tr>

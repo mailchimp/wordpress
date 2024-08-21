@@ -1,13 +1,15 @@
 <?php
 /**
  * Create account page template
+ *
+ * @package Mailchimp
  */
 
 $admin_email = get_option( 'admin_email' );
 $user        = get_user_by( 'email', $admin_email );
 
 if ( empty( $user ) ) {
- 	$user_id = get_current_user_id();
+	$user_id = get_current_user_id();
 	$user    = get_user_by( 'id', $user_id );
 }
 
@@ -17,12 +19,12 @@ $signup_initiated = $waiting_login && 'waiting' === $waiting_login;
 $api              = mailchimp_sf_get_api();
 
 if ( ! empty( $api ) ) {
-	$profile = $api->get('');
+	$profile = $api->get( '' );
 	$email   = isset( $profile['email'] ) ? $profile['email'] : $email;
 }
 ?>
 <div class="mailchimp-sf-create-account">
-	<input type="hidden" name="signup_initiated" value="<?php echo esc_attr(!!$signup_initiated); ?>" />
+	<input type="hidden" name="signup_initiated" value="<?php echo esc_attr( (bool) $signup_initiated ); ?>" />
 	<div class="mailchimp-sf-create-account__header flex items-center">
 		<div class="flex items-center">
 			<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -48,21 +50,21 @@ if ( ! empty( $api ) ) {
 			</svg>
 		</div>
 		<div class="">
-			<h3><?php esc_html_e( 'Mailchimp List Subscribe Form', 'mailchimp' ) ?></h3>
+			<h3><?php esc_html_e( 'Mailchimp List Subscribe Form', 'mailchimp' ); ?></h3>
 			<div class="flex items-center wizard-steps">
-				<div class="current"><?php echo esc_html__( 'Sign up', 'mailchimp' ) ?></div>
+				<div class="current"><?php echo esc_html__( 'Sign up', 'mailchimp' ); ?></div>
 				<span class="chevron">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.05715 8.00005L6.19522 5.13812L7.13803 4.19531L10.9428 8.00005L7.13803 11.8048L6.19522 10.862L9.05715 8.00005Z" fill="#241C15" fill-opacity="0.3"/>
 						</svg>
 					</span>
-				<div class="deselected"><?php echo esc_html__( 'Activate account', 'mailchimp' ) ?></div>
+				<div class="deselected"><?php echo esc_html__( 'Activate account', 'mailchimp' ); ?></div>
 				<span class="chevron">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.05715 8.00005L6.19522 5.13812L7.13803 4.19531L10.9428 8.00005L7.13803 11.8048L6.19522 10.862L9.05715 8.00005Z" fill="#241C15" fill-opacity="0.3"/>
 						</svg>
 					</span>
-				<div class="deselected"><?php echo esc_html__( 'Choose plan', 'mailchimp' ) ?></div>
+				<div class="deselected"><?php echo esc_html__( 'Choose plan', 'mailchimp' ); ?></div>
 			</div>
 		</div>
 	</div>
@@ -70,11 +72,11 @@ if ( ! empty( $api ) ) {
 		<div class="mailchimp-sf-create-account__body-inner">
 			<form class="mailchimp-sf-activate-account <?php echo esc_attr( ( $signup_initiated ) ? 'hidden' : '' ); ?>">
 				<div id="mailchimp-sf-profile-details" class="mailchimp-sf-create-account-step">
-					<div class="title"><?php esc_html_e( 'Confirm your information', 'mailchimp' ) ?></div>
+					<div class="title"><?php esc_html_e( 'Confirm your information', 'mailchimp' ); ?></div>
 					<div class="general-error">
 						<p class="error-message"></p>
 					</div>
-					<div class="subtitle"><?php esc_html_e( 'Profile details', 'mailchimp' ) ?></div>
+					<div class="subtitle"><?php esc_html_e( 'Profile details', 'mailchimp' ); ?></div>
 					<div class="mailchimp-sf-form-wrapper">
 						<fieldset>
 							<input id="org" name="org" type="hidden" value="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
@@ -83,14 +85,14 @@ if ( ! empty( $api ) ) {
 									<label for="first_name">
 										<span> <?php esc_html_e( 'First name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset($user->first_name) ? $user->first_name : '' ); ?>"/>
+									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $user->first_name ) ? $user->first_name : '' ); ?>"/>
 									<p id="mailchimp-sf-first_name-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="last_name">
 										<span> <?php esc_html_e( 'Last name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset($user->last_name) ? $user->last_name : '' ); ?>"/>
+									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $user->last_name ) ? $user->last_name : '' ); ?>"/>
 									<p id="mailchimp-sf-last_name-error" class="error-field"></p>
 								</div>
 							</div>
@@ -110,7 +112,7 @@ if ( ! empty( $api ) ) {
 										<span> <?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
 										<span>Optional</span>
 									</label>
-									<input type="text" id="phone_number" name="phone_number" value="<?php echo esc_attr( isset($user->billing_phone) ? $user->billing_phone : '' ); ?>"/>
+									<input type="text" id="phone_number" name="phone_number" value="<?php echo esc_attr( isset( $user->billing_phone ) ? $user->billing_phone : '' ); ?>"/>
 								</div>
 							</div>
 
@@ -119,7 +121,7 @@ if ( ! empty( $api ) ) {
 									<label for="email">
 										<span> <?php esc_html_e( 'Email', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="email" id="email" name="email" value="<?php echo esc_attr( isset($user->user_email) ? $user->user_email : '' ) ?>"/>
+									<input required type="email" id="email" name="email" value="<?php echo esc_attr( isset( $user->user_email ) ? $user->user_email : '' ); ?>"/>
 									<p id="mailchimp-sf-email-error" class="error-field"></p>
 
 								</div>
@@ -138,7 +140,7 @@ if ( ! empty( $api ) ) {
 				</div>
 
 				<div id="mailchimp-sf-business-address" class="mailchimp-sf-create-account-step">
-					<div class="subtitle"><?php echo esc_html__( 'Business Address', 'mailchimp' ) ?></div>
+					<div class="subtitle"><?php echo esc_html__( 'Business Address', 'mailchimp' ); ?></div>
 
 					<div class="mailchimp-sf-form-wrapper">
 						<fieldset>
@@ -212,7 +214,7 @@ if ( ! empty( $api ) ) {
 											<?php
 											foreach ( $timezones as $timezone ) {
 												?>
-												<option value="<?php echo esc_attr( $timezone['zone'] ); ?>" <?php selected( $timezone['zone'] === $selected_timezone, true ) ?>>
+												<option value="<?php echo esc_attr( $timezone['zone'] ); ?>" <?php selected( $timezone['zone'] === $selected_timezone, true ); ?>>
 													<?php echo esc_html( $timezone['diff_from_GMT'] . ' - ' . $timezone['zone'] ); ?>
 												</option>
 												<?php
