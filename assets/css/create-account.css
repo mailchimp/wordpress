@@ -38,6 +38,10 @@
 }
 
 #mailchimp-sf-create-account .wizard-steps {
+	color: rgba(36, 28, 21);
+}
+
+#mailchimp-sf-create-account .wizard-steps .deselected {
 	color: rgba(36, 28, 21, 0.3);
 }
 

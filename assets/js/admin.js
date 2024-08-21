@@ -366,6 +366,11 @@
 						$('.mailchimp-sf-activate-account').addClass('hidden');
 						$('.mailchimp-sf-confirm-email').removeClass('hidden');
 
+						// Update wizard steps.
+						$('.wizard-steps .step-1').removeClass('current');
+						$('.wizard-steps .step-2').removeClass('deselected');
+						$('.wizard-steps .step-2').addClass('current');
+
 						// Waiting for login.
 						waitingForMailchimpAccountLogin();
 					} else if (response.data && response.data.suggest_login) {
