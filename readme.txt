@@ -22,6 +22,10 @@ WordPress.com compatibility is limited to Business tier users only. [How to add 
 
 No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
 
+= Why am I not seeing all my fields in my form? =
+
+You need to ensure that the fields are enabled both in your Mailchimp account (Audience > Signup forms) and in the settings of this plugin.  Once the fields are enabled in both places, then they'll appear in the editor and frontend of your site.
+
 = How can I translate “MailChimp List Subscribe Form”? =
 
 Internationalization (i18n) is available on GlotPress at [https://translate.wordpress.org/projects/wp-plugins/mailchimp/](https://translate.wordpress.org/projects/wp-plugins/mailchimp/).  Any assistance [translating the plugin](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) is greatly appreciated!
