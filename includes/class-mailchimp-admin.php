@@ -433,7 +433,7 @@ class Mailchimp_Admin {
 	}
 
 	/**
-	 * Add Create the create account page.
+	 * Add the create account page.
 	 *
 	 * @since x.x.x
 	 *

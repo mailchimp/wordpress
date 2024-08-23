@@ -13,14 +13,14 @@ if ( empty( $user ) ) {
 	$user    = get_user_by( 'id', $user_id );
 }
 
-$email            = isset( $user->user_email ) ? $user->user_email : '';
+$email            = $user->user_email ?? '';
 $waiting_login    = get_option( 'mailchimp_sf_waiting_for_login' );
 $signup_initiated = $waiting_login && 'waiting' === $waiting_login;
 $api              = mailchimp_sf_get_api();
 
 if ( ! empty( $api ) ) {
 	$profile = $api->get( '' );
-	$email   = isset( $profile['email'] ) ? $profile['email'] : $email;
+	$email   = $profile['email'] ?? $email;
 }
 ?>
 <div class="mailchimp-sf-create-account">
@@ -48,10 +48,10 @@ if ( ! empty( $api ) ) {
 						c23.437,0,42.503,19.068,42.503,42.505C90.996,71.928,71.928,90.997,48.492,90.997z"/>
 			</svg>
 		</div>
-		<div class="">
+		<div>
 			<h3><?php esc_html_e( 'Mailchimp List Subscribe Form', 'mailchimp' ); ?></h3>
 			<div class="flex items-center wizard-steps">
-				<div class="step-1 <?php echo esc_attr( ( ! $signup_initiated ) ? 'current' : '' ); ?>"><?php echo esc_html__( 'Sign up', 'mailchimp' ); ?></div>
+				<div class="step-1 <?php echo esc_attr( ( ! $signup_initiated ) ? 'current' : '' ); ?>"><?php esc_html_e( 'Sign up', 'mailchimp' ); ?></div>
 				<span class="chevron">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.05715 8.00005L6.19522 5.13812L7.13803 4.19531L10.9428 8.00005L7.13803 11.8048L6.19522 10.862L9.05715 8.00005Z" fill="#241C15" fill-opacity="0.3"/>
@@ -82,16 +82,16 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box box-half">
 									<label for="first_name">
-										<span> <?php esc_html_e( 'First name', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'First name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( isset( $user->first_name ) ? $user->first_name : '' ); ?>"/>
+									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( $user->first_name ?? '' ); ?>"/>
 									<p id="mailchimp-sf-first_name-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="last_name">
-										<span> <?php esc_html_e( 'Last name', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Last name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( isset( $user->last_name ) ? $user->last_name : '' ); ?>"/>
+									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( $user->last_name ?? '' ); ?>"/>
 									<p id="mailchimp-sf-last_name-error" class="error-field"></p>
 								</div>
 							</div>
@@ -108,7 +108,7 @@ if ( ! empty( $api ) ) {
 								</div>
 								<div class="box box-half">
 									<label for="phone_number" class="optional flex justify-between">
-										<span> <?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
 										<span>Optional</span>
 									</label>
 									<input type="text" id="phone_number" name="phone_number" value=""/>
@@ -118,9 +118,9 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box">
 									<label for="email">
-										<span> <?php esc_html_e( 'Email', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Email', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="email" id="email" name="email" value="<?php echo esc_attr( isset( $user->user_email ) ? $user->user_email : '' ); ?>"/>
+									<input required type="email" id="email" name="email" value="<?php echo esc_attr( $user->user_email ?? '' ); ?>"/>
 									<p id="mailchimp-sf-email-error" class="error-field"></p>
 
 								</div>
@@ -128,7 +128,7 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box">
 									<label for="confirm_email">
-										<span> <?php esc_html_e( 'Confirm Email', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Confirm Email', 'mailchimp' ); ?></span>
 									</label>
 									<input required type="email" id="confirm_email" name="confirm_email"/>
 									<p id="mailchimp-sf-confirm_email-error" class="error-field"></p>
@@ -146,7 +146,7 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box">
 									<label for="address">
-										<span> <?php esc_html_e( 'Address line 1 (Street address or post office box)', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Address line 1 (Street address or post office box)', 'mailchimp' ); ?></span>
 									</label>
 									<input required type="text" id="address" name="address" value=""/>
 									<p id="mailchimp-sf-address-error" class="error-field"></p>
@@ -156,7 +156,7 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box">
 									<label for="address2">
-										<span> <?php esc_html_e( 'Address line 2', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Address line 2', 'mailchimp' ); ?></span>
 									</label>
 									<input type="text" id="address2" name="address2" value=""/>
 								</div>
@@ -165,14 +165,14 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box box-half">
 									<label for="city">
-										<span> <?php esc_html_e( 'City', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'City', 'mailchimp' ); ?></span>
 									</label>
 									<input required type="text" id="city" name="city" value=""/>
 									<p id="mailchimp-sf-city-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="state">
-										<span> <?php esc_html_e( 'State/Province/Region', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'State/Province/Region', 'mailchimp' ); ?></span>
 									</label>
 									<input required type="text" id="state" name="state" value=""/>
 									<p id="mailchimp-sf-state-error" class="error-field"></p>
@@ -182,14 +182,14 @@ if ( ! empty( $api ) ) {
 							<div class="form-row">
 								<div class="box box-half">
 									<label for="zip">
-										<span> <?php esc_html_e( 'Zip/Postal code', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Zip/Postal code', 'mailchimp' ); ?></span>
 									</label>
 									<input required type="text" id="zip" name="zip" value=""/>
 									<p id="mailchimp-sf-zip-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="country">
-										<span> <?php esc_html_e( 'Country', 'mailchimp' ); ?></span>
+										<span><?php esc_html_e( 'Country', 'mailchimp' ); ?></span>
 									</label>
 									<div class="mailchimp-select-wrapper">
 										<select id="country" name="country" required>
@@ -327,7 +327,7 @@ if ( ! empty( $api ) ) {
 			</div>
 			<div class="mailchimp-sf-suggest-to-login hidden">
 				<div class="title"><?php esc_html_e( 'Login', 'mailchimp' ); ?></div>
-				<p class="h4"><?php esc_html_e( 'It seems account with this email already created. You may try to login with this username. ', 'mailchimp' ); ?><span class="mailchimp-sf-email"></span></p>
+				<p class="h4"><?php esc_html_e( 'It seems an account already exists with this email. Please try logging in with this username. ', 'mailchimp' ); ?><span class="mailchimp-sf-email"></span></p>
 
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save"><?php esc_html_e( 'Connect', 'mailchimp' ); ?></a>
 			</div>
