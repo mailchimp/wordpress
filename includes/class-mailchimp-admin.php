@@ -436,14 +436,12 @@ class Mailchimp_Admin {
 	 * Add the create account page.
 	 *
 	 * @since x.x.x
-	 *
-	 * @return void
 	 */
 	public function add_create_account_page() {
 		add_submenu_page(
 			'admin.php',
-			'Create Mailchimp Account',
-			'Create Mailchimp Account',
+			esc_html__( 'Create Mailchimp Account', 'mailchimp' ),
+			esc_html__( 'Create Mailchimp Account', 'mailchimp' ),
 			'manage_options',
 			'mailchimp_sf_create_account',
 			array( $this, 'create_account_page' )
@@ -458,9 +456,8 @@ class Mailchimp_Admin {
 	 * @return void
 	 */
 	public function create_account_page() {
-		$countries         = $this->get_countries();
-		$timezones         = $this->get_timezones();
-		$selected_timezone = $this->get_current_timezone();
+		$countries = $this->get_countries();
+		$timezones = $this->get_timezones();
 		?>
 		<div class="wrap" id="mailchimp-sf-create-account">
 			<hr class="wp-header-end">
@@ -480,39 +477,14 @@ class Mailchimp_Admin {
 	 */
 	private function get_timezones() {
 		$zones_array = array();
-		$timestamp   = time();
-		$current     = date_default_timezone_get();
-
 		foreach ( timezone_identifiers_list() as $key => $zone ) {
-			date_default_timezone_set( $zone ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
+			$timezone                             = new DateTimeZone( $zone );
+			$diff_string                          = ( new DateTime( 'now', $timezone ) )->format( 'P' );
 			$zones_array[ $key ]['zone']          = $zone;
-			$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . date( 'P', $timestamp ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+			$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . $diff_string;
 		}
-
-		date_default_timezone_set( $current ); // phpcs:ignore WordPress.DateTime.RestrictedFunctions.timezone_change_date_default_timezone_set
 
 		return $zones_array;
-	}
-
-	/**
-	 * Get the current timezone from WordPress settings.
-	 *
-	 * @return mixed|string|void
-	 */
-	private function get_current_timezone() {
-		// Get timezone data from options.
-		$timezone_string = get_option( 'timezone_string' );
-		$offset          = get_option( 'gmt_offset' );
-
-		$signal = ( $offset <=> 0 ) < 0 ? '-' : '+';
-		$offset = sprintf( '%1s%02d:%02d', $signal, abs( (int) $offset ), abs( fmod( $offset, 1 ) * 60 ) );
-
-		$timezone = $offset;
-		if ( $timezone_string ) {
-			$timezone = $timezone_string;
-		}
-
-		return $timezone;
 	}
 
 	/**

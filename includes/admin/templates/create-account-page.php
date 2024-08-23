@@ -57,13 +57,13 @@ if ( ! empty( $api ) ) {
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.05715 8.00005L6.19522 5.13812L7.13803 4.19531L10.9428 8.00005L7.13803 11.8048L6.19522 10.862L9.05715 8.00005Z" fill="#241C15" fill-opacity="0.3"/>
 						</svg>
 					</span>
-				<div class="step-2 <?php echo esc_attr( ( $signup_initiated ) ? 'current' : 'deselected' ); ?>"><?php echo esc_html__( 'Activate account', 'mailchimp' ); ?></div>
+				<div class="step-2 <?php echo esc_attr( ( $signup_initiated ) ? 'current' : 'deselected' ); ?>"><?php esc_html_e( 'Activate account', 'mailchimp' ); ?></div>
 				<span class="chevron">
 						<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<path fill-rule="evenodd" clip-rule="evenodd" d="M9.05715 8.00005L6.19522 5.13812L7.13803 4.19531L10.9428 8.00005L7.13803 11.8048L6.19522 10.862L9.05715 8.00005Z" fill="#241C15" fill-opacity="0.3"/>
 						</svg>
 					</span>
-				<div class="step-3 deselected"><?php echo esc_html__( 'Choose plan', 'mailchimp' ); ?></div>
+				<div class="step-3 deselected"><?php esc_html_e( 'Choose plan', 'mailchimp' ); ?></div>
 			</div>
 		</div>
 	</div>
@@ -109,7 +109,7 @@ if ( ! empty( $api ) ) {
 								<div class="box box-half">
 									<label for="phone_number" class="optional flex justify-between">
 										<span><?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
-										<span>Optional</span>
+										<span><?php esc_html_e( 'Optional', 'mailchimp' ); ?></span>
 									</label>
 									<input type="text" id="phone_number" name="phone_number" value=""/>
 								</div>
@@ -139,7 +139,7 @@ if ( ! empty( $api ) ) {
 				</div>
 
 				<div id="mailchimp-sf-business-address" class="mailchimp-sf-create-account-step">
-					<div class="subtitle"><?php echo esc_html__( 'Business Address', 'mailchimp' ); ?></div>
+					<div class="subtitle"><?php esc_html_e( 'Business Address', 'mailchimp' ); ?></div>
 
 					<div class="mailchimp-sf-form-wrapper">
 						<fieldset>
@@ -211,6 +211,7 @@ if ( ! empty( $api ) ) {
 									<div class="mailchimp-select-wrapper">
 										<select id="timezone" name="timezone" required>
 											<?php
+											$selected_timezone = wp_timezone_string();
 											foreach ( $timezones as $timezone ) {
 												?>
 												<option value="<?php echo esc_attr( $timezone['zone'] ); ?>" <?php selected( $timezone['zone'] === $selected_timezone, true ); ?>>
@@ -261,9 +262,9 @@ if ( ! empty( $api ) ) {
 			</form>
 
 			<div class="mailchimp-sf-confirm-email <?php echo esc_attr( ( ! $signup_initiated ) ? 'hidden' : '' ); ?>">
-				<div class="title"><?php echo esc_html__( 'Check your email', 'mailchimp' ); ?></div>
+				<div class="title"><?php esc_html_e( 'Check your email', 'mailchimp' ); ?></div>
 				<p class="h4">
-					<?php echo esc_html__( 'To start using Mailchimp, activate your account with the link sent to ', 'mailchimp' ); ?><span class="mailchimp-sf-email"><?php echo esc_html( $email ); ?></span>
+					<?php esc_html_e( 'To start using Mailchimp, activate your account with the link sent to ', 'mailchimp' ); ?><span class="mailchimp-sf-email"><?php echo esc_html( $email ); ?></span>
 				</p>
 
 				<div class="flex items-center gap-x-6">

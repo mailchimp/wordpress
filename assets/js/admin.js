@@ -189,7 +189,7 @@
 
 		// Validate inputs.
 		const validateFormInput = (input) => {
-			let inputLabel = 'This field';
+			let inputLabel = '';
 			if (
 				$('label[for="' + input.id + '"] span').length > 0 &&
 				$('label[for="' + input.id + '"] span').text()
@@ -200,10 +200,7 @@
 				inputLabel = inputLabel.split('/')[0];
 				inputLabel = inputLabel.split('(')[0];
 			}
-			const requiredError = (params.required_error || "%s can't be blank.").replace(
-				'%s',
-				inputLabel,
-			);
+			const requiredError = (params.required_error || '').replace('%s', inputLabel);
 			const requiredInputs = [
 				'first_name',
 				'last_name',
