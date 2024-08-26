@@ -19,7 +19,7 @@
   },
   "scripts": {
     "cypress:open": "cypress open --config-file tests/cypress/config.js --e2e --browser chrome",
-    "cypress:run": "cypress run --config-file tests/cypress/config.js",
+    "cypress:run": "cypress run --config-file tests/cypress/config.js --e2e --browser chrome",
     "env": "wp-env",
     "env:start": "wp-env start",
     "env:stop": "wp-env stop",
@@ -31,10 +31,10 @@
     "build": "10up-toolkit build"
   },
   "devDependencies": {
-    "@10up/cypress-wp-utils": "^0.3.0",
+    "@10up/cypress-wp-utils": "^0.4.0",
     "@wordpress/env": "^10.2.0",
     "10up-toolkit": "^6.2.0",
-    "cypress": "^13.12.0",
+    "cypress": "^13.13.2",
     "cypress-mochawesome-reporter": "^3.8.2",
     "mochawesome-json-to-md": "^1.3.5"
   },

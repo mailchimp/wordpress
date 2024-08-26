@@ -12,6 +12,10 @@
  * @return void
  */
 function mailchimp_sf_signup_form( $args = array() ) {
+	// Check if we should display the form.
+	if ( ! mailchimp_sf_should_display_form() ) {
+		return;
+	}
 
 	$before_title  = isset( $args['before_title'] ) ? $args['before_title'] : '';
 	$after_title   = isset( $args['after_title'] ) ? $args['after_title'] : '';
@@ -83,9 +87,10 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		line-height: 1.4em;
 		margin-bottom: 0.75em;
 	}
+	.mc_custom_border_hdr,
 	#mc_subheader {
 		line-height: 1.25em;
-		margin: 18px 0;
+		margin-bottom: 18px;
 	}
 	.mc_merge_var {
 		margin-bottom: 1.0em;

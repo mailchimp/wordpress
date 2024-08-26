@@ -15,6 +15,9 @@
 
 import '@10up/cypress-wp-utils';
 
+// Import commands.js using ES2015 syntax:
+import './commands';
+
 beforeEach( () => {
 	cy.session( 'login', cy.login, {
 		cacheAcrossSpecs: true,

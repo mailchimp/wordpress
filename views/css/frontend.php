@@ -75,7 +75,7 @@ if ( get_option( 'mc_custom_style' ) === 'on' ) {
 		padding-left: 0;
 	}
 	ul.mc_list li {
-		font-size: 12px;
+		font-size: 14px;
 	}
 	#ui-datepicker-div .ui-datepicker-year {
 		display: none;
