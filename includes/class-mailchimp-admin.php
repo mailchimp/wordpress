@@ -23,7 +23,7 @@ class Mailchimp_Admin {
 	 * @since 1.6.0
 	 * @var string
 	 */
-	private $oauth_url = 'https://woocommerce.mailchimpapp.com';
+	private $oauth_url = 'https://wordpress.mailchimpapp.com';
 
 	/**
 	 * Initialize the class
