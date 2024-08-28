@@ -1,5 +1,10 @@
 /* Import fonts */
 @import url('../fonts/Means/fonts.css');
+@import url('../fonts/graphik/fonts.css');
+
+#mailchimp-sf-create-account {
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
+}
 
 #mailchimp-sf-create-account .flex {
     display:flex;
@@ -56,6 +61,10 @@
 
 #mailchimp-sf-create-account .wizard-steps .chevron svg {
 	display: block;
+}
+
+#mailchimp-sf-create-account .mailchimp-sf-create-account__body a {
+	color: #007C89;
 }
 
 @keyframes spin {
@@ -239,7 +248,7 @@
 
 .mailchimp-sf-form-wrapper label {
 	display: block;
-	font-family: ui-sans-serif, system-ui, sans-serif, proxima-nova, Arial, Helvetica, sans-serif;
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	font-size: 14px;
 	font-weight: 400;
 	line-height: 30px;
@@ -304,8 +313,7 @@
 	border-radius: 4px;
 	padding: 0.6em 1.5em;
 	width: 100%;
-	/* font-family: "Proxima Nova Alt Light", Arial, Helvetica, sans-serif */
-
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 }
 
 .mailchimp-sf-form-wrapper .mailchimp-select-wrapper .form-row {
@@ -314,7 +322,7 @@
 
 .mailchimp-sf-form-wrapper .mailchimp-select-wrapper select {
 	font-size: 14px;
-	/* font-family: "Proxima Nova Alt Light", Arial, Helvetica, sans-serif; */
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	-webkit-appearance: none;
 	box-shadow: none;
 	outline: none;
