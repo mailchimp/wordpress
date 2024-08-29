@@ -185,13 +185,13 @@
 	text-decoration: none;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-create-account__body a {
+#mailchimp-sf-create-account .mailchimp-sf-create-account__body .terms a {
 	color: #007C89;
 	font-weight: 500;
     text-decoration: none;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-create-account__body a:hover {
+#mailchimp-sf-create-account .mailchimp-sf-create-account__body .terms a:hover {
 	text-decoration: underline;
 }
 
@@ -327,14 +327,14 @@
 	display: none !important;
 }
 
-.mailchimp-sf-confirm-email-wrapper {
+.mailchimp-sf-confirm-section-wrapper {
 	width: 100%;
 	max-width: 504px;
 	margin: 0 auto;
 	margin-top: -24px;
 }
 
-.mailchimp-sf-confirm-email {
+.mailchimp-sf-confirm-section {
 	background-color: #ffffff;
     border-radius: 12px;
     border: 1px solid rgba(36, 28, 21, 0.15);

@@ -264,8 +264,8 @@ if ( ! empty( $api ) ) {
 				</div>
 			</form>
 
-			<div class="mailchimp-sf-confirm-email-wrapper <?php echo esc_attr( ( ! $signup_initiated ) ? 'hidden' : '' ); ?>">
-				<div class="mailchimp-sf-confirm-email">
+			<div class="mailchimp-sf-confirm-email-wrapper mailchimp-sf-confirm-section-wrapper <?php echo esc_attr( ( ! $signup_initiated ) ? 'hidden' : '' ); ?>">
+				<div class="mailchimp-sf-confirm-email mailchimp-sf-confirm-section">
 					<div class="title"><?php esc_html_e( 'Check your email', 'mailchimp' ); ?></div>
 					<p class="h4">
 						<?php
@@ -349,11 +349,28 @@ if ( ! empty( $api ) ) {
 					</div>
 				</div>
 			</div>
-			<div class="mailchimp-sf-suggest-to-login hidden">
-				<div class="title"><?php esc_html_e( 'Login', 'mailchimp' ); ?></div>
-				<p class="h4"><?php esc_html_e( 'It seems an account already exists with this email. Please try logging in with this username. ', 'mailchimp' ); ?><span class="mailchimp-sf-email"></span></p>
+			<div class="mailchimp-sf-suggest-to-login mailchimp-sf-confirm-section-wrapper hidden">
+				<div class="mailchimp-sf-confirm-section">
+					<div class="title"><?php esc_html_e( 'Login', 'mailchimp' ); ?></div>
+					<p class="h4">
+						<?php
+						echo wp_kses(
+							sprintf(
+								/* translators: %s - Username */
+								__( 'It seems an account already exists with this email. Please try logging in with this username: %s', 'mailchimp' ),
+								'<span class="mailchimp-sf-email">' . esc_html( $email ) . '</span>'
+							),
+							array(
+								'span' => array(
+									'class' => array(),
+								),
+							)
+						);
+						?>
+					</p>
 
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save"><?php esc_html_e( 'Connect', 'mailchimp' ); ?></a>
+					<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save"><?php esc_html_e( 'Connect', 'mailchimp' ); ?></a>
+				</div>
 			</div>
 			<input type="hidden" name="signup_initiated" value="<?php echo esc_attr( (bool) $signup_initiated ); ?>" />
 		</div>
