@@ -364,7 +364,7 @@
 
 					if (response.success && response.data) {
 						$('.mailchimp-sf-activate-account').addClass('hidden');
-						$('.mailchimp-sf-confirm-email').removeClass('hidden');
+						$('.mailchimp-sf-confirm-email-wrapper').removeClass('hidden');
 
 						// Update wizard steps.
 						$('.wizard-steps .step-1').removeClass('current');
