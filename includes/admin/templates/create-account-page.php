@@ -196,12 +196,14 @@ if ( ! empty( $api ) ) {
 									</label>
 									<div class="mailchimp-select-wrapper">
 										<select id="country" name="country" required>
+											<option value="" selected="selected"><?php esc_html_e( 'Please select a country', 'mailchimp' ); ?></option>
 										<?php
 										foreach ( $countries as $key => $value ) {
 											echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
 										}
 										?>
 										</select>
+										<p id="mailchimp-sf-country-error" class="error-field"></p>
 									</div>
 								</div>
 							</div>

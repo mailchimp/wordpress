@@ -314,12 +314,13 @@
 .mailchimp-sf-form-wrapper .box.form-error {
 	color: red;
 }
-.mailchimp-sf-form-wrapper .box.form-error p {
+.mailchimp-sf-form-wrapper .box.form-error p.error-field {
 	margin-bottom: 0px;
 	font-size: 14px;
 }
 
-.mailchimp-sf-form-wrapper .box.form-error input {
+.mailchimp-sf-form-wrapper .box.form-error input,
+.mailchimp-sf-form-wrapper .box.form-error select {
 	border-color: red;
 }
 

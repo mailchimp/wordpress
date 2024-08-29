@@ -207,6 +207,7 @@
 				'business_name',
 				'email',
 				'address',
+				'country',
 				'city',
 				'state',
 				'zip',
@@ -234,7 +235,7 @@
 			const inputIds = Object.keys(errors);
 
 			inputIds.forEach((key) => {
-				const inputElementId = `${wrapperId} input#${key}`;
+				const inputElementId = `${wrapperId} #${key}`;
 				const errorElementId = `${wrapperId} #mailchimp-sf-${key}-error`;
 
 				if (errors[key] !== null) {
