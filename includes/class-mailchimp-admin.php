@@ -460,7 +460,6 @@ class Mailchimp_Admin {
 		$timezones = $this->get_timezones();
 		?>
 		<div class="wrap" id="mailchimp-sf-create-account">
-			<hr class="wp-header-end">
 			<?php
 			include_once MCSF_DIR . 'includes/admin/templates/create-account-page.php';
 			?>
