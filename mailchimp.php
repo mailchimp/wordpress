@@ -775,7 +775,7 @@ function mailchimp_sf_get_interest_categories( $list_id, $new_list ) {
  */
 function mailchimp_sf_setup_page() {
 	$path = plugin_dir_path( __FILE__ );
-	require_once $path . '/views/setup_page.php';
+	require_once $path . '/includes/admin/templates/settings.php';
 }
 
 /**

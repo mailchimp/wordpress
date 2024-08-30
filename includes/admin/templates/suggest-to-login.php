@@ -26,6 +26,6 @@
 			?>
 		</p>
 
-		<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button create-account-save"><?php esc_html_e( 'Connect account', 'mailchimp' ); ?></a>
+		<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ); ?>" class="button mailchimp-sf-button"><?php esc_html_e( 'Connect account', 'mailchimp' ); ?></a>
 	</div>
 </div>

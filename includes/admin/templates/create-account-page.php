@@ -68,7 +68,7 @@ if ( $is_retrying && ! empty( $profile ) ) {
 	// Header.
 	include_once MCSF_DIR . 'includes/admin/templates/header.php';
 	?>
-	<div class="mailchimp-sf-create-account__body">
+	<div class="mailchimp-sf-create-account__body wrap">
 		<div class="mailchimp-sf-admin-notices">
 			<hr class="wp-header-end" style="display:none;"/>
 		</div>
@@ -256,7 +256,7 @@ if ( $is_retrying && ! empty( $profile ) ) {
 					</p>
 				</div>
 				<div class="box">
-					<button type="submit" id="mailchimp-sf-create-activate-account" class="button button-primary create-account-save">
+					<button type="submit" id="mailchimp-sf-create-activate-account" class="button button-primary mailchimp-sf-button">
 							<span class="mailchimp-sf-loading hidden">
 								<svg class="animate-spin" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 										<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

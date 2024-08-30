@@ -31,7 +31,7 @@
 		</svg>
 	</div>
 	<div>
-		<?php if ( $is_create_account_page ) : ?>
+		<?php if ( ! empty( $is_create_account_page ) ) : ?>
 			<h3><?php esc_html_e( 'Mailchimp + WordPress', 'mailchimp' ); ?></h3>
 			<div class="flex items-center wizard-steps">
 				<div class="step-1 <?php echo esc_attr( ( ! $signup_initiated ) ? 'current' : '' ); ?>"><?php esc_html_e( 'Sign up', 'mailchimp' ); ?></div>

@@ -1,8 +1,24 @@
 /* eslint-disable prefer-template, no-console */
 (function ($) {
 	const params = window.mailchimp_sf_admin_params || {};
-	const spinner = '.mailchimp-sf-oauth-connect-wrapper .spinner';
-	const errorSelector = '.mailchimp-sf-oauth-section .oauth-error';
+	const spinner = '#mailchimp_sf_oauth_connect .mailchimp-sf-loading';
+	const errorSelector = '.mailchimp-sf-oauth-error';
+
+	/**
+	 * Set connect button loading state.
+	 */
+	function setConnectButtonLoading() {
+		$(spinner).removeClass('hidden');
+		$('#mailchimp_sf_oauth_connect').attr('disabled', true);
+	}
+
+	/**
+	 * Set connect button normal state.
+	 */
+	function setConnectButtonNormal() {
+		$(spinner).addClass('hidden');
+		$('#mailchimp_sf_oauth_connect').attr('disabled', false);
+	}
 
 	/**
 	 * Open Mailchimp OAuth popup.
@@ -40,24 +56,24 @@
 				buttons: [
 					{
 						text: params.modal_button_cancel,
-						class: 'button-secondary',
+						class: 'button mailchimp-sf-button button-secondary',
 						click() {
 							$(this).dialog('close');
 						},
 					},
 					{
 						text: params.modal_button_try_again,
-						class: 'button-primary',
+						class: 'button mailchimp-sf-button',
 						click() {
 							$(this).dialog('close');
-							$(spinner).addClass('is-active');
+							setConnectButtonLoading();
 							openMailchimpOauthPopup(token);
 						},
 						style: 'margin-left: 10px;',
 					},
 				],
 			});
-			$(spinner).removeClass('is-active');
+			setConnectButtonNormal();
 		} else {
 			// Handle popup opened.
 			const oauthInterval = window.setInterval(function () {
@@ -92,25 +108,25 @@
 									}
 									$(errorSelector).show();
 								}
-								$(spinner).removeClass('is-active');
+								setConnectButtonNormal();
 							}).fail(function () {
 								console.error('Error calling OAuth finish endpoint.');
 								$(errorSelector).html(params.generic_error);
 								$(errorSelector).show();
-								$(spinner).removeClass('is-active');
+								setConnectButtonNormal();
 							});
 						} else {
 							console.log(
 								'Error calling OAuth status endpoint. No credentials provided at login popup? Data:',
 								statusData,
 							);
-							$(spinner).removeClass('is-active');
+							setConnectButtonNormal();
 						}
 					}).fail(function () {
 						$(errorSelector).html(params.generic_error);
 						$(errorSelector).show();
 						console.error('Error calling OAuth status endpoint.');
-						$(spinner).removeClass('is-active');
+						setConnectButtonNormal();
 					});
 				}
 			}, 250);
@@ -122,7 +138,7 @@
 		$('#mailchimp_sf_oauth_connect').click(function () {
 			$(errorSelector).hide();
 			$(errorSelector).html('');
-			$(spinner).addClass('is-active');
+			setConnectButtonLoading();
 
 			$.post(
 				params.ajax_url,
@@ -141,13 +157,13 @@
 							$(errorSelector).html(params.generic_error);
 						}
 						$(errorSelector).show();
-						$(spinner).removeClass('is-active');
+						setConnectButtonNormal();
 					}
 				},
 			).fail(function () {
 				$(errorSelector).html(params.generic_error);
 				$(errorSelector).show();
-				$(spinner).removeClass('is-active');
+				setConnectButtonNormal();
 			});
 		});
 	});

@@ -193,7 +193,7 @@ table.mc-widefat .last-row th {
 
 table.mc-widefat th {
 	color: var(--mailchimp-color-text-light) !important;
-	font-weight: 700 !important;
+	font-weight: 500;
 	width: 130px;
 }
 
@@ -262,26 +262,19 @@ th.mailchimp-connect {
 /**
  * Mailchimp OAuth CSS
  */
-.mailchimp-sf-oauth-section .oauth-error {
-	display: block;
+.mailchimp-sf-oauth-error {
 	color: #db3a1b;
+	margin-bottom: 0px;
+	font-size: 14px;
 }
 
 .mailchimp-sf-oauth-connect-wrapper {
 	display: flex;
-}
-
-#mailchimp_sf_create_account_button {
-	margin-left: 12px;
+	gap: 16px;
 }
 
 #mailchimp-sf-settings-page {
 	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
-}
-
-#mailchimp-sf-settings-page.wrap {
-	margin: 0px;
-	margin-left: -20px;
 }
 
 #mailchimp-sf-settings-page .flex {
@@ -359,6 +352,7 @@ th.mailchimp-connect {
 	border-top: 4px solid var(--mailchimp-color-border);
 	border-bottom: 1px solid rgba(36, 28, 21, 0.15);
 	column-gap: 34px;
+	margin-left: -20px;
 }
 
 .mailchimp-sf-header h3 {
@@ -389,14 +383,14 @@ body.admin_page_mailchimp_sf_create_account {
 .mailchimp-sf-create-account__body-inner {
 	max-width: 600px;
 	margin: 0 auto;
-	padding: 80px 12px;
+	padding: 70px 12px 120px 12px;
 }
 
 .mailchimp-sf-content-box-wrapper {
 	width: 100%;
 	max-width: 504px;
 	margin: 0 auto;
-	padding-top: 60px;
+	padding-top: 48px;
 	padding-bottom: 120px;
 }
 
@@ -407,25 +401,25 @@ body.admin_page_mailchimp_sf_create_account {
     padding: 52px 64px;
 }
 
-.mailchimp-sf-create-account__body .email-opener {
+#mailchimp-sf-settings-page .email-opener {
 	font-size: 16px;
     line-height: 24px;
     font-weight: 500;
     text-decoration: underline;
 }
 
-.mailchimp-sf-create-account__body .h4 {
+#mailchimp-sf-settings-page .h4 {
 	font-size: 16px;
 	margin: 0;
 	margin-bottom: 32px;
 	font-weight: 400;
 }
 
-.mailchimp-sf-create-account__body .mailchimp-sf-email {
+#mailchimp-sf-settings-page .mailchimp-sf-email {
 	font-weight: 500;
 }
 
-.mailchimp-sf-create-account__body .title {
+#mailchimp-sf-settings-page .title {
 	font-family: "Means Web", serif;
 	font-size: 32px;
 	font-weight: 400;
@@ -433,11 +427,11 @@ body.admin_page_mailchimp_sf_create_account {
 	margin-bottom: 32px;
 }
 
-.mailchimp-sf-create-account__body .mailchimp-sf-confirm-email .title {
+#mailchimp-sf-settings-page .mailchimp-sf-content-box .title {
 	margin-bottom: 16px;
 }
 
-.mailchimp-sf-create-account__body .subtitle {
+#mailchimp-sf-settings-page .subtitle {
 	font-family: "Means Web", serif;
 	font-size: 20px;
 	line-height: 1.2em;
@@ -455,7 +449,7 @@ body.admin_page_mailchimp_sf_create_account {
 	margin-top: 36px;
 }
 
-.mailchimp-sf-create-account__body .button.create-account-save {
+.button.mailchimp-sf-button {
 	all: unset;
 	box-sizing: border-box;
 	display: inline-flex;
@@ -475,9 +469,33 @@ body.admin_page_mailchimp_sf_create_account {
 	cursor: pointer;
 }
 
-.mailchimp-sf-create-account__body .button.create-account-save:hover {
-	background-color: #019eaf;
+.button.mailchimp-sf-button.button-secondary {
+	color: var(--mailchimp-color-link);
+    background-color: #fff;
+    border: 1px solid var(--mailchimp-color-link);
+}
+
+.button.mailchimp-sf-button:hover,
+.button.mailchimp-sf-button:focus,
+.button.mailchimp-sf-button:active {
+	color: #ffffff;
+	background-color: #006570;
 	text-decoration: none;
+}
+
+.button.mailchimp-sf-button:focus {
+	box-shadow: 0 0 0 1px #fff, 0 0 0 3px #006570;
+}
+
+.button.mailchimp-sf-button.button-secondary:hover,
+.button.mailchimp-sf-button.button-secondary:focus,
+.button.mailchimp-sf-button.button-secondary:active {
+	color: var(--mailchimp-color-link);
+	background-color: #f6f7f7;
+}
+
+.button.mailchimp-sf-button[disabled] {
+	cursor: not-allowed;
 }
 
 .mailchimp-sf-create-account__body .mailchimp-sf-confirm-email a {
@@ -500,10 +518,6 @@ body.admin_page_mailchimp_sf_create_account {
 
 .mailchimp-sf-create-account__body .terms a:hover {
 	text-decoration: underline;
-}
-
-.mailchimp-sf-create-account__body .button.create-account-save[disabled] {
-	cursor: not-allowed;
 }
 
 .mailchimp-sf-form-wrapper fieldset{
@@ -640,7 +654,7 @@ body.admin_page_mailchimp_sf_create_account {
 
 
 @media screen and (max-width: 782px) {
-	#mailchimp-sf-settings-page.wrap {
+	.mailchimp-sf-header {
 		margin-left: -10px;
 	}
 }
