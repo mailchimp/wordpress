@@ -7,14 +7,7 @@
 
 ?>
 <div class="wrap">
-	<hr class="wp-header-end">
-	<div class="mailchimp-header">
-		<svg xmlns="http://www.w3.org/2000/svg" aria-label="<?php esc_attr_e( 'Mailchimp Freddie', 'mailchimp' ); ?>" width="40" height="40" fill="none" viewBox="0 0 40 40">
-			<title><?php esc_html_e( 'Mailchimp Freddie', 'mailchimp' ); ?></title>
-			<path fill="#241C15" fill-rule="evenodd" d="M35.363 24.328c.507 0 1.303.587 1.303 2.003 0 1.408-.581 3.004-.718 3.358-2.095 5.046-7.095 7.855-13.052 7.677-5.552-.166-10.288-3.11-12.36-7.911-1.254 0-2.546-.553-3.528-1.427-1.035-.922-1.673-2.114-1.798-3.358-.096-.969.022-1.87.324-2.655l-1.164-.992c-5.326-4.52 11.333-23.13 16.661-18.459.027.024 1.813 1.785 1.817 1.789l.99-.422c4.674-1.945 8.466-1.006 8.47 2.097.003 1.614-1.02 3.495-2.66 5.202.595.554 1.07 1.42 1.343 2.41.23.731.27 1.473.29 1.949.03.658.06 2.19.064 2.217.042.013.515.143.658.184 1.255.354 2.147.825 2.584 1.286.436.46.652.905.731 1.428.074.422.064 1.166-.49 1.999 0 0 .143.313.281.757.138.445.238.814.254.868Zm-12.941 2.335.002.005-.002-.004v-.001Zm13.002.145c.127-.843-.06-1.17-.313-1.326-.268-.166-.59-.108-.59-.108s-.146-1.009-.56-1.924c-1.23.975-2.814 1.66-4.02 2.009-1.391.401-3.274.71-5.375.584-1.165-.095-1.936-.437-2.226.51 2.662.98 5.48.56 5.48.56a.1.1 0 0 1 .109.09.107.107 0 0 1-.062.106s-2.164 1.01-5.602-.059c.095.81.881 1.174 1.257 1.32.472.186.99.271.99.271 4.26.736 8.242-1.712 9.14-2.328.066-.046.11-.001.057.08a1.467 1.467 0 0 1-.088.126c-1.097 1.423-4.048 3.07-7.886 3.07-1.674 0-3.348-.593-3.962-1.504-.953-1.413-.047-3.476 1.541-3.261l.696.079c1.985.222 4.859-.058 7.228-1.163 2.167-1.01 2.985-2.123 2.862-3.024a1.298 1.298 0 0 0-.373-.736c-.39-.383-1.007-.681-2.049-.975-.344-.097-.578-.16-.83-.243-.447-.148-.668-.267-.718-1.112-.021-.37-.086-1.658-.109-2.19-.04-.933-.152-2.207-.94-2.734a1.315 1.315 0 0 0-.672-.216c-.235-.01-.352.031-.4.04-.449.076-.714.316-1.045.594-.982.822-1.81.957-2.732.917-.551-.024-1.135-.11-1.804-.15-.13-.007-.26-.016-.39-.022-1.545-.08-3.2 1.26-3.475 3.163-.383 2.649 1.525 4.017 2.076 4.82.07.096.152.232.152.36 0 .154-.1.276-.197.38-1.574 1.628-2.078 4.214-1.485 6.369.074.27.168.526.28.772 1.392 3.27 5.712 4.794 9.932 3.409.565-.186 1.1-.416 1.603-.681a8.429 8.429 0 0 0 2.456-1.844c1.12-1.176 1.785-2.454 2.044-4.03Zm-7.017-8.188c-.197-.252-.373-.659-.472-1.135-.176-.846-.157-1.46.335-1.539.492-.08.73.432.905 1.279.119.569.096 1.092-.035 1.395a2.838 2.838 0 0 0-.733 0Zm-4.224.67c-.352-.156-.809-.329-1.36-.295-.782.048-1.46.393-1.655.37-.083-.011-.118-.047-.128-.094-.032-.146.191-.386.427-.56.713-.515 1.638-.626 2.413-.29.38.162.736.45.91.736.084.138.1.245.046.3-.085.09-.3-.012-.653-.167Zm-.708.406c.631-.076 1.094.22 1.202.395.046.075.028.125.013.148-.05.08-.16.065-.39.039-.417-.048-.838-.076-1.476.154 0 0-.232.093-.336.093a.11.11 0 0 1-.11-.113c0-.094.085-.229.223-.35.163-.142.416-.294.874-.366Zm3.505 1.49c-.31-.153-.473-.463-.361-.691.111-.228.454-.289.765-.135.312.154.474.463.362.692-.111.228-.454.288-.765.134Zm2.002-1.757c.253.004.453.29.447.639-.006.348-.216.627-.468.623-.253-.004-.454-.29-.448-.639.006-.349.216-.628.469-.623Zm-13.137-7.626c-.047.054.022.131.08.089 1.14-.834 2.704-1.61 4.752-2.111 2.295-.563 4.504-.327 5.853-.016.068.015.11-.102.05-.136-.891-.503-2.26-.844-3.23-.851-.049 0-.075-.056-.047-.095.168-.226.398-.45.608-.613.047-.036.019-.113-.04-.11-1.383.086-2.959.751-3.865 1.372-.044.03-.102-.01-.091-.063.07-.342.293-.792.409-1.003.027-.05-.027-.104-.077-.078-1.456.748-3.082 2.082-4.402 3.615Zm-6.86 7.294c1.521-4.105 4.063-7.889 7.426-10.492C18.908 6.512 21.6 5.01 21.6 5.01s-1.45-1.69-1.888-1.814c-2.693-.732-8.51 3.3-12.225 8.628-1.503 2.156-3.655 5.973-2.626 7.936.127.244.844.869 1.23 1.192.644-.941 1.697-1.622 2.893-1.856Zm2.008 9.01c1.947-.334 2.456-2.459 2.136-4.545-.363-2.356-1.948-3.187-3.025-3.246-.299-.016-.576.011-.806.058-1.92.389-3.005 2.031-2.792 4.165.193 1.93 2.137 3.558 3.935 3.606.187.005.371-.008.552-.038Zm.736-2.425c.1-.024.204-.048.267.031.022.026.058.086.016.185-.072.167-.355.396-.76.38-.416-.032-.88-.336-.942-1.094-.031-.374.11-.83.196-1.067.167-.461.016-.944-.376-1.201a1.011 1.011 0 0 0-1.408.294c-.12.188-.193.423-.232.55l-.025.077c-.088.238-.23.308-.324.295-.045-.006-.107-.037-.147-.146-.108-.298-.02-1.142.539-1.762.354-.394.91-.595 1.45-.526.563.072 1.03.414 1.317.962.381.73.042 1.495-.16 1.953l-.06.136c-.127.303-.134.568-.019.746a.511.511 0 0 0 .432.22c.087.002.166-.017.236-.033Z" clip-rule="evenodd"/>
-		</svg>
-		<h1><?php esc_html_e( 'Mailchimp List Subscribe Form', 'mailchimp' ); ?> </h1>
-	</div>
+	<hr class="wp-header-end" />
 <?php
 
 $user = get_option( 'mc_user' );
@@ -30,72 +23,7 @@ if ( mailchimp_sf_global_msg() !== '' ) {
 	<?php
 }
 
-// If we don't have an API Key, do a login form
-if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_token() ) ) {
-	?>
-	<div>
-		<h3 class="mc-h2"><?php esc_html_e( 'Log In', 'mailchimp' ); ?></h3>
-		<p class="mc-p"><?php esc_html_e( 'To get started, we\'ll need to connect your Mailchimp account.', 'mailchimp' ); ?></p>
-		<p class="mc-p" style="max-width: var(--mailchimp-max-width);">
-		<?php
-			echo wp_kses(
-				__(
-					'Please click the <strong>Connect Account</strong> button to connect this WordPress site with your Mailchimp account. Once you complete the Mailchimp login in the pop-up window that appears, this page will refresh to show the Mailchimp List Subscribe Form settings.',
-					'mailchimp'
-				),
-				[
-					'strong' => [],
-				]
-			);
-		?>
-		</p>
-		<p class="mc-p" style="max-width: var(--mailchimp-max-width);">
-			<?php
-			echo wp_kses(
-				__( 'Don\'t have a Mailchimp account? Please click the <strong>Create account</strong> button to create and connect your account with this WordPress site.', 'mailchimp' ),
-				[
-					'strong' => [],
-				]
-			);
-			?>
-		</p>
-		<div class="mc-section mailchimp-sf-oauth-section">
-			<table class="widefat mc-widefat mc-api">
-				<tr valign="top">
-					<th scope="row" class="mailchimp-connect"><?php esc_html_e( 'Connect to Mailchimp', 'mailchimp' ); ?></th>
-					<td>
-						<div class="mailchimp-sf-oauth-connect-wrapper">
-							<span class="spinner"></span>
-							<button class="button button-primary" id="mailchimp_sf_oauth_connect"><?php esc_html_e( 'Connect Account', 'mailchimp' ); ?></button>
-							<a class="button button-secondary" id="mailchimp_sf_create_account_button" href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_create_account' ) ); ?>"><?php esc_html_e( 'Create account', 'mailchimp' ); ?></a>
-						</div>
-					</td>
-				</tr>
-			</table>
-			<p class="oauth-error error_msg" style="display:none;"></p>
-			<div id="login-popup-blocked-modal" style="display:none;">
-				<p><?php esc_html_e( 'Please allow your browser to show popups for this page.', 'mailchimp' ); ?></p>
-			</div>
-		</div>
-	</div>
-
-	<br/>
-	<?php
-	if ( '' !== $user && isset( $user['username'] ) && $user['username'] ) {
-		?>
-<!--<div class="notes_msg">
-		<strong><?php esc_html_e( 'Notes', 'mailchimp' ); ?>:</strong>
-		<ul>
-			<li><?php esc_html_e( 'Changing your settings at Mailchimp.com may cause this to stop working.', 'mailchimp' ); ?></li>
-			<li><?php esc_html_e( 'If you change your login to a different account, the info you have setup below will be erased.', 'mailchimp' ); ?></li>
-			<li><?php esc_html_e( 'If any of that happens, no biggie - just reconfigure your login and the items below...', 'mailchimp' ); ?></li>
-		</ul>
-</div>-->
-		<?php
-	}
-	// End of login form
-} else { // Start logout form
-	?>
+?>
 <table class="mc-user" cellspacing="0">
 	<tr>
 		<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
@@ -109,9 +37,7 @@ if ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_toke
 		</td>
 	</tr>
 </table>
-	<?php
-} // End Logout form
-
+<?php
 // Just get out if nothing else matters...
 $api = mailchimp_sf_get_api();
 if ( ! $api ) { return; }
