@@ -4,6 +4,7 @@
  *
  * @package Mailchimp
  */
+
 ?>
 <div class="mailchimp-sf-header flex items-center">
 	<div class="flex items-center logo">

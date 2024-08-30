@@ -13,22 +13,60 @@ if ( empty( $user ) ) {
 	$user    = get_user_by( 'id', $user_id );
 }
 
+$profile                = array();
 $email                  = $user->user_email ?? '';
 $waiting_login          = get_option( 'mailchimp_sf_waiting_for_login' );
-$signup_initiated       = $waiting_login && 'waiting' === $waiting_login;
 $api                    = mailchimp_sf_get_api();
 $screen                 = get_current_screen();
 $is_create_account_page = $screen && 'admin_page_mailchimp_sf_create_account' === $screen->id;
+$is_retrying            = isset( $_GET['retry'] ) && '1' === sanitize_text_field( wp_unslash( $_GET['retry'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+$signup_initiated       = $waiting_login && 'waiting' === $waiting_login && ! $is_retrying;
 
 if ( ! empty( $api ) ) {
 	$profile = $api->get( '' );
 	$email   = $profile['email'] ?? $email;
 }
+
+// Prepare data for prefilling the form.
+$data = array(
+	'first_name'    => $user->first_name ?? '',
+	'last_name'     => $user->last_name ?? '',
+	'business_name' => get_bloginfo( 'name' ),
+	'phone_number'  => '',
+	'email'         => $email,
+	'address'       => '',
+	'address2'      => '',
+	'city'          => '',
+	'state'         => '',
+	'zip'           => '',
+	'country'       => '',
+	'timezone'      => wp_timezone_string(),
+);
+
+// Update prefill data if the user has already filled the form earlier and retrying.
+if ( $is_retrying && ! empty( $profile ) ) {
+	$contact = $profile['contact'] ?? array();
+	$data    = array(
+		'first_name'    => $profile['first_name'] ?? $data['first_name'],
+		'last_name'     => $profile['last_name'] ?? $data['last_name'],
+		'business_name' => $profile['account_name'] ?? $data['business_name'],
+		'phone_number'  => $data['phone_number'],
+		'email'         => $profile['email'] ?? $data['email'],
+		'address'       => $contact['addr1'] ?? $data['address'],
+		'address2'      => $contact['addr2'] ?? $data['address2'],
+		'city'          => $contact['city'] ?? $data['city'],
+		'state'         => $contact['state'] ?? $data['state'],
+		'zip'           => $contact['zip'] ?? $data['zip'],
+		'country'       => $contact['country'] ?? $data['country'],
+		'timezone'      => $profile['account_timezone'] ?? $data['timezone'],
+	);
+}
+
 ?>
 <div class="mailchimp-sf-create-account">
 	<?php
 	// Header.
-	include_once 'header.php';
+	include_once MCSF_DIR . 'includes/admin/templates/header.php';
 	?>
 	<div class="mailchimp-sf-create-account__body">
 		<div class="mailchimp-sf-admin-notices">
@@ -50,14 +88,14 @@ if ( ! empty( $api ) ) {
 									<label for="first_name">
 										<span><?php esc_html_e( 'First name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( $user->first_name ?? '' ); ?>"/>
+									<input required type="text" id="first_name" name="first_name" value="<?php echo esc_attr( $data['first_name'] ); ?>"/>
 									<p id="mailchimp-sf-first_name-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="last_name">
 										<span><?php esc_html_e( 'Last name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( $user->last_name ?? '' ); ?>"/>
+									<input required type="text" id="last_name" name="last_name" value="<?php echo esc_attr( $data['last_name'] ); ?>"/>
 									<p id="mailchimp-sf-last_name-error" class="error-field"></p>
 								</div>
 							</div>
@@ -67,7 +105,7 @@ if ( ! empty( $api ) ) {
 									<label for="business_name">
 										<span><?php esc_html_e( 'Business name', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="business_name" name="business_name" value="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"/>
+									<input required type="text" id="business_name" name="business_name" value="<?php echo esc_attr( $data['business_name'] ); ?>"/>
 									<p id="mailchimp-sf-business_name-error" class="error-field"></p>
 									<p class="help-text"><?php esc_html_e( 'You can always change this later in your account settings.', 'mailchimp' ); ?></p>
 								</div>
@@ -76,7 +114,7 @@ if ( ! empty( $api ) ) {
 										<span><?php esc_html_e( 'Phone number', 'mailchimp' ); ?></span>
 										<span class="optional"><?php esc_html_e( 'Optional', 'mailchimp' ); ?></span>
 									</label>
-									<input type="text" id="phone_number" name="phone_number" value=""/>
+									<input type="text" id="phone_number" name="phone_number" value="<?php echo esc_attr( $data['phone_number'] ); ?>"/>
 								</div>
 							</div>
 
@@ -85,7 +123,7 @@ if ( ! empty( $api ) ) {
 									<label for="email">
 										<span><?php esc_html_e( 'Email', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="email" id="email" name="email" value="<?php echo esc_attr( $user->user_email ?? '' ); ?>"/>
+									<input required type="email" id="email" name="email" value="<?php echo esc_attr( $data['email'] ); ?>"/>
 									<p id="mailchimp-sf-email-error" class="error-field"></p>
 
 								</div>
@@ -113,7 +151,7 @@ if ( ! empty( $api ) ) {
 									<label for="address">
 										<span><?php esc_html_e( 'Address line 1 (Street address or post office box)', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="address" name="address" value=""/>
+									<input required type="text" id="address" name="address" value="<?php echo esc_attr( $data['address'] ); ?>"/>
 									<p id="mailchimp-sf-address-error" class="error-field"></p>
 								</div>
 							</div>
@@ -124,7 +162,7 @@ if ( ! empty( $api ) ) {
 										<span><?php esc_html_e( 'Address line 2', 'mailchimp' ); ?></span>
 										<span class="optional"><?php esc_html_e( 'Optional', 'mailchimp' ); ?></span>
 									</label>
-									<input type="text" id="address2" name="address2" value=""/>
+									<input type="text" id="address2" name="address2" value="<?php echo esc_attr( $data['address2'] ); ?>"/>
 								</div>
 							</div>
 
@@ -133,14 +171,14 @@ if ( ! empty( $api ) ) {
 									<label for="city">
 										<span><?php esc_html_e( 'City', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="city" name="city" value=""/>
+									<input required type="text" id="city" name="city" value="<?php echo esc_attr( $data['city'] ); ?>"/>
 									<p id="mailchimp-sf-city-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
 									<label for="state">
 										<span><?php esc_html_e( 'State/Province/Region', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="state" name="state" value=""/>
+									<input required type="text" id="state" name="state" value="<?php echo esc_attr( $data['state'] ); ?>"/>
 									<p id="mailchimp-sf-state-error" class="error-field"></p>
 								</div>
 							</div>
@@ -150,7 +188,7 @@ if ( ! empty( $api ) ) {
 									<label for="zip">
 										<span><?php esc_html_e( 'Zip/Postal code', 'mailchimp' ); ?></span>
 									</label>
-									<input required type="text" id="zip" name="zip" value=""/>
+									<input required type="text" id="zip" name="zip" value="<?php echo esc_attr( $data['zip'] ); ?>"/>
 									<p id="mailchimp-sf-zip-error" class="error-field"></p>
 								</div>
 								<div class="box box-half">
@@ -159,10 +197,11 @@ if ( ! empty( $api ) ) {
 									</label>
 									<div class="mailchimp-select-wrapper">
 										<select id="country" name="country" required>
-											<option value="" selected="selected"><?php esc_html_e( 'Please select a country', 'mailchimp' ); ?></option>
+											<option value=""><?php esc_html_e( 'Please select a country', 'mailchimp' ); ?></option>
 										<?php
+										$selected_country = $data['country'];
 										foreach ( $countries as $key => $value ) {
-											echo '<option value="' . esc_attr( $key ) . '">' . esc_html( $value ) . '</option>';
+											echo '<option value="' . esc_attr( $key ) . '" ' . selected( $selected_country, $key, false ) . '>' . esc_html( $value ) . '</option>';
 										}
 										?>
 										</select>
@@ -179,7 +218,7 @@ if ( ! empty( $api ) ) {
 									<div class="mailchimp-select-wrapper">
 										<select id="timezone" name="timezone" required>
 											<?php
-											$selected_timezone = wp_timezone_string();
+											$selected_timezone = $data['timezone'];
 											foreach ( $timezones as $timezone ) {
 												?>
 												<option value="<?php echo esc_attr( $timezone['zone'] ); ?>" <?php selected( $timezone['zone'] === $selected_timezone, true ); ?>>
@@ -232,10 +271,10 @@ if ( ! empty( $api ) ) {
 		</div>
 		<?php
 		// Activate account message.
-		include_once 'activate-account.php';
+		include_once MCSF_DIR . 'includes/admin/templates/activate-account.php';
 
 		// Suggest to login message.
-		include_once 'suggest-to-login.php';
+		include_once MCSF_DIR . 'includes/admin/templates/suggest-to-login.php';
 		?>
 	</div>
 </div>

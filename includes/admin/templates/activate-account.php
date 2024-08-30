@@ -4,6 +4,7 @@
  *
  * @package Mailchimp
  */
+
 ?>
 <div class="mailchimp-sf-confirm-email-wrapper mailchimp-sf-content-box-wrapper <?php echo esc_attr( ( ! $signup_initiated ) ? 'hidden' : '' ); ?>">
 	<div class="mailchimp-sf-confirm-email mailchimp-sf-content-box">
@@ -88,7 +89,7 @@
 				<?php esc_html_e( 'Didn\'t get an email? Check your spam folder!', 'mailchimp' ); ?>
 			</p>
 			<p>
-				<a href="">
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_create_account&retry=1' ) ); ?>">
 					<?php esc_html_e( 'Re-enter your email and try again', 'mailchimp' ); ?>
 				</a>
 			</p>
