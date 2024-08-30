@@ -263,9 +263,10 @@ th.mailchimp-connect {
  * Mailchimp OAuth CSS
  */
 .mailchimp-sf-oauth-error {
-	color: #db3a1b;
+	color: #a73205;
 	margin-bottom: 0px;
 	font-size: 14px;
+	font-weight: 500;
 }
 
 .mailchimp-sf-oauth-connect-wrapper {
@@ -626,16 +627,18 @@ body.toplevel_page_mailchimp_sf_options {
 
 .mailchimp-sf-form-wrapper .box.form-error label,
 .mailchimp-sf-form-wrapper .box.form-error {
-	color: red;
+	color: #a73205;
 }
 .mailchimp-sf-form-wrapper .box.form-error p.error-field {
 	margin-bottom: 0px;
 	font-size: 14px;
+	font-weight: 500;
 }
 
 .mailchimp-sf-form-wrapper .box.form-error input,
 .mailchimp-sf-form-wrapper .box.form-error select {
-	border-color: red;
+	border-color: #a73205;
+	box-shadow: inset 0 0 0 1px #a73205;
 }
 
 .mailchimp-sf-form-wrapper .error-field:empty, #mailchimp-sf-settings-page p.error-message:empty {
