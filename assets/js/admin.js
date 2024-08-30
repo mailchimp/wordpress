@@ -49,7 +49,7 @@
 
 		if (popup == null) {
 			// Show modal if popup is blocked.
-			$('#login-popup-blocked-modal').dialog({
+			$('#mailchimp-sf-popup-blocked-modal').dialog({
 				modal: true,
 				title: params.modal_title,
 				width: 480,
@@ -72,6 +72,10 @@
 						style: 'margin-left: 10px;',
 					},
 				],
+				classes: {
+					'ui-dialog': 'mailchimp-sf-ui-dialog',
+					'ui-dialog-titlebar': 'mailchimp-sf-ui-dialog-titlebar',
+				},
 			});
 			setConnectButtonNormal();
 		} else {

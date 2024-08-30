@@ -30,7 +30,7 @@
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_create_account' ) ); ?>" class="button mailchimp-sf-button button-secondary"><?php esc_html_e( 'Create an account', 'mailchimp' ); ?></a>
 			</div>
 			<p class="mailchimp-sf-oauth-error error-field" style="display:none;"></p>
-			<div id="login-popup-blocked-modal" style="display:none;">
+			<div id="mailchimp-sf-popup-blocked-modal" style="display:none;">
 				<p><?php esc_html_e( 'Please allow your browser to show popups for this page.', 'mailchimp' ); ?></p>
 			</div>
 		</div>
