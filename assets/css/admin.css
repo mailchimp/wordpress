@@ -356,7 +356,7 @@ th.mailchimp-connect {
 .mailchimp-sf-header {
 	padding: 14px 12px;
 	background: #fff;
-	border-top: 4px solid #FFE01B;
+	border-top: 4px solid var(--mailchimp-color-border);
 	border-bottom: 1px solid rgba(36, 28, 21, 0.15);
 	column-gap: 34px;
 }
@@ -463,7 +463,7 @@ body.admin_page_mailchimp_sf_create_account {
 	gap: 10px;
 	padding: 12px 32px;
 	position: relative;
-	background-color: #007c89;
+	background-color: var(--mailchimp-color-link);
 	border-radius: 38px;
 	font-weight: 500;
 	color: #ffffff;
@@ -480,8 +480,12 @@ body.admin_page_mailchimp_sf_create_account {
 	text-decoration: none;
 }
 
+.mailchimp-sf-create-account__body .mailchimp-sf-confirm-email a {
+	color: var(--mailchimp-color-link);
+}
+
 .mailchimp-sf-create-account__body .terms a {
-	color: #007C89;
+	color: var(--mailchimp-color-link);
 	font-weight: 500;
     text-decoration: none;
 }
@@ -490,7 +494,7 @@ body.admin_page_mailchimp_sf_create_account {
 	font-size: 16px;
 	line-height: 1.25em;
 	font-weight: 400;
-	color: #241C15;
+	color: var(--mailchimp-color-text);
 	margin-bottom: 32px;
 }
 
@@ -523,7 +527,7 @@ body.admin_page_mailchimp_sf_create_account {
 	font-weight: 500;
 	line-height: 1.5em;
 	width: 100%;
-	color: #241C15;
+	color: var(--mailchimp-color-text);
 	margin-bottom: 8px;
 }
 
@@ -571,8 +575,8 @@ body.admin_page_mailchimp_sf_create_account {
 .mailchimp-sf-form-wrapper fieldset input[type="password"]:focus,
 .mailchimp-sf-form-wrapper fieldset input[type="email"]:focus,
 .mailchimp-sf-form-wrapper fieldset textarea:focus {
-	border-color: #007C89;
-	box-shadow: inset 0 0 0 1px #007c89;
+	border-color: var(--mailchimp-color-link);
+	box-shadow: inset 0 0 0 1px var(--mailchimp-color-link);
 }
 
 .mailchimp-sf-form-wrapper .mailchimp-select-wrapper select {
@@ -631,7 +635,7 @@ body.admin_page_mailchimp_sf_create_account {
 	font-size: 16px;
 	font-weight: 500;
 	line-height: 24px;
-	color: #241C15;
+	color: var(--mailchimp-color-text);
 }
 
 
