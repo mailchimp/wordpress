@@ -66,7 +66,7 @@ if ( $is_retrying && ! empty( $profile ) ) {
 <div class="mailchimp-sf-create-account">
 	<?php
 	// Header.
-	include_once MCSF_DIR . 'includes/admin/templates/header.php';
+	include_once MCSF_DIR . 'includes/admin/templates/header.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce
 	?>
 	<div class="mailchimp-sf-create-account__body wrap">
 		<div class="mailchimp-sf-admin-notices">
@@ -271,10 +271,10 @@ if ( $is_retrying && ! empty( $profile ) ) {
 		</div>
 		<?php
 		// Activate account message.
-		include_once MCSF_DIR . 'includes/admin/templates/activate-account.php';
+		include_once MCSF_DIR . 'includes/admin/templates/activate-account.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce
 
 		// Suggest to login message.
-		include_once MCSF_DIR . 'includes/admin/templates/suggest-to-login.php';
+		include_once MCSF_DIR . 'includes/admin/templates/suggest-to-login.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce
 		?>
 	</div>
 </div>

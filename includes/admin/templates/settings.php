@@ -11,7 +11,7 @@ $is_logged_in = ! ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_
 <div id="mailchimp-sf-settings-page">
 	<?php
 	// Header.
-	include_once MCSF_DIR . 'includes/admin/templates/header.php';
+	include_once MCSF_DIR . 'includes/admin/templates/header.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce
 
 	// If user is not logged in, show login form.
 	if ( ! $is_logged_in ) {

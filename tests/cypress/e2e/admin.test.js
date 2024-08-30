@@ -17,17 +17,17 @@ describe('Admin can login and make sure plugin is activated', () => {
 
 		// Check Heading
 		cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options').click();
-		cy.get('#wpbody .mailchimp-header h1').contains('Mailchimp List Subscribe Form');
+		cy.get('#wpbody .mailchimp-sf-header h3').contains('Mailchimp List Subscribe Form');
 	});
 
 	it('Admin can see "Create account" button and Can visit "Create account" settings page.', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Check Create account button.
-		cy.get('#mailchimp_sf_create_account_button').should('be.visible');
-		cy.get('#mailchimp_sf_create_account_button').contains('Create account');
+		cy.get('.button.mailchimp-sf-button.button-secondary').should('be.visible');
+		cy.get('.button.mailchimp-sf-button.button-secondary').contains('Create an account');
 
-		cy.get('#mailchimp_sf_create_account_button').click();
+		cy.get('.button.mailchimp-sf-button.button-secondary').click();
 		cy.get('.mailchimp-sf-create-account .title').contains('Confirm your information');
 		cy.get('#mailchimp-sf-create-activate-account').should('be.visible');
 	});
