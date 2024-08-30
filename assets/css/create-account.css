@@ -2,69 +2,72 @@
 @import url('../fonts/Means/fonts.css');
 @import url('../fonts/graphik/fonts.css');
 
-#mailchimp-sf-create-account {
+#mailchimp-sf-settings-page {
 	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 }
 
-#mailchimp-sf-create-account.wrap {
+#mailchimp-sf-settings-page.wrap {
 	margin: 0px;
 	margin-left: -20px;
 }
 
-#mailchimp-sf-create-account .flex {
+#mailchimp-sf-settings-page .flex {
     display:flex;
 }
 
-#mailchimp-sf-create-account .gap-x-6 {
+#mailchimp-sf-settings-page .gap-x-6 {
 	column-gap: 32px;
 }
 
-#mailchimp-sf-create-account .gap-x-2 {
+#mailchimp-sf-settings-page .gap-x-2 {
 	column-gap: 8px;
 }
 
-#mailchimp-sf-create-account .justify-between {
+#mailchimp-sf-settings-page .justify-between {
     justify-content: space-between;
 }
 
-#mailchimp-sf-create-account .items-center {
+#mailchimp-sf-settings-page .items-center {
     align-items: center;
 }
 
-#mailchimp-sf-create-account .opacity-25 {
+#mailchimp-sf-settings-page .opacity-25 {
 	opacity: 0.25;
 }
 
-#mailchimp-sf-create-account .opacity-75 {
+#mailchimp-sf-settings-page .opacity-75 {
 	opacity: 0.75;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-loading {
+#mailchimp-sf-settings-page .mailchimp-sf-loading {
 	animation: spin 1s linear infinite;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-loading svg {
+#mailchimp-sf-settings-page .mailchimp-sf-loading svg {
 	display: block;
 }
 
-#mailchimp-sf-create-account .wizard-steps {
+#mailchimp-sf-settings-page .wizard-steps {
 	color: rgba(36, 28, 21);
+    font-size: 13px;
+    line-height: 18px;
+	margin-top: 4px;
 }
 
-#mailchimp-sf-create-account .wizard-steps .deselected {
+#mailchimp-sf-settings-page .wizard-steps .deselected {
 	color: rgba(36, 28, 21, 0.3);
 }
 
-#mailchimp-sf-create-account .wizard-steps .current {
+#mailchimp-sf-settings-page .wizard-steps .current {
 	color: rgba(36, 28, 21);
 	border-bottom: 2px solid rgb(0, 124, 137);
 }
 
-#mailchimp-sf-create-account .wizard-steps .chevron {
+#mailchimp-sf-settings-page .wizard-steps .chevron {
 	margin: 0 5px;
 }
 
-#mailchimp-sf-create-account .wizard-steps .chevron svg {
+#mailchimp-sf-settings-page .wizard-steps .chevron svg {
 	display: block;
 }
 
@@ -77,7 +80,7 @@
 	}
 }
 
-.mailchimp-sf-create-account__header {
+.mailchimp-sf-header {
 	padding: 14px 12px;
 	background: #fff;
 	border-top: 4px solid #FFE01B;
@@ -85,16 +88,20 @@
 	column-gap: 34px;
 }
 
-.mailchimp-sf-create-account__header h3 {
+.mailchimp-sf-header h3 {
 	font-family: "Means Web", serif;
-	margin-bottom: 4px;
-	margin-top: 0;
+	margin-bottom: 0px;
+	margin-top: 0px;
 	font-weight: 400;
 	font-size: 20px;
 	line-height: 1.2em;
 }
 
-.mailchimp-sf-create-account__header .mailchimp-sf-create-account-plus {
+.mailchimp-sf-header .logo {
+    margin: 2px 0px;
+}
+
+.mailchimp-sf-header .mailchimp-sf-create-account-plus {
 	margin: 0px 10px;
     font-family: "Means Web", serif;
     font-size: 44px;
@@ -102,7 +109,7 @@
     font-weight: 300;
 }
 
-.mailchimp-sf-create-account__body {
+body.admin_page_mailchimp_sf_create_account {
 	background-color: #F6F6F4;
 }
 
@@ -110,6 +117,21 @@
 	max-width: 600px;
 	margin: 0 auto;
 	padding: 80px 12px;
+}
+
+.mailchimp-sf-content-box-wrapper {
+	width: 100%;
+	max-width: 504px;
+	margin: 0 auto;
+	padding-top: 60px;
+	padding-bottom: 120px;
+}
+
+.mailchimp-sf-content-box {
+	background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(36, 28, 21, 0.15);
+    padding: 52px 64px;
 }
 
 .mailchimp-sf-create-account__body .email-opener {
@@ -185,13 +207,21 @@
 	text-decoration: none;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-create-account__body .terms a {
+.mailchimp-sf-create-account__body .terms a {
 	color: #007C89;
 	font-weight: 500;
     text-decoration: none;
 }
 
-#mailchimp-sf-create-account .mailchimp-sf-create-account__body .terms a:hover {
+.mailchimp-sf-create-account__body .terms p {
+	font-size: 16px;
+	line-height: 1.25em;
+	font-weight: 400;
+	color: #241C15;
+	margin-bottom: 32px;
+}
+
+.mailchimp-sf-create-account__body .terms a:hover {
 	text-decoration: underline;
 }
 
@@ -222,14 +252,6 @@
 	width: 100%;
 	color: #241C15;
 	margin-bottom: 8px;
-}
-
-#mailchimp-sf-create-account .terms p {
-	font-size: 16px;
-	line-height: 1.25em;
-	font-weight: 400;
-	color: #241C15;
-	margin-bottom: 32px;
 }
 
 .mailchimp-sf-form-wrapper .box.box-half {
@@ -324,22 +346,8 @@
 	border-color: red;
 }
 
-.mailchimp-sf-form-wrapper .error-field:empty, #mailchimp-sf-create-account p.error-message:empty {
+.mailchimp-sf-form-wrapper .error-field:empty, #mailchimp-sf-settings-page p.error-message:empty {
 	display: none !important;
-}
-
-.mailchimp-sf-confirm-section-wrapper {
-	width: 100%;
-	max-width: 504px;
-	margin: 0 auto;
-	margin-top: -24px;
-}
-
-.mailchimp-sf-confirm-section {
-	background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid rgba(36, 28, 21, 0.15);
-    padding: 60px;
 }
 
 .mailchimp-sf-confirm-email .email-opener-wrapper {
@@ -355,7 +363,7 @@
 
 
 @media screen and (max-width: 782px) {
-	#mailchimp-sf-create-account.wrap {
+	#mailchimp-sf-settings-page.wrap {
 		margin-left: -10px;
 	}
 }
@@ -368,5 +376,9 @@
 
 	.mailchimp-sf-form-wrapper .form-row .box.box-half {
 		width: 100%;
+	}
+
+	.mailchimp-sf-header {
+		column-gap: 16px;
 	}
 }

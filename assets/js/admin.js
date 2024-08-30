@@ -177,13 +177,13 @@
 	};
 
 	$(window).on('load', function () {
-		const isCreateAccountPage = $('#mailchimp-sf-create-account').length > 0;
+		const isCreateAccountPage = $('.mailchimp-sf-create-account').length > 0;
 		if (!isCreateAccountPage) {
 			return;
 		}
 
 		// Check if signup initiated.
-		if ($('#mailchimp-sf-create-account input[name=signup_initiated]').val() === '1') {
+		if ($('.mailchimp-sf-create-account input[name=signup_initiated]').val() === '1') {
 			waitingForMailchimpAccountLogin();
 		}
 
@@ -318,7 +318,7 @@
 			$('#mailchimp-sf-create-activate-account').attr('disabled', true);
 			$('#mailchimp-sf-create-activate-account .mailchimp-sf-loading').removeClass('hidden');
 
-			const errorSelector = '#mailchimp-sf-create-account .general-error p';
+			const errorSelector = '.mailchimp-sf-create-account .general-error p';
 			$(errorSelector).html('');
 			const formData = $(e.target).serializeArray();
 			const formDataObject = {};
@@ -364,7 +364,7 @@
 					);
 
 					if (response.success && response.data) {
-						$('.mailchimp-sf-activate-account').addClass('hidden');
+						$('.mailchimp-sf-create-account__body-inner').addClass('hidden');
 						$('.mailchimp-sf-confirm-email-wrapper').removeClass('hidden');
 
 						// Update wizard steps.
@@ -375,7 +375,7 @@
 						// Waiting for login.
 						waitingForMailchimpAccountLogin();
 					} else if (response.data && response.data.suggest_login) {
-						$('.mailchimp-sf-activate-account').addClass('hidden');
+						$('.mailchimp-sf-create-account__body-inner').addClass('hidden');
 						$('.mailchimp-sf-suggest-to-login').removeClass('hidden');
 					} else if (response.data && response.data.message) {
 						$(errorSelector).html(response.data.message);

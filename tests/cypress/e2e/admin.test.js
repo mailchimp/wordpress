@@ -28,7 +28,7 @@ describe('Admin can login and make sure plugin is activated', () => {
 		cy.get('#mailchimp_sf_create_account_button').contains('Create account');
 
 		cy.get('#mailchimp_sf_create_account_button').click();
-		cy.get('#mailchimp-sf-create-account .title').contains('Confirm your information');
+		cy.get('.mailchimp-sf-create-account .title').contains('Confirm your information');
 		cy.get('#mailchimp-sf-create-activate-account').should('be.visible');
 	});
 
