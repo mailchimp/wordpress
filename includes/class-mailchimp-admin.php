@@ -414,8 +414,6 @@ class Mailchimp_Admin {
 
 		// Create account page specific data.
 		if ( 'admin_page_mailchimp_sf_create_account' === $hook_suffix ) {
-			wp_enqueue_style( 'mailchimp_sf_create_account_css', MCSF_URL . 'assets/css/create-account.css', array(), MCSF_VER );
-
 			$data['create_account_nonce']      = wp_create_nonce( 'mailchimp_sf_create_account_nonce' );
 			$data['check_login_session_nonce'] = wp_create_nonce( 'mailchimp_sf_check_login_session_nonce' );
 			/* translators: %s is field name. */
