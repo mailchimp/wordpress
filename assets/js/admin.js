@@ -98,8 +98,8 @@
 							// Finish OAuth connection and save token.
 							$.post(params.ajax_url, finishData, function (finishResponse) {
 								if (finishResponse.success) {
-									// Token is saved in the database, reload the page to reflect the changes.
-									window.location.reload();
+									// Token is saved in the database, redirect to the settings page to reflect the changes.
+									window.location.href = params.admin_settings_url;
 								} else {
 									console.log(
 										'Error calling OAuth finish endpoint. Data:',

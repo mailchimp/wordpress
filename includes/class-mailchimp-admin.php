@@ -410,6 +410,7 @@ class Mailchimp_Admin {
 			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
 			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
 			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
+			'admin_settings_url'     => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
 		);
 
 		// Create account page specific data.
