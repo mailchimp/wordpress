@@ -241,7 +241,7 @@ if ( $is_retrying && ! empty( $profile ) ) {
 						echo wp_kses(
 							sprintf(
 								/* translators: %s - Mailchimp legal pages */
-								__( 'By clicking the "Get Started!" button, you are creating a Mailchimp account, and you agree to Mailchimp\'s <a href=%1$s target=_blank>Terms of Use</a> and <a href=%2$s target=_blank>Privacy Policy</a>.', 'mailchimp' ),
+								__( 'By clicking the "Activate Account" button, you are creating a Mailchimp account, and you agree to Mailchimp\'s <a href=%1$s target=_blank>Terms of Use</a> and <a href=%2$s target=_blank>Privacy Policy</a>.', 'mailchimp' ),
 								esc_url( 'https://mailchimp.com/legal/terms' ),
 								esc_url( 'https://mailchimp.com/legal/privacy' )
 							),

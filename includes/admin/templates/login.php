@@ -13,7 +13,7 @@
 			<div class="title"><?php esc_html_e( 'Let\'s connect your Mailchimp account', 'mailchimp' ); ?></div>
 			<p class="h4">
 				<?php
-				esc_html_e( 'Log in to your Mailchimp account to install the app or create a new account to authorize and connect to WordPress. Setup should take just a few minutes.', 'mailchimp' );
+				esc_html_e( 'Log in to your existing Mailchimp account or create a new account to authorize and connect to WordPress. Setup should take just a few minutes.', 'mailchimp' );
 				?>
 			</p>
 
