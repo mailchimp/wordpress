@@ -5,7 +5,6 @@
  * @package Mailchimp
  */
 
-
 $user = get_option( 'mc_user' );
 /* TODO MC SOPRESTO USER INFO */
 
