@@ -29,7 +29,7 @@ mailchimp_sf_change_list_if_necessary();
 			<td>
 				<form method="post" action="">
 					<input type="hidden" name="mcsf_action" value="logout"/>
-					<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary" />
+					<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary mailchimp-sf-button small" />
 					<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
 				</form>
 			</td>
@@ -97,7 +97,7 @@ mailchimp_sf_change_list_if_necessary();
 						</td>
 						<td>
 							<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
-							<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button button-secondary" />
+							<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button mailchimp-sf-button small" />
 						</td>
 					</tr>
 				</table>
@@ -155,7 +155,7 @@ mailchimp_sf_change_list_if_necessary();
 						</td>
 					</tr>
 				</table>
-				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
+				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 
 
 				<table class="widefat mc-widefat mc-nuke-styling">
@@ -217,7 +217,7 @@ mailchimp_sf_change_list_if_necessary();
 						</td>
 					</tr>
 				</table>
-				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
+				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 
 				<table class="widefat mc-widefat">
 					<tr><th colspan="2"><?php esc_html_e( 'List Options', 'mailchimp' ); ?></th></tr>
@@ -256,7 +256,7 @@ mailchimp_sf_change_list_if_necessary();
 						</td>
 					</tr>
 				</table>
-				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
+				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 			</div>
 
 			<?php
@@ -323,7 +323,7 @@ mailchimp_sf_change_list_if_necessary();
 						}
 						?>
 					</table>
-					<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button button-secondary mc-submit" /><br/>
+					<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 				</div>
 
 				<?php
