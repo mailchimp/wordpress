@@ -515,7 +515,10 @@ body.toplevel_page_mailchimp_sf_options {
 	line-height: 1.25em;
 	font-weight: 400;
 	color: var(--mailchimp-color-text);
-	margin-bottom: 32px;
+}
+
+.mailchimp-sf-create-account__body .terms p:last-child {
+    margin-bottom: 32px;
 }
 
 .mailchimp-sf-create-account__body .terms a:hover {

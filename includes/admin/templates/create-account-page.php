@@ -241,9 +241,27 @@ if ( $is_retrying && ! empty( $profile ) ) {
 						echo wp_kses(
 							sprintf(
 								/* translators: %s - Mailchimp legal pages */
-								__( 'By clicking the "Activate Account" button, you are creating a Mailchimp account, and you agree to Mailchimp\'s <a href=%1$s target=_blank>Terms of Use</a> and <a href=%2$s target=_blank>Privacy Policy</a>.', 'mailchimp' ),
-								esc_url( 'https://mailchimp.com/legal/terms' ),
-								esc_url( 'https://mailchimp.com/legal/privacy' )
+								__( 'To follow <a href="%1$s" target="_blank">anti-spam laws</a>, your address will appear in the footer of every email you send with Mailchimp. Don\'t have an official business address? Learn about <a href="%2$s" target="_blank">alternatives</a>.', 'mailchimp' ),
+								esc_url( 'https://mailchimp.com/help/anti-spam-requirements-for-email/' ),
+								esc_url( 'https://mailchimp.com/help/alternative-physical-address-ideas/' )
+							),
+							array(
+								'a' => array(
+									'href'   => array(),
+									'target' => '_blank',
+								),
+							)
+						);
+						?>
+					</p>
+					<p>
+						<?php
+						echo wp_kses(
+							sprintf(
+								/* translators: %s - Mailchimp legal pages */
+								__( 'By creating an account, you agree to our <a href="%1$s" target="_blank">Terms</a> and have read and acknowledge the <a href="%2$s" target="_blank">Global Privacy Statement</a>.', 'mailchimp' ),
+								esc_url( 'https://mailchimp.com/legal/terms/' ),
+								esc_url( 'https://www.intuit.com/privacy/statement/' )
 							),
 							array(
 								'a' => array(
