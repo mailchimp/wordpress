@@ -213,7 +213,7 @@ if ( $is_retrying && ! empty( $profile ) ) {
 							</div>
 						</fieldset>
 						<?php
-						$timezone = 'UTC';
+						$timezone          = 'UTC';
 						$selected_timezone = $data['timezone'];
 						if ( in_array( $selected_timezone, $timezones, true ) ) {
 							$timezone = $selected_timezone;
