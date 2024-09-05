@@ -24,7 +24,9 @@ $signup_initiated       = $waiting_login && 'waiting' === $waiting_login && ! $i
 
 if ( ! empty( $api ) ) {
 	$profile = $api->get( '' );
-	$email   = $profile['email'] ?? $email;
+	if ( ! is_wp_error( $profile ) ) {
+		$email = $profile['email'] ?? $email;
+	}
 }
 
 // Prepare data for prefilling the form.
@@ -209,29 +211,15 @@ if ( $is_retrying && ! empty( $profile ) ) {
 									</div>
 								</div>
 							</div>
-
-							<div class="form-row">
-								<div class="box">
-									<label for="timezone">
-										<span><?php esc_html_e( 'Timezone', 'mailchimp' ); ?></span>
-									</label>
-									<div class="mailchimp-select-wrapper">
-										<select id="timezone" name="timezone" required>
-											<?php
-											$selected_timezone = $data['timezone'];
-											foreach ( $timezones as $timezone ) {
-												?>
-												<option value="<?php echo esc_attr( $timezone['zone'] ); ?>" <?php selected( $timezone['zone'] === $selected_timezone, true ); ?>>
-													<?php echo esc_html( $timezone['diff_from_GMT'] . ' - ' . $timezone['zone'] ); ?>
-												</option>
-												<?php
-											}
-											?>
-										</select>
-									</div>
-								</div>
-							</div>
 						</fieldset>
+						<?php
+						$timezone = 'UTC';
+						$selected_timezone = $data['timezone'];
+						if ( in_array( $selected_timezone, $timezones, true ) ) {
+							$timezone = $selected_timezone;
+						}
+						?>
+						<input type="hidden" id="timezone" name="timezone" value="<?php echo esc_attr( $timezone ); ?>"/>
 					</div>
 				</div>
 

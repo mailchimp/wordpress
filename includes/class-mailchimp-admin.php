@@ -474,15 +474,7 @@ class Mailchimp_Admin {
 	 * @return array
 	 */
 	private function get_timezones() {
-		$zones_array = array();
-		foreach ( timezone_identifiers_list() as $key => $zone ) {
-			$timezone                             = new DateTimeZone( $zone );
-			$diff_string                          = ( new DateTime( 'now', $timezone ) )->format( 'P' );
-			$zones_array[ $key ]['zone']          = $zone;
-			$zones_array[ $key ]['diff_from_GMT'] = 'UTC/GMT ' . $diff_string;
-		}
-
-		return $zones_array;
+		return timezone_identifiers_list();
 	}
 
 	/**
