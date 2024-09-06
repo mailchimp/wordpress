@@ -33,7 +33,7 @@
 						<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 				</svg>
 			</span>
-			<?php esc_html_e( 'Connect account', 'mailchimp' ); ?>
+			<?php esc_html_e( 'Log in', 'mailchimp' ); ?>
 		</button>
 		<p class="mailchimp-sf-oauth-error error-field" style="display:none;"></p>
 		<div id="mailchimp-sf-popup-blocked-modal" style="display:none;">

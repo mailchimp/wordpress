@@ -382,6 +382,17 @@ th.mailchimp-connect {
 body.admin_page_mailchimp_sf_create_account,
 body.toplevel_page_mailchimp_sf_options {
 	background-color: #F6F6F4;
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
+}
+
+body.admin_page_mailchimp_sf_create_account a,
+body.toplevel_page_mailchimp_sf_options a {
+	color: var(--mailchimp-color-link);
+}
+
+body.admin_page_mailchimp_sf_create_account #footer-upgrade,
+body.toplevel_page_mailchimp_sf_options #footer-upgrade {
+	display: none;
 }
 
 .mailchimp-sf-create-account__body-inner {

@@ -13,7 +13,7 @@
 			<div class="title"><?php esc_html_e( 'Let\'s connect your Mailchimp account', 'mailchimp' ); ?></div>
 			<p class="h4">
 				<?php
-				esc_html_e( 'Log in to your existing Mailchimp account or create a new account to authorize and connect to WordPress. Setup should take just a few minutes.', 'mailchimp' );
+				esc_html_e( 'Log in to your Mailchimp account or create a new account to authorize and connect to WordPress. Setup should take just a few minutes.', 'mailchimp' );
 				?>
 			</p>
 
@@ -25,7 +25,7 @@
 								<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 						</svg>
 					</span>
-					<?php esc_html_e( 'Connect account', 'mailchimp' ); ?>
+					<?php esc_html_e( 'Log in', 'mailchimp' ); ?>
 				</button>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=mailchimp_sf_create_account' ) ); ?>" class="button mailchimp-sf-button button-secondary"><?php esc_html_e( 'Create an account', 'mailchimp' ); ?></a>
 			</div>

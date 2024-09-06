@@ -37,6 +37,7 @@ class Mailchimp_Admin {
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
+		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ) );
 	}
 
 	/**
@@ -331,7 +332,7 @@ class Mailchimp_Admin {
 					<?php
 					$message = sprintf(
 						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
-						__( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please log out and reconnect your Mailchimp account using the new OAuth authentication by clicking the "Connect Account" button on the %1$splugin settings%2$s page.', 'mailchimp' ),
+						__( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please log out and reconnect your Mailchimp account using the new OAuth authentication by clicking the "Log in" button on the %1$splugin settings%2$s page.', 'mailchimp' ),
 						'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
 						'</a>'
 					);
@@ -735,6 +736,40 @@ class Mailchimp_Admin {
 			'YE' => __( 'Yemen', 'mailchimp' ),
 			'ZM' => __( 'Zambia', 'mailchimp' ),
 			'ZW' => __( 'Zimbabwe', 'mailchimp' ),
+		);
+	}
+
+	/**
+	 * Display the Mailchimp footer text on the Mailchimp admin pages.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $text The current footer text.
+	 * @return string The modified footer text.
+	 */
+	public function admin_footer_text( $text ) {
+		$current_screen    = get_current_screen();
+		$current_screen_id = $current_screen ? $current_screen->id : '';
+		if ( ! in_array( $current_screen_id, array( 'toplevel_page_mailchimp_sf_options', 'admin_page_mailchimp_sf_create_account' ), true ) ) {
+			return $text;
+		}
+
+		return wp_kses(
+			sprintf(
+				/* translators: %d - Current year, %s - Mailchimp legal links */
+				__( '©%1$d Intuit Inc. All rights reserved. Mailchimp® is a registered trademark of The Rocket Science Group, <a href="%2$s" target="_blank" rel="noopener noreferrer">Cookie Preferences</a>, <a href="%3$s" target="_blank" rel="noopener noreferrer">Privacy</a>, and <a href="%4$s" target="_blank" rel="noopener noreferrer">Terms</a>.', 'mailchimp' ),
+				gmdate( 'Y' ),
+				esc_url( 'https://mailchimp.com/legal/cookies/#optanon-toggle-display/' ),
+				esc_url( 'https://www.intuit.com/privacy/statement/' ),
+				esc_url( 'https://mailchimp.com/legal/terms' ),
+			),
+			array(
+				'a' => array(
+					'href'   => array(),
+					'target' => array(),
+					'rel'    => array(),
+				),
+			)
 		);
 	}
 }
