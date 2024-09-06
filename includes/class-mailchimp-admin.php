@@ -761,7 +761,7 @@ class Mailchimp_Admin {
 				gmdate( 'Y' ),
 				esc_url( 'https://mailchimp.com/legal/cookies/#optanon-toggle-display/' ),
 				esc_url( 'https://www.intuit.com/privacy/statement/' ),
-				esc_url( 'https://mailchimp.com/legal/terms' ),
+				esc_url( 'https://mailchimp.com/legal/terms' )
 			),
 			array(
 				'a' => array(
