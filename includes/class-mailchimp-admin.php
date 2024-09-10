@@ -344,6 +344,31 @@ class Mailchimp_Admin {
 			<?php
 		}
 
+		// Display a notice if the user is waiting for the login to complete.
+		$current_screen = get_current_screen();
+		if ( $current_screen && 'toplevel_page_mailchimp_sf_options' === $current_screen->id ) {
+			$api = mailchimp_sf_get_api();
+			if ( $api && 'waiting' === get_option( 'mailchimp_sf_waiting_for_login' ) ) {
+				$profile = $api->get( '' );
+				if ( ! is_wp_error( $profile ) ) {
+					if ( ! empty( $profile['last_login'] ) ) {
+						// Clear the waiting flag if the user is logged in.
+						delete_option( 'mailchimp_sf_waiting_for_login' );
+					} else {
+						?>
+						<div class="notice notice-warning is-dismissible">
+							<p>
+								<?php
+								esc_html_e( 'Please activate your Mailchimp account to complete the setup. Without activation, the connection to WordPress may be interrupted.', 'mailchimp' );
+								?>
+							</p>
+						</div>
+						<?php
+					}
+				}
+			}
+		}
+
 		if (
 			! get_option( 'mailchimp_sf_auth_error', false ) ||
 			! get_option( 'mailchimp_sf_access_token', '' )
