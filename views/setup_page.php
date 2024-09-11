@@ -81,8 +81,8 @@ $is_list_selected = false;
 				$lists            = $lists['lists'];
 				$option           = get_option( 'mc_list_id' );
 				$list_ids         = array_map(
-					function( $list ) {
-						return $list['id'];
+					function ( $ele ) {
+						return $ele['id'];
 					},
 					$lists
 				);
