@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
-## [1.6.0] - 2024-07-XX
+## [1.6.0] - 2024-09-XX
 **Note this version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.**
 
 ### Added
@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - PHP 8.3 compatibility and minimum PHP version of 7.0 (props [@nateconley](https://github.com/nateconley), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#26](https://github.com/mailchimp/wordpress/pull/26)).
 - WordPress 6.6 compatibility (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
 - OAuth authentication for connecting a Mailchimp account with WordPress (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#47](https://github.com/mailchimp/wordpress/pull/47), [#48](https://github.com/mailchimp/wordpress/pull/48), [#50](https://github.com/mailchimp/wordpress/pull/50), [#52](https://github.com/mailchimp/wordpress/pull/52)).
+- New user signup flow, allowing users to sign up for a Mailchimp account from within the plugin (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#51](https://github.com/mailchimp/wordpress/pull/51)).
 - Created a `LICENSE.md` file and sets the license in the plugin to `GPL-2.0-or-later` (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
 - Plugin icon and banner assets (props [@eddieshrake](https://github.com/eddieshrake), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#28](https://github.com/mailchimp/wordpress/pull/28)).
 
