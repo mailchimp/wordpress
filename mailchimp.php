@@ -112,7 +112,7 @@ function mailchimp_sf_load_resources() {
 	// JS
 	if ( get_option( 'mc_use_javascript' ) === 'on' ) {
 		if ( ! is_admin() ) {
-			wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
+			wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
 			// some javascript to get ajax version submitting to the proper location
 			global $wp_scripts;
 			$wp_scripts->localize(
@@ -127,7 +127,7 @@ function mailchimp_sf_load_resources() {
 
 	if ( get_option( 'mc_use_datepicker' ) === 'on' && ! is_admin() ) {
 		// Datepicker theme
-		wp_enqueue_style( 'flick', MCSF_URL . 'css/flick/flick.css', array(), MCSF_VER );
+		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 
 		// Datepicker JS
 		wp_enqueue_script( 'jquery-ui-datepicker' );
@@ -217,7 +217,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
@@ -775,7 +775,7 @@ function mailchimp_sf_get_interest_categories( $list_id, $new_list ) {
  */
 function mailchimp_sf_setup_page() {
 	$path = plugin_dir_path( __FILE__ );
-	require_once $path . '/views/setup_page.php';
+	require_once $path . '/includes/admin/templates/settings.php';
 }
 
 /**
