@@ -89,11 +89,12 @@ Where ever you want it to show up.
 1. Mailchimp List Subscribe Form block within the block inserter.
 2. Mailchimp Block default state.
 3. Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.
-4. Connecting your Mailchimp account to WordPress via API Key.
+4. Connecting your Mailchimp account to WordPress via OAuth.
 5. Logged in to your Mailchimp account and selecting a list to connect to.
 6. Configuring your Signup Form display format (optional).
 7. Configuring extra fields on your Signup Form (optional).
 8. CSS options for styling your Signup Form.
+9. Creating a new Mailchimp account.
 
 == Changelog ==
 
