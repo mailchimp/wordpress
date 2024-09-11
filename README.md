@@ -12,7 +12,11 @@ Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form b
 
 ![Mailchimp Block default state.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-2.jpg?raw=true)
 
-After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the block, widget, or shortcode to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, if you already have a Mailchimp account, you'll log in with that account and then proceed to configure settings.
+
+If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
+
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 ![Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-3.jpg?raw=true)
 
@@ -43,12 +47,13 @@ This section describes how to install the plugin and get started using it.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Navigate to the **Mailchimp** menu.
 
-![Connecting your Mailchimp account to WordPress via API Key.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
+![Connecting your Mailchimp account to WordPress via OAuth.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
-4. Enter your Mailchimp API Key and let the plugin verify it.
+![Creating a new Mailchimp account.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-9.jpg?raw=true)
+
+4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application. If you don't have an acccount, instead click the "Create an account" button to create one.
 
 ![Logged in to your Mailchimp account and selecting a list to connect to.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-5.jpg?raw=true)
-
 
 5. Select the list where you want to send new Mailchimp subscribers.
 

@@ -12,7 +12,11 @@ Add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
-After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the block, widget, or shortcode to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, if you already have a Mailchimp account, you'll log in with that account and then proceed to configure settings.
+
+If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
+
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
@@ -54,7 +58,7 @@ This section describes how to install the plugin and get started using it.
 1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Navigate to the **Mailchimp** menu.
-4. Enter your Mailchimp API Key and let the plugin verify it.
+4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application.
 5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 7. Optional: adjust frontend site display with available CSS options.
