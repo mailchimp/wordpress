@@ -10,6 +10,8 @@ $user = get_option( 'mc_user' );
 
 // If we have an API Key, see if we need to change the lists and its options
 mailchimp_sf_change_list_if_necessary();
+
+$is_list_selected = false;
 ?>
 <div class="wrap">
 	<hr class="wp-header-end" />
@@ -76,7 +78,15 @@ mailchimp_sf_change_list_if_necessary();
 				</div>
 				<?php
 			} else {
-				$lists = $lists['lists'];
+				$lists            = $lists['lists'];
+				$option           = get_option( 'mc_list_id' );
+				$list_ids         = array_map(
+					function ( $ele ) {
+						return $ele['id'];
+					},
+					$lists
+				);
+				$is_list_selected = in_array( $option, $list_ids, true );
 				?>
 				<table class="mc-list-select" cellspacing="0">
 					<tr class="mc-list-row">
@@ -86,7 +96,6 @@ mailchimp_sf_change_list_if_necessary();
 								<option value=""> &mdash; <?php esc_html_e( 'Select A List', 'mailchimp' ); ?> &mdash; </option>
 								<?php
 								foreach ( $lists as $list ) {
-									$option = get_option( 'mc_list_id' );
 									?>
 									<option value="<?php echo esc_attr( $list['id'] ); ?>"<?php selected( $list['id'], $option ); ?>><?php echo esc_html( $list['name'] ); ?></option>
 									<?php
@@ -110,7 +119,7 @@ mailchimp_sf_change_list_if_necessary();
 
 	<?php
 	// Just get out if nothing else matters...
-	if ( get_option( 'mc_list_id' ) === '' ) {
+	if ( ! $is_list_selected ) {
 		return;
 	}
 

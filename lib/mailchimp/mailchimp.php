@@ -188,9 +188,9 @@ class MailChimp_API {
 			foreach ( $merges as $merge ) {
 				if ( empty( $body['errors'] ) ) {
 					// Email address doesn't come back from the API, so if something's wrong, it's that.
-					$field_name                   = 'Email Address';
-					$body['errors'][0]['message'] = 'Please fill out a valid email address.';
-				} elseif ( $merge['tag'] === $body['errors'][0]['field'] ) {
+					$field_name                   = esc_html__( 'Email Address', 'mailchimp' );
+					$body['errors'][0]['message'] = esc_html__( 'Please fill out a valid email address.', 'mailchimp' );
+				} elseif ( ! empty( $body['errors'] ) && isset( $body['errors'][0]['field'] ) && $merge['tag'] === $body['errors'][0]['field'] ) {
 					$field_name = $merge['name'];
 				}
 			}
