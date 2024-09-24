@@ -1,22 +1,26 @@
 # Mailchimp List Subscribe Form
 
-> Add a Mailchimp signup form widget to your WordPress site.
+> Add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 [![Support Level](https://img.shields.io/badge/support-active-green.svg?label=Support)](#support-level) [![GPL-2.0-or-later License](https://img.shields.io/github/license/mailchimp/wordpress?label=License)](https://github.com/mailchimp/wordpress/blob/develop/LICENSE.md) ![WordPress Plugin Version](https://img.shields.io/wordpress/plugin/v/mailchimp?label=Version) ![WordPress Minimum](https://img.shields.io/wordpress/plugin/wp-version/mailchimp?label=WordPress%20minimum) ![PHP Minimum](https://img.shields.io/wordpress/plugin/required-php/mailchimp?label=PHP%20minimum) ![WordPress Tested Up To](https://img.shields.io/wordpress/plugin/tested/mailchimp?label=WordPress) [![E2E Cypress Tests](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/e2e.yml) [![PHP Compatibility](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/php-compat.yml) [![PHP Linting](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/phpcs.yml) [![JS Linting](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml/badge.svg)](https://github.com/mailchimp/wordpress/actions/workflows/eslint.yml)
 
 ## Overview
 
-Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form widget to your WordPress 2.8 or higher site.
+![Mailchimp List Subscribe Form block within the block inserter.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-1.jpg?raw=true)
 
-![An example Signup Form Widget](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-5.jpg?raw=true)
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
-After installation, you’ll log in with your API key, select your Mailchimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+![Mailchimp Block default state.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-2.jpg?raw=true)
 
-![Configuring your Signup Form display format (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-3.jpg?raw=true)
+After installation, if you already have a Mailchimp account, you'll log in with that account and then proceed to configure settings.
+
+If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
+
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+
+![Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-3.jpg?raw=true)
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
-
-![Configuring extra fields on your Signup Form (optional)](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
 ## Access Token Encryption
 
@@ -33,43 +37,35 @@ define( 'MAILCHIMP_SF_ENCRYPTION_SALT', 'put your unique phrase here' );
 
 If these constants are added after you've already authenticated with Mailchimp, you will need to reconnect your account. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` (if they exist) to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT` respectively.
 
-## Frequently Asked Questions
-
-### Can I have multiple forms on one page?
-
-No, only one form should exist per page, no matter the display type (widget, shortcode, or block).
-
 ## Installation
 
 This section describes how to install the plugin and get started using it.
 
 ### Version 2.8+
 
-1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
-2. Activate the plugin through the **Plugins** menu in WordPress
-3. Navigate to **Settings** click **Mailchimp Setup**.
-4. Enter your Mailchimp API Key and let the plugin verify it.
+1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Navigate to the **Mailchimp** menu.
+
+![Connecting your Mailchimp account to WordPress via OAuth.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
+
+![Creating a new Mailchimp account.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-9.jpg?raw=true)
+
+4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application. If you don't have an acccount, instead click the "Create an account" button to create one.
+
+![Logged in to your Mailchimp account and selecting a list to connect to.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-5.jpg?raw=true)
+
 5. Select the list where you want to send new Mailchimp subscribers.
+
+![Configuring your Signup Form display format (optional).](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-6.jpg?raw=true)
+
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 
-![Selecting your Mailchimp list](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-2.jpg?raw=true)
+![Configuring extra fields on your Signup Form (optional).](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-7.jpg?raw=true)
 
-### Advanced
+7. Optional: adjust frontend site display with available CSS options.
 
-If you have a custom coded sidebar or bells and whistles that prevent enabling widgets through the WordPress GUI, complete these steps instead.
-
-WordPress v2.8 or higher:
-` [mailchimpsf_form] `
-
-If you are adding it inside a php code block, pop this in:
-
-` mailchimp_sf_signup_form(); `
-
-Or, if you are dropping it in between a bunch of HTML, use this:
-
-`<?php mailchimp_sf_signup_form(); ?>`
-
-Where ever you want it to show up.
+![CSS options for styling your Signup Form.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-8.jpg?raw=true)
 
 ## Upgrading
 
@@ -77,32 +73,36 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
 
-## Internationalization (i18n)
+## Advanced Usage
 
-Currently we have the plugin configured so it can be translated and the following languages supported:
+If you have a custom-coded sidebar or something that prevent enabling widgets through the WordPress GUI, complete these steps instead.
 
-* bg_BG - Bulgarian in Bulgaria (thanks to [SiteGround](http://www.siteground.com/wordpress-hosting.htm) for contributing)
-* cs_CZ - Czech in the Czech Republic (thanks to [Peter Kahoun](http://kahi.cz/) for contributing)
-* da_DK - Danish in Denmark (thanks to Jan Lund for contributing)
-* de_DE - German in Germany (thanks to Michael Jaekel for contributing)
-* el_GR - Modern Greek in Greece (thanks to Ιωάννης Δημοφέρλιας (John Dimoferlias) for contributing)
-* en_US - English in the U.S.
-* es_CL - Spanish in Chile (thanks to Tomás Nader for contributing)
-* es_ES - Spanish in Spain (thanks to [Claudia Mansilla](http://cricava.com/) for contributing)
-* et_ET - Estonian in Estonia (thanks to [Helen Urbanik](http://www.motomaania.ee/) for contributing)
-* fr_FR - French in France (thanks to [Maxime Toulliou](http://www.maximetoulliou.com/) for contributing)
-* he_IL - Hebrew in Israel (thanks to [שגיב בית](http://www.sagive.co.il) for contributing)
-* hu_HU - Hungarian in Hungary (thanks to Okostobi for contributing)
-* it_IT - Italian in Italy (thanks to [Stefan Des](http://www.stefandes.com) for contributing)
-* ko_KR - Korean (thanks to 백선기 (SK Baek)  for contributing)
-* nb_NO - Norwegian (thanks to [Alexander Roterud aka Defrag](http://www.tigerpews.com) for contributing)
-* nl_BE - Dutch (thanks to [Filip Stas](http://suddenelfilio.net/) for contributing)
-* pt_BR - Portuguese in Brazil (thanks to Maria Manoela Porto for contributing)
-* pt_PT - Portuguese in Portugal (thanks to [Tiago Faria](http://xroot.org) for contributing)
-* ro_RO - Romanian in Romania (thanks to Alexandru Armin Roșu for contributing)
-* ru_RU - Russian in the Russian Federation (thanks to [Илья](http://fatcow.com) for contributing)
-* sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
-* tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
+WordPress v2.8 or higher:
+` [mailchimpsf_form] `
+
+If you are adding it inside a php code block, add this:
+
+` mailchimp_sf_signup_form(); `
+
+Or, if you are adding it within HTML, use this:
+
+`<?php mailchimp_sf_signup_form(); ?>`
+
+Where ever you want it to show up.
+
+## Frequently Asked Questions
+
+### Can I have multiple forms on one page?
+
+No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
+
+### Why am I not seeing all my fields in my form?
+
+You need to ensure that the fields are enabled both in your Mailchimp account (Audience > Signup forms) and in the settings of this plugin.  Once the fields are enabled in both places, then they'll appear in the editor and frontend of your site.
+
+### How can I translate “MailChimp List Subscribe Form”?
+
+Internationalization (i18n) is available on GlotPress at [https://translate.wordpress.org/projects/wp-plugins/mailchimp/](https://translate.wordpress.org/projects/wp-plugins/mailchimp/).  Any assistance [translating the plugin](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) is greatly appreciated!
 
 ## E2E tests
 The `tests` directory contains end-to-end tests for the project, utilizing Cypress to run tests in an environment created using wp-env.
