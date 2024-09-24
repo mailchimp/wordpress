@@ -1,0 +1,4 @@
+/* Leave this file - wp_add_inline_style relies on this file existing */
+#mc_message {
+	display: none;
+}

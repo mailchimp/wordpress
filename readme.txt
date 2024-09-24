@@ -1,105 +1,152 @@
-=== MailChimp List Subscribe Form ===
-Contributors: MailChimp
-Tags: mailchimp, email, newsletter, signup, marketing, plugin, widget
-Requires at least: 2.8
-Tested up to: 4.5
-Stable tag: 1.5.8
+=== Mailchimp List Subscribe Form ===
+Contributors: Mailchimp
+Tags:         mailchimp, email, newsletter, signup, marketing
+Tested up to: 6.6
+Stable tag:   1.6.0
+License:      GPL-2.0-or-later
+License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
+
+Add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
 == Description ==
 
-Use the MailChimp List Subscribe plugin to quickly add a MailChimp signup form widget to your WordPress 2.8 or higher site. 
+Use the Mailchimp List Subscribe plugin to quickly add a Mailchimp signup form block, widget, or shortcode to your WordPress site.
 
-After installation, you’ll log in with your API key, select your MailChimp list, choose merge fields and groups, and add the widget to your site.  Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+After installation, if you already have a Mailchimp account, you'll log in with that account and then proceed to configure settings.
+
+If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
+
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
+
+=== Access Token Encryption ===
+
+Starting in version 1.6.0, authentication has changed to use OAuth. As part of this process, we retrieve an access token that can be used to make API requests. To provide a high-level of security, this access token is encrypted before being stored in the WordPress database. In order to ensure this access token can be decrypted when used, the plugin relies on certain security constants that should remain unchanged.
+
+With no additional configuration, we use the standard `LOGGED_IN_KEY` and `LOGGED_IN_SALT` constants that are normally set in your site's `wp-config.php` file. Some sites make use of security plugins that rotate these constants on a periodic basis. When this happens, we won't be able to decrypt the access token and you’ll need to reconnect your Mailchimp account to generate a new access token.
+
+To prevent such issues, it is recommended to define two additional constants in your site's `wp-config.php` file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from [here](https://api.wordpress.org/secret-key/1.1/salt/) and use them. You'll end up with additional code like the following in your `wp-config.php` file:
+
+`
+define( 'MAILCHIMP_SF_ENCRYPTION_KEY', 'put your unique phrase here' );
+define( 'MAILCHIMP_SF_ENCRYPTION_SALT', 'put your unique phrase here' );
+`
+
+If these constants are added after you've already authenticated with Mailchimp, you will need to reconnect your account. To avoid this, you can copy the values from `LOGGED_IN_KEY` and `LOGGED_IN_SALT` (if they exist) to `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT` respectively.
+
+== Frequently Asked Questions ==
+
+= Can I have multiple forms on one page? =
+
+No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
+
+= Why am I not seeing all my fields in my form? =
+
+You need to ensure that the fields are enabled both in your Mailchimp account (Audience > Signup forms) and in the settings of this plugin.  Once the fields are enabled in both places, then they'll appear in the editor and frontend of your site.
+
+= How can I translate “MailChimp List Subscribe Form”? =
+
+Internationalization (i18n) is available on GlotPress at [https://translate.wordpress.org/projects/wp-plugins/mailchimp/](https://translate.wordpress.org/projects/wp-plugins/mailchimp/).  Any assistance [translating the plugin](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) is greatly appreciated!
 
 == Installation ==
 
 This section describes how to install the plugin and get started using it.
 
 = Version 2.8+ =
-1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`
-2. Activate the plugin through the **Plugins** menu in WordPress
-3. Navigate to **Settings** click **MailChimp Setup**.
-4. Enter your MailChimp API Key and let the plugin verify it.
-5. Select the list where you want to send new MailChimp subscribers.
-6. Optional: turn **MonkeyRewards** on or off.
-7. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the MailChimp Widget into one of your Widget Areas.
 
-
-= Advanced =
-If you have a custom coded sidebar or bells and whistles that prevent enabling widgets  through the WordPress GUI, complete these steps instead.
-
-WordPress v2.8 or higher: 
-` [mailchimpsf_form] `
-
-If you are adding it inside a php code block, pop this in:
-
-` mailchimpSF_signup_form(); `
-
-Or, if you are dropping it in between a bunch of HTML, use this:
-
-`<?php mailchimpSF_signup_form(); ?>`
-
-Where ever you want it to show up.
-
-Note: in some environments you will need to install the Exec_PHP plugin to use that method of display. It can be found here: http://wordpress.org/extend/plugins/exec-php/
+1. Unzip our archive and upload the entire mailchimp directory to your `/wp-content/plugins/ directory`.
+2. Activate the plugin through the **Plugins** menu in WordPress.
+3. Navigate to the **Mailchimp** menu.
+4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application.
+5. Select the list where you want to send new Mailchimp subscribers.
+6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
+7. Optional: adjust frontend site display with available CSS options.
 
 == Upgrading ==
 
-If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `MailChimp Widget` back into the sidebar, visit the MailChimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
+If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
-== Internationalization (i18n) ==
-Currently we have the plugin configured so it can be easily translated and the following languages supported:
+== Advanced ==
 
-* bg_BG - Bulgarian in Bulgaria (thanks to [SiteGround](http://www.siteground.com/wordpress-hosting.htm) for contributing)
-* cs_CZ - Czech in the Czech Republic (thanks to [Peter Kahoun](http://kahi.cz/) for contributing)
-* da_DK - Danish in Denmark (thanks to Jan Lund for contributing)
-* de_DE - German in Germany (thanks to Michael Jaekel for contributing)
-* el_GR - Modern Greek in Greece (thanks to Ιωάννης Δημοφέρλιας (John Dimoferlias) for contributing)
-* en_US - English in the U.S.
-* es_CL - Spanish in Chile (thanks to Tomás Nader for contributing)
-* es_ES - Spanish in Spain (thanks to [Claudia Mansilla](http://cricava.com/) for contributing)
-* et_ET - Estonian in Estonia (thanks to [Helen Urbanik](http://www.motomaania.ee/) for contributing)
-* fr_FR - French in France (thanks to [Maxime Toulliou](http://www.maximetoulliou.com/) for contributing)
-* he_IL - Hebrew in Israel (thanks to [שגיב בית](http://www.sagive.co.il) for contributing)
-* hu_HU - Hungarian in Hungary (thanks to Okostobi for contributing)
-* it_IT - Italian in Italy (thanks to [Stefan Des](http://www.stefandes.com) for contributing)
-* ko_KR - Korean (thanks to 백선기 (SK Baek)  for contributing)
-* nb_NO - Norwegian (thanks to [Alexander Roterud aka Defrag](http://www.tigerpews.com) for contributing)
-* nl_BE - Dutch (thanks to [Filip Stas](http://suddenelfilio.net/) for contributing)
-* pt_BR - Portuguese in Brazil (thanks to Maria Manoela Porto for contributing)
-* pt_PT - Portuguese in Portugal (thanks to [Tiago Faria](http://xroot.org) for contributing)
-* ro_RO - Romanian in Romania (thanks to Alexandru Armin Roșu for contributing)
-* ru_RU - Russian in the Russian Federation (thanks to [Илья](http://fatcow.com) for contributing)
-* sv_SE - Swedish in Sweden (thanks to [Sebastian Johnsson](http://www.agiley.se/) for contributing)
-* tr_TR - Turkish in Turkey (thanks to [Hakan E.](http://kazancexpert.com/) for contributing)
+If you have a custom-coded sidebar or something that prevents enabling widgets through the WordPress GUI, complete these steps instead.
 
-If your language is not listed above, feel free to create a translation. Here are the basic steps:
+WordPress v2.8 or higher:
+` [mailchimpsf_form] `
 
-1. Copy "mailchimp_i18n-en_US.po" to "mailchimp_i18n-LANG_COUNTRY.po" - fill in LANG and COUNTRY with whatever you use for WPLANG in wp-config.php
-2. Grab a transalation editor. [POedit](http://www.poedit.net/) works for us
-3. Translate each line - if you need some context, just open up mailchimp.php and search for the line number or text
-4. [Fork](http://help.github.com/fork-a-repo/) the [repository on github](https://github.com/crowdfavorite/wp-mailchimp)
-5. [Clone](http://help.github.com/remotes/#clone) the _develop_ branch
-6. Add the appropriately named files to the /po/ directory and edit the /readme.txt to include how you'd like to be attributed
-7. Make a [pull request](http://help.github.com/send-pull-requests/)
+If you are adding it inside a php code block, add this:
+
+` mailchimp_sf_signup_form(); `
+
+Or, if you are adding it within HTML, use this:
+
+`<?php mailchimp_sf_signup_form(); ?>`
+
+Where ever you want it to show up.
 
 == Screenshots ==
 
-1. Entering your MailChimp login info
-2. Selecting your MailChimp list
-3. Configuring your Signup Form display format (optional)
-4. Configuring extra fields on your Signup Form (optional)
-5. An example Signup Form Widget
+1. Mailchimp List Subscribe Form block within the block inserter.
+2. Mailchimp Block default state.
+3. Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.
+4. Connecting your Mailchimp account to WordPress via OAuth.
+5. Logged in to your Mailchimp account and selecting a list to connect to.
+6. Configuring your Signup Form display format (optional).
+7. Configuring extra fields on your Signup Form (optional).
+8. CSS options for styling your Signup Form.
+9. Creating a new Mailchimp account.
+
+== Changelog ==
+
+= 1.6.0 - 2024-09-24 =
+
+**Note this version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.**
+
+* **Added:** Mailchimp List Subscribe Form custom block (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#35](https://github.com/mailchimp/wordpress/pull/35), [#38](https://github.com/mailchimp/wordpress/pull/38)).
+* **Added:** PHP 8.3 compatibility and minimum PHP version of 7.0 (props [@nateconley](https://github.com/nateconley), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#26](https://github.com/mailchimp/wordpress/pull/26)).
+* **Added:** WordPress 6.5 compatibility (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Added:** OAuth authentication for connecting a Mailchimp account with WordPress (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#47](https://github.com/mailchimp/wordpress/pull/47), [#48](https://github.com/mailchimp/wordpress/pull/48), [#50](https://github.com/mailchimp/wordpress/pull/50), [#52](https://github.com/mailchimp/wordpress/pull/52)).
+* **Added:** New user signup flow, allowing users to sign up for a Mailchimp account from within the plugin (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#51](https://github.com/mailchimp/wordpress/pull/51)).
+* **Added:** Created a `LICENSE.md` file and sets the license in the plugin to `GPL-2.0-or-later` (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Added:** Plugin icon and banner assets (props [@eddieshrake](https://github.com/eddieshrake), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#28](https://github.com/mailchimp/wordpress/pull/28)).
+* **Changed:** Bump WordPress "tested up to" version 6.6 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@jeffpaul](https://github.com/jeffpaul) via [#43](https://github.com/mailchimp/wordpress/pull/43)).
+* **Changed:** Ensure the signup form is only visible when a list is selected in the settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#54](https://github.com/mailchimp/wordpress/pull/54)).
+* **Changed:** Moved settings page and link to top-level WP Admin menu item (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#29](https://github.com/mailchimp/wordpress/pull/29), [#33](https://github.com/mailchimp/wordpress/pull/33)).
+* **Changed:** Admin styles to match updated Mailchimp brand guidelines (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Changed:** Replaced references of MailChimp to Mailchimp except where those references are explicitly functional code (to limit the additional class/function updates needed) (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Updated `readme.txt` and `mailchimp.php` header values to the WP.org standards (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Moved screenshots into a new `.wordpress-org` directory (props [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#14](https://github.com/mailchimp/wordpress/pull/14)).
+* **Changed:** Moved translations to [GlotPress](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#39](https://github.com/mailchimp/wordpress/pull/39)).
+* **Deprecated:** Function `mailchimpSF_signup_form` deprecated in favor of `mailchimp_sf_signup_form` (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter) via [#24](https://github.com/mailchimp/wordpress/pull/24)).
+* **Deprecated:** jQuery scrollTo (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Support for WordPress < 6.1.1 (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Polyfills for WordPress < 2.8.0 (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#27](https://github.com/mailchimp/wordpress/pull/27)).
+* **Removed:** Monkey Rewards integration (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#30](https://github.com/mailchimp/wordpress/pull/30)).
+* **Removed:** IE-specific admin stylesheet (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Fixed:** Formatting from linting checks (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter) via [#23](https://github.com/mailchimp/wordpress/pull/23)).
+* **Fixed:** Datepicker display on frontend (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#25](https://github.com/mailchimp/wordpress/pull/25)).
+* **Fixed:** Accessibility for admin settings page (props [@nateconley](https://github.com/nateconley), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@eddieshrake](https://github.com/eddieshrake) via [#31](https://github.com/mailchimp/wordpress/pull/31)).
+* **Fixed:** Properly handle the scenario where a non-valid list is updated (props [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@nateconley](https://github.com/nateconley), [@vikrampm1](https://github.com/vikrampm1) via [#40](https://github.com/mailchimp/wordpress/pull/40)).
+* **Fixed:** Ensure the custom block and shortcode both have consistent spacing (props [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@nateconley](https://github.com/nateconley), [@vikrampm1](https://github.com/vikrampm1) via [#41](https://github.com/mailchimp/wordpress/pull/41)).
+* **Fixed:** Address some PHP warnings when a form submission happens (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#54](https://github.com/mailchimp/wordpress/pull/54)).
+
+= 1.5.8 - 2022-09-26 =
+* **Changed:** Updated `readme.txt` link.
+* **Fixed:* PHP warning for merge tags.
+* **Fixed:** Double slashes on resources being loaded.
+
+[View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.6.0 =
+This version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.
 
 = 1.5.5 =
 If you are updating from v1.4.x, you will need to re-authorize with an API key.
 
 = 1.5 =
-Updates the MailChimp API version, adds double/single opt-in toggle.
+Updates the Mailchimp API version, adds double/single opt-in toggle.
 
 = 1.4.2 =
 add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
@@ -108,7 +155,7 @@ add customized wp_nonces functions for post-back behavior to fix 4.0 callbacks
 Fix for checkbox weirdness on 3.8
 
 = 1.4 =
-Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a MailChimp account.
+Added Developer Mode "Kitchen Sink" to aid in styling without having to authenticate a Mailchimp account.
 
 = 1.3 =
 Now using OAuth flow within plugin for user authentication
@@ -129,105 +176,3 @@ Fixes major bug with "Settings" link on Plugins screen.
 
 = 1.2.5 =
 Added support for multiple interest groups, field formatting based on type and date picker.
-
-== Changelog ==
-= 1.5.8 =
-* Fix PHP warning for merge tags.
-* Fix double slashes on resoures being loaded
-* Update Readme.txt link
-
-= 1.5.7 =
-* Fix undefined variable notice.
-* Fix HTML submission message.
-
-= 1.5.6 =
-* Fixes short array notation which caused a fatal error in older PHP versions.
-
-= 1.5.5 =
-* Fix timeout error on activation.
-
-= 1.5.4 =
-* Set optional value for API wrapper.
-
-= 1.5.3 =
-* Fix PHP7 compatibility issue
-* Cut down on size of API requests for users with large lists.
-* Fix CSS issue on removing MailChimp style.
-
-= 1.5.2 =
-* General bugfixes for merge fields.
-* When reinitializing, update merge field values.
-
-= 1.5.1 =
-* Bugfix for fatal error in MailChimp lib
-
-= 1.5 =
-* Upgrade to MailChimp API v3.0
-* Remove OAuth2 middle layer and use MailChimp API keys
-* Include double/single opt-in toggle.
-
-= 1.4.1 =
-* Update styles to be compatible with upcoming 3.8 wp-admin changes
-
-= 1.4 =
-* Developer Mode "Kitchen Sink" takes over plugin for local development
-* Developer Mode has filters of changable content
-* Fix bug related to required US phone validation
-
-= 1.3 =
-* Now using OAuth flow for user authentication
-* Admin UI refresh
-
-= 1.2.14 =
-* Add link to edit profile within error when duplicate signup occurs
-
-= 1.2.13 =
-* Fixed bug preventing address fields from submitting correctly.
-
-= 1.2.12 =
-* Update spanish language files (es_ES and es_MX)
-
-= 1.2.9 =
-* Fixed bug where multiple checkbox type interest groups were returning an invalid error
-* Fixed bug where assets were not enqueueing properly if the plugin directory was not set to 'mailchimp'. Now supports any directory name.
-
-= 1.2.8 =
-* Fixed bug where entire phone numbers were only being deposited in the area code portion
-
-= 1.2.7 =
-* CSS should now always load correctly on the front end
-* Adding Hebrew and Romanian language support
-* Updating translation contribution instructions
-* Tested version is now 3.3.1
-
-= 1.2.6 =
-* Fixed bug with "Settings" link appearing on all plugins (props Jason Lane)
-* Resolved issue with unnecessary calls to the MailChimp API during upgrade check
-* Resolved PHP warning when there weren't any interest groups
-
-= 1.2.5 =
-* Field formatting based on type
-* Support for multiple interest groups (a data upgrade procedure must be run by visiting the WordPress dashboard)
-* Added jQuery datepicker option to be used with dates.
-* Added a handful of new translations
-* Fixing various PHP notices and deprecated functions (props Jeffry Ghazally)
-
-= 1.2.4 =
-* Version bump for proper listing on wordpress.org
-
-= 1.2.3 =
-* Change mailchimpSF_where_am_i() to use plugins_url() in place of WP_PLUGIN_URL to take SSL into account when delivering assets (props John LeBlanc)
-* Update MCAPI wrapper to bring back PHP4 support (note: PHP 5.2 to be required starting with WordPress 3.2)
-
-= 1.2.2 =
-* Change MCAPI wrapper to use a more unique class name, v1.3 of the API, and a much lighter client library
-
-= 1.2.1 =
-* Fixed internationalization path bug.
-* Fixed instances where i18n functions weren't necessary in admin.
-* Added more strings to be translated.
-
-= 1.2 =
-* Recommended Upgrade, please see "Upgrading" section of readme.
-* Security and various other improvements
-
