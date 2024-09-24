@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
-## [1.6.0] - 2024-09-XX
+## [1.6.0] - 2024-09-24
 **Note this version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.**
 
 ### Added
