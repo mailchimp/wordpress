@@ -306,8 +306,23 @@ class Mailchimp_Admin {
 			update_option( 'mailchimp_sf_access_token', $data_encryption->encrypt( $access_token ) );
 			update_option( 'mc_datacenter', sanitize_text_field( $data_center ) );
 			update_option( 'mc_user', $this->sanitize_data( $user ) );
-			return true;
 
+			// Clear Mailchimp List ID if saved list is not available.
+			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id' ) );
+			if ( ! is_wp_error( $lists ) ) {
+				$lists         = $lists['lists'] ?? array();
+				$saved_list_id = get_option( 'mc_list_id' );
+				$list_ids      = array_map(
+					function ( $ele ) {
+						return $ele['id'];
+					},
+					$lists
+				);
+				if ( ! in_array( $saved_list_id, $list_ids, true ) ) {
+					delete_option( 'mc_list_id' );
+				}
+			}
+			return true;
 		} else {
 			$msg = esc_html__( 'API Key must belong to "Owner", "Admin", or "Manager."', 'mailchimp' );
 			return new WP_Error( 'mailchimp-sf-invalid-role', $msg );
