@@ -299,6 +299,7 @@ class Mailchimp_Admin {
 			$data_encryption = new Mailchimp_Data_Encryption();
 
 			// Clean up the old data.
+			delete_option( 'mc_api_key' ); // Deprecated API key, need to remove as part of the migration.
 			delete_option( 'mailchimp_sf_access_token' );
 			delete_option( 'mailchimp_sf_auth_error' );
 			delete_option( 'mc_datacenter' );
