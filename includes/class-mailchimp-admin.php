@@ -368,7 +368,7 @@ class Mailchimp_Admin {
 						<?php
 						$message = sprintf(
 							/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
-							__( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please migrate to new OAuth authentication by clicking the "Migrate to OAuth authentication" button on the %1$splugin settings%2$s page.', 'mailchimp' ),
+							__( 'You are using an outdated API Key connection to Mailchimp, please migrate to the new OAuth authentication method to continue accessing your Mailchimp account by clicking the "Migrate to OAuth authentication" button on the %1$sMailchimp settings%2$s page.', 'mailchimp' ),
 							'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
 							'</a>'
 						);
