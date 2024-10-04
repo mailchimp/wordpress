@@ -349,7 +349,7 @@ class Mailchimp_Admin {
 				<div class="notice notice-warning">
 					<p>
 						<?php
-						esc_html_e( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please migrate to new OAuth authentication.', 'mailchimp' );
+						esc_html_e( 'You are using an outdated API Key connection to Mailchimp, please migrate to the new OAuth authentication method to continue accessing your Mailchimp account.', 'mailchimp' );
 						?>
 					</p>
 					<div class="migrate-to-oauth-wrapper">
