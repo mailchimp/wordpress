@@ -299,6 +299,7 @@ class Mailchimp_Admin {
 			$data_encryption = new Mailchimp_Data_Encryption();
 
 			// Clean up the old data.
+			delete_option( 'mc_api_key' ); // Deprecated API key, need to remove as part of the migration.
 			delete_option( 'mailchimp_sf_access_token' );
 			delete_option( 'mailchimp_sf_auth_error' );
 			delete_option( 'mc_datacenter' );
@@ -338,29 +339,49 @@ class Mailchimp_Admin {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			return;
 		}
+		$current_screen = get_current_screen();
 
 		// Display a deprecation notice if the user is using an API key to connect with Mailchimp.
 		if ( get_option( 'mc_api_key', '' ) && ! get_option( 'mailchimp_sf_access_token', '' ) && mailchimp_sf_should_display_form() ) {
-			?>
-			<div class="notice notice-warning is-dismissible">
-				<p>
-					<?php
-					$message = sprintf(
-						/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
-						__( 'Heads up! It looks like you\'re using an API key to connect with Mailchimp, which is now deprecated. Please log out and reconnect your Mailchimp account using the new OAuth authentication by clicking the "Log in" button on the %1$splugin settings%2$s page.', 'mailchimp' ),
-						'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
-						'</a>'
-					);
 
-					echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
-					?>
-				</p>
-			</div>
-			<?php
+			if ( $current_screen && 'toplevel_page_mailchimp_sf_options' === $current_screen->id ) {
+				?>
+				<div class="notice notice-warning">
+					<p>
+						<?php
+						esc_html_e( 'You are using an outdated API Key connection to Mailchimp, please migrate to the new OAuth authentication method to continue accessing your Mailchimp account.', 'mailchimp' );
+						?>
+					</p>
+					<div class="migrate-to-oauth-wrapper">
+						<?php
+						// Migrate button.
+						$login_button_text = __( 'Migrate to OAuth authentication', 'mailchimp' );
+						include_once MCSF_DIR . 'includes/admin/templates/login-button.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce
+						?>
+					</div>
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="notice notice-warning is-dismissible">
+					<p>
+						<?php
+						$message = sprintf(
+							/* translators: Placeholders: %1$s - <a> tag, %2$s - </a> tag */
+							__( 'You are using an outdated API Key connection to Mailchimp, please migrate to the new OAuth authentication method to continue accessing your Mailchimp account by clicking the "Migrate to OAuth authentication" button on the %1$sMailchimp settings%2$s page.', 'mailchimp' ),
+							'<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) . '">',
+							'</a>'
+						);
+
+						echo wp_kses( $message, array( 'a' => array( 'href' => array() ) ) );
+						?>
+					</p>
+				</div>
+				<?php
+			}
 		}
 
 		// Display a notice if the user is waiting for the login to complete.
-		$current_screen = get_current_screen();
 		if ( $current_screen && 'toplevel_page_mailchimp_sf_options' === $current_screen->id ) {
 			$api = mailchimp_sf_get_api();
 			if ( $api && 'waiting' === get_option( 'mailchimp_sf_waiting_for_login' ) ) {
