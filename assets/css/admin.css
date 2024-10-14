@@ -523,6 +523,24 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	clear: both;
 }
 
+.migrate-to-oauth-wrapper {
+	margin: 1em 0;
+}
+
+.migrate-to-oauth-wrapper .button.mailchimp-sf-button {
+	padding: 9px 16px;
+	line-height: 14px;
+}
+
+.migrate-to-oauth-wrapper button.button.mailchimp-sf-button:disabled {
+	padding: 6px 16px;
+}
+
+.migrate-to-oauth-wrapper button.button.mailchimp-sf-button svg {
+	width: 20px;
+	height: 20px;
+}
+
 .button.mailchimp-sf-button.button-secondary.small {
 	background-color: transparent;
 }
