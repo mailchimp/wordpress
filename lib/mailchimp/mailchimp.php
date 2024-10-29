@@ -196,10 +196,9 @@ class MailChimp_API {
 					$field_name = $merge['name'];
 				}
 			}
-			$message = $body['errors'][0]['message'];
-			if ( ! empty ( $field_name ) ) {
-				$message = $field_name . ': ' . $body['errors'][0]['message'];
-			}
+			$message = $body['errors'][0]['message'] ?? esc_html__( 'Something went wrong, Please try again later.', 'mailchimp' );
+			$message = ( ! empty( $field_name ) ) ? $field_name . ': ' . $message : $message;
+
 			return new WP_Error( 'mc-subscribe-error-api', $message );
 		}
 	}
