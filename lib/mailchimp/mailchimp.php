@@ -190,11 +190,16 @@ class MailChimp_API {
 					// Email address doesn't come back from the API, so if something's wrong, it's that.
 					$field_name                   = esc_html__( 'Email Address', 'mailchimp' );
 					$body['errors'][0]['message'] = esc_html__( 'Please fill out a valid email address.', 'mailchimp' );
+				} elseif ( ! empty( $body['errors'] ) && isset( $body['errors'][0]['field'] ) && 'email_address' === $body['errors'][0]['field'] ) {
+					$field_name = esc_html__( 'Email Address', 'mailchimp' );
 				} elseif ( ! empty( $body['errors'] ) && isset( $body['errors'][0]['field'] ) && $merge['tag'] === $body['errors'][0]['field'] ) {
 					$field_name = $merge['name'];
 				}
 			}
-			$message = sprintf( $field_name . ': ' . $body['errors'][0]['message'] );
+			$message = $body['errors'][0]['message'];
+			if ( ! empty ( $field_name ) ) {
+				$message = $field_name . ': ' . $body['errors'][0]['message'];
+			}
 			return new WP_Error( 'mc-subscribe-error-api', $message );
 		}
 	}
