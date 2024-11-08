@@ -35,7 +35,7 @@ describe('Admin can update plugin settings', () => {
 				cy.get('#mc_signup_submit').should('exist');
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains(': This value should not be blank.');
+				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
 			}
 		});
 	});
@@ -55,7 +55,7 @@ describe('Admin can update plugin settings', () => {
 				cy.get('#mc_signup_submit').should('exist');
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains(': This value should not be blank.');
+				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
 			}
 		});
 	});

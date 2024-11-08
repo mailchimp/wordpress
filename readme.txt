@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.6
-Stable tag:   1.6.0
+Stable tag:   1.6.1
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -97,6 +97,13 @@ Where ever you want it to show up.
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.6.1 - 2024-10-14 =
+* **Changed:** Improved migration flow from API Key to OAuth authentication for a better user experience (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#67](https://github.com/mailchimp/wordpress/pull/67)).
+* **Changed:** Updated the menu SVG icon (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#65](https://github.com/mailchimp/wordpress/pull/65)).
+* **Fixed:** Ensure that the settings remain persistent between logging out of the account and logging in again (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#66](https://github.com/mailchimp/wordpress/pull/66)).
+* **Security:** Bump `serve-static` from 1.15.0 to 1.16.2 and `express` from 4.19.2 to 4.21.0 (props [@dependabot](https://github.com/apps/dependabot), [@dkotter](https://github.com/dkotter) via [#55](https://github.com/mailchimp/wordpress/pull/55)).
+* **Security:** Bump `webpack` from 5.91.0 to 5.94.0 (props [@dependabot](https://github.com/apps/dependabot), [@dkotter](https://github.com/dkotter) via [#59](https://github.com/mailchimp/wordpress/pull/59)).
 
 = 1.6.0 - 2024-09-24 =
 
