@@ -16,7 +16,7 @@ After installation, if you already have a Mailchimp account, you'll log in with 
 
 If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
 
-On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode (`[mailchimpsf_form]`) to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
@@ -66,23 +66,6 @@ This section describes how to install the plugin and get started using it.
 == Upgrading ==
 
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
-
-== Advanced ==
-
-If you have a custom-coded sidebar or something that prevents enabling widgets through the WordPress GUI, complete these steps instead.
-
-WordPress v2.8 or higher:
-` [mailchimpsf_form] `
-
-If you are adding it inside a php code block, add this:
-
-` mailchimp_sf_signup_form(); `
-
-Or, if you are adding it within HTML, use this:
-
-`<?php mailchimp_sf_signup_form(); ?>`
-
-Where ever you want it to show up.
 
 == Screenshots ==
 

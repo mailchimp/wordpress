@@ -16,7 +16,7 @@ After installation, if you already have a Mailchimp account, you'll log in with 
 
 If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
 
-On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode (`[mailchimpsf_form]`) to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 ![Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-3.jpg?raw=true)
 
@@ -72,23 +72,6 @@ This section describes how to install the plugin and get started using it.
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
 If you are upgrading to version 1.6.0, you will need to updated any references to display function `mailchimpSF_signup_form` to `mailchimp_sf_signup_form`.
-
-## Advanced Usage
-
-If you have a custom-coded sidebar or something that prevent enabling widgets through the WordPress GUI, complete these steps instead.
-
-WordPress v2.8 or higher:
-` [mailchimpsf_form] `
-
-If you are adding it inside a php code block, add this:
-
-` mailchimp_sf_signup_form(); `
-
-Or, if you are adding it within HTML, use this:
-
-`<?php mailchimp_sf_signup_form(); ?>`
-
-Where ever you want it to show up.
 
 ## Frequently Asked Questions
 
