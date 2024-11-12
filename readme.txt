@@ -1,8 +1,8 @@
 === Mailchimp List Subscribe Form ===
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
-Tested up to: 6.6
-Stable tag:   1.6.1
+Tested up to: 6.7
+Stable tag:   1.6.2
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -16,7 +16,7 @@ After installation, if you already have a Mailchimp account, you'll log in with 
 
 If you don't have an account, you can create one directly in the plugin. After entering in all your personal details, you'll need to activate your account via an email that will be sent to you. Once done, you'll proceed to configure settings.
 
-On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
+On the settings screen, you'll select your Mailchimp list, choose merge fields and groups, and configure other options. Once done, you can now add the block, widget, or shortcode (`[mailchimpsf_form]`) to your site. Typically, installation and setup will take about 5-10 minutes, and absolutely everything can be done via the WordPress Setting GUI, with no file editing at all.
 
 WordPress.com compatibility is limited to Business tier users only. [How to add a signup form if you have a WordPress.com site](https://mailchimp.com/help/ways-to-add-a-signup-form-in-wordpress/).
 
@@ -67,23 +67,6 @@ This section describes how to install the plugin and get started using it.
 
 If you are upgrading to version 1.2.1 and you used the widget in your sidebar previously, all you need to do is drag the `Mailchimp Widget` back into the sidebar, visit the Mailchimp settings page (which will have maintained your prior settings), click the "Update List" button, and you're done!
 
-== Advanced ==
-
-If you have a custom-coded sidebar or something that prevents enabling widgets through the WordPress GUI, complete these steps instead.
-
-WordPress v2.8 or higher:
-` [mailchimpsf_form] `
-
-If you are adding it inside a php code block, add this:
-
-` mailchimp_sf_signup_form(); `
-
-Or, if you are adding it within HTML, use this:
-
-`<?php mailchimp_sf_signup_form(); ?>`
-
-Where ever you want it to show up.
-
 == Screenshots ==
 
 1. Mailchimp List Subscribe Form block within the block inserter.
@@ -97,6 +80,13 @@ Where ever you want it to show up.
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.6.2 - 2024-11-12 =
+**Note that this release bumps the WordPress minimum version from 6.1 to 6.3.**
+
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+* **Changed:** Bump WordPress minimum supported version from 6.1 to 6.3 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+* **Fixed:** Ensure the field name is properly added to the error message when the email address is blank (props [@iamdharmesh](https://github.com/iamdharmesh), [@jerclarke](https://github.com/jerclarke), [@dkotter](https://github.com/dkotter) via [#74](https://github.com/mailchimp/wordpress/pull/74)).
 
 = 1.6.1 - 2024-10-14 =
 * **Changed:** Improved migration flow from API Key to OAuth authentication for a better user experience (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#67](https://github.com/mailchimp/wordpress/pull/67)).
@@ -145,6 +135,9 @@ Where ever you want it to show up.
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+This release bumps the WordPress minimum version from 6.1 to 6.3.
 
 = 1.6.0 =
 This version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.

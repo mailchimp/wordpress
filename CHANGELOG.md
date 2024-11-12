@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [1.6.2] - 2024-11-12
+**Note that this release bumps the WordPress minimum version from 6.1 to 6.3.**
+
+### Changed
+- Bump WordPress "tested up to" version 6.7 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+- Bump WordPress minimum supported version from 6.1 to 6.3 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+
+### Fixed
+- Ensure the field name is properly added to the error message when the email address is blank (props [@iamdharmesh](https://github.com/iamdharmesh), [@jerclarke](https://github.com/jerclarke), [@dkotter](https://github.com/dkotter) via [#74](https://github.com/mailchimp/wordpress/pull/74)).
+
+### Developer
+- Remove the Advanced Section from our readme files (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter) via [#77](https://github.com/mailchimp/wordpress/pull/77)).
+
 ## [1.6.1] - 2024-10-14
 ### Changed
 - Improved migration flow from API Key to OAuth authentication for a better user experience (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#67](https://github.com/mailchimp/wordpress/pull/67)).
@@ -179,5 +192,6 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[1.6.2]: https://github.com/mailchimp/wordpress/compare/1.6.1...1.6.2
 [1.6.1]: https://github.com/mailchimp/wordpress/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/mailchimp/wordpress/tree/1.6.0
