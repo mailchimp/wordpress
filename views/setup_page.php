@@ -54,29 +54,19 @@ $is_list_selected = false;
 			// we *could* support paging, but few users have that many lists (and shouldn't)
 			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 			if ( is_wp_error( $lists ) ) {
-				?>
-				<div class="error_msg">
-					<?php
-					printf(
-						/* translators: %s: error message */
-						esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
-						esc_html( $lists->get_error_message() )
-					);
-					?>
-				</div>
-				<?php
+				$msg = sprintf(
+					/* translators: %s: error message */
+					esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
+					esc_html( $lists->get_error_message() )
+				);
+				mailchimp_sf_admin_notice_error( $msg );
 			} elseif ( isset( $lists['lists'] ) && count( $lists['lists'] ) === 0 ) {
-				?>
-				<div class="error_msg">
-					<?php
-					printf(
-						/* translators: %s: link to Mailchimp */
-						esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
-						"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
-					);
-					?>
-				</div>
-				<?php
+				$msg = sprintf(
+					/* translators: %s: link to Mailchimp */
+					esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
+					"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
+				);
+				mailchimp_sf_admin_notice_error( $msg );
 			} else {
 				$lists            = $lists['lists'];
 				$option           = get_option( 'mc_list_id' );
