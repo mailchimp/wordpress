@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    uses: mailchimp/wordpress/.github/workflows/build-release-zip.yml@develop
+    uses: mailchimp/wordpress/.github/workflows/build-release-zip.yml@enhancement/shortcode-conversion-to-block
 
   cypress:
     needs: build
