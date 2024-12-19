@@ -281,7 +281,7 @@ function mailchimp_sf_request_handler() {
 						if ( ! headers_sent() ) { // just in case...
 							header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT', true, 200 );
 						}
-						echo wp_kses_post( mailchimp_sf_global_msg() );
+						echo wp_kses_post( mailchimp_sf_frontend_msg() );
 						exit;
 				}
 		}
@@ -403,15 +403,17 @@ function mailchimp_sf_delete_setup() {
 }
 
 /**
- * Gets or sets a global message based on parameter passed to it
+ * Gets or sets a frontend message based on parameter passed to it
  *
- * On the plugin settings page, WP admin notices are displayed
- * instead of the global message.
+ * Used to convey error messages to the user outside of the WP Admin
+ *
+ * On the plugin settings page, WP admin notices are used exclusively
+ * instead of the frontend message.
  *
  * @param mixed $msg Message
  * @return string/bool depending on get/set
  */
-function mailchimp_sf_global_msg( $msg = null ) {
+function mailchimp_sf_frontend_msg( $msg = null ) {
 	global $mcsf_msgs;
 
 	// Make sure we're formed properly
@@ -834,7 +836,7 @@ function mailchimp_sf_signup_submit() {
 	// Catch errors and fail early.
 	if ( is_wp_error( $merge ) ) {
 		$msg = '<strong class="mc_error_msg">' . $merge->get_error_message() . '</strong>';
-		mailchimp_sf_global_msg( $msg );
+		mailchimp_sf_frontend_msg( $msg );
 
 		return false;
 	}
@@ -875,7 +877,7 @@ function mailchimp_sf_signup_submit() {
 				]
 			)
 		);
-		mailchimp_sf_global_msg( $error );
+		mailchimp_sf_frontend_msg( $error );
 		return false;
 	}
 
@@ -887,7 +889,7 @@ function mailchimp_sf_signup_submit() {
 	if ( ! get_option( 'mc_update_existing' ) && ! $is_new_subscriber ) {
 		$msg   = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
-		mailchimp_sf_global_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
+		mailchimp_sf_frontend_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
 		return false;
 	}
 
@@ -900,7 +902,7 @@ function mailchimp_sf_signup_submit() {
 	// If we have errors, then show them
 	if ( is_wp_error( $retval ) ) {
 		$msg = '<strong class="mc_error_msg">' . $retval->get_error_message() . '</strong>';
-		mailchimp_sf_global_msg( $msg );
+		mailchimp_sf_frontend_msg( $msg );
 		return false;
 	}
 
@@ -913,7 +915,7 @@ function mailchimp_sf_signup_submit() {
 	}
 
 	// Set our global message
-	mailchimp_sf_global_msg( $msg );
+	mailchimp_sf_frontend_msg( $msg );
 
 	return true;
 }
