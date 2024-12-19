@@ -21,7 +21,22 @@
 function mailchimp_sf_admin_notice_success( string $msg ): void {
 	?>
 	<div class="notice notice-success is-dismissible">
-		<p><?php echo esc_html( $msg ); ?></p>
+		<p>
+		<?php
+		echo wp_kses(
+			$msg,
+			array(
+				'a'      => array(
+					'href'   => array(),
+					'title'  => array(),
+					'target' => array(),
+				),
+				'strong' => array(),
+				'em'     => array(),
+			)
+		);
+		?>
+		</p>
 	</div>
 	<?php
 }
@@ -42,7 +57,22 @@ function mailchimp_sf_admin_notice_success( string $msg ): void {
 function mailchimp_sf_admin_notice_error( string $msg ): void {
 	?>
 	<div class="notice notice-error">
-		<p><?php echo esc_html( $msg ); ?></p>
+		<p>
+		<?php
+		echo wp_kses(
+			$msg,
+			array(
+				'a'      => array(
+					'href'   => array(),
+					'title'  => array(),
+					'target' => array(),
+				),
+				'strong' => array(),
+				'em'     => array(),
+			)
+		);
+		?>
+		</p>
 	</div>
 	<?php
 }
