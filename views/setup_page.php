@@ -15,14 +15,6 @@ $is_list_selected = false;
 ?>
 <div class="wrap">
 	<hr class="wp-header-end" />
-	<?php
-	// Display our success/error message(s) if have them
-	if ( mailchimp_sf_global_msg() !== '' ) {
-		?>
-		<div id="mc-message" class=""><?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?></div>
-		<?php
-	}
-	?>
 	<table class="mc-user" cellspacing="0">
 		<tr>
 			<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
