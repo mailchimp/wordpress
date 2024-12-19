@@ -13,7 +13,7 @@ describe('Admin can update plugin settings', () => {
 		cy.get('.mc-h2').contains('Your Lists');
 		cy.get('#mc_list_id').select('10up');
 		cy.get('input[value="Update List"]').click();
-		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('#mailchimp-sf-settings-page .notice.notice-success p').contains('Success!');
 	});
 
 	it('Admin can create a Signup form using the shortcode', () => {
