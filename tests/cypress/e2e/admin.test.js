@@ -32,7 +32,7 @@ describe('Admin can login and make sure plugin is activated', () => {
 		cy.get('#mailchimp-sf-create-activate-account').should('be.visible');
 	});
 
-	it("Admin shouldn't able to submit create account form with invalid data", () => {
+	it("Admin shouldn't be able to submit create account form with invalid data", () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_create_account');
 
 		// Submit form without filling any data.
