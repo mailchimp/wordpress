@@ -914,7 +914,7 @@ function mailchimp_sf_signup_submit() {
 		$msg = "<strong class='mc_success_msg'>{$esc}</strong>";
 	}
 
-	// Set our global message
+	// Set our front end success message
 	mailchimp_sf_frontend_msg( $msg );
 
 	return true;
