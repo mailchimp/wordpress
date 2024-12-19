@@ -25,6 +25,11 @@ jobs:
           npm ci --no-optional
           npm run build
 
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install subversion
+
       - name: WordPress.org plugin asset/readme update
         uses: 10up/action-wordpress-plugin-asset-update@stable
         env:
