@@ -429,6 +429,9 @@ function mailchimp_sf_delete_setup() {
 /**
  * Gets or sets a global message based on parameter passed to it
  *
+ * On the plugin settings page, WP admin notices are displayed
+ * instead of the global message.
+ *
  * @param mixed $msg Message
  * @return string/bool depending on get/set
  */
@@ -448,44 +451,6 @@ function mailchimp_sf_global_msg( $msg = null ) {
 	// Must be setting
 	$mcsf_msgs[] = $msg;
 	return true;
-}
-
-/**
- * Display success admin notice.
- * 
- * NOTE: WordPress localization i18n functionality should be done
- * on string literals outside of this function in order to work
- * correctly.
- * 
- * For more info read here: https://salferrarello.com/why-__-needs-a-hardcoded-string-in-wordpress/
- *
- * @since 1.7.0
- */
-function mailchimp_sf_admin_notice_success( string $msg ): void {
-	?>
-	<div class="notice notice-success is-dismissible">
-		<p><?php echo $msg; ?></p>
-	</div>
-	<?php
-}
-
-/**
- * Display error admin notice.
- * 
- * NOTE: WordPress localization i18n functionality should be done
- * on string literals outside of this function in order to work
- * correctly.
- * 
- * For more info read here: https://salferrarello.com/why-__-needs-a-hardcoded-string-in-wordpress/
- *
- * @since 1.7.0
- */
-function mailchimp_sf_admin_notice_error( string $msg ): void {
-	?>
-	<div class="notice notice-error">
-		<p><?php echo $msg; ?></p>
-	</div>
-	<?php
 }
 
 /**
@@ -712,12 +677,12 @@ function mailchimp_sf_change_list_if_necessary() {
 			}
 
 			$msg = sprintf(
-						/* translators: %s: count (number) */
-						__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
-						count( $mv )
-					) . ' ' .
-					esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
-					esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' );
+				/* translators: %s: count (number) */
+				__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
+				count( $mv )
+			) . ' ' .
+			esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
+			esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' );
 
 			mailchimp_sf_admin_notice_success( $msg );
 		}
