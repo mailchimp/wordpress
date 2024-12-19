@@ -11,6 +11,9 @@ registerBlockType(metadata, {
 			{
 				type: 'shortcode',
 				tag: 'mailchimpsf_form',
+				attributes: {
+					// No attributes, but attributes property is required
+				},
 			},
 		],
 	},
