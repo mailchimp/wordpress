@@ -33,6 +33,8 @@ describe('Admin can update plugin settings', () => {
 				cy.get('#mc_signup').should('exist');
 				cy.get('#mc_mv_EMAIL').should('exist');
 				cy.get('#mc_signup_submit').should('exist');
+
+				// Test error handling
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
 				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
@@ -53,6 +55,8 @@ describe('Admin can update plugin settings', () => {
 				cy.get('#mc_signup').should('exist');
 				cy.get('#mc_mv_EMAIL').should('exist');
 				cy.get('#mc_signup_submit').should('exist');
+
+				// Test error handling
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
 				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
@@ -106,7 +110,7 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	it('Admin can set custom styling on signup form', () => {
+	it('Admin can set custom styling on signup form', () => {		
 		// Enable custom styling and set values.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_custom_style').check();
@@ -129,6 +133,15 @@ describe('Admin can update plugin settings', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_custom_style').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify base styles
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
+			cy.get('#mc_signup form').should('not.have.css', 'border-width', '10px');
+			cy.get('#mc_signup form').should('not.have.css', 'border-color', 'rgb(0, 0, 0)');
+			cy.get('#mc_signup form').should('not.have.css', 'color', 'rgb(255, 0, 0)');
+			cy.get('#mc_signup form').should('not.have.css', 'background-color', 'rgb(0, 255, 0)');
+		});
 	});
 
 	it('Admin can set Merge Fields Included settings', () => {
