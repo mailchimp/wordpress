@@ -104,7 +104,10 @@ The `tests` directory contains end-to-end tests for the project, utilizing Cypre
 	- run `export CYPRESS_MAILCHIMP_PASSWORD="your mailchimp password"`
       - Do not forget to escape any special characters with `\`. `echo $CYPRESS_MAILCHIMP_PASSWORD` to ensure the password is set correctly.
     - **NOTE:** Use a test account that does not require 2FA. 2FA will fail some of the tests.
-5. Name the audience in your Mailchimp test account "10up". Required for `settings.test.js`.
+5. Set your Mailchimp account up
+  - Name the audience in your Mailchimp test account "10up". Required for `settings.test.js`.
+  - Enable all merge fields. From your Mailchimp account home page -> `/audience/settings/` -> Edit merge fields/tags -> Set all merge fields to "visible". Required for `settings.test.js`.
+
 6. Run `npm run cypress:run`. You can also run `npm run cypress:open` to run tests in UI mode.
 
 #### E2E tests notes

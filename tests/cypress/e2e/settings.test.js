@@ -174,7 +174,7 @@ describe('Admin can update plugin settings', () => {
 	});
 
 	it('Admin can set list options settings', () => {
-		// Remove mailchimp CSS.
+		// Remove mailchimp JavaScript support.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_use_javascript').uncheck();
 		cy.get('#mc_use_datepicker').uncheck();
@@ -208,12 +208,26 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	it('Admin can logout', () => {
+	it('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
+		// Setup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
+
+		// TODO: Set an option different from a default that we can use
+		// to test setting persistence
+
 		cy.get('input[value="Logout"]').click();
 
 		// connect to "Mailchimp" Account button should be visible.
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
+
+		// TODO: Log in with a different Mailchimp account
+		// TODO: Verify that the default options are correct
+		// TODO: Set an option different from a default that we can use
+		// to test setting persistence
+
+		// TODO: Log back in with original Mailchimp account
+		// TODO: Ensure that the option we set differently at the start of the test
+		// was saved and persists even though we've logged in and out
 	});
 });
