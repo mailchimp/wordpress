@@ -146,10 +146,19 @@ describe('Admin can update plugin settings', () => {
 	});
 
 	it('Admin can set Merge Fields Included settings', () => {
-		// Remove mailchimp CSS.
+		// Ensure that all current merge tags are up to date and saved
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_list_id').select('10up');
+		cy.get('input[value="Update List"]').click();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Uncheck all optional merge fields
 		cy.get('#mc_mv_FNAME').uncheck();
 		cy.get('#mc_mv_LNAME').uncheck();
+		cy.get('#mc_mv_ADDRESS').uncheck();
+		cy.get('#mc_mv_BIRTHDAY').uncheck();
+		cy.get('#mc_mv_COMPANY').uncheck();
+		cy.get('#mc_mv_PHONE').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
@@ -157,12 +166,20 @@ describe('Admin can update plugin settings', () => {
 			cy.visit(url);
 			cy.get('#mc_mv_FNAME').should('not.exist');
 			cy.get('#mc_mv_LNAME').should('not.exist');
+			cy.get('#mc_mv_ADDRESS-addr1').should('not.exist'); // The address field has several inputs
+			cy.get('#mc_mv_BIRTHDAY').should('not.exist');
+			cy.get('#mc_mv_COMPANY').should('not.exist');
+			cy.get('#mc_mv_PHONE').should('not.exist');
 		});
 
-		// Reset
+		// Reset and recheck all merge fields
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_mv_FNAME').check();
 		cy.get('#mc_mv_LNAME').check();
+		cy.get('#mc_mv_ADDRESS').check();
+		cy.get('#mc_mv_BIRTHDAY').check();
+		cy.get('#mc_mv_COMPANY').check();
+		cy.get('#mc_mv_PHONE').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
@@ -170,6 +187,10 @@ describe('Admin can update plugin settings', () => {
 			cy.visit(url);
 			cy.get('#mc_mv_FNAME').should('exist');
 			cy.get('#mc_mv_LNAME').should('exist');
+			cy.get('#mc_mv_ADDRESS-addr1').should('exist'); // The address field has several inputs
+			cy.get('#mc_mv_BIRTHDAY').should('exist');
+			cy.get('#mc_mv_COMPANY').should('exist');
+			cy.get('#mc_mv_PHONE').should('exist');
 		});
 	});
 
