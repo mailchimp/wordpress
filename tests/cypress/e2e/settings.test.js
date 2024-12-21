@@ -5,6 +5,7 @@ describe('Admin can update plugin settings', () => {
 
 	before(() => {
 		cy.login();
+		cy.mailchimpLogin();
 	});
 
 	it('Admin can see list and save it', () => {
