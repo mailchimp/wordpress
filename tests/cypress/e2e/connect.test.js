@@ -51,7 +51,14 @@ describe('Admin can connect to "Mailchimp" Account', () => {
 		cy.popup().find('input#submitButton').click({ force: true });
 		cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 
+		// Logout exists
 		cy.get('.mc-user h3').contains('Logged in as: ');
 		cy.get('input[value="Logout"]').should('exist');
+
+		// Mailchimp lists exists and has at least one audience
+		cy.get('#mc_list_id').should('exist');
+		cy.get('#mc_list_id')
+		.children()
+		.should('have.length.greaterThan', 1); // The " — Select A List — " default option will always be present
 	});
 });
