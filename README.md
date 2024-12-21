@@ -102,6 +102,8 @@ The `tests` directory contains end-to-end tests for the project, utilizing Cypre
 4. Set Mailchimp credentials as environment variables:
     - run `export CYPRESS_MAILCHIMP_USERNAME="your mailchimp username"`
 	- run `export CYPRESS_MAILCHIMP_PASSWORD="your mailchimp password"`
+      - Do not forget to escape any special characters with `\`. `echo $CYPRESS_MAILCHIMP_PASSWORD` to ensure the password is set correctly.
+    - **NOTE:** Use a test account that does not require 2FA. 2FA will fail some of the tests.
 5. Run `npm run cypress:run`. You can also run `npm run cypress:open` to run tests in UI mode.
 
 ## Support Level

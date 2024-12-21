@@ -46,6 +46,8 @@ describe('Admin can connect to "Mailchimp" Account', () => {
 		cy.popup().find('button[type="submit"]').click({ force: true });
 		cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 
+		// DEV NOTE: This is where 2FA would appear. You must test with an account that does not enable 2FA.
+
 		cy.popup().find('input#submitButton').click({ force: true });
 		cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 
