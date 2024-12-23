@@ -16,17 +16,8 @@ describe('Admin can update plugin settings', () => {
 			blockPostPostURL = urls.blockPostPostURL;
 		});
 
-		cy.login();
-
-		// Log into Mailchimp account if we need to.
-		cy.get('body').then(($body) => {
-			const hasLogout = $body.find('input[value="Logout"]').length > 0;
-			if (!hasLogout) {
-				cy.mailchimpLogin();
-			} else {
-				cy.log('Already logged into Mailchimp account');
-			}
-		});
+		cy.login(); // WP
+        cy.mailchimpLoginIfNotAlreadyLoggedIn();
 	});
 
 	it('Admin can see list and save it', () => {

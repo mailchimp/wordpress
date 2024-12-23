@@ -16,17 +16,8 @@ describe('Form submission, validation, and error handling', () => {
 			blockPostPostURL = urls.blockPostPostURL;
 		});
 
-		cy.login();
-
-		// Log into Mailchimp account if we need to.
-		cy.get('body').then(($body) => {
-			const hasLogout = $body.find('input[value="Logout"]').length > 0;
-			if (!hasLogout) {
-				cy.mailchimpLogin();
-			} else {
-				cy.log('Already logged into Mailchimp account');
-			}
-		});
+		cy.login(); // WP
+        cy.mailchimpLoginIfNotAlreadyLoggedIn();
 	});
 
 	/**
@@ -105,7 +96,6 @@ describe('Form submission, validation, and error handling', () => {
 		cy.get('#mc_mv_COMPANY').uncheck();
 		cy.get('#mc_mv_PHONE').uncheck();
 		
-		cy.get('#mc_use_javascript').check(); // Re-enable JS support
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
@@ -138,7 +128,7 @@ describe('Form submission, validation, and error handling', () => {
 			// TODO: BLOCKED - Test phone number
 			// Blocked until we standardize testing data. We must be able to set the phone format to US.
 			// Default is international. 
-			
+
 			// - If US phone format, phone number should be at least 12 chars (10 digits and two hyphens)
 			// cy.get('#mc_mv_PHONE').type('123456789'); // one digit short
 			// cy.get('#mc_signup_submit').click();
