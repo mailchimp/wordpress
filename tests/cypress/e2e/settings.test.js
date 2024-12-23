@@ -1,9 +1,21 @@
 /* eslint-disable no-undef */
 describe('Admin can update plugin settings', () => {
-	let shortcodePostURL = '/mailchimp-signup-form-shortcode';
-	let blockPostPostURL = '/mailchimp-signup-form-block';
+	let shortcodePostURL;
+	let blockPostPostURL;
 
 	before(() => {
+		// TODO: Initialize tests from a blank state
+		// TODO: Wipe WP data related to a users options
+		// TODO: Delete all contacts in a users Mailchimp account
+		// TODO: Ensure the default audience list is "10up"
+		// TODO: Include all merge fields as "Visible" in the users Mailchimp account
+
+		// Load the post URLs from the JSON file
+		cy.fixture('postUrls.json').then((urls) => {
+			shortcodePostURL = urls.shortcodePostURL;
+			blockPostPostURL = urls.blockPostPostURL;
+		});
+
 		cy.login();
 
 		// Log into Mailchimp account if we need to.
@@ -25,6 +37,8 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update List"]').click();
 		cy.get('#mc-message .success_msg b').contains('Success!');
 	});
+
+	// TODO: Default settings are populated as expected
 
 	it('Admin can create a Signup form using the shortcode', () => {
 		const postTitle = 'Mailchimp signup form - shortcode';
