@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-describe('Form submission validation settings', () => {
+describe('Form submission, validation, and error handling', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
@@ -36,7 +36,7 @@ describe('Form submission validation settings', () => {
 	 * - NOTE: Cypress doesn't have any built in ways to disable JS and the workarounds with
 	 * cy.intercept didn't seem comprehensive
 	 */
-	it('Form submission and error handling works when JavaScript Support is disabled', () => {
+	it('JavaScript Support is disabled', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Ensure that JavaScript support is disabled
@@ -74,8 +74,39 @@ describe('Form submission validation settings', () => {
 	// JS Support - Yes JS
 	// Can submit the form and processses user input
 	// Error handling mechanisms are in place to notify user of submission issues
-	it('Form submission and error handling works when JavaScript Support is enabled', () => {
-		// Is this already covered by the other tests?
+	it('JavaScript Support is enabled', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+
+		// Ensure that JavaScript support is disabled
+		cy.get('#mc_use_javascript').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		
+		// Enable all merge fields to test validation later
+		cy.get('#mc_mv_FNAME').check();
+		cy.get('#mc_mv_LNAME').check();
+		cy.get('#mc_mv_ADDRESS').check();
+		cy.get('#mc_mv_BIRTHDAY').check();
+		cy.get('#mc_mv_COMPANY').check();
+		cy.get('#mc_mv_PHONE').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		cy.get('input[value="Update List"]').click();
+
+		formValidationAssertions();
+
+		// Cleanup
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+
+		// Uncheck all optional merge fields
+		cy.get('#mc_mv_FNAME').uncheck();
+		cy.get('#mc_mv_LNAME').uncheck();
+		cy.get('#mc_mv_ADDRESS').uncheck();
+		cy.get('#mc_mv_BIRTHDAY').uncheck();
+		cy.get('#mc_mv_COMPANY').uncheck();
+		cy.get('#mc_mv_PHONE').uncheck();
+		
+		cy.get('#mc_use_javascript').check(); // Re-enable JS support
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
 	// Form validation - make modular and can run in both JS and non JS setups
@@ -96,26 +127,42 @@ describe('Form submission validation settings', () => {
 			cy.get('#mc_mv_BIRTHDAY').should('exist');
 			cy.get('#mc_mv_COMPANY').should('exist');
 			cy.get('#mc_mv_PHONE').should('exist');
-	
-			// TODO: Write more assertions for field validation
+
+			// Validation assertions
 	
 			// Test email error handling
 			cy.get('#mc_signup_submit').click();
 			cy.get('.mc_error_msg').should('exist');
 			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+
+			// TODO: BLOCKED - Test phone number
+			// Blocked until we standardize testing data. We must be able to set the phone format to US.
+			// Default is international. 
+			
+			// - If US phone format, phone number should be at least 12 chars (10 digits and two hyphens)
+			// cy.get('#mc_mv_PHONE').type('123456789'); // one digit short
+			// cy.get('#mc_signup_submit').click();
+			// cy.get('.mc_error_msg').should('exist');
+			// cy.get('.mc_error_msg').contains('must consist of only numbers');
+
+			// - If US phone format, US phone pattern must be (/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A)
 	
 			// Test street address error handling
-			// TODO: Test address line 2, city, state, zip/postal, country
+			// TODO: BLOCKED - Test address line 2, city, state, zip/postal, country
+			// Blocked until we standardize testing data. The address must be required inside
+			// the Mailchimp account
+			// - If required, Addr 1 and city must not be empty
+
+			// Test birthday - no validation
 	
-			// Test birthday
+			// Test company - no validation
 	
-			// Test company
+			// Test first name - no validation
 	
-			// Test first name
-	
-			// Test last name
-	
-			// Test phone number
+			// Test last name - no validation
+
+			// TODO: BLOCKED - Successful submission assertion here, but blocked until we standardize testing
+			// data to clear after every test run
 		});
 	}
 
