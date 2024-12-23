@@ -49,6 +49,15 @@ Cypress.Commands.add('popup', () => {
 	return cy.wrap(popup.contents().find('body'));
 });
 
+Cypress.Commands.add('mailchimpLogout', () => {
+	// Logout if already connected.
+	cy.get('body').then(($body) => {
+		if ($body.find('input[value="Logout"]').length > 0) {
+			cy.get('input[value="Logout"]').click();
+		}
+	});
+});
+
 /**
  * Log into Mailchimp account
  * 
@@ -59,11 +68,7 @@ Cypress.Commands.add('mailchimpLogin', () => {
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 	// Logout if already connected.
-	cy.get('body').then(($body) => {
-		if ($body.find('input[value="Logout"]').length > 0) {
-			cy.get('input[value="Logout"]').click();
-		}
-	});
+	cy.mailchimpLogout();
 
 	// Check Mailchimp login screen for OAuth login.
 	cy.get('#mailchimp_sf_oauth_connect').should('exist');
