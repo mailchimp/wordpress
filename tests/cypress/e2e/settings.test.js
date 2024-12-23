@@ -5,7 +5,16 @@ describe('Admin can update plugin settings', () => {
 
 	before(() => {
 		cy.login();
-		cy.mailchimpLogin();
+
+		// Log into Mailchimp account if we need to.
+		cy.get('body').then(($body) => {
+			const hasLogout = $body.find('input[value="Logout"]').length > 0;
+			if (!hasLogout) {
+				cy.mailchimpLogin();
+			} else {
+				cy.log('Already logged into Mailchimp account');
+			}
+		});
 	});
 
 	it('Admin can see list and save it', () => {
@@ -128,6 +137,41 @@ describe('Admin can update plugin settings', () => {
 			cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
 			cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
 			cy.get('#mc_signup form').should('have.css', 'background-color', 'rgb(0, 255, 0)');
+
+			// Form is able to be submitted with custom styles
+			cy.get('#mc_signup_submit')
+				.scrollIntoView({ offset: { top: -100, left: 0 } })
+				.should('be.visible')   // Check if the button is visible
+				.and('not.be.disabled'); // Ensure the button is not disabled
+				// .click();               // Perform the click action
+
+			// Ensure that custom CSS does not cover submit button
+			cy.get('#mc_signup_submit')
+			.then(($el) => {
+				const rect = $el[0].getBoundingClientRect();
+				
+				// Check that the element is within the viewport
+				cy.window().then((win) => {
+					const windowHeight = win.innerHeight;
+					const windowWidth = win.innerWidth;
+
+					expect(rect.top).to.be.greaterThan(0);
+					expect(rect.left).to.be.greaterThan(0);
+					expect(windowHeight).to.be.greaterThan(0);
+					expect(windowWidth).to.be.greaterThan(0);
+					expect(rect.bottom).to.be.lessThan(windowHeight);
+					expect(rect.right).to.be.lessThan(windowWidth);
+					});
+
+					// Check if the center of the element is not covered by another element
+					const centerX = rect.x + $el[0].offsetWidth / 2;
+					const centerY = rect.y + $el[0].offsetHeight / 2;
+				
+					cy.document().then((doc) => {
+						const topElement = doc.elementFromPoint(centerX, centerY);
+						expect(topElement).to.equal($el[0]);
+					});
+				});
 		});
 
 		// Reset
