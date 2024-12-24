@@ -278,7 +278,7 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	it('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
+	it.skip('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
 		// Setup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
@@ -299,5 +299,13 @@ describe('Admin can update plugin settings', () => {
 		// TODO: Log back in with original Mailchimp account
 		// TODO: Ensure that the option we set differently at the start of the test
 		// was saved and persists even though we've logged in and out
+	});
+
+	it.skip('The signup form is not displayed on the front end unless a list is saved', () => {
+		// TODO: Log the user out and verify no sign up form exists on the frontend
+		// TODO: BLOCKED - Option 1 (preferred): Use a test user that has never saved a list to verify the list can
+		// not be seen on the FE
+		// Option 2: Delete the option that saves the list selection in the DB to test that a sign up form
+		// will not display on the FE without being selected. Would require interacting with the BE.
 	});
 });
