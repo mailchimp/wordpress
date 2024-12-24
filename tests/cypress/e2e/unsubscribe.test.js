@@ -2,6 +2,7 @@
 describe('Unsubscribe form', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
+	const testEmail = 'mailchimp-wordpress-test@10up.com';
 
 	before(() => {
 		// TODO: Initialize tests from a blank state
@@ -33,13 +34,47 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
-		// Visit the mailchimp block page
-		// Subscribe to email (to be a valid unsubscriber)
-		// Assert unsubscribe link exists
-		// Visit unsubscribe link
-		// Unsubscribe
-		// Select a reason
-		// Navigate back to the website (this is a bug, it's broken currently)
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			let baseUrl;
+
+			// Visit the mailchimp block page
+			cy.visit(url);
+
+			// Get baseUrl to use for later assertion
+			cy.url().then((url) => {
+				// Extract the base URL
+				const urlObject = new URL(url);
+				baseUrl = `${urlObject.protocol}//${urlObject.host}`;
+			  });
+			  
+
+			// Assert unsubscribe link exists
+			cy.get('a[href*="/unsubscribe"]').should('exist');
+
+			// TODO: Need to delete contact before each form submission or else the test will register
+			// the contact as subscribed
+			// Subscribe to email (to be a valid unsubscriber)
+			cy.get('#mc_mv_EMAIL').type(testEmail);
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_success_msg').should('exist').contains(/success/i);
+
+			// Visit unsubscribe link
+			cy.get('a[href*="/unsubscribe"]')
+				.invoke('removeAttr', 'target') // Prevent opening in new window so that Cypress can test
+				.click();
+
+			// Unsubscribe
+			cy.get('#email-address').type(testEmail);
+			cy.get('input[type="submit"]').click();
+			cy.get('body').should('contain', 'Unsubscribe Successful');
+
+			// Navigate back to the website
+			cy.contains('a', 'return to our website').should('exist').click();
+			
+			// TODO: Assert that we're back on our website (this is a bug, it's broken currently)
+			// cy.url().should('include', baseUrl); // TODO: Do we want to assert a specific landing page?
+
+		});
 	});
 	
 	it('throws an error when unsubscribing an email that was never subscribed to a list', () => {
@@ -50,7 +85,7 @@ describe('Unsubscribe form', () => {
 		// Assert that the unsubscribe didn't work because the email isn't subscribed
 	});
 
-	it('does not display an unsubscrie link when the unsubscribe option is disabled', () => {
+	it('does not display an unsubscribe link when the unsubscribe option is disabled', () => {
 
 	});
 
