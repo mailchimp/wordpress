@@ -278,29 +278,54 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
+	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
 	it.skip('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
-		// Setup
+		// Step 1: Visit Mailchimp settings page
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
-
-		// TODO: Set an option different from a default that we can use
-		// to test setting persistence
-
+	
+		// Step 2: Set an option different from the default
+		const customHeader = 'My Custom Header';
+		cy.get('#mc_header_content').clear().type(customHeader);
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	
+		// Verify the custom header is saved
+		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('#mc_header_content').should('have.value', customHeader);
+	
+		// Step 3: Log out of the Mailchimp account
 		cy.get('input[value="Logout"]').click();
-
-		// connect to "Mailchimp" Account button should be visible.
+	
+		// Verify the logout was successful
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
-
-		// TODO: Log in with a different Mailchimp account
-		// TODO: Verify that the default options are correct
-		// TODO: Set an option different from a default that we can use
-		// to test setting persistence
-
-		// TODO: Log back in with original Mailchimp account
-		// TODO: Ensure that the option we set differently at the start of the test
-		// was saved and persists even though we've logged in and out
+	
+		// Step 4: Log in with a different Mailchimp account
+		// TODO: BLOCKED - We need a separate Mailchimp account to test the login here
+		cy.mailchimpLogin('different@mailchimp.com', 'password123'); // TODO: CHANGE LOG IN HERE
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+	
+		// Verify the default options are displayed for the new account
+		cy.get('#mc_header_content').should('not.have.value', customHeader); // Expect default value
+	
+		// Step 5: Set another option with the second account to test persistence
+		const differentHeader = 'Another Custom Header';
+		cy.get('#mc_header_content').clear().type(differentHeader);
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	
+		// Verify the new setting is saved for the second account
+		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('#mc_header_content').should('have.value', differentHeader);
+	
+		// Step 6: Log back in with the original Mailchimp account
+		cy.get('input[value="Logout"]').click();
+		cy.mailchimpLogin(); // Default to user set in env
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+	
+		// Step 7: Ensure the original settings persist
+		cy.get('#mc_header_content').should('have.value', customHeader);
 	});
 
+	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
 	it.skip('The signup form is not displayed on the front end unless a list is saved', () => {
 		// TODO: Log the user out and verify no sign up form exists on the frontend
 		// TODO: BLOCKED - Option 1 (preferred): Use a test user that has never saved a list to verify the list can
