@@ -64,7 +64,10 @@ Cypress.Commands.add('mailchimpLogout', () => {
  * Not sure we should put this much logic into one command, but we need
  * the Mailchimp login functionality to test settings.test.js independently
  */
-Cypress.Commands.add('mailchimpLogin', () => {
+Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
+	username = username ?? Cypress.env('MAILCHIMP_USERNAME');
+	password = password ?? Cypress.env('MAILCHIMP_PASSWORD');
+	
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 	// Logout if already connected.
@@ -94,11 +97,11 @@ Cypress.Commands.add('mailchimpLogin', () => {
 	cy.popup()
 		.find('input#username')
 		.clear()
-		.type(Cypress.env('MAILCHIMP_USERNAME'), { force: true });
+		.type(username, { force: true });
 	cy.popup()
 		.find('input#password')
 		.clear()
-		.type(Cypress.env('MAILCHIMP_PASSWORD'), { force: true });
+		.type(password, { force: true });
 	cy.popup().find('button[type="submit"]').click({ force: true });
 	cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 
