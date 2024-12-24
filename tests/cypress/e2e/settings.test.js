@@ -29,7 +29,32 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc-message .success_msg b').contains('Success!');
 	});
 
+	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
+	it.skip('Admin that has never saved a list can not see the form on the front end', () => {
+		// Step 1: Log the user out of the current account (if logged in)
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.mailchimpLogout();
+	
+		// Verify the user is logged out
+		cy.get('#mailchimp_sf_oauth_connect').should('exist');
+	
+		// Step 2: Log in with a test user account that has never saved a list
+		// TODO: BLOCKED - We need a second user here to finish this test
+		cy.mailchimpLogin('test_user_no_list@mailchimp.com', 'password123'); // TODO: CHANGE LOG IN HERE
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+	
+		// Verify no list is saved for the test user
+		cy.get('#mc_list_id').should('have.value', ''); // Assuming empty value indicates no list is saved
+	
+		// Step 3: Verify the signup form is not displayed on the frontend
+		cy.visit('/'); // Navigate to the frontend homepage
+		cy.get('#mc_signup').should('not.exist'); // Ensure the form does not exist
+	});
+
 	// TODO: Default settings are populated as expected
+	it.skip('The default settings populate as expected', () => {
+		// Test here...
+	});
 
 	it('Admin can create a Signup form using the shortcode', () => {
 		const postTitle = 'Mailchimp signup form - shortcode';
@@ -323,14 +348,5 @@ describe('Admin can update plugin settings', () => {
 	
 		// Step 7: Ensure the original settings persist
 		cy.get('#mc_header_content').should('have.value', customHeader);
-	});
-
-	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
-	it.skip('The signup form is not displayed on the front end unless a list is saved', () => {
-		// TODO: Log the user out and verify no sign up form exists on the frontend
-		// TODO: BLOCKED - Option 1 (preferred): Use a test user that has never saved a list to verify the list can
-		// not be seen on the FE
-		// Option 2: Delete the option that saves the list selection in the DB to test that a sign up form
-		// will not display on the FE without being selected. Would require interacting with the BE.
 	});
 });
