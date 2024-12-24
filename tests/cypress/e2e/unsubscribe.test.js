@@ -2,7 +2,6 @@
 describe('Unsubscribe form', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
-	const testEmail = 'mailchimp-wordpress-test@10up.com';
 
 	before(() => {
 		// TODO: Initialize tests from a blank state
@@ -34,6 +33,8 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
+		const testEmail = 'mailchimp-wordpress-test@10up.com';
+
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			let baseUrl;
 
@@ -78,11 +79,28 @@ describe('Unsubscribe form', () => {
 	});
 	
 	it('throws an error when unsubscribing an email that was never subscribed to a list', () => {
-		// Visit the mailchimp block page
-		// Assert unsubscribe link exists
-		// Visit unsubscribe link
-		// Unsubscribe
-		// Assert that the unsubscribe didn't work because the email isn't subscribed
+		const testEmail = 'never-subscribed-user@10up.com';
+
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			// Visit the mailchimp block page
+			cy.visit(url);
+
+			// Assert unsubscribe link exists
+			cy.get('a[href*="/unsubscribe"]').should('exist');
+
+			// Visit unsubscribe link
+			cy.get('a[href*="/unsubscribe"]')
+				.invoke('removeAttr', 'target') // Prevent opening in new window so that Cypress can test
+				.click();
+
+			// Unsubscribe
+			cy.get('#email-address').type(testEmail);
+			cy.get('input[type="submit"]').click();
+
+			// Assert that the unsubscribe didn't work because the email isn't subscribed
+			cy.get('.errorText').should('contain', 'this email is not subscribed');
+
+		});
 	});
 
 	it('does not display an unsubscribe link when the unsubscribe option is disabled', () => {
