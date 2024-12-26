@@ -1,12 +1,11 @@
 <?php
-
-namespace Mailchimp\WordPress\Includes\Admin;
-
 /**
  * Admin notices.
  *
  * @package Mailchimp
  */
+
+namespace Mailchimp\WordPress\Includes\Admin;
 
 /**
  * Display success admin notice.
