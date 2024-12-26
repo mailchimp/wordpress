@@ -1,4 +1,7 @@
 <?php
+
+namespace Mailchimp\WordPress\Includes\Admin;
+
 /**
  * Admin notices.
  *
@@ -18,7 +21,7 @@
  * @param string $msg The message to display.
  * @return void
  */
-function mailchimp_sf_admin_notice_success( string $msg ) {
+function admin_notice_success( string $msg ) {
 	?>
 	<div class="notice notice-success is-dismissible">
 		<p>
@@ -54,7 +57,7 @@ function mailchimp_sf_admin_notice_success( string $msg ) {
  * @param string $msg The message to display.
  * @return void
  */
-function mailchimp_sf_admin_notice_error( string $msg ) {
+function admin_notice_error( string $msg ) {
 	?>
 	<div class="notice notice-error">
 		<p>

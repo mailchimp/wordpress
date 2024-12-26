@@ -64,6 +64,8 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 	return;
 }
 
+use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
+
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.3' );
 
@@ -468,64 +470,64 @@ function mailchimp_sf_save_general_form_settings() {
 	if ( isset( $_POST['mc_use_javascript'] ) ) {
 		update_option( 'mc_use_javascript', 'on' );
 		$msg = esc_html__( 'Fancy Javascript submission turned On!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_use_javascript' ) !== 'off' ) {
 		update_option( 'mc_use_javascript', 'off' );
 		$msg = esc_html__( 'Fancy Javascript submission turned Off!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	if ( isset( $_POST['mc_use_datepicker'] ) ) {
 		update_option( 'mc_use_datepicker', 'on' );
 		$msg = esc_html__( 'Datepicker turned On!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_use_datepicker' ) !== 'off' ) {
 		update_option( 'mc_use_datepicker', 'off' );
 		$msg = esc_html__( 'Datepicker turned Off!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	/*Enable double optin toggle*/
 	if ( isset( $_POST['mc_double_optin'] ) ) {
 		update_option( 'mc_double_optin', true );
 		$msg = esc_html__( 'Double opt-in turned On!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_double_optin' ) !== false ) {
 		update_option( 'mc_double_optin', false );
 		$msg = esc_html__( 'Double opt-in turned Off!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	/* NUKE the CSS! */
 	if ( isset( $_POST['mc_nuke_all_styles'] ) ) {
 		update_option( 'mc_nuke_all_styles', true );
 		$msg = esc_html__( 'Mailchimp CSS turned Off!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_nuke_all_styles' ) !== false ) {
 		update_option( 'mc_nuke_all_styles', false );
 		$msg = esc_html__( 'Mailchimp CSS turned On!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	/* Update existing */
 	if ( isset( $_POST['mc_update_existing'] ) ) {
 		update_option( 'mc_update_existing', true );
 		$msg = esc_html__( 'Update existing subscribers turned On!' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_update_existing' ) !== false ) {
 		update_option( 'mc_update_existing', false );
 		$msg = esc_html__( 'Update existing subscribers turned Off!' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	if ( isset( $_POST['mc_use_unsub_link'] ) ) {
 		update_option( 'mc_use_unsub_link', 'on' );
 		$msg = esc_html__( 'Unsubscribe link turned On!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_use_unsub_link' ) !== 'off' ) {
 		update_option( 'mc_use_unsub_link', 'off' );
 		$msg = esc_html__( 'Unsubscribe link turned Off!', 'mailchimp' );
-		mailchimp_sf_admin_notice_success( $msg );
+		admin_notice_success( $msg );
 	}
 
 	$content = isset( $_POST['mc_header_content'] ) ? wp_kses_post( wp_unslash( $_POST['mc_header_content'] ) ) : '';
@@ -583,7 +585,7 @@ function mailchimp_sf_save_general_form_settings() {
 	}
 
 	$msg = esc_html__( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' );
-	mailchimp_sf_admin_notice_success( $msg );
+	admin_notice_success( $msg );
 }
 
 /**
@@ -596,7 +598,7 @@ function mailchimp_sf_change_list_if_necessary() {
 
 	if ( empty( $_POST['mc_list_id'] ) ) {
 		$msg = esc_html__( 'Please choose a valid list', 'mailchimp' );
-		mailchimp_sf_admin_notice_error( $msg );
+		admin_notice_error( $msg );
 		return;
 	}
 
@@ -662,7 +664,7 @@ function mailchimp_sf_change_list_if_necessary() {
 			esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
 			esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' );
 
-			mailchimp_sf_admin_notice_success( $msg );
+			admin_notice_success( $msg );
 		}
 	}
 }
