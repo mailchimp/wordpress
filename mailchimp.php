@@ -35,15 +35,15 @@
  */
 
 // Define the path to the Composer autoload file
-$autoloadFile = __DIR__ . '/vendor/autoload.php';
+$autoload_file = __DIR__ . '/vendor/autoload.php';
 
 // Check if the autoload file exists
-if ( ! file_exists( $autoloadFile ) ) {
+if ( ! file_exists( $autoload_file ) ) {
 	die( 'Composer autoload file not found. Run `composer install` to generate it.' );
 }
 
 // Include the autoload file
-require_once $autoloadFile;
+require_once $autoload_file;
 
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
