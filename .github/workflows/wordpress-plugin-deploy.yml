@@ -19,11 +19,6 @@ jobs:
         node-version-file: '.nvmrc'
         cache: 'npm'
 
-    - name: Install Composer dependencies and dump autoload
-      run: |
-        composer install --no-dev --optimize-autoloader
-        composer dump-autoload
-
     - name: Build
       run: |
         npm ci --no-optional
