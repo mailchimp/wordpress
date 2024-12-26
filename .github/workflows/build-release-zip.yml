@@ -38,6 +38,7 @@ jobs:
       - name: Build plugin
         run: |
           npm run build
+          composer dump-autoload
 
       - name: Install SVN
         run: |
