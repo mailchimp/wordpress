@@ -36,17 +36,6 @@
 
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
-// Define the path to the Composer autoload file
-$autoloadFile = __DIR__ . '/vendor/autoload.php';
-
-// Check if the autoload file exists
-if ( ! file_exists( $autoloadFile ) ) {
-	die( 'Composer autoload file not found. Run `composer install` to generate it.' );
-}
-
-// Include the autoload file
-require_once $autoloadFile;
-
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
 
