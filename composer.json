@@ -18,6 +18,17 @@
     "10up/phpcs-composer": "^3.0",
 	  "sirbrillig/phpcs-changed": "^2.11"
   },
+  "autoload": {
+    "psr-4": {
+      "Mailchimp\\WordPress\\": "src/"
+    },
+    "classmap": [
+      "includes"
+    ],
+    "files": [
+      "includes/admin/admin-notices.php"
+    ]
+  },
   "config": {
     "allow-plugins": {
       "dealerdirect/phpcodesniffer-composer-installer": true
