@@ -12,7 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 /**
  * Class Mailchimp_Admin
- * 
+ *
  * Long term plan is to break up admin functionality into smaller, more focused files to improve maintainability.
  * This could also include:
  * - Moving OAuth related code to oauth.php
