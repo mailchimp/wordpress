@@ -5,6 +5,8 @@
  * @package Mailchimp
  */
 
+use function Mailchimp\WordPress\Includes\Admin\admin_notice_error;
+
 $user = get_option( 'mc_user' );
 /* TODO MC SOPRESTO USER INFO */
 
@@ -51,14 +53,14 @@ $is_list_selected = false;
 					esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
 					esc_html( $lists->get_error_message() )
 				);
-				mailchimp_sf_admin_notice_error( $msg );
+				admin_notice_error( $msg );
 			} elseif ( isset( $lists['lists'] ) && count( $lists['lists'] ) === 0 ) {
 				$msg = sprintf(
 					/* translators: %s: link to Mailchimp */
 					esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
 					"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
 				);
-				mailchimp_sf_admin_notice_error( $msg );
+				admin_notice_error( $msg );
 			} else {
 				$lists            = $lists['lists'];
 				$option           = get_option( 'mc_list_id' );
