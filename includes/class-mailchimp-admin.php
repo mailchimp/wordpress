@@ -39,7 +39,9 @@ class Mailchimp_Admin {
 		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ) );
 
-		// TODO: Should this load somewhere else?
+		/**
+		 * Load modularized admin functionality here
+		 */
 		$this->require_admin_utils();
 	}
 
