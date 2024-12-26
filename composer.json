@@ -24,6 +24,9 @@
     },
     "classmap": [
       "includes"
+    ],
+    "files": [
+      "includes/admin/admin-notices.php"
     ]
   },
   "config": {
