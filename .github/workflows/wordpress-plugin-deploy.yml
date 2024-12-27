@@ -32,15 +32,16 @@ jobs:
 
     # TODO: Revert dummy changes after testing is successful
     
-    - name: WordPress Plugin Deploy (dummy credentials used)
+    - name: WordPress Plugin Deploy (dummy credentials used) # TODO: Rename after testing
       id: deploy
       uses: 10up/action-wordpress-plugin-deploy@stable
       with:
         generate-zip: true
       env:
-        SVN_USERNAME: "dummy-user"
-        SVN_PASSWORD: "dummy-pass"
-        SLUG: dummy-slug
+        SVN_USERNAME: "dummy-user" # TODO: Revert after testing
+        SVN_PASSWORD: "dummy-pass" # TODO: Revert after testing
+        SLUG: dummy-slug # TODO: Revert after testing
+      continue-on-error: true # TODO: Remove after testing
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
