@@ -30,17 +30,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install subversion
 
-    # TODO: Uncomment after testing is complete
+    # TODO: Revert dummy changes after testing is successful
     
-    # - name: WordPress Plugin Deploy
-    #   id: deploy
-    #   uses: 10up/action-wordpress-plugin-deploy@stable
-    #   with:
-    #     generate-zip: true
-    #   env:
-    #     SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-    #     SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-    #     SLUG: mailchimp
+    - name: WordPress Plugin Deploy (dummy credentials used)
+      id: deploy
+      uses: 10up/action-wordpress-plugin-deploy@stable
+      with:
+        generate-zip: true
+      env:
+        SVN_USERNAME: "dummy-user"
+        SVN_PASSWORD: "dummy-pass"
+        SLUG: dummy-slug
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
