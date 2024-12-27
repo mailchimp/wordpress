@@ -3,6 +3,7 @@ name: Deploy to WordPress.org
 on:
   release:
     types: [published]
+  workflow_dispatch: # TODO: Delete after testing is complete
 
 jobs:
   tag:
@@ -29,15 +30,17 @@ jobs:
         sudo apt-get update
         sudo apt-get install subversion
 
-    - name: WordPress Plugin Deploy
-      id: deploy
-      uses: 10up/action-wordpress-plugin-deploy@stable
-      with:
-        generate-zip: true
-      env:
-        SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
-        SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-        SLUG: mailchimp
+    # TODO: Uncomment after testing is complete
+    
+    # - name: WordPress Plugin Deploy
+    #   id: deploy
+    #   uses: 10up/action-wordpress-plugin-deploy@stable
+    #   with:
+    #     generate-zip: true
+    #   env:
+    #     SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+    #     SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+    #     SLUG: mailchimp
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
