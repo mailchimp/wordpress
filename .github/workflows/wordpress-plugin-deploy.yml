@@ -39,7 +39,7 @@ jobs:
         SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
         SLUG: mailchimp
 
-    - name: Update GitHub release with built plugin files
+    - name: Attach the wordpress.org plugin files to the Github release
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.deploy.outputs.zip-path }}
