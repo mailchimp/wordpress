@@ -4,7 +4,16 @@
 name: (delete after testing is done) - Test "Deploy to WordPress.org"
 
 on:
-  workflow_dispatch: # TODO: Delete after testing is complete
+# TESTING: Commented out to avoid running on the published event by mistake
+#   release:
+#     types: [published]
+
+# TESTING: Draft a release and then run the workflow file manually
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag for the release (e.g., v1.0.0)'
+        required: true
 
 jobs:
   tag:
@@ -58,6 +67,7 @@ jobs:
       with:
         # files: ${{ steps.deploy.outputs.zip-path }} # TESTING: Original zip file source
         files: build/mailchimp.zip # TESTING: Get zip file from generate plugin step
+        tag_name: ${{ github.event.inputs.tag }} # Pass the tag from workflow_dispatch input
         body: |
           This release contains the latest updates for the WordPress plugin.
       env:
