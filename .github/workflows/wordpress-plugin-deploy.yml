@@ -32,21 +32,33 @@ jobs:
 
     # TODO: Revert dummy changes after testing is successful
     
-    - name: WordPress Plugin Deploy (dummy credentials used) # TODO: Rename after testing
-      id: deploy
-      uses: 10up/action-wordpress-plugin-deploy@stable
-      with:
-        generate-zip: true
-      env:
-        SVN_USERNAME: "dummy-user" # TODO: Revert after testing
-        SVN_PASSWORD: "dummy-pass" # TODO: Revert after testing
-        SLUG: dummy-slug # TODO: Revert after testing
-      continue-on-error: true # TODO: Remove after testing
+    # - name: WordPress Plugin Deploy (dummy credentials used) # TODO: Rename after testing
+    #   id: deploy
+    #   uses: 10up/action-wordpress-plugin-deploy@stable
+    #   with:
+    #     generate-zip: true
+    #   env:
+    #     SVN_USERNAME: "dummy-user" # TODO: Revert after testing
+    #     SVN_PASSWORD: "dummy-pass" # TODO: Revert after testing
+    #     SLUG: dummy-slug # TODO: Revert after testing
+    #   continue-on-error: true # TODO: Remove after testing
 
-    - name: Create GitHub Release
+    # TODO: Delete this after done testing
+    # Generate the WordPress Plugin zip file without deploying
+    - name: Generate Plugin Zip File (skip deploy to WordPress.org)
+      id: deploy
+      run: |
+        # Create a zip file for the plugin
+        mkdir -p build
+        zip -r build/mailchimp.zip . -x "*.git*" "node_modules/*" "tests/*"
+      env:
+        SLUG: mailchimp
+
+    - name: Update GitHub release with built plugin files
       uses: softprops/action-gh-release@v2
       with:
-        files: ${{ steps.deploy.outputs.zip-path }}
+        # files: ${{ steps.deploy.outputs.zip-path }} # TODO: Revert this after testing
+        files: build/mailchimp.zip # TODO: Remove this after testing
         body: |
           This release contains the latest updates for the WordPress plugin.
       env:
