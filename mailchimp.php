@@ -337,7 +337,7 @@ function mailchimp_sf_needs_upgrade() {
 
 /**
  * Deletes all Mailchimp options
- * 
+ *
  * TODO: The options names should be moved to a config file
  * or to a class dedicated to options
  **/
