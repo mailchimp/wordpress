@@ -1,3 +1,4 @@
+// TODO: Not sure this file belongs here, but no better place for it
 import mailchimp from '@mailchimp/mailchimp_marketing';
 
 /**
