@@ -5,7 +5,7 @@ import mailchimp from './mailchimpApiConfig';
  * 
  * NOTE: Intentionally not caching responses
  * - Tests change over time and flexibility should be a priority
- * - Caching could create false outcomes in tests that are hard to troubleshoot or undetectable
+ * - Caching could create false outcomes in tests that are hard to troubleshoot or be undetectable
  * - These functions are not run enough to warrant caching
  */
 
