@@ -32,6 +32,7 @@
   },
   "devDependencies": {
     "@10up/cypress-wp-utils": "^0.4.0",
+    "@mailchimp/mailchimp_marketing": "^3.0.80",
     "@wordpress/env": "^10.2.0",
     "10up-toolkit": "^6.2.0",
     "cypress": "^13.13.2",
