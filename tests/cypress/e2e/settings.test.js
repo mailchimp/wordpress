@@ -18,11 +18,31 @@ describe('Admin can update plugin settings', () => {
 
 		cy.login(); // WP
         cy.mailchimpLoginIfNotAlreadyLoggedIn();
+
+		// Call mailchimpLists once and store the result in the alias 'mailchimpLists'
+		cy.getMailchimpLists().then((mailchimpLists) => {
+			Cypress.env('mailchimpLists', mailchimpLists); // Save globally
+		});
+	});
+
+	it('All lists from user\'s account populate the WP admin dropdown list', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		const $wpLists = cy.get('#mc_list_id'); // Lists from the WP admin dropdown
+		const mailchimpLists = Cypress.env('mailchimpLists');
+
+		// Verify that the same number of lists exist in the dropdown as in the Mailchimp account
+		$wpLists.should('have.length', mailchimpLists.length);
+
+		mailchimpLists.forEach((list) => {
+			// Verify that all Mailchimp account lists exist in dropdown
+			cy.get('#mc_list_id').should('contain', list.name);
+		});
 	});
 
 	it('Admin can see list and save it', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
+		// Verify that list can be saved
 		cy.get('.mc-h2').contains('Your Lists');
 		cy.get('#mc_list_id').select('10up');
 		cy.get('input[value="Update List"]').click();
@@ -56,7 +76,15 @@ describe('Admin can update plugin settings', () => {
 		// Test here...
 	});
 
-	it('Admin can create a Signup form using the shortcode', () => {
+	/**
+	 * - Test form creation
+	 * - Test form display (basic)
+	 * - Test form error handling (basic)
+	 * - Test form submission
+	 * - Test that the contact was added to the Mailchimp account via the Mailchimp API
+	 */
+	it('Admin can create and submit a Signup form using the shortcode', () => {
+		// Step 1: Set up the post with the shortcode
 		const postTitle = 'Mailchimp signup form - shortcode';
 		const beforeSave = () => {
 			cy.insertBlock('core/shortcode').then((id) => {
@@ -66,18 +94,43 @@ describe('Admin can update plugin settings', () => {
 					.type('[mailchimpsf_form]');
 			});
 		};
+
+		// Step 2: Create the post
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
 			if (post) {
 				shortcodePostURL = `/?p=${post.id}`;
 				cy.visit(shortcodePostURL);
+
+				// Step 3: Verify the form is displayed
 				cy.get('#mc_signup').should('exist');
 				cy.get('#mc_mv_EMAIL').should('exist');
 				cy.get('#mc_signup_submit').should('exist');
 
-				// Test error handling
+				// Step 4: Test error handling
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
 				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+
+				// Step 5: Test that the form can be submitted
+				// TODO: Is this email address name a security hazard? "@example.com" emails will not pass validation.
+				const email = 'max.garceau+shortcodesignuptest@10up.com';
+				cy.get('#mc_mv_EMAIL').type(email);
+				cy.get('#mc_signup_submit').click();
+
+				// Step 6: Verify that the form was submitted successfully
+				cy.get('.mc_success_msg').should('exist');
+
+				// // TODO: This is failing because we need to confirm the test email address subscription
+				// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
+				// const mailchimpLists = Cypress.env('mailchimpLists');
+				// const listId = mailchimpLists.find((list) => list.name === '10up').id;
+				// // Get the contacts from the list
+				// cy.getContactsFromAList(listId).then((contacts) => {
+				// 	console.log('Contacts:', contacts);
+				// 	// Verify that the contact was added to the list
+				// 	const contactJustRegistered = contacts.find((c) => c.email_address === email);
+				// 	expect(contactJustRegistered).to.exist;
+				// });
 			}
 		});
 	});

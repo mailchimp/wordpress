@@ -21,7 +21,7 @@ describe('Subscribe actions', () => {
 	});
 
 	// TODO: This is a known bug. The back link goes to a 404 page on the Mailchimp account.
-	it('after a double optin subscribe a user can click a back link to return to the website', () => {
+	it.skip('after a double optin subscribe a user can click a back link to return to the website', () => {
 		
 	});
 });

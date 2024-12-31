@@ -21,6 +21,7 @@ import './commands';
 before(() => {
 	// Add global setup logic here
 	cy.checkMailchimpEnv(); // Example: Check environment variables
+	cy.checkMailchimpApi(); // Throw error if we can't connect to the API
 	cy.log('Global setup completed!');
 });
 
