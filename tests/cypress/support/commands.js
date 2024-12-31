@@ -25,7 +25,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
-import { checkMailchimpApi, getAllLists } from './mailchimpApi/requests';
+import { checkMailchimpApi, getAllLists, getContactsFromAList } from './mailchimpApi/requests';
 
 const state = {};
 
@@ -178,3 +178,12 @@ Cypress.Commands.add('getMailchimpLists', async () => {
 	return response.lists;
 });
 
+/**
+ * Get all Mailchimp lists from a users account
+ * 
+ * Gets lists from the account of the API token set in the mailchimp config
+ */
+Cypress.Commands.add('getContactsFromAList', async (listId) => {
+	const response = await getContactsFromAList(listId);
+	return response.members;
+});
