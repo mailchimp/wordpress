@@ -99,10 +99,8 @@ The `tests` directory contains end-to-end tests for the project, utilizing Cypre
 1. Run `npm install`.
 2. Run `npm run build`.
 3. Run `npm run env:start`.
-4. Set Mailchimp credentials as environment variables:
-    - run `export CYPRESS_MAILCHIMP_USERNAME="your mailchimp username"`
-	- run `export CYPRESS_MAILCHIMP_PASSWORD="your mailchimp password"`
-      - Do not forget to escape any special characters with `\`. `echo $CYPRESS_MAILCHIMP_PASSWORD` to ensure the password is set correctly.
+4. Duplicate the `.env.test.sample` file and rename `.env.test`. Populate this file with your own Mailchimp account credentials.
+      - Do not forget to escape any special characters with `\`.
     - **NOTE:** Use a test account that does not require 2FA. 2FA will fail some of the tests.
 5. Set your Mailchimp account up
   - Name the audience in your Mailchimp test account "10up". Required for `settings.test.js`.
