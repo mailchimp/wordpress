@@ -1,6 +1,7 @@
 const { defineConfig } = require( 'cypress' );
 const { loadConfig } = require( '@wordpress/env/lib/config' );
 const getCacheDirectory = require( '@wordpress/env/lib/config/get-cache-directory' );
+const dotenvPlugin = require('cypress-dotenv');
 
 module.exports = defineConfig( {
 	chromeWebSecurity: false,
@@ -19,6 +20,7 @@ module.exports = defineConfig( {
 	},
 	e2e: {
 		setupNodeEvents( on, config ) {
+			config = dotenvPlugin(config, { path: '../../.env.test' }); // Load .env variables into Cypress
 			return setBaseUrl( on, config );
 		},
 		specPattern: 'tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}',
