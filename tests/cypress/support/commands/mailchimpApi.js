@@ -1,4 +1,4 @@
-import mailchimp from './mailchimpConfig';
+import mailchimp from './mailchimpApiConfig';
 
 /**
  * Mailchimp API requests and commands
