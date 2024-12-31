@@ -3,92 +3,83 @@
  * If the code expands then we'll separate it into files.
  */
 
-import { google } from 'googleapis';
+import { gapi } from 'gapi-script';
 
-/**
- * Retrieves a new access token using the refresh token.
- *
- * This function sends a POST request to the OAuth2 token endpoint to exchange
- * the provided refresh token for a new access token.
- *
- * @returns {Promise<string>} A promise that resolves to the new access token.
- * @throws {Error} If the token refresh request fails or returns a non-OK status.
- */
-async function getAccessToken() {
-	// Replace with your client ID, client secret, and refresh token
-	const CLIENT_ID = 'your-client-id.apps.googleusercontent.com';
-	const CLIENT_SECRET = 'your-client-secret';
-	const REFRESH_TOKEN = 'your-refresh-token';
-	const refreshUrl = 'https://oauth2.googleapis.com/token';
+// Constants
+const CLIENT_ID = Cypress.env('GMAIL_CLIENT_ID');
+const CLIENT_SECRET = Cypress.env('GMAIL_CLIENT_SECRET'); // TODO: Is this needed?
+const API_KEY = 'YOUR_API_KEY';
+const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
 
-	const params = new URLSearchParams({
-		client_id: CLIENT_ID,
-		client_secret: CLIENT_SECRET,
-		refresh_token: REFRESH_TOKEN,
-		grant_type: 'refresh_token',
+// Initialize the Gmail API
+function initializeGapi() {
+	gapi.load('client:auth2', () => {
+		gapi.client.init({
+			apiKey: API_KEY,
+			clientId: CLIENT_ID,
+			discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'],
+			scope: SCOPES,
+		})
+		.then(() => {
+			console.log('GAPI initialized');
+		})
+		.catch((error) => {
+			console.error('Error initializing GAPI:', error);
+		});
 	});
-
-	try {
-		const response = await fetch(refreshUrl, {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-			body: params.toString(),
-		});
-
-		if (!response.ok) {
-			throw new Error(`Failed to refresh token: ${response.status} ${await response.text()}`);
-		}
-
-		const data = await response.json();
-		return data.access_token;
-	} catch (error) {
-		console.error('Error refreshing access token:', error);
-		throw error;
-	}
 }
 
-/**
- * Fetches emails from Gmail API based on a query string.
- *
- * @param {string} query - The search query to filter emails (e.g., "subject:Your Subject").
- * @returns {Promise<void>} A promise that resolves when the function completes.
- */
-Cypress.Commands.add('fetchEmails, fetchEmails');
-async function fetchEmails(query) {
-	// const accessToken = await getAccessToken();
-
-	// // Authorize the Gmail API client
-	// const authClient = new google.auth.OAuth2();
-	// authClient.setCredentials({ access_token: accessToken });
-
-	const gmail = google.gmail({ version: 'v1', auth: authClient });
-
-	try {
-		// List messages with a specific query (e.g., "Confirm your subscription")
-		const response = await gmail.users.messages.list({
-			userId: 'me',
-			q: query,
-			key: 'AIzaSyC4l8YAVECquVGRJWQuFi8veM0jtBmuOf0'
+// Sign in the user
+function signIn() {
+	gapi.auth2.getAuthInstance()
+		.signIn()
+		.then(() => {
+			console.log('User signed in');
+			fetchMessagesBySubject('Important');
+		})
+		.catch((error) => {
+			console.error('Error signing in:', error);
 		});
-
-		if (response.data.messages && response.data.messages.length > 0) {
-			console.log('Messages:', response.data.messages);
-
-			// Fetch the content of the first email
-			const messageId = response.data.messages[0].id;
-			const message = await gmail.users.messages.get({
-				userId: 'me',
-				id: messageId,
-			});
-
-			console.log('Message Snippet:', message.data.snippet);
-		} else {
-			console.log('No messages found.');
-		}
-	} catch (error) {
-		console.error('Error fetching emails:', error.message);
-	}
 }
 
-// Run the function
-// fetchEmails('subject:"Confirm your subscription"');
+// Fetch messages filtered by subject line
+function fetchMessagesBySubject(subject) {
+	gapi.client.gmail.users.messages.list({
+		userId: 'me',
+		q: `subject:${subject}`, // Gmail search query
+	})
+	.then((response) => {
+		const messages = response.result.messages || [];
+		console.log(`Found ${messages.length} messages with subject: "${subject}"`);
+		messages.forEach((message) => {
+			fetchMessageDetails(message.id);
+		});
+	})
+	.catch((error) => {
+		console.error('Error fetching messages:', error);
+	});
+}
+
+// Fetch detailed message data
+function fetchMessageDetails(messageId) {
+	gapi.client.gmail.users.messages.get({
+		userId: 'me',
+		id: messageId,
+	})
+	.then((response) => {
+		const message = response.result;
+		console.log('Message:', message);
+	})
+	.catch((error) => {
+		console.error('Error fetching message details:', error);
+	});
+}
+
+// Initialize the script
+document.addEventListener('DOMContentLoaded', () => {
+	initializeGapi();
+
+	document.getElementById('signInButton').addEventListener('click', () => {
+		signIn();
+	});
+});
