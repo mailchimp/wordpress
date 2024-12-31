@@ -20,9 +20,26 @@ describe('Admin can update plugin settings', () => {
         cy.mailchimpLoginIfNotAlreadyLoggedIn();
 	});
 
+	it('All lists from user\'s account populate the WP admin dropdown list', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		const $wpLists = cy.get('#mc_list_id'); // Lists from the WP admin dropdown
+
+		cy.getMailchimpLists().then((mailchimpLists) => {
+
+			// Verify that the same number of lists exist in the dropdown as in the Mailchimp account
+			$wpLists.should('have.length', mailchimpLists.length);
+
+			mailchimpLists.forEach((list) => {
+				// Verify that all Mailchimp account lists exist in dropdown
+				cy.get('#mc_list_id').should('contain', list.name);
+			});
+		});
+	});
+
 	it('Admin can see list and save it', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
+		// Verify that list can be saved
 		cy.get('.mc-h2').contains('Your Lists');
 		cy.get('#mc_list_id').select('10up');
 		cy.get('input[value="Update List"]').click();

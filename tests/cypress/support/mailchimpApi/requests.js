@@ -20,3 +20,6 @@ async function callPing() {
 /**
  * Mailchimp API Requests
  */
+export async function getAllLists() {
+  return await mailchimp.lists.getAllLists();
+}
