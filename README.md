@@ -108,9 +108,6 @@ The `tests` directory contains end-to-end tests for the project, utilizing Cypre
 
 6. Run `npm run cypress:run`. You can also run `npm run cypress:open` to run tests in UI mode.
 
-#### E2E tests notes
-- You must run `connect.test.js` before `settings.test.js` in order to log the user in. Otherwise, all settings tests will fail.
-
 ## Support Level
 
 **Active:** Mailchimp is actively working on this, and we expect to continue work for the foreseeable future including keeping tested up to the most recent version of WordPress.  Bug reports, feature requests, questions, and pull requests are welcome.
