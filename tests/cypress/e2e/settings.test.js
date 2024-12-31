@@ -49,8 +49,7 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc-message .success_msg b').contains('Success!');
 	});
 
-	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
-	it.skip('Admin that has never saved a list can not see the form on the front end', () => {
+	it('Admin that has never saved a list can not see the form on the front end', () => {
 		// Step 1: Log the user out of the current account (if logged in)
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.mailchimpLogout();
@@ -59,8 +58,7 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
 	
 		// Step 2: Log in with a test user account that has never saved a list
-		// TODO: BLOCKED - We need a second user here to finish this test
-		cy.mailchimpLogin('test_user_no_list@mailchimp.com', 'password123'); // TODO: CHANGE LOG IN HERE
+		cy.mailchimpLogin(Cypress.env('MAILCHIMP_USERNAME_NO_LIST'), Cypress.env('MAILCHIMP_PASSWORD_NO_LIST'));
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 	
 		// Verify no list is saved for the test user
