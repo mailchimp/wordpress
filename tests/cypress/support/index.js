@@ -17,12 +17,11 @@ import '@10up/cypress-wp-utils';
 
 // Import commands.js using ES2015 syntax:
 import './commands';
-import { checkMailchimpApi } from './mailchimpApi/requests';
 
 before(() => {
 	// Add global setup logic here
 	cy.checkMailchimpEnv(); // Example: Check environment variables
-	checkMailchimpApi(); // Throw error if we can't connect to the API
+	cy.checkMailchimpApi(); // Throw error if we can't connect to the API
 	cy.log('Global setup completed!');
 });
 

@@ -25,6 +25,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import { checkMailchimpApi } from './mailchimpApi/requests';
+
 const state = {};
 
 /**
@@ -160,3 +162,8 @@ Cypress.Commands.add('checkMailchimpEnv', () => {
 
 	cy.log('Environment variables for Mailchimp are correctly set.');
 });
+
+/**
+ * Mailchimp API commands
+ */
+Cypress.Commands.add('checkMailchimpApi', checkMailchimpApi);
