@@ -30,3 +30,4 @@ import './commands/utility';
 import './commands/settings';
 import './commands/mailchimpLogin';
 import './commands/mailchimpApi';
+import './commands/submission';

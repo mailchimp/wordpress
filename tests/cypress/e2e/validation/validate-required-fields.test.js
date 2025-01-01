@@ -77,25 +77,15 @@ describe('Validate required fields', () => {
 		});
 
 		// TODO: BLOCKED - After a user fills out a form successfully once none of the verification checks work
-
-		// // Submit the form with all required fields filled in
-		// fillOutAllFields();
-		// cy.get('#mc_signup_submit').click();
-
-		// // Step 6: Verify that the form was submitted successfully
-		// cy.get('.mc_success_msg').should('exist');
+		// TODO: We will have to delete the contact before each form submission via the Mailchimp API
 
 		// // TODO: This is failing because we need to confirm the test email address subscription
-		
+		// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
+		// Step 6: Verify that the form was submitted successfully
+		// cy.submitFormAndVerifyWPSuccess();
+
 		// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-		// const listId = cy.getListId('10up');
-		// // Get the contacts from the list
-		// cy.getContactsFromAList(listId).then((contacts) => {
-		// 	console.log('Contacts:', contacts);
-		// 	// Verify that the contact was added to the list
-		// 	const contactJustRegistered = contacts.find((c) => c.email_address === email);
-		// 	expect(contactJustRegistered).to.exist;
-		// });
+		// cy.verifyContactAddedToMailchimp(email, '10up');
 	}
 
 	// TODO: Validation errors clear the entire form. We should fix this.

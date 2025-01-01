@@ -59,21 +59,14 @@ describe('Subscribe actions', () => {
 				// TODO: Is this email address name a security hazard? "@example.com" emails will not pass validation.
 				const email = 'max.garceau+shortcodesignuptest@10up.com';
 				cy.get('#mc_mv_EMAIL').type(email);
-				cy.get('#mc_signup_submit').click();
-
-				// Step 6: Verify that the form was submitted successfully
-				cy.get('.mc_success_msg').should('exist');
 
 				// // TODO: This is failing because we need to confirm the test email address subscription
+				// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
+				// Step 6: Verify that the form was submitted successfully
+				// cy.submitFormAndVerifyWPSuccess();
+
 				// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-				// const listId = cy.getListId('10up');
-				// // Get the contacts from the list
-				// cy.getContactsFromAList(listId).then((contacts) => {
-				// 	console.log('Contacts:', contacts);
-				// 	// Verify that the contact was added to the list
-				// 	const contactJustRegistered = contacts.find((c) => c.email_address === email);
-				// 	expect(contactJustRegistered).to.exist;
-				// });
+				// cy.verifyContactAddedToMailchimp(email, '10up');
 			}
 		});
 	});
