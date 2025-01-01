@@ -32,6 +32,16 @@ async function getAllLists() {
 }
 
 /**
+ * Get list ID from a list name
+ */
+Cypress.Commands.add('getListId', getListId);
+async function getListId(listName) {
+  const lists = await getAllLists();
+  const list = lists.find((list) => list.name === listName);
+  return list.id;
+}
+
+/**
  * Get all Mailchimp lists from a users account
  * 
  * Gets lists from the account of the API token set in the mailchimp config
@@ -40,4 +50,46 @@ Cypress.Commands.add('getContactsFromAList', getContactsFromAList);
 async function getContactsFromAList(listId) {
   const response = await mailchimp.lists.getListMembersInfo(listId);
   return response.members;
+}
+
+/**
+ * Set all merge fields to required in the Mailchimp test user account
+ * 
+ * TODO: Configuration this to use the batch endpoint. Is the /batch endpoint worth the lift?
+ * https://mailchimp.com/developer/marketing/guides/run-async-requests-batch-endpoint/#make-a-batch-operations-request
+ * 
+ * @param {string} listId - The Mailchimp list ID
+ * @param {object} data - The data to update the merge fields with - Docs: https://mailchimp.com/developer/marketing/api/list-merges/update-merge-field/
+ * @returns {Promise} - A promise that resolves when all merge fields are updated
+ */
+Cypress.Commands.add('updateMergeFields', updateMergeFields);
+async function updateMergeFields(listId, data) {
+  const mergeFields = await getMergeFields(listId);
+  const updatedMergeFields = mergeFields.map((field) => {
+    return updateMergeField(listId, field.merge_id, field.name, data);
+  });
+
+  return await Promise.all(updatedMergeFields);
+}
+
+/**
+ * Get all merge fields for a list
+ */
+async function getMergeFields(listId) {
+  const response = await mailchimp.lists.getListMergeFields(listId);
+  return response.merge_fields;
+}
+
+/**
+ * Updates merge fields for a list
+ */
+async function updateMergeField(listId, mergeId, name, data) {
+  return await mailchimp.lists.updateListMergeField(
+    listId,
+    mergeId,
+    {
+      ...data,
+      name: name,
+    }
+  );
 }
