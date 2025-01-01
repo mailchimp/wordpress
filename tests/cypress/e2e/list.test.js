@@ -44,8 +44,7 @@ describe('Mailchimp lists ', () => {
 
 		// Verify that list can be saved
 		cy.get('.mc-h2').contains('Your Lists');
-		cy.get('#mc_list_id').select('10up');
-		cy.get('input[value="Update List"]').click();
+		cy.selectList('10up');
 		cy.get('#mc-message .success_msg b').contains('Success!');
 
         // Verify that the settings are visible if a list is saved
