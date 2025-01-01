@@ -18,11 +18,6 @@ describe('Subscribe actions', () => {
 
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
-
-		// Call mailchimpLists once and store the result in the alias 'mailchimpLists'
-		cy.getMailchimpLists().then((mailchimpLists) => {
-			Cypress.env('mailchimpLists', mailchimpLists); // Save globally
-		});
 	});
 
 	/**
@@ -71,8 +66,7 @@ describe('Subscribe actions', () => {
 
 				// // TODO: This is failing because we need to confirm the test email address subscription
 				// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-				// const mailchimpLists = Cypress.env('mailchimpLists');
-				// const listId = mailchimpLists.find((list) => list.name === '10up').id;
+				// const listId = cy.getListId('10up');
 				// // Get the contacts from the list
 				// cy.getContactsFromAList(listId).then((contacts) => {
 				// 	console.log('Contacts:', contacts);
