@@ -106,6 +106,11 @@ describe('Subscribe actions', () => {
 		});
 	});
 
+	// TODO: BLOCKED - Need access to a service that can catch test emails so we can finish the email verification process.
+	it.skip('When double opt-in is enabled a subscriber must verify their email before their submission displays in Mailchimp', () => {
+		
+	});
+
 	// TODO: This is a known bug. The back link goes to a 404 page on the Mailchimp account.
 	it.skip('after a double optin subscribe a user can click a back link to return to the website', () => {
 		

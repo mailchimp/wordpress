@@ -195,6 +195,10 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
+	/**
+	 * NOTE: "Use Double Opt-In (Recommended)?" and "Update existing subscribers?"
+	 * are handled in `subscribe.test.js`
+	 */
 	it('Admin can set list options settings', () => {
 		// Remove mailchimp JavaScript support.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
