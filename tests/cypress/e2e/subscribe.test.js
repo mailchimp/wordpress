@@ -110,4 +110,17 @@ describe('Subscribe actions', () => {
 	it.skip('after a double optin subscribe a user can click a back link to return to the website', () => {
 		
 	});
+
+	it.skip('Update existing subscribers when they resubmit the signup form if option is checked', () => {
+
+	});
+
+	it.skip('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
+
+	});
+
+	// This answers the question whether a user can resubscribe after unsubscribing or not.
+	it.skip('Subscribers who have previously unsubscribed should be able to resubscribe using the signup form', () => {
+
+	});
 });
