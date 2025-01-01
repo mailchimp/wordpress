@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-describe('Form submission, validation, and error handling', () => {
+describe('Validate merge field conditions and error handling', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
@@ -20,6 +20,12 @@ describe('Form submission, validation, and error handling', () => {
         cy.mailchimpLoginIfNotAlreadyLoggedIn();
 	});
 
+	function toggleMergeFields(action) {
+		requiredFields.forEach((field) => {
+			cy.get(field.selector).should('exist')[action]();
+		});
+	}
+
 	/**
 	 * JS Support - No JS
 	 * - Can submit the form and processes user input
@@ -27,7 +33,7 @@ describe('Form submission, validation, and error handling', () => {
 	 * - NOTE: Cypress doesn't have any built in ways to disable JS and the workarounds with
 	 * cy.intercept didn't seem comprehensive
 	 */
-	it('JavaScript Support is disabled', () => {
+	it('JavaScript disabled', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Ensure that JavaScript support is disabled
@@ -65,7 +71,7 @@ describe('Form submission, validation, and error handling', () => {
 	// JS Support - Yes JS
 	// Can submit the form and processses user input
 	// Error handling mechanisms are in place to notify user of submission issues
-	it('JavaScript Support is enabled', () => {
+	it('JavaScript enabled', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Ensure that JavaScript support is disabled
