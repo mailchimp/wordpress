@@ -3,6 +3,16 @@ describe('Validate merge field conditions and error handling', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
+	// Merge fields array for reuse
+	const mergeFields = [
+		'#mc_mv_FNAME',
+		'#mc_mv_LNAME',
+		'#mc_mv_ADDRESS',
+		'#mc_mv_BIRTHDAY',
+		'#mc_mv_COMPANY',
+		'#mc_mv_PHONE'
+	];
+
 	before(() => {
 		// TODO: Initialize tests from a blank state
 		// TODO: Wipe WP data related to a users options
@@ -17,95 +27,36 @@ describe('Validate merge field conditions and error handling', () => {
 		});
 
 		cy.login(); // WP
-        cy.mailchimpLoginIfNotAlreadyLoggedIn();
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
+
+		// Set all merge fields to not required in the Mailchimp test user account
+		cy.getListId('10up').then((listId) => {
+			cy.updateMergeFields(listId, { required: false });
+		});
+
+		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+
+		// Enable all merge fields
+		toggleMergeFields('check');
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
-	function toggleMergeFields(action) {
-		requiredFields.forEach((field) => {
-			cy.get(field.selector).should('exist')[action]();
-		});
-	}
-
-	/**
-	 * JS Support - No JS
-	 * - Can submit the form and processes user input
-	 * - Error handling mechanisms are in place to notify the user of submission issues
-	 * - NOTE: Cypress doesn't have any built in ways to disable JS and the workarounds with
-	 * cy.intercept didn't seem comprehensive
-	 */
-	it('JavaScript disabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
-		// Ensure that JavaScript support is disabled
-		cy.get('#mc_use_javascript').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-		
-		// Enable all merge fields to test validation later
-		cy.get('#mc_mv_FNAME').check();
-		cy.get('#mc_mv_LNAME').check();
-		cy.get('#mc_mv_ADDRESS').check();
-		cy.get('#mc_mv_BIRTHDAY').check();
-		cy.get('#mc_mv_COMPANY').check();
-		cy.get('#mc_mv_PHONE').check();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		cy.get('input[value="Update List"]').click();
-
-		formValidationAssertions();
-
+	after(() => {
 		// Cleanup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		toggleMergeFields('uncheck'); // TODO: Do I need to uncheck all merge fields?
 
-		// Uncheck all optional merge fields
-		cy.get('#mc_mv_FNAME').uncheck();
-		cy.get('#mc_mv_LNAME').uncheck();
-		cy.get('#mc_mv_ADDRESS').uncheck();
-		cy.get('#mc_mv_BIRTHDAY').uncheck();
-		cy.get('#mc_mv_COMPANY').uncheck();
-		cy.get('#mc_mv_PHONE').uncheck();
-		
-		cy.get('#mc_use_javascript').check(); // Re-enable JS support
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-	});
-
-	// JS Support - Yes JS
-	// Can submit the form and processses user input
-	// Error handling mechanisms are in place to notify user of submission issues
-	it('JavaScript enabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
-		// Ensure that JavaScript support is disabled
+		// Re-enable JavaScript support
 		cy.get('#mc_use_javascript').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-		
-		// Enable all merge fields to test validation later
-		cy.get('#mc_mv_FNAME').check();
-		cy.get('#mc_mv_LNAME').check();
-		cy.get('#mc_mv_ADDRESS').check();
-		cy.get('#mc_mv_BIRTHDAY').check();
-		cy.get('#mc_mv_COMPANY').check();
-		cy.get('#mc_mv_PHONE').check();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		cy.get('input[value="Update List"]').click();
-
-		formValidationAssertions();
-
-		// Cleanup
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
-		// Uncheck all optional merge fields
-		cy.get('#mc_mv_FNAME').uncheck();
-		cy.get('#mc_mv_LNAME').uncheck();
-		cy.get('#mc_mv_ADDRESS').uncheck();
-		cy.get('#mc_mv_BIRTHDAY').uncheck();
-		cy.get('#mc_mv_COMPANY').uncheck();
-		cy.get('#mc_mv_PHONE').uncheck();
-		
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
-	// Form validation - make modular and can run in both JS and non JS setups
+	// Function to toggle merge fields
+	function toggleMergeFields(action) {
+		mergeFields.forEach((field) => {
+			cy.get(field).should('exist')[action]();
+		});
+	}
 
 	function formValidationAssertions() {
 		// Verify No JS form submission
@@ -133,7 +84,7 @@ describe('Validate merge field conditions and error handling', () => {
 
 			// TODO: BLOCKED - Test phone number
 			// Blocked until we standardize testing data. We must be able to set the phone format to US.
-			// Default is international. 
+			// Default is international.
 
 			// - If US phone format, phone number should be at least 12 chars (10 digits and two hyphens)
 			// cy.get('#mc_mv_PHONE').type('123456789'); // one digit short
@@ -144,9 +95,11 @@ describe('Validate merge field conditions and error handling', () => {
 			// - If US phone format, US phone pattern must be (/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A)
 	
 			// Test street address error handling
+
 			// TODO: BLOCKED - Test address line 2, city, state, zip/postal, country
 			// Blocked until we standardize testing data. The address must be required inside
 			// the Mailchimp account
+			
 			// - If required, Addr 1 and city must not be empty
 
 			// Test birthday - no validation
@@ -162,4 +115,23 @@ describe('Validate merge field conditions and error handling', () => {
 		});
 	}
 
+	it('JavaScript disabled', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+
+		// Disable JavaScript support
+		cy.get('#mc_use_javascript').uncheck();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		formValidationAssertions();
+	});
+
+	it('JavaScript enabled', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+
+		// Enable JavaScript support
+		cy.get('#mc_use_javascript').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		formValidationAssertions();
+	});
 });
