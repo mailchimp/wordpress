@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-describe('General merge field validation', () => {
+describe('Validate unrequired fields', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
