@@ -34,16 +34,36 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-// Define the path to the Composer autoload file
-$autoload_file = __DIR__ . '/vendor/autoload.php';
-
 // Check if the autoload file exists
-if ( ! file_exists( $autoload_file ) ) {
-	die( 'Composer autoload file not found. Run `composer install` to generate it.' );
-}
+if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	add_action(
+		'admin_notices',
+		function() {
+			?>
+			<div class="notice notice-error">
+				<p>
+					<?php
+					echo wp_kses_post(
+						sprintf(
+							/* translators: %1$s is the command that needs to be run. */
+							/* translators: %2$s is the support URL. */
+							__( 'The composer autoload file is not found or not readable. Please contact <a href="%2$s" target="_blank">support</a> if you\'re a user. Please run %1$s if you\'re a developer in a development environment.', 'mailchimp' ),
+							'<code>composer install</code>',
+							'https://wordpress.org/support/plugin/mailchimp/'
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	);
 
-// Include the autoload file
-require_once $autoload_file;
+	// Exit early.
+	return;
+}
 
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
