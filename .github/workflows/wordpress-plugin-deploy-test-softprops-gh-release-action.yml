@@ -1,0 +1,74 @@
+# TODO: THIS WORKFLOW FILE IS TO TEST ISSUE #60 "Resolve release deploy action warnings"
+# DELETE AFTER TESTING IS COMPLETE. THIS WORKFLOW FILE IS UNNECESSARY.
+
+name: (delete after testing is done) - Test "Deploy to WordPress.org"
+
+on:
+# TESTING: Commented out to avoid running on the published event by mistake
+#   release:
+#     types: [published]
+
+# TESTING: Draft a release and then run the workflow file manually
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'The tag for the release (e.g., v1.0.0)'
+        required: true
+
+jobs:
+  tag:
+    name: New release
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup node version and npm cache
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: '.nvmrc'
+        cache: 'npm'
+
+    - name: Build
+      run: |
+        npm ci --no-optional
+        npm run build
+
+    - name: Install SVN
+      run: |
+        sudo apt-get update
+        sudo apt-get install subversion
+
+    # TESTING: COMMENTED OUT TO AVOID DEPLOY TO WORDPRESS.ORG DURING TESTING
+    
+    # - name: WordPress Plugin Deploy
+    #   id: deploy
+    #   uses: 10up/action-wordpress-plugin-deploy@stable
+    #   with:
+    #     generate-zip: true
+    #   env:
+    #     SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+    #     SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+    #     SLUG: mailchimp
+
+    # TESTING: Generate the WordPress Plugin zip file without deploying
+    - name: Generate Plugin Zip File For Testing (skip deploy to WordPress.org)
+      id: deploy
+      run: |
+        # Create a zip file for the plugin
+        mkdir -p build
+        zip -r build/mailchimp.zip . -x "*.git*" "node_modules/*" "tests/*"
+      env:
+        SLUG: mailchimp
+
+    - name: Update GitHub release with built plugin files
+      uses: softprops/action-gh-release@v2
+      with:
+        # files: ${{ steps.deploy.outputs.zip-path }} # TESTING: Original zip file source
+        files: build/mailchimp.zip # TESTING: Get zip file from generate plugin step
+        tag_name: ${{ github.event.inputs.tag }} # Pass the tag from workflow_dispatch input
+        body: |
+          This release contains the latest updates for the WordPress plugin.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
