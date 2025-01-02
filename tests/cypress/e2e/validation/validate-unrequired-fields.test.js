@@ -82,9 +82,6 @@ describe('General merge field validation', () => {
 			// Email is required
 			cy.get('#mc_mv_EMAIL').type('testemailuser1234@10up.com');
 
-			// TODO: BLOCKED - After a user fills out a form successfully once none of the verification checks work (is this a bug?)
-			// TODO: We will have to delete the contact before each form submission via the Mailchimp API
-
 			// // TODO: This is failing because we need to confirm the test email address subscription
 			// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
 			// Step 6: Verify that the form was submitted successfully
