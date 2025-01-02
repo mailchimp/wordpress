@@ -1004,7 +1004,12 @@ function mailchimp_sf_merge_submit( $mv ) {
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
 		// Handle phone number logic
-		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
+		if (
+			'phone' === $mv_var['type'] && // Merge field is phone
+			'on' === get_option( $opt ) && // Merge field is "included" in the Mailchimp admin options
+			isset( $mv_var['options']['phone_format'] ) && // Phone format is set in Mailchimp account
+			'US' === $mv_var['options']['phone_format'] // Phone format is US in Mailchimp account
+		) {
 			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
