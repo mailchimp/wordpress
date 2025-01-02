@@ -10,6 +10,17 @@ Cypress.Commands.add('submitFormAndVerifyWPSuccess', () => {
 });
 
 /**
+ * Submit form and verify error
+ */
+Cypress.Commands.add('submitFormAndVerifyError', () => {
+    // Submit the form
+    cy.get('#mc_signup_submit').click();
+
+    // Verify that the form submission failed
+    cy.get('.mc_error_msg').should('exist');
+});
+
+/**
  * Custom command to verify that a contact was added to a specified list in Mailchimp
  */
 Cypress.Commands.add('verifyContactAddedToMailchimp', (email, listName) => {

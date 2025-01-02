@@ -2,7 +2,7 @@ import mailchimp from './mailchimpApiConfig';
 
 /**
  * Mailchimp API requests and commands
- * 
+ *
  * NOTE: Intentionally not caching responses
  * - Tests change over time and flexibility should be a priority
  * - Caching could create false outcomes in tests that are hard to troubleshoot or be undetectable
@@ -22,7 +22,7 @@ async function checkMailchimpApi() {
 
 /**
  * Get all Mailchimp lists from a users account
- * 
+ *
  * Gets lists from the account of the API token set in the mailchimp config
  */
 Cypress.Commands.add('getMailchimpLists', getAllLists);
@@ -43,7 +43,7 @@ async function getListId(listName) {
 
 /**
  * Get all Mailchimp lists from a users account
- * 
+ *
  * Gets lists from the account of the API token set in the mailchimp config
  */
 Cypress.Commands.add('getContactsFromAList', getContactsFromAList);
@@ -54,7 +54,7 @@ async function getContactsFromAList(listId) {
 
 /**
  * Set all merge fields to required in the Mailchimp test user account
- * 
+ *
  * TODO: Configuration this to use the batch endpoint. Is the /batch endpoint worth the lift?
  * https://mailchimp.com/developer/marketing/guides/run-async-requests-batch-endpoint/#make-a-batch-operations-request
  * 
@@ -62,14 +62,28 @@ async function getContactsFromAList(listId) {
  * @param {object} data - The data to update the merge fields with - Docs: https://mailchimp.com/developer/marketing/api/list-merges/update-merge-field/
  * @returns {Promise} - A promise that resolves when all merge fields are updated
  */
-Cypress.Commands.add('updateMergeFields', updateMergeFields);
-async function updateMergeFields(listId, data) {
+Cypress.Commands.add('updateMergeFieldsByList', updateMergeFieldsByList);
+async function updateMergeFieldsByList(listId, data) {
   const mergeFields = await getMergeFields(listId);
   const updatedMergeFields = mergeFields.map((field) => {
     return updateMergeField(listId, field.merge_id, field.name, data);
   });
 
   return await Promise.all(updatedMergeFields);
+}
+
+/**
+ * Update merge field by tag
+ *
+ * @param {string} listId - The Mailchimp list ID
+ * @param {string} name - The merge field tag (e.g. "FNAME", "PHONE", etc.)
+ * @param {object} data - The data to update the merge field with - Docs: https://mailchimp.com/developer/marketing/api/list-merges/update-merge-field/
+ */
+Cypress.Commands.add('updateMergeFieldByTag', updateMergeFieldByTag);
+async function updateMergeFieldByTag(listId, name, data) {
+  const mergeFields = await getMergeFields(listId);
+  const field = mergeFields.find((field) => field.tag === name); // Filter what we want by tag
+  return await updateMergeField(listId, field.merge_id, name, data);
 }
 
 /**
