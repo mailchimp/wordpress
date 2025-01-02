@@ -34,7 +34,6 @@ describe('Validate required fields', () => {
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldsByList(listId, { required: true });
 		});
-
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 	});
 

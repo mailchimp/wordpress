@@ -9,7 +9,7 @@
  * However, the response the API receives comes directly from Mailchimp and is displayed
  * on the FE. So, if the form is submitted successfully, the submission should be in Mailchimp.
  */
-describe('Validate merge field conditions and error handling', () => {
+describe('General merge field validation', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
@@ -43,7 +43,6 @@ describe('Validate merge field conditions and error handling', () => {
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldsByList(listId, { required: false });
 		});
-
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 
 		// Enable all merge fields
@@ -61,10 +60,6 @@ describe('Validate merge field conditions and error handling', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
-	function randomXDigiNumber(x) {
-		return Number(Array.from({ length: x }, () => Math.floor(Math.random() * 10)).join(''));
-	}
-
 	// Function to toggle merge fields
 	function toggleMergeFields(action) {
 		mergeFields.forEach((field) => {
@@ -72,15 +67,61 @@ describe('Validate merge field conditions and error handling', () => {
 		});
 	}
 
+	function invalidEmailAssertions() {
+		cy.get('#mc_mv_EMAIL').clear(); // No email
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user@'); // Missing domain
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('@example.com'); // Missing username
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('userexample.com'); // Missing '@' symbol
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user..name@example.com'); // Consecutive dots
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user!#%&*{}@example.com'); // Invalid characters
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user@example'); // Missing top-level domain
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user@-example.com'); // Domain starting with dash
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('user@example-.com'); // Domain ending with dash
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		cy.get('#mc_mv_EMAIL').clear().type('"user@example.com'); // Unclosed quoted string
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+
+		// Test exceeding maximum email length
+		let longEmail = 'a'.repeat(245) + '@example.com';
+		cy.get('#mc_mv_EMAIL').clear().type(longEmail);
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+	}
+
 	function formValidationAssertions() {
-		// Verify No JS form submission
-		// TODO: Modularize form validation assertions?
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 			cy.get('#mc_signup').should('exist');
 			cy.get('#mc_mv_EMAIL').should('exist');
 			cy.get('#mc_signup_submit').should('exist');
-	
+
 			// Optional merge fields
 			cy.get('#mc_mv_FNAME').should('exist');
 			cy.get('#mc_mv_LNAME').should('exist');
@@ -90,84 +131,29 @@ describe('Validate merge field conditions and error handling', () => {
 			cy.get('#mc_mv_PHONE').should('exist');
 
 			// Validation assertions
-	
+
 			// Test email error handling
+			cy.get('#mc_mv_EMAIL').clear();
 			cy.submitFormAndVerifyError();
+
 			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+			invalidEmailAssertions();
+
+			// TODO: BLOCKED - After a user fills out a form successfully once none of the verification checks work (is this a bug?)
+			// TODO: We will have to delete the contact before each form submission via the Mailchimp API
+
+			// // TODO: This is failing because we need to confirm the test email address subscription
+			// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
+			// Step 6: Verify that the form was submitted successfully
+			// cy.submitFormAndVerifyWPSuccess();
+
+			// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
+			// cy.verifyContactAddedToMailchimp(email, '10up');
 
 			/**
-			 * Phone Number
+			 * Phone Number - Handled in /validation/us-phone.test.js
 			 */
 
-			// Setup
-			// Set the US phone format and required
-			cy.getListId('10up').then((listId) => {
-				cy.updateMergeFieldByTag(listId, 'PHONE', { required: true, options: { phone_format: 'US' } });
-			});
-			cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
-
-			// - If US phone format, phone number should be at least 12 chars (10 digits and two hyphens)
-			cy.get('#mc_mv_EMAIL').type(`testingemail${randomXDigiNumber(10)}@gmail.com`); // TODO: This is sloppy, but it's a quick fix for now
-			cy.get('#mc_mv_PHONE').type('123456789'); // one digit short
-			cy.submitFormAndVerifyError();
-			cy.get('.mc_error_msg').contains('must consist of only numbers');
-
-			/**
-			 * Assertions for phone number length validation
-			 */
-			const tooShortPhones = ['123456789', '123-456-78', '12345-678']; // Less than 10 digits
-			const tooLongPhones = ['12345678901', '123-4567-8901', '1234-567-8901']; // More than 10 digits
-			const validLengthPhones = ['123-456-7890', '1234567890']; // Exactly 10 digits
-
-			validLengthPhones.forEach((phone) => {
-				it(`should accept phone number with valid length: ${phone}`, () => {
-					cy.get('#mc_mv_EMAIL').type(`validemail${randomXDigiNumber(10)}@gmail.com`);
-					cy.get('#mc_mv_PHONE').clear().type(phone);
-					cy.submitFormAndVerifyWPSuccess();
-				});
-			});
-
-			tooShortPhones.forEach((phone) => {
-				it(`should reject phone number that is too short: ${phone}`, () => {
-					cy.get('#mc_mv_EMAIL').type(`shortemail${randomXDigiNumber(10)}@gmail.com`);
-					cy.get('#mc_mv_PHONE').clear().type(phone);
-					cy.submitFormAndVerifyError();
-					cy.get('.mc_error_msg').contains('Phone number is too short');
-				});
-			});
-
-			tooLongPhones.forEach((phone) => {
-				it(`should reject phone number that is too long: ${phone}`, () => {
-					cy.get('#mc_mv_EMAIL').type(`longemail${randomXDigiNumber(10)}@gmail.com`);
-					cy.get('#mc_mv_PHONE').clear().type(phone);
-					cy.submitFormAndVerifyError();
-					cy.get('.mc_error_msg').contains('Phone number is too long');
-				});
-			});
-
-			// - If US phone format, US phone pattern must be (/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A)
-			const validPhones = ['123-456-7890'];
-			const invalidPhones = ['123-456-789', '12-345-67890', '123-45-67890', '1234-56-7890', '123-4567-890', '123-456-789a', '123-456-78@0', '1234567890'];
-
-			invalidPhones.forEach((phone) => {
-				cy.get('#mc_mv_EMAIL').type(`testingemail${randomXDigiNumber(10)}@gmail.com`); // TODO: This is sloppy, but it's a quick fix for now
-				cy.get('#mc_mv_PHONE').clear().type(phone);
-				cy.submitFormAndVerifyError();
-				cy.get('.mc_error_msg').contains('must consist of only numbers');
-			});
-
-			validPhones.forEach((phone) => {
-				cy.get('#mc_mv_EMAIL').type(`testingemail${randomXDigiNumber(10)}@gmail.com`); // TODO: This is sloppy, but it's a quick fix for now
-				cy.get('#mc_mv_PHONE').clear().type(phone);
-				cy.submitFormAndVerifyWPSuccess();
-			});
-
-			// Cleanup
-			cy.getListId('10up').then((listId) => {
-				cy.updateMergeFieldByTag(listId, 'PHONE', { required: false, options: { phone_format: 'international' } });
-			});
-			cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
-	
 			/**
 			 * Address - Handled in /validation/address.test.js
 			 */
