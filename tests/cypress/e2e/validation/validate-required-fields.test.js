@@ -32,7 +32,7 @@ describe('Validate required fields', () => {
 
 		// Set all merge fields to required in the Mailchimp test user account
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFields(listId, { required: true });
+			cy.updateMergeFieldsByList(listId, { required: true });
 		});
 
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
@@ -41,7 +41,7 @@ describe('Validate required fields', () => {
 	after(() => {
 		// Cleanup: Set all merge fields to not in the Mailchimp test user account
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFields(listId, { required: false });
+			cy.updateMergeFieldsByList(listId, { required: false });
 		});
 
 		// TODO: Resync Mailchimp to WP data

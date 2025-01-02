@@ -18,12 +18,6 @@ describe('Admin can update plugin settings', () => {
 
 		cy.login(); // WP
         cy.mailchimpLoginIfNotAlreadyLoggedIn();
-
-		// TODO: Delete if not needed
-		// // Call mailchimpLists once and store the result in the alias 'mailchimpLists'
-		// cy.getMailchimpLists().then((mailchimpLists) => {
-		// 	Cypress.env('mailchimpLists', mailchimpLists); // Save globally
-		// });
 	});
 
 	// TODO: Default settings are populated as expected
