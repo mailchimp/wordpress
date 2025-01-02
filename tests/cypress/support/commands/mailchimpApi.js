@@ -76,14 +76,16 @@ async function updateMergeFieldsByList(listId, data) {
  * Update merge field by tag
  *
  * @param {string} listId - The Mailchimp list ID
- * @param {string} name - The merge field tag (e.g. "FNAME", "PHONE", etc.)
+ * @param {string} tag - The merge field tag (e.g. "FNAME", "PHONE", etc.)
  * @param {object} data - The data to update the merge field with - Docs: https://mailchimp.com/developer/marketing/api/list-merges/update-merge-field/
  */
 Cypress.Commands.add('updateMergeFieldByTag', updateMergeFieldByTag);
-async function updateMergeFieldByTag(listId, name, data) {
+async function updateMergeFieldByTag(listId, tag, data) {
   const mergeFields = await getMergeFields(listId);
-  const field = mergeFields.find((field) => field.tag === name); // Filter what we want by tag
-  return await updateMergeField(listId, field.merge_id, name, data);
+  const field = mergeFields.find((field) => field.tag === tag); // Filter what we want by tag
+  const response = await updateMergeField(listId, field.merge_id, field.name, data);
+  console.log('Updated merge field:', response);
+  return response;
 }
 
 /**

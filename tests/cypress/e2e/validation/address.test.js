@@ -44,19 +44,9 @@ describe('Address Field Validation', () => {
 		cy.selectList('10up'); // Refresh list in WordPress
 	});
 
-	function setJavaScriptOption(enabled) {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		if (enabled) {
-			cy.get('#mc_use_javascript').check();
-		} else {
-			cy.get('#mc_use_javascript').uncheck();
-		}
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-	}
-
 	function testInvalidAddresses() {
-		invalidAddresses.forEach((address) => {
-			[shortcodePostURL, blockPostPostURL].forEach((url) => {
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			invalidAddresses.forEach((address) => {
 				cy.visit(url);
 
 				const randomEmail = `invalidemail${Date.now()}@gmail.com`;
@@ -82,8 +72,8 @@ describe('Address Field Validation', () => {
 	}
 
 	function testValidAddresses() {
-		validAddresses.forEach((address) => {
-			[shortcodePostURL, blockPostPostURL].forEach((url) => {
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			validAddresses.forEach((address) => {
 				cy.visit(url);
 
 				const randomEmail = `validemail${Date.now()}@gmail.com`;
@@ -100,7 +90,7 @@ describe('Address Field Validation', () => {
 
 	context('JavaScript Disabled', () => {
 		before(() => {
-			setJavaScriptOption(false);
+			cy.setJavaScriptOption(false);
 		});
 
 		it('Valid addresses', testValidAddresses);
@@ -112,7 +102,7 @@ describe('Address Field Validation', () => {
 		before(() => {
 			// TODO: Not sure why we need to log in twice, but this is necessary for the test to pass
 			cy.login(); // Log into WordPress
-			setJavaScriptOption(true);
+			cy.setJavaScriptOption(true);
 		});
 
 		it('Valid addresses', testValidAddresses);
