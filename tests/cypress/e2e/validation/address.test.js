@@ -2,7 +2,7 @@
 
 /**
  * Test Suite for Address Field Validation
- * Includes before/after setup and testing with/without JavaScript.
+ * Includes setup and testing for both JavaScript-enabled and disabled states.
  */
 describe('Address Field Validation', () => {
 	const validAddresses = [
@@ -11,11 +11,8 @@ describe('Address Field Validation', () => {
 	];
 
 	const invalidAddresses = [
-		{ addr1: '', city: 'Springfield' },    // Missing Addr 1
-		{ addr1: '123 Main St', city: '' },    // Missing City
-
-		// TODO: This is disabled because only one validation error will display at a time
-		// { addr1: '', city: '' },               // Both Addr 1 and City missing
+		{ addr1: '', city: 'Springfield' }, // Missing Addr 1
+		{ addr1: '123 Main St', city: '' }, // Missing City
 	];
 
 	let shortcodePostURL;
@@ -36,7 +33,7 @@ describe('Address Field Validation', () => {
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: true });
 		});
-		cy.selectList('10up'); // Ensure data is refreshed in WordPress
+		cy.selectList('10up'); // Refresh list in WordPress
 	});
 
 	after(() => {
@@ -47,23 +44,22 @@ describe('Address Field Validation', () => {
 		cy.selectList('10up'); // Refresh list in WordPress
 	});
 
-	/**
-	 * Helper Function: Generate Random Numbers
-	 * Generates a random number with `x` digits.
-	 */
-	function randomXDigiNumber(x) {
-		return Number(Array.from({ length: x }, () => Math.floor(Math.random() * 10)).join(''));
+	function setJavaScriptOption(enabled) {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		if (enabled) {
+			cy.get('#mc_use_javascript').check();
+		} else {
+			cy.get('#mc_use_javascript').uncheck();
+		}
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	}
 
-	// TODO: These should be test cases
-	function testAddressValidation () {
+	function testInvalidAddresses() {
 		invalidAddresses.forEach((address) => {
 			[shortcodePostURL, blockPostPostURL].forEach((url) => {
 				cy.visit(url);
 
-				// Randomize email to prevent Mailchimp from blocking the submission as spam
-				const randomEmail = `invalidemail${randomXDigiNumber(10)}@gmail.com`;
-				
+				const randomEmail = `invalidemail${Date.now()}@gmail.com`;
 				cy.get('#mc_mv_EMAIL').type(randomEmail);
 
 				if (address.addr1 !== '') {
@@ -72,7 +68,7 @@ describe('Address Field Validation', () => {
 				if (address.city !== '') {
 					cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
 				}
-				
+
 				cy.submitFormAndVerifyError();
 
 				if (!address.addr1) {
@@ -83,14 +79,14 @@ describe('Address Field Validation', () => {
 				}
 			});
 		});
+	}
 
+	function testValidAddresses() {
 		validAddresses.forEach((address) => {
 			[shortcodePostURL, blockPostPostURL].forEach((url) => {
 				cy.visit(url);
 
-				// Randomize email to prevent Mailchimp from blocking the submission as spam
-				const randomEmail = `validemail${randomXDigiNumber(10)}@gmail.com`;
-
+				const randomEmail = `validemail${Date.now()}@gmail.com`;
 				cy.get('#mc_mv_EMAIL').type(randomEmail);
 				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
 				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
@@ -100,21 +96,27 @@ describe('Address Field Validation', () => {
 				cy.submitFormAndVerifyWPSuccess();
 			});
 		});
-	};
+	}
 
-	it('JavaScript disabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	context('JavaScript Disabled', () => {
+		before(() => {
+			setJavaScriptOption(false);
+		});
 
-		testAddressValidation();
+		it('Valid addresses', testValidAddresses);
+
+		it('Invalid addresses', testInvalidAddresses);
 	});
 
-	it('JavaScript enabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').check();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	context('JavaScript Enabled', () => {
+		before(() => {
+			// TODO: Not sure why we need to log in twice, but this is necessary for the test to pass
+			cy.login(); // Log into WordPress
+			setJavaScriptOption(true);
+		});
 
-		testAddressValidation();
+		it('Valid addresses', testValidAddresses);
+
+		it('Invalid addresses', testInvalidAddresses);
 	});
 });

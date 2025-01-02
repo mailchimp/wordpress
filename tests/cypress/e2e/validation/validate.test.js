@@ -166,7 +166,7 @@ describe('Validate merge field conditions and error handling', () => {
 			cy.getListId('10up').then((listId) => {
 				cy.updateMergeFieldByTag(listId, 'PHONE', { required: false, options: { phone_format: 'international' } });
 			});
-			// cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+			cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 	
 			/**
 			 * Address - Handled in /validation/address.test.js
