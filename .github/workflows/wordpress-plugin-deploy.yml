@@ -8,6 +8,7 @@ jobs:
   tag:
     name: New release
     runs-on: ubuntu-latest
+    if: ${{ !github.event.release.prerelease }} # Skip job if it is a pre-release
 
     steps:
     - name: Checkout code
