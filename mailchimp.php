@@ -1003,18 +1003,29 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
-		// Handle phone number logic
-		if (
-			'phone' === $mv_var['type'] && // Merge field is phone
-			'on' === get_option( $opt ) && // Merge field is "included" in the Mailchimp admin options
-			isset( $mv_var['options']['phone_format'] ) && // Phone format is set in Mailchimp account
-			'US' === $mv_var['options']['phone_format'] // Phone format is US in Mailchimp account
-		) {
+		/**
+		 * US Phone validation
+		 *
+		 * - Merge field is phone
+		 * - Merge field is "included" in the Mailchimp admin options
+		 * - Phone format is set in Mailchimp account
+		 * - Phone format is US in Mailchimp account
+		 */
+		if ( 'phone' === $mv_var['type'] && 'on' === get_option( $opt ) && isset( $mv_var['options']['phone_format'] ) && 'US' === $mv_var['options']['phone_format'] ) {
 			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
 			}
-		} elseif ( is_array( $opt_val ) && 'address' === $mv_var['type'] ) { // Handle address logic
+		}
+
+		/**
+		 * Address validation
+		 *
+		 * - Merge field is address
+		 * - Merge field is "included" in the Mailchimp admin options
+		 * - Merge field is an array (address contains multiple <input> elements)
+		 */
+		elseif ( 'address' === $mv_var['type'] && 'on' === get_option( $opt ) && is_array( $opt_val ) ) { // Handle address logic
 			$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
 			if ( is_wp_error( $validate ) ) {
 				return $validate;
@@ -1024,8 +1035,12 @@ function mailchimp_sf_merge_submit( $mv ) {
 				$merge->$tag = $validate;
 			}
 			continue;
+		}
 
-		} elseif ( is_array( $opt_val ) ) {
+		/**
+		 * Not sure what this is for
+		 */
+		elseif ( is_array( $opt_val ) ) {
 			$keys = array_keys( $opt_val );
 			$val  = new stdClass();
 			foreach ( $keys as $key ) {
@@ -1034,6 +1049,10 @@ function mailchimp_sf_merge_submit( $mv ) {
 			$opt_val = $val;
 		}
 
+		/**
+		 * Required fields
+		 * If the field is required and empty, return an error
+		 */
 		if ( 'Y' === $mv_var['required'] && trim( $opt_val ) === '' ) {
 			/* translators: %s: field name */
 			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
