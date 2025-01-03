@@ -300,7 +300,7 @@ $is_list_selected = false;
 							<tr valign="top">
 								<td><?php echo esc_html( $mv_var['name'] ); ?></td>
 								<td><?php echo esc_html( $mv_var['tag'] ); ?></td>
-								<td><?php echo esc_html( ( 1 === $mv_var['required'] ) ? 'Y' : 'N' ); ?></td>
+								<td><?php echo esc_html( ( 1 === intval( $mv_var['required'] ) ) ? 'Y' : 'N' ); ?></td>
 								<td>
 									<?php
 									if ( ! $mv_var['required'] ) {
