@@ -1046,16 +1046,22 @@ function mailchimp_sf_merge_submit( $mv ) {
  *
  * @param array $opt_val Option value
  * @param array $data Data
- * @return void
+ * @return void|WP_Error
  */
 function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
-	// This filters out all 'falsey' elements
+	// Filter out falsy values
 	$opt_val = array_filter( $opt_val );
-	// If they weren't all empty
+
+	// If they were all empty
 	if ( ! $opt_val ) {
 		return;
 	}
 
+	// Trim whitespace
+	$opt_val = array_map( 'trim', $opt_val ); // Beginning and end
+	$opt_val = array_map( fn($s) => preg_replace( '/\s/', '', $s ), $opt_val ); // Middle
+
+	// Check string length
 	$opt_val = implode( '-', $opt_val );
 	if ( strlen( $opt_val ) < 12 ) {
 		$opt_val = '';
