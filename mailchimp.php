@@ -1061,7 +1061,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 		$opt_val = '';
 	}
 
-	if ( ! preg_match( '/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A', $opt_val ) ) {
+	if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
 		/* translators: %s: field name */
 		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
 		$error   = new WP_Error( 'mc_phone_validation', $message );
