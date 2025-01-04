@@ -1083,17 +1083,18 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 	$opt_val = array_map( 'trim', $opt_val ); // Beginning and end
 	$opt_val = array_map( fn($s) => preg_replace( '/\s/', '', $s ), $opt_val ); // Middle
 
-	// Check string length
+	// Format number for validation
 	$opt_val = implode( '-', $opt_val );
-	if ( strlen( $opt_val ) < 12 ) {
-		$opt_val = '';
-	}
 
-	if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
+	// Check string length
+	if ( strlen( $opt_val ) < 12 ) {
+		/* translators: %s: field name */
+		$message = sprintf( esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ), esc_html( $data['name'] ) );
+		$opt_val = new WP_Error( 'mc_phone_validation', $message );
+	} else if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
 		/* translators: %s: field name */
 		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
-		$error   = new WP_Error( 'mc_phone_validation', $message );
-		return $error;
+		$opt_val = new WP_Error( 'mc_phone_validation', $message );
 	}
 
 	return $opt_val;
