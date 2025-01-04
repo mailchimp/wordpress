@@ -1046,7 +1046,7 @@ function mailchimp_sf_merge_submit( $mv ) {
  *
  * @param array $opt_val Option value
  * @param array $data Data
- * @return void|WP_Error
+ * @return array|WP_Error
  */
 function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 	// Filter out falsy values
@@ -1054,7 +1054,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 
 	// If they were all empty
 	if ( ! $opt_val ) {
-		return;
+		return $opt_val;
 	}
 
 	// Trim whitespace
@@ -1064,15 +1064,34 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 	// Format number for validation
 	$opt_val = implode( '-', $opt_val );
 
-	// Check string length
-	if ( strlen( $opt_val ) < 12 ) {
-		/* translators: %s: field name */
-		$message = sprintf( esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ), esc_html( $data['name'] ) );
-		$opt_val = new WP_Error( 'mc_phone_validation', $message );
-	} else if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
-		/* translators: %s: field name */
-		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
-		$opt_val = new WP_Error( 'mc_phone_validation', $message );
+	switch ( true ) {
+		/**
+		 * Phone number must be 12 characters long
+		 */
+		case strlen( $opt_val ) < 12:
+			$message = sprintf(
+				esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ),
+				esc_html( $data['name'] )
+			);
+			$opt_val = new WP_Error( 'mc_phone_validation', $message );
+			break;
+
+		/**
+		 * Phone number must consist of only numbers
+		 */
+		case ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ):
+			$message = sprintf(
+				esc_html__( '%s must consist of only numbers', 'mailchimp' ),
+				esc_html( $data['name'] )
+			);
+			$opt_val = new WP_Error( 'mc_phone_validation', $message );
+			break;
+
+		/**
+		 * No issues, pass validation
+		 */
+		default:
+			break;
 	}
 
 	return $opt_val;
