@@ -1081,7 +1081,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 
 	// Trim whitespace
 	$opt_val = array_map( 'trim', $opt_val ); // Beginning and end
-	$opt_val = array_map( fn($s) => preg_replace( '/\s/', '', $s ), $opt_val ); // Middle
+	$opt_val = array_map( fn( $s ) => preg_replace( '/\s/', '', $s ), $opt_val ); // Middle
 
 	// Format number for validation
 	$opt_val = implode( '-', $opt_val );
@@ -1092,6 +1092,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 		 */
 		case strlen( $opt_val ) < 12:
 			$message = sprintf(
+				/* translators: %s: field name */
 				esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ),
 				esc_html( $data['name'] )
 			);
@@ -1103,6 +1104,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 		 */
 		case ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ):
 			$message = sprintf(
+				/* translators: %s: field name */
 				esc_html__( '%s must consist of only numbers', 'mailchimp' ),
 				esc_html( $data['name'] )
 			);
