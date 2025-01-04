@@ -1067,6 +1067,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 	switch ( true ) {
 		/**
 		 * Phone number must be 12 characters long
+		 * 10 digits [0-9] and 2 dashes "-"
 		 */
 		case strlen( $opt_val ) < 12:
 			$message = sprintf(
