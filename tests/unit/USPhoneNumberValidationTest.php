@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * AddressValidationTest class tests the address validation.
  */
-class AddressValidationTest extends TestCase {
+class USPhoneNumberValidationTest extends TestCase {
 
 	/**
 	 * Set up our mocked WP functions. Rather than setting up a database we can mock the returns of core WordPress functions.
