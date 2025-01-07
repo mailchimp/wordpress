@@ -5,18 +5,19 @@
  * @package mailchimp
  */
 
-use \WP_Mock\Tools\TestCase;
+/**
+ * Using PHP Unit TestCase due to fatal error when using WP_Mock test case
+ * 
+ * PHP Fatal error:  Cannot override final method PHPUnit\Framework\TestCase::run()
+ * in /vendor/10up/wp_mock/php/WP_Mock/Tools/TestCase.php on line 299
+ */
+use PHPUnit\Framework\TestCase;
+// use WP_Mock\Tools\TestCase;
 
 /**
  * AddressValidationTest class tests the address validation.
  */
 class AddressValidationTest extends TestCase {
-	/**
-	 * instance of mailchimp class.
-	 *
-	 * @var object
-	 */
-	private $instance;
 
 	/**
 	 * Set up our mocked WP functions. Rather than setting up a database we can mock the returns of core WordPress functions.
@@ -24,8 +25,8 @@ class AddressValidationTest extends TestCase {
 	 * @return void
 	 */
 	public function setUp(): void {
+		parent::setUp();
 		\WP_Mock::setUp();
-		// $this->instance = new SafeSvg\safe_svg(); // TODO: Delete this, I don't think we need to instantiate any classes for our test
 	}
 
 	/**
@@ -35,14 +36,15 @@ class AddressValidationTest extends TestCase {
 	 */
 	public function tearDown(): void {
 		\WP_Mock::tearDown();
+		parent::tearDown();
 	}
 
 	/**
-	 * Test allow_svg function.
+	 * Test PHPUnit is working.
 	 *
 	 * @return void
 	 */
-	public function test_tests_are_running() {
+	public function test_phpunit_working() {
         $this->assertTrue(true, 'This is a placeholder test to make sure the tests are running');
 
 		// \WP_Mock::userFunction(

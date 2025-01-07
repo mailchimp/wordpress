@@ -10,7 +10,7 @@
 	>
 	<testsuites>
 		<testsuite name="Mailchimp">
-			<directory prefix="test-" suffix=".php">./tests/unit</directory>
+			<directory suffix="Test.php">./tests/unit</directory>
 		</testsuite>
 	</testsuites>
 	<php>
