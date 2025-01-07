@@ -83,7 +83,7 @@ function merge_validate_phone( $opt_val, $data ) {
  * @param array $data Data
  * @return mixed
  */
-function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
+function merge_validate_address( $opt_val, $data ) {
 	if ( 'Y' === $data['required'] ) {
 		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
 			/* translators: %s: field name */
