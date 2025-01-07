@@ -35,6 +35,8 @@
   },
   "scripts": {
     "lint": "phpcs --standard=./phpcs.xml -p -s .",
+    "lint:fix": "phpcbf --standard=./phpcs.xml -p -s .",
+    "lint:compat": "phpcs --standard=./phpcs-compat.xml -p -s .",
     "test": "vendor/bin/phpunit"
   }
 }
