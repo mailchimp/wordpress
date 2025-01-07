@@ -1079,9 +1079,16 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 		return $opt_val;
 	}
 
-	// Trim whitespace
-	$opt_val = array_map( 'trim', $opt_val ); // Beginning and end
-	$opt_val = array_map( fn( $s ) => preg_replace( '/\s/', '', $s ), $opt_val ); // Middle
+	// Trim Whitespace - Beginning and end
+	$opt_val = array_map( 'trim', $opt_val );
+
+	// Trim Whitespace - Middle
+	$opt_val = array_map(
+		function ( $s ) {
+			return preg_replace( '/\s/', '', $s );
+		},
+		$opt_val
+	);
 
 	// Format number for validation
 	$opt_val = implode( '-', $opt_val );
