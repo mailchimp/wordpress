@@ -36,7 +36,7 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, mailchimp_sf_merge_validate_address };
+use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, merge_validate_address };
 
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
@@ -1019,7 +1019,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 				return $opt_val;
 			}
 		} elseif ( is_array( $opt_val ) && 'address' === $mv_var['type'] ) { // Handle address logic
-			$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
+			$validate = merge_validate_address( $opt_val, $mv_var );
 			if ( is_wp_error( $validate ) ) {
 				return $validate;
 			}
