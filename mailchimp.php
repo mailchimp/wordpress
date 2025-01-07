@@ -36,7 +36,7 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ mailchimp_sf_merge_validate_phone };
+use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone };
 
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
@@ -1014,7 +1014,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		// Handle phone number logic
 		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
-			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
+			$opt_val = merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
 			}
