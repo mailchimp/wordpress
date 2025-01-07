@@ -37,6 +37,7 @@
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
 use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, merge_validate_address };
+use Mailchimp\WordPress\Includes\Utility\Mailchimp_Location_Detector;
 
 // Version constant for easy CSS refreshes
 define( 'MCSF_VER', '1.6.2' );
@@ -45,7 +46,9 @@ define( 'MCSF_VER', '1.6.2' );
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
 
 // Define our location constants, both MCSF_DIR and MCSF_URL
-mailchimp_sf_where_am_i();
+require_once plugin_dir_path( __FILE__ ) . 'includes/utility/class-mailchimp-location-detector.php';
+$mailchimp_location_detector = new Mailchimp_Location_Detector( __FILE__ );
+$mailchimp_location_detector->init();
 
 // Get our Mailchimp API class in scope
 if ( ! class_exists( 'MailChimp_API' ) ) {
@@ -1207,54 +1210,6 @@ function mailchimp_sf_delete_options( $options = array() ) {
 /**********************
  * Utility Functions *
  **********************/
-/**
- * Utility function to allow placement of plugin in plugins, mu-plugins, child or parent theme's plugins folders
- *
- * This function must be ran _very early_ in the load process, as it sets up important constants for the rest of the plugin
- */
-function mailchimp_sf_where_am_i() {
-	$locations = array(
-		'plugins'    => array(
-			'dir' => plugin_dir_path( __FILE__ ),
-			'url' => plugins_url(),
-		),
-		'mu_plugins' => array(
-			'dir' => plugin_dir_path( __FILE__ ),
-			'url' => plugins_url(),
-		),
-		'template'   => array(
-			'dir' => trailingslashit( get_template_directory() ) . 'plugins/',
-			'url' => trailingslashit( get_template_directory_uri() ) . 'plugins/',
-		),
-		'stylesheet' => array(
-			'dir' => trailingslashit( get_stylesheet_directory() ) . 'plugins/',
-			'url' => trailingslashit( get_stylesheet_directory_uri() ) . 'plugins/',
-		),
-	);
-
-	// Set defaults
-	$mscf_dirbase = trailingslashit( basename( __DIR__ ) );  // Typically wp-mailchimp/ or mailchimp/
-	$mscf_dir     = trailingslashit( plugin_dir_path( __FILE__ ) );
-	$mscf_url     = trailingslashit( plugins_url( '', __FILE__ ) );
-
-	// Try our hands at finding the real location
-	foreach ( $locations as $key => $loc ) {
-		$dir = trailingslashit( $loc['dir'] ) . $mscf_dirbase;
-		$url = trailingslashit( $loc['url'] ) . $mscf_dirbase;
-		if ( is_file( $dir . basename( __FILE__ ) ) ) {
-			$mscf_dir = $dir;
-			$mscf_url = $url;
-			break;
-		}
-	}
-
-	// Define our complete filesystem path
-	define( 'MCSF_DIR', $mscf_dir );
-
-	// Define our complete URL to the plugin folder
-	define( 'MCSF_URL', $mscf_url );
-}
-
 
 /**
  * MODIFIED VERSION of wp_verify_nonce from WP Core. Core was not overridden to prevent problems when replacing
