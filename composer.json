@@ -12,13 +12,13 @@
   ],
   "prefer-stable": true,
   "require": {
-    "php": ">=7.0",
-    "10up/wp_mock": "^0.4.2"
+    "php": ">=7.0"
   },
   "require-dev": {
     "10up/phpcs-composer": "^3.0",
 	  "sirbrillig/phpcs-changed": "^2.11",
-    "phpunit/phpunit": "^11.5"
+    "yoast/phpunit-polyfills": "^3.0",
+    "10up/wp_mock": "^0.4.2"
   },
   "config": {
     "allow-plugins": {
@@ -27,6 +27,6 @@
   },
   "scripts": {
     "lint": "phpcs --standard=./phpcs.xml -p -s .",
-    "test": "phpunit"
+    "test": "vendor/bin/phpunit"
   }
 }
