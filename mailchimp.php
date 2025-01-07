@@ -36,7 +36,7 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone };
+use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, mailchimp_sf_merge_validate_address };
 
 // Check if the autoload file exists
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
@@ -1069,35 +1069,6 @@ function mailchimp_sf_merge_submit( $mv ) {
 			$merge->$tag = $opt_val;
 		}
 	}
-	return $merge;
-}
-
-/**
- * Validate address
- *
- * @param array $opt_val Option value
- * @param array $data Data
- * @return mixed
- */
-function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
-	if ( 'Y' === $data['required'] ) {
-		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-			/* translators: %s: field name */
-			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'invalid_address_merge', $message );
-			return $error;
-		}
-	} elseif ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-		return false;
-	}
-
-	$merge          = new stdClass();
-	$merge->addr1   = $opt_val['addr1'];
-	$merge->addr2   = $opt_val['addr2'];
-	$merge->city    = $opt_val['city'];
-	$merge->state   = $opt_val['state'];
-	$merge->zip     = $opt_val['zip'];
-	$merge->country = $opt_val['country'];
 	return $merge;
 }
 
