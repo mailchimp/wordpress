@@ -36,7 +36,7 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ mailchimp_sf_merge_validate_phone };
+use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone };
 
 // Check if the autoload file exists
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {

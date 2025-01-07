@@ -16,7 +16,7 @@ use WP_Error;
  * @param array $data Data
  * @return array|WP_Error
  */
-function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
+function merge_validate_phone( $opt_val, $data ) {
 	// Filter out falsy values
 	$opt_val = array_filter( $opt_val );
 
