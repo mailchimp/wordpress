@@ -40,17 +40,32 @@ class USPhoneNumberValidationTest extends TestCase {
 		];
 	}
 
-	/**
-	 * Data provider for invalid phone numbers.
-	 *
-	 * @return array
-	 */
-	public static function invalidPhoneNumbersProvider(): array {
-		return [
-			[['123', '45!', '7890'], ['name' => 'Phone']],
-			[['123', '456', '78a0'], ['name' => 'Phone']],
-		];
-	}
+/**
+ * Data provider for invalid phone numbers.
+ *
+ * @return array
+ */
+public static function invalidPhoneNumbersProvider(): array {
+	return [
+		// // Repeated characters - allowing for vanity phone edge cases, seems like overkill to validate
+		// [['111', '111', '1111'], ['name' => 'Phone']],
+		
+		// Special characters
+		[['123', '!@#', '7890'], ['name' => 'Phone']],
+		// Alphabets
+		[['abc', '456', '7890'], ['name' => 'Phone']],
+		// Mixed alphabets and numbers
+		[['12a', '456', '7b90'], ['name' => 'Phone']],
+		// Symbols like hyphens, slashes, or parentheses
+		[['123-', '456', '7890'], ['name' => 'Phone']],
+		[['123', '/456', '7890'], ['name' => 'Phone']],
+		[['(12', '456', '7890'], ['name' => 'Phone']],
+		// Decimal points
+		[['1.4', '567', '890'], ['name' => 'Phone']],
+		// Emoji or Unicode characters
+		[['123', '📞46', '7890'], ['name' => 'Phone']],
+	];
+}
 
 	/**
 	 * Data provider for too short phone numbers.
@@ -59,8 +74,16 @@ class USPhoneNumberValidationTest extends TestCase {
 	 */
 	public static function tooShortPhoneNumbersProvider(): array {
 		return [
-			[['12', '456', '789'], ['name' => 'Phone']],
-			[['', '45', '7890'], ['name' => 'Phone']],
+			// [['', '', ''], ['name' => 'Phone']], // All empty is not an error, this is a black phone field
+			[['12 ', '456', '789'], ['name' => 'Phone']], // 1st box whitespace
+			[['123', '45 ', '7890'], ['name' => 'Phone']], // 2nd box whitespace
+			[['123', '456', ' 890'], ['name' => 'Phone']], // 3rd box whitespace
+			[['12', '456', '7890'], ['name' => 'Phone']], // 1st box short
+			[['123', '56', '7890'], ['name' => 'Phone']], // 2nd box short
+			[['123', '456', '890'], ['name' => 'Phone']], // 3rd box short
+			[[null, '456', '7890'], ['name' => 'Phone']], // Null values
+			// Control characters (tab)
+			[['123', "\r0", '7890'], ['name' => 'Phone']],
 		];
 	}
 
@@ -107,7 +130,7 @@ class USPhoneNumberValidationTest extends TestCase {
 		// Step 5: Assert that what our validation logic does is what we expect it does
 
 		// Is WP_Error
-		$this->assertInstanceOf(WP_Error::class, $result);
+		$this->assertInstanceOf(WP_Error::class, $result, "Result (Not WP_Error): {$result}");
 
 		// Error code
 		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());

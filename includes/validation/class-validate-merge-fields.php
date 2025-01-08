@@ -89,7 +89,7 @@ class Validate_Merge_Fields {
 			/**
 			 * Phone number must consist of only numbers
 			 */
-			case ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ):
+			case ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ): // Valid US digital format (e.g. 123-456-7890)
 				$message = sprintf(
 					/* translators: %s: field name */
 					esc_html__( '%s must consist of only numbers', 'mailchimp' ),
