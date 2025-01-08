@@ -92,7 +92,7 @@ class Validate_Merge_Fields {
 			 * Phone number must be 12 characters long
 			 * 10 digits [0-9] and 2 dashes "-"
 			 */
-			case strlen( $opt_val ) < 12:
+			case strlen( $opt_val ) !== 12:
 				$message = sprintf(
 					/* translators: %s: field name */
 					esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ),
