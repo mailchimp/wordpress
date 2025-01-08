@@ -47,17 +47,30 @@ class Validate_Merge_Fields {
 	/**
 	 * Validate phone
 	 *
+	 * Filters and formats the phone number for validation. Returns:
+	 * - `string` on successful validation.
+	 * - `null` if the field is optional and not filled out.
+	 * - `WP_Error` on validation failure.
+	 *
 	 * @param array $opt_val Option value
 	 * @param array $data Data
-	 * @return array|WP_Error
+	 * @return string|null|WP_Error
 	 */
 	public function validate_phone( $opt_val, $data ) {
 		// Filter out falsy values
 		$opt_val = array_filter( $opt_val );
 
-		// If they were all empty
+		/**
+		 * Conditions
+		 * - Field is not filled out - skip validation
+		 * - Field is empty after filtering falsy values
+		 *
+		 * MUST return null if field is optional and not filled out
+		 * Any other value will cause a validation error that prevents form
+		 * from submitting
+		 */
 		if ( ! $opt_val ) {
-			return $opt_val;
+			return null;
 		}
 
 		// Trim Whitespace - Beginning and end
