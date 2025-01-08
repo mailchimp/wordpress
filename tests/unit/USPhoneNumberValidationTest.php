@@ -2,8 +2,9 @@
 
 use PHPUnit\Framework\TestCase;
 use Mockery;
-use function Mailchimp\WordPress\Includes\Validation\merge_validate_phone;
+use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields;
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
+use WP_Error;
 
 // Require files manually
 // TODO: Remove this once we are using composer autoload
@@ -81,7 +82,8 @@ class USPhoneNumberValidationTest extends TestCase {
 	 * @dataProvider validPhoneNumbersProvider
 	 */
 	public function testValidPhoneNumbers($phoneNumArray, $formData): void {
-		$result = merge_validate_phone($phoneNumArray, $formData);
+		$validate_merge_fields = new Validate_Merge_Fields();
+		$result = $validate_merge_fields->validate_phone($phoneNumArray, $formData);
 
 		$expected = implode('-', $phoneNumArray); // Phone number connected with hyphen
 		$this->assertEquals($expected, $result);
@@ -93,33 +95,40 @@ class USPhoneNumberValidationTest extends TestCase {
 	 * @dataProvider invalidPhoneNumbersProvider
 	 */
 	public function testInvalidPhoneNumbers($phoneArr, $formData): void {
-		// Use Mockery to mock the WP_Error class
-		$mock = Mockery::mock('WP_Error');
+		// Step 1: Create a blank mocked WP_Error.
+		$wp_error = Mockery::mock( 'WP_Error' );
 
-		// Mock the `create_wp_error` function
-		WP_Mock::userFunction('create_wp_error', [
-			'times' => 1,
-			'args' => ['mc_phone_validation', WP_Mock\Functions::type('string')],
-			'return' => new WP_Error('mc_phone_validation', 'Mocked error message'),
-		]);
+		// Step 2: Mock the factory that creates WP_Error.
+		$wp_error_factory = function ( $code, $message, $data = null ) use ( $wp_error ) {
+			// Step 3: Make assertions against the properties we want the WP_Error object to contain
+			// and dynamically fill them to return what our validate functions will pass in.
+			$wp_error
+				->shouldReceive( 'get_error_code' )
+				->andReturn( $code );
+			$wp_error
+				->shouldReceive( 'get_error_message' )
+				->with( $code )
+				->andReturn( $message );
+			return $wp_error;
+		};
 
-		// $mock->shouldReceive('get_error_code')->andReturn('mc_phone_validation');
+		// Step 4: Run the validation
+		$validate_merge_fields = new Validate_Merge_Fields( $wp_error_factory );
+		$result = $validate_merge_fields->validate_phone($phoneArr, $formData);
 
-		// // Assert that WP_Error was constructed correctly
-		// $mock->shouldReceive('__construct')
-		// 	->with('mc_phone_validation', Mockery::pattern('/must consist of only numbers/'), null)
-		// 	->once();
+		// Step 5: Assert that what our validation logic does is what we expect it does
 
-		// Function under test
-		$result = merge_validate_phone($phoneArr, $formData);
-
-		// echo var_dump($result->get_error_code());
-
-		// Assert the function returned a WP_Error object
-		// $this->assertInstanceOf(WP_Error::class, $result);
-		// Assert the result is a WP_Error object
+		// Is WP_Error
 		$this->assertInstanceOf(WP_Error::class, $result);
-		// $this->assertEquals('mc_phone_validation', $result->get_error_code());
+
+		// Error code
+		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
+
+		// Error message
+		$this->assertMatchesRegularExpression(
+			'/must consist of only numbers/',
+			$result->get_error_message(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE)
+		);
 	}
 
 	/**
