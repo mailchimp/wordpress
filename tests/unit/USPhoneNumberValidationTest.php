@@ -75,6 +75,7 @@ public static function invalidPhoneNumbersProvider(): array {
 	public static function tooShortPhoneNumbersProvider(): array {
 		return [
 			// [['', '', ''], ['name' => 'Phone']], // All empty is not an error, this is a black phone field
+
 			[['12 ', '456', '789'], ['name' => 'Phone']], // 1st box whitespace
 			[['123', '45 ', '7890'], ['name' => 'Phone']], // 2nd box whitespace
 			[['123', '456', ' 890'], ['name' => 'Phone']], // 3rd box whitespace
@@ -82,8 +83,7 @@ public static function invalidPhoneNumbersProvider(): array {
 			[['123', '56', '7890'], ['name' => 'Phone']], // 2nd box short
 			[['123', '456', '890'], ['name' => 'Phone']], // 3rd box short
 			[[null, '456', '7890'], ['name' => 'Phone']], // Null values
-			// Control characters (tab)
-			[['123', "\r0", '7890'], ['name' => 'Phone']],
+			[['123', "\r0", '7890'], ['name' => 'Phone']], // Control characters (tab)
 		];
 	}
 
@@ -114,12 +114,12 @@ public static function invalidPhoneNumbersProvider(): array {
 			// Step 3: Make assertions against the properties we want the WP_Error object to contain
 			// and dynamically fill them to return what our validate functions will pass in.
 			$wp_error
-				->shouldReceive( 'get_error_code' )
-				->andReturn( $code );
+				->shouldReceive('get_error_code')
+				->andReturn($code);
 			$wp_error
-				->shouldReceive( 'get_error_message' )
-				->with( $code )
-				->andReturn( $message );
+				->shouldReceive('get_error_message')
+				->with($code)
+				->andReturn($message);
 			return $wp_error;
 		};
 
