@@ -958,15 +958,19 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 		$body->interests = $igs;
 	}
 
-	if ( 'subscribed' !== $status ) {
-		// single opt-in that covers new subscribers
-		if ( false === ! $status && $double_optin ) {
-			$body->status = 'subscribed';
-		} else {
-			// anyone else
-			$body->status = 'pending';
-		}
+	// Early return for already subscribed users
+	if ( 'subscribed' === $status ) {
+		return $body;
 	}
+
+	// single opt-in that covers new subscribers
+	if ( false === ! $status && $double_optin ) {
+		$body->status = 'subscribed';
+	} else {
+		// anyone else
+		$body->status = 'pending';
+	}
+
 	return $body;
 }
 
