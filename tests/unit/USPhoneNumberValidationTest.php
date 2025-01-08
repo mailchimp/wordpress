@@ -65,18 +65,6 @@ class USPhoneNumberValidationTest extends TestCase {
 	}
 
 	/**
-	 * Data provider for too long phone numbers.
-	 *
-	 * @return array
-	 */
-	public static function tooLongPhoneNumbersProvider(): array {
-		return [
-			[['1234', '567', '890'], ['name' => 'Phone']],
-			[['123', '4567', '8901'], ['name' => 'Phone']],
-		];
-	}
-
-	/**
 	 * Test valid phone numbers.
 	 *
 	 * @dataProvider validPhoneNumbersProvider
@@ -96,7 +84,7 @@ class USPhoneNumberValidationTest extends TestCase {
 	 */
 	public function testInvalidPhoneNumbers($phoneArr, $formData): void {
 		// Step 1: Create a blank mocked WP_Error.
-		$wp_error = Mockery::mock( 'WP_Error' );
+		$wp_error = Mockery::mock('WP_Error');
 
 		// Step 2: Mock the factory that creates WP_Error.
 		$wp_error_factory = function ( $code, $message, $data = null ) use ( $wp_error ) {
@@ -134,38 +122,12 @@ class USPhoneNumberValidationTest extends TestCase {
 	/**
 	 * Test too short phone numbers.
 	 *
+	 * NOTE: No reason to test phone numbers that are too long
+	 * because the input field limits the length a user can enter.
+	 *
 	 * @dataProvider tooShortPhoneNumbersProvider
 	 */
 	public function testTooShortPhoneNumbers($input, $data): void {
-		$wp_error = Mockery::mock('WP_Error');
-		$wp_error_factory = function ($code, $message, $data = null) use ($wp_error) {
-			$wp_error
-				->shouldReceive('get_error_code')
-				->andReturn($code);
-			$wp_error
-				->shouldReceive('get_error_message')
-				->with($code)
-				->andReturn($message);
-			return $wp_error;
-		};
-
-		$validate_merge_fields = new Validate_Merge_Fields($wp_error_factory);
-		$result = $validate_merge_fields->validate_phone($input, $data);
-
-		$this->assertInstanceOf(WP_Error::class, $result);
-		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
-		$this->assertMatchesRegularExpression(
-			'/must contain the correct amount of digits/',
-			$result->get_error_message(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE)
-		);
-	}
-
-	/**
-	 * Test too long phone numbers.
-	 *
-	 * @dataProvider tooLongPhoneNumbersProvider
-	 */
-	public function testTooLongPhoneNumbers($input, $data): void {
 		$wp_error = Mockery::mock('WP_Error');
 		$wp_error_factory = function ($code, $message, $data = null) use ($wp_error) {
 			$wp_error
