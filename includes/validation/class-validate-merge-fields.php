@@ -4,6 +4,7 @@
  *
  * @package mailchimp
  */
+
 declare(strict_types=1);
 
 namespace Mailchimp\WordPress\Includes\Validation;
