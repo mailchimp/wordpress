@@ -17,6 +17,10 @@ use stdClass;
  */
 class Validate_Merge_Fields {
 
+	const PHONE_VALIDATION_ERROR_CODE = 'mc_phone_validation';
+
+	const ADDRESS_VALIDATION_ERROR_CODE = 'invalid_address_merge';
+
 	/**
 	 * Create WP_Error objects via factory
 	 *
@@ -79,7 +83,7 @@ class Validate_Merge_Fields {
 					esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ),
 					esc_html( $data['name'] )
 				);
-				$opt_val = call_user_func( $this->wp_error_factory, 'mc_phone_validation', $message );
+				$opt_val = call_user_func( $this->wp_error_factory, self::PHONE_VALIDATION_ERROR_CODE, $message );
 				break;
 
 			/**
@@ -91,7 +95,7 @@ class Validate_Merge_Fields {
 					esc_html__( '%s must consist of only numbers', 'mailchimp' ),
 					esc_html( $data['name'] )
 				);
-				$opt_val = call_user_func( $this->wp_error_factory, 'mc_phone_validation', $message );
+				$opt_val = call_user_func( $this->wp_error_factory, self::PHONE_VALIDATION_ERROR_CODE, $message );
 				break;
 
 			/**
@@ -116,7 +120,7 @@ class Validate_Merge_Fields {
 			if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
 				/* translators: %s: field name */
 				$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
-				$error   = call_user_func( $this->wp_error_factory, 'invalid_address_merge', $message );
+				$error   = call_user_func( $this->wp_error_factory, self::ADDRESS_VALIDATION_ERROR_CODE, $message );
 				return $error;
 			}
 			/**
