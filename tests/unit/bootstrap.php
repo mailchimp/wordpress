@@ -8,6 +8,9 @@
 
 define( 'TEST_PLUGIN_DIR', dirname( dirname( __DIR__ ) ) . '/' );
 
+define ( 'MCSF_DIR', TEST_PLUGIN_DIR );
+define ( 'MCSF_URL', 'http://localhost:8888/wp-content/plugins/mailchimp/' );
+
 // First we need to load the composer autoloader so we can use WP Mock.
 require_once TEST_PLUGIN_DIR . '/vendor/autoload.php';
 
