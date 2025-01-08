@@ -49,7 +49,7 @@ public static function invalidPhoneNumbersProvider(): array {
 	return [
 		// // Repeated characters - allowing for vanity phone edge cases, seems like overkill to validate
 		// [['111', '111', '1111'], ['name' => 'Phone']],
-		
+
 		// Special characters
 		[['123', '!@#', '7890'], ['name' => 'Phone']],
 		// Alphabets
@@ -61,7 +61,7 @@ public static function invalidPhoneNumbersProvider(): array {
 		[['123', '/456', '7890'], ['name' => 'Phone']],
 		[['(12', '456', '7890'], ['name' => 'Phone']],
 		// Decimal points
-		[['1.4', '567', '890'], ['name' => 'Phone']],
+		[['1.4', '567', '8901'], ['name' => 'Phone']],
 		// Emoji or Unicode characters
 		[['123', '📞46', '7890'], ['name' => 'Phone']],
 	];
