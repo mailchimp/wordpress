@@ -137,10 +137,27 @@ class USPhoneNumberValidationTest extends TestCase {
 	 * @dataProvider tooShortPhoneNumbersProvider
 	 */
 	public function testTooShortPhoneNumbers($input, $data): void {
-		$result = merge_validate_phone($input, $data);
+		$wp_error = Mockery::mock('WP_Error');
+		$wp_error_factory = function ($code, $message, $data = null) use ($wp_error) {
+			$wp_error
+				->shouldReceive('get_error_code')
+				->andReturn($code);
+			$wp_error
+				->shouldReceive('get_error_message')
+				->with($code)
+				->andReturn($message);
+			return $wp_error;
+		};
+
+		$validate_merge_fields = new Validate_Merge_Fields($wp_error_factory);
+		$result = $validate_merge_fields->validate_phone($input, $data);
+
 		$this->assertInstanceOf(WP_Error::class, $result);
-		$this->assertEquals('mc_phone_validation', $result->get_error_code());
-		$this->assertStringContainsString('must contain the correct amount of digits', $result->get_error_message());
+		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
+		$this->assertMatchesRegularExpression(
+			'/must contain the correct amount of digits/',
+			$result->get_error_message(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE)
+		);
 	}
 
 	/**
@@ -149,9 +166,26 @@ class USPhoneNumberValidationTest extends TestCase {
 	 * @dataProvider tooLongPhoneNumbersProvider
 	 */
 	public function testTooLongPhoneNumbers($input, $data): void {
-		$result = merge_validate_phone($input, $data);
+		$wp_error = Mockery::mock('WP_Error');
+		$wp_error_factory = function ($code, $message, $data = null) use ($wp_error) {
+			$wp_error
+				->shouldReceive('get_error_code')
+				->andReturn($code);
+			$wp_error
+				->shouldReceive('get_error_message')
+				->with($code)
+				->andReturn($message);
+			return $wp_error;
+		};
+
+		$validate_merge_fields = new Validate_Merge_Fields($wp_error_factory);
+		$result = $validate_merge_fields->validate_phone($input, $data);
+
 		$this->assertInstanceOf(WP_Error::class, $result);
-		$this->assertEquals('mc_phone_validation', $result->get_error_code());
-		$this->assertStringContainsString('must contain the correct amount of digits', $result->get_error_message());
+		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
+		$this->assertMatchesRegularExpression(
+			'/must contain the correct amount of digits/',
+			$result->get_error_message(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE)
+		);
 	}
 }
