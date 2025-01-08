@@ -18,7 +18,8 @@
     "10up/phpcs-composer": "^3.0",
 	  "sirbrillig/phpcs-changed": "^2.11",
     "yoast/phpunit-polyfills": "^3.0",
-    "10up/wp_mock": "^0.4.2"
+    "10up/wp_mock": "^0.4.2",
+    "phpcompatibility/php-compatibility": "dev-develop as 9.99.99"
   },
   "autoload": {
     "psr-4": {
