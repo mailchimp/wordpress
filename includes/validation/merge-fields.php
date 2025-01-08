@@ -51,7 +51,7 @@ function merge_validate_phone( $opt_val, $data ) {
 				esc_html__( '%s must contain the correct amount of digits', 'mailchimp' ),
 				esc_html( $data['name'] )
 			);
-			$opt_val = new WP_Error( 'mc_phone_validation', $message );
+			$opt_val = create_wp_error( 'mc_phone_validation', $message );
 			break;
 
 		/**
@@ -63,7 +63,7 @@ function merge_validate_phone( $opt_val, $data ) {
 				esc_html__( '%s must consist of only numbers', 'mailchimp' ),
 				esc_html( $data['name'] )
 			);
-			$opt_val = new WP_Error( 'mc_phone_validation', $message );
+			$opt_val = create_wp_error( 'mc_phone_validation', $message );
 			break;
 
 		/**
@@ -88,7 +88,7 @@ function merge_validate_address( $opt_val, $data ) {
 		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
 			/* translators: %s: field name */
 			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'invalid_address_merge', $message );
+			$error   = create_wp_error( 'invalid_address_merge', $message );
 			return $error;
 		}
 		/**
@@ -112,4 +112,19 @@ function merge_validate_address( $opt_val, $data ) {
 	$merge->zip     = $opt_val['zip'];
 	$merge->country = $opt_val['country'];
 	return $merge;
+}
+
+/**
+ * Creates a WP_Error object for merge field validation errors.
+ * 
+ * Enables tests to make assertions regarding error messages
+ *
+ * @param string $code    Error code.
+ * @param string $message Error message.
+ * @param mixed  $data    Optional. Error data. Default is null.
+ *
+ * @return WP_Error
+ */
+function create_wp_error( string $code, string $message ): WP_Error {
+	return new WP_Error( $code, $message );
 }
