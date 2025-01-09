@@ -1,4 +1,18 @@
 <?php
+/**
+ * Deprecated functions for Mailchimp validation.
+ *
+ * This file contains deprecated validation functions for the Mailchimp WordPress plugin.
+ * These functions are kept for backward compatibility and will be removed in a future release.
+ *
+ * @package mailchimp
+ * @deprecated 1.7.0 Deprecated in favor of new validation methods.
+ *
+ * @note This file is included as a fallback in case it is loaded before the main plugin entrypoint.
+ *       It will be obsolete once composer autoloading is implemented.
+ *
+ * @see \Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields
+ */
 
 use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields;
 
@@ -9,12 +23,13 @@ require_once dirname( __DIR__, 2 ) . '/includes/validation/class-mailchimp-valid
 /**
  * Validate phone.
  *
- * This function has been deprecated since version 1.7.0 and will be removed in a future release.
+ * This function validates phone numbers but has been deprecated since version 1.7.0.
+ * Use the Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields::validate_phone method instead.
  *
- * @deprecated 1.7.0 Use mailchimp_sf_validate_phone() instead.
+ * @deprecated 1.7.0 Use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields::validate_phone.
  *
- * @param array $opt_val Option value.
- * @param array $data    Data.
+ * @param array $opt_val Option value to validate.
+ * @param array $data    Additional data required for validation.
  * @return void|WP_Error Returns an error object if validation fails, otherwise processes the value.
  */
 function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
@@ -25,12 +40,13 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
 /**
  * Validate address.
  *
- * This function has been deprecated since version 1.7.0 and will be removed in a future release.
+ * This function validates addresses but has been deprecated since version 1.7.0.
+ * Use the Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields::validate_address method instead.
  *
- * @deprecated 1.7.0 Use mailchimp_sf_validate_address() instead.
+ * @deprecated 1.7.0 Use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields::validate_address.
  *
- * @param array $opt_val Option value.
- * @param array $data    Data.
+ * @param array $opt_val Option value to validate.
+ * @param array $data    Additional data required for validation.
  * @return void|WP_Error Returns an error object if validation fails, otherwise processes the value.
  */
 function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
