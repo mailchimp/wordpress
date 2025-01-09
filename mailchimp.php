@@ -913,12 +913,8 @@ function mailchimp_sf_signup_submit() {
 		return false;
 	}
 
-	// A former subscriber is trying to resubscribe
-	// If "Update Existing Subscriber?" is enabled and the user is unsubscribed
-	// then show them the Mailchimp hosted signup form
-	if ( get_option( 'mc_update_existing' ) && 'unsubscribed' === $status ) {
-		// TODO: Make API request to fetch Mailchimp hosted sign up form and display to user
-	}
+	// TODO: If get_option( 'mc_update_existing' ) && 'unsubscribed' === $status then
+	// make an API request to fetch Mailchimp hosted sign up form and display to user
 
 	$body   = mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, get_option( 'mc_double_optin' ) );
 	$retval = $api->post( $url, $body, 'PUT' );
