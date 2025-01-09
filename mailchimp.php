@@ -971,8 +971,9 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 		return $body;
 	}
 
-	// Subscribe the user immediately unless double opt-in is enabled
-	// No need to check user $status because we're handling that before this point
+	// Subscribe the email immediately unless double opt-in is enabled
+	// "unsubscribed" and "subscribed" existing emails have been excluded at this stage
+	// "pending" emails should follow double opt-in rules
 	$body->status = $double_optin ? 'pending' : 'subscribed';
 
 	return $body;
