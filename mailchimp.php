@@ -36,7 +36,6 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, merge_validate_address };
 use Mailchimp\WordPress\Includes\Utility\Mailchimp_Location_Detector;
 
 // Version constant for easy CSS refreshes
@@ -77,6 +76,8 @@ $admin->init();
 require_once plugin_dir_path( __FILE__ ) . 'includes/validation/class-mailchimp-validation.php';
 $validation = new Mailchimp_Validation();
 $validation->init();
+
+require_once plugin_dir_path( __FILE__ ) . '/includes/deprecated/deprecated-functions.php';
 
 /**
  * Do the following plugin setup steps here
@@ -1017,12 +1018,12 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		// Handle phone number logic
 		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
-			$opt_val = merge_validate_phone( $opt_val, $mv_var );
+			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
 			if ( is_wp_error( $opt_val ) ) {
 				return $opt_val;
 			}
 		} elseif ( is_array( $opt_val ) && 'address' === $mv_var['type'] ) { // Handle address logic
-			$validate = merge_validate_address( $opt_val, $mv_var );
+			$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
 			if ( is_wp_error( $validate ) ) {
 				return $validate;
 			}

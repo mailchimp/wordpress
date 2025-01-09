@@ -32,6 +32,5 @@ class Mailchimp_Validation {
 	 */
 	private function require_validation_functions() {
 		include_once MCSF_DIR . 'includes/validation/class-validate-merge-fields.php';
-		include_once MCSF_DIR . 'includes/validation/functions.php';
 	}
 }
