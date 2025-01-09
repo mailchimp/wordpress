@@ -1,10 +1,8 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Mockery;
 use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields;
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use WP_Error;
 
 // Require files manually
 // TODO: Remove this once we are using composer autoload
@@ -24,7 +22,7 @@ class USPhoneNumberValidationTest extends TestCase {
 
 	public function tearDown(): void {
 		WP_Mock::tearDown();
-		Mockery::close();
+		\Mockery::close();
 		parent::tearDown();
 	}
 
@@ -150,7 +148,7 @@ public static function invalidPhoneNumbersProvider(): array {
 	 */
 	public function testInvalidPhoneNumbers($phoneArr, $formData): void {
 		// Step 1: Create a blank mocked WP_Error.
-		$wp_error = Mockery::mock('WP_Error');
+		$wp_error = \Mockery::mock('WP_Error');
 
 		// Step 2: Mock the factory that creates WP_Error.
 		$wp_error_factory = function ( $code, $message, $data = null ) use ( $wp_error ) {
@@ -173,7 +171,7 @@ public static function invalidPhoneNumbersProvider(): array {
 		// Step 5: Assert that what our validation logic does is what we expect it does
 
 		// Is WP_Error
-		$this->assertInstanceOf(WP_Error::class, $result, "Result (Not WP_Error): {$result}");
+		$this->assertInstanceOf(\WP_Error::class, $result, "Result (Not WP_Error): {$result}");
 
 		// Error code
 		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
@@ -194,7 +192,7 @@ public static function invalidPhoneNumbersProvider(): array {
 	 * @dataProvider tooShortPhoneNumbersProvider
 	 */
 	public function testTooShortPhoneNumbers($phoneArr, $formData): void {
-		$wp_error = Mockery::mock('WP_Error');
+		$wp_error = \Mockery::mock('WP_Error');
 		$wp_error_factory = function ($code, $message, $data = null) use ($wp_error) {
 			$wp_error
 				->shouldReceive('get_error_code')
@@ -209,7 +207,7 @@ public static function invalidPhoneNumbersProvider(): array {
 		$validate_merge_fields = new Validate_Merge_Fields($wp_error_factory);
 		$result = $validate_merge_fields->validate_phone($phoneArr, $formData);
 
-		$this->assertInstanceOf(WP_Error::class, $result);
+		$this->assertInstanceOf(\WP_Error::class, $result);
 		$this->assertEquals(Validate_Merge_Fields::PHONE_VALIDATION_ERROR_CODE, $result->get_error_code());
 		$this->assertMatchesRegularExpression(
 			'/must contain the correct amount of digits/',
