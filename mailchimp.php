@@ -36,7 +36,6 @@
 
 // Validation
 use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
-use function Mailchimp\WordPress\Includes\Validation\{ merge_validate_phone, merge_validate_address };
 use Mailchimp\WordPress\Includes\Utility\Mailchimp_Location_Detector;
 
 // Check if the autoload file exists
@@ -107,6 +106,8 @@ $admin->init();
 require_once plugin_dir_path( __FILE__ ) . 'includes/validation/class-mailchimp-validation.php';
 $validation = new Mailchimp_Validation();
 $validation->init();
+
+require_once plugin_dir_path( __FILE__ ) . '/includes/deprecated/deprecated-functions.php';
 
 /**
  * Do the following plugin setup steps here
