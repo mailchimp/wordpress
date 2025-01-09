@@ -944,12 +944,12 @@ function mailchimp_sf_signup_submit() {
  * Cleans up merge fields and interests to make them
  * API 3.0-friendly.
  *
- * @param [type] $merge Merge fields
- * @param [type] $igs Interest groups
- * @param string $email_type Email type
- * @param string $email Email
+ * @param [type]       $merge Merge fields
+ * @param [type]       $igs Interest groups
+ * @param string       $email_type Email type
+ * @param string       $email Email
  * @param string|false $status Status The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if an error occurred.
- * @param string $double_optin Whether double opt-in is enabled. "1" for enabled and "" for disabled.
+ * @param string       $double_optin Whether double opt-in is enabled. "1" for enabled and "" for disabled.
  * @return stdClass
  */
 function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, $double_optin ) {
