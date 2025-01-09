@@ -963,13 +963,8 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 		return $body;
 	}
 
-	// single opt-in that covers new subscribers
-	if ( false === ! $status && $double_optin ) {
-		$body->status = 'subscribed';
-	} else {
-		// anyone else
-		$body->status = 'pending';
-	}
+	// Subscribe the user immediately unless double opt-in is enabled
+	$body->status = $double_optin ? 'pending' : 'subscribed';
 
 	return $body;
 }
@@ -978,7 +973,7 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
  * Check the status of a subscriber in the list.
  *
  * @param string $endpoint API endpoint to check the status.
- * @return string|false The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if an error occurred.
+ * @return string|false The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if the API returned 404 or an error occurred.
  */
 function mailchimp_sf_check_status( $endpoint ) {
 	$endpoint  .= '?fields=status';
