@@ -904,10 +904,10 @@ function mailchimp_sf_signup_submit() {
 	$url    = 'lists/' . $list_id . '/members/' . md5( strtolower( $email ) );
 	$status = mailchimp_sf_check_status( $url );
 
-	// If update existing is turned off and the subscriber exists, error out.
-	// TODO: Shouldn't this catch any user with any status if "Update Existing Subscriber's?" is disabled?
-	if ( ! get_option( 'mc_update_existing' ) && 'subscribed' === $status ) {
-		$msg   = esc_html__( 'This email address is already subscribed to the list.', 'mailchimp' );
+	// If update existing is turned off and the subscriber is not new, error out.
+	$is_new_subscriber = false === $status;
+	if ( ! get_option( 'mc_update_existing' ) && ! $is_new_subscriber ) {
+		$msg   = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
 		mailchimp_sf_global_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
 		return false;
