@@ -905,6 +905,7 @@ function mailchimp_sf_signup_submit() {
 	$status = mailchimp_sf_check_status( $url );
 
 	// If update existing is turned off and the subscriber exists, error out.
+	// TODO: Shouldn't this catch any user with any status if "Update Existing Subscriber's?" is disabled?
 	if ( get_option( 'mc_update_existing' ) === false && 'subscribed' === $status ) {
 		$msg   = esc_html__( 'This email address is already subscribed to the list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
@@ -964,6 +965,7 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 	}
 
 	// Subscribe the user immediately unless double opt-in is enabled
+	// No need to check user $status because we're handling that before this point
 	$body->status = $double_optin ? 'pending' : 'subscribed';
 
 	return $body;
