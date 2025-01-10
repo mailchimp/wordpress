@@ -36,9 +36,6 @@ describe('Validate required fields', () => {
 				cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 			});
 		});
-
-		// Check all optional merge fields for testing
-		cy.toggleMergeFields('check');
 	});
 
 	after(() => {
