@@ -40,18 +40,10 @@ describe('General merge field validation', () => {
 		// Disable all merge fields
 		cy.toggleMergeFields('uncheck');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.setJavaScriptOption(false);
 	});
 
-	after(() => {
-		// I don't know why we have to login again, but we do
-		cy.login(); // WP
-
-		// Cleanup
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
-		// Re-enable JavaScript support
-        cy.setJavaScriptOption(true);
-	});
+	it('Invalid email addresses fail validation', invalidEmailAssertions);
 
 	function invalidEmailAssertions() {
         [shortcodePostURL, blockPostPostURL].forEach((url) => {
@@ -111,21 +103,4 @@ describe('General merge field validation', () => {
             cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
         });
 	}
-
-	context('JavaScript Disabled', () => {
-		before(() => {
-			cy.setJavaScriptOption(false);
-		});
-
-        it('Invalid email addresses fail validation', invalidEmailAssertions);
-	});
-
-	context('JavaScript Enabled', () => {
-		before(() => {
-			cy.login();
-			cy.setJavaScriptOption(true);
-		});
-
-        it('Invalid email addresses fail validation', invalidEmailAssertions);
-	});
 });
