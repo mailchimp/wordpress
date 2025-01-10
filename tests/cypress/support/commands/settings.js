@@ -120,3 +120,34 @@ function toggleMergeFields(action) {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 }
+
+/**
+ * Custom Cypress command to set all Mailchimp merge fields as required or optional in the WordPress admin settings.
+ *
+ * This command updates the merge fields for a specified Mailchimp list, setting their "required" status
+ * in the Mailchimp account. It ensures the WordPress plugin reflects these changes by re-selecting the list
+ * in the plugin settings.
+ *
+ * @param {boolean} required - A flag to set the merge fields as required (`true`) or optional (`false`).
+ * @param {string} [listName='10up'] - The name of the Mailchimp list for which the merge fields will be updated.
+ *
+ * @example
+ * // Set all merge fields to required
+ * cy.setMergeFieldsRequired(true);
+ *
+ * @example
+ * // Set all merge fields to optional
+ * cy.setMergeFieldsRequired(false);
+ *
+ * @example
+ * // Set merge fields for a specific list
+ * cy.setMergeFieldsRequired(true, 'Custom List');
+ */
+Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up') => {
+	// Set all merge fields to required in the Mailchimp test user account
+	cy.getListId(listName).then((listId) => {
+		cy.updateMergeFieldsByList(listId, { required: required }).then(() => {
+			cy.selectList(listName); // Ensure list is selected, refreshes Mailchimp data with WP
+		});
+	});
+})

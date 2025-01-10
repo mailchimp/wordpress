@@ -33,6 +33,11 @@ before(() => {
 
 	cy.setDoubleOptInOption(false);
 	cy.setJavaScriptOption(true);
+	cy.setSettingsOption('#mc_update_existing', false);
+
+	// Merge fields
+	cy.setMergeFieldsRequired(false); // No merge fields are required
+	cy.toggleMergeFields('uncheck'); // Start without merge fields
 
 	cy.log('Default testing options set!');
 });

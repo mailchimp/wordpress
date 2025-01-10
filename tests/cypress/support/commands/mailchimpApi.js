@@ -80,6 +80,64 @@ async function getContactsFromAList(listId, status = null) {
 }
 
 /**
+ * Retrieve a contact's details from a Mailchimp list.
+ *
+ * This function fetches the details of a specific contact from a Mailchimp list
+ * using the MD5 hash of the email address. If the contact is not found, it returns `null`.
+ * Logs and rethrows unexpected errors for visibility.
+ *
+ * @param {string} listId - The Mailchimp list ID to search within.
+ * @param {string} email - The email address of the contact to retrieve.
+ * @returns {Promise<object|null>} - A promise that resolves with the contact's details 
+ *                                   if found, or `null` if the contact does not exist.
+ * 
+ * @throws {Error} - Throws an error for unexpected failures (non-404 errors).
+ * 
+ * Example:
+ * cy.getContact(listId, 'user@example.com').then((contact) => {
+ *   if (contact) {
+ *     console.log('Contact found:', contact);
+ *   } else {
+ *     console.log('Contact not found.');
+ *   }
+ * });
+ */
+async function getContact(email, listId) {
+  try {
+    // Generate MD5 hash of the lowercase email address
+    const emailHash = require('crypto')
+      .createHash('md5')
+      .update(email.toLowerCase())
+      .digest('hex');
+
+    // Fetch and return the contact details
+    return await mailchimp.lists.getListMember(listId, emailHash);
+  } catch (error) {
+    if (error.response?.status === 404) {
+      // Return null if the contact is not found
+      return null;
+    }
+    // Log and rethrow other errors for visibility
+    console.error('Error fetching contact:', error.response?.body || error.message);
+    throw error;
+  }
+}
+
+/**
+ * Retrieve a contact's details from a Mailchimp list by its name.
+ *
+ * @param {string} email - The email address of the contact to retrieve.
+ * @param {string} listName - The name of the Mailchimp list (default is '10up').
+ * @returns {Promise<object|null>} - A promise that resolves to the contact details if found, or `null` if not found.
+ */
+Cypress.Commands.add('getContactFromList', getContactFromList);
+function getContactFromList(email, listName = '10up') {
+  return cy.getListId(listName).then((listId) => {
+    return cy.wrap(getContact(email, listId)); // Wrap the promise to work with Cypress chaining
+  });
+}
+
+/**
  * Set all merge fields to required in the Mailchimp test user account
  *
  * TODO: Configuration this to use the batch endpoint. Is the /batch endpoint worth the lift?
@@ -256,4 +314,18 @@ async function subscribeToList(listId, email, mergeFields = {}) {
     console.error('Error subscribing email:', error.response ? error.response.body : error.message);
     throw new Error(`Failed to subscribe ${email} to list ${listId}`);
   }
+}
+
+/**
+ * Subscribe an email to a Mailchimp list by its name.
+ *
+ * @param {string} email - The email address to subscribe.
+ * @param {string} listName - The name of the Mailchimp list (default is '10up').
+ */
+Cypress.Commands.add('subscribeToListByName', subscribeToListByName);
+function subscribeToListByName(email, listName = '10up') {
+  cy.getListId(listName).then((listId) => {
+    cy.subscribeToList(listId, email);
+    console.log(`Successfully subscribed ${email} to list ${listName}`);
+  });
 }
