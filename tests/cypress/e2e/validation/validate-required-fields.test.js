@@ -55,6 +55,9 @@ describe('Validate required fields', () => {
 			cy.updateMergeFieldsByList(listId, { required: false });
 		});
 
+		// I don't know why we need to login again, but we do
+		cy.login(); // WordPress login
+
 		// TODO: Resync Mailchimp to WP data
 		cy.selectList('10up'); // Ensure list is selected
 
