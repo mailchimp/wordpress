@@ -1,8 +1,6 @@
 /* eslint-disable no-undef */
 describe('Update Existing Subscriber?', () => {
 	let blockPostPostURL;
-
-	// TODO: Do we want to ensure this is generated if it's not already in the test account?
 	const email = 'existing-subscriber@10up.com'; // Static email, exists in test account already
 
 	before(() => {
@@ -37,7 +35,7 @@ describe('Update Existing Subscriber?', () => {
 		return Math.random().toString(36).substring(2, 2 + length);
 	}
 
-	it.skip('Update existing subscribers when they resubmit the signup form if option is checked', () => {
+	it('Update existing subscribers when they resubmit the signup form if option is checked', () => {
 		// Navigate to the shortcode post
 		cy.visit(blockPostPostURL);
 
@@ -61,11 +59,37 @@ describe('Update Existing Subscriber?', () => {
 		});
 	});
 	
-	it.skip('Verify that existing subscriber data is updated accurately without creating duplicate records', () => {
-		// Write test...
+	it('Verify that existing subscriber data is updated accurately without creating duplicate records', () => {
+		// Navigate to the shortcode post
+		cy.visit(blockPostPostURL);
+
+		// Generate random strings
+		const firstName = generateRandomString();
+		const lastName = generateRandomString();
+
+		// Fill the form and submit it
+		cy.get('#mc_mv_EMAIL').clear().type(email);
+		cy.get('#mc_mv_FNAME').clear().type(firstName);
+		cy.get('#mc_mv_LNAME').clear().type(lastName);
+
+		// Submit and assert success
+		cy.submitFormAndVerifyWPSuccess();
+
+		// Verify a duplicate contact has not been created
+		cy.getListId('10up').then((listId) => {
+			cy.getContactsFromAList(listId).then((contacts) => {
+				const filteredByEmail = contacts.filter((contact) => contact.email_address === email);
+
+				expect(filteredByEmail.length).to.equal(1); // Only one match found
+				expect(filteredByEmail[0].email_address).to.equal(email); // The one match is our email
+			});
+		});
 	});
 
-	it('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
+	// TODO: This test is correct, but failing to a bug allowing contacts to be updated
+	// regardless of the "Update Existing Subscriber?" option
+	// Fix in issue 113 scheduled for 1.7.0.
+	it.skip('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
 		// Not sure why we have to log in here, but we do
 		cy.login(); // WP
 
