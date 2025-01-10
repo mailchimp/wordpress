@@ -1,8 +1,10 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
+
 describe('Validate required fields', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
-	const email = cy.generateRandomEmail('testemail-neversubmitted');
+	const email = generateRandomEmail('testemail-neversubmitted');
 
 	// (almost) the same in the WP admin as on the FE
 	const requiredFields = [

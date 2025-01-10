@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
+
 describe('Unsubscribe form', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
@@ -38,7 +40,7 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
-		const email = cy.generateRandomEmail('previously-subscribed-email');
+		const email = generateRandomEmail('previously-subscribed-email');
 
 		// Subscribe email to setup test
 		cy.getListId('10up').then((listId) => {
@@ -89,7 +91,7 @@ describe('Unsubscribe form', () => {
 	});
 	
 	it('throws an error when unsubscribing an email that was never subscribed to a list', () => {
-		const email = cy.generateRandomEmail('never-subscribed-user');
+		const email = generateRandomEmail('never-subscribed-user');
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			// Visit the mailchimp block page

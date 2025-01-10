@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
 
 /**
  * Test Suite for Multi-Input Phone Number Validation
@@ -60,7 +61,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			validPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('validphone');
+				const email = generateRandomEmail('validphone');
 				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyWPSuccess();
@@ -76,7 +77,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			invalidPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('invalidphone');
+				const email = generateRandomEmail('invalidphone');
 				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();
@@ -90,7 +91,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			tooShortPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('shortphone');
+				const email = generateRandomEmail('shortphone');
 				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();
@@ -100,7 +101,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			tooLongPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('longphone');
+				const email = generateRandomEmail('longphone');
 				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();

@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
 
 /**
  * Test Suite for Address Field Validation
@@ -51,7 +52,7 @@ describe('Address Field Validation', () => {
 			invalidAddresses.forEach((address) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('invalidemail');
+				const email = generateRandomEmail('invalidemail');
 				cy.get('#mc_mv_EMAIL').type(email);
 
 				if (address.addr1 !== '') {
@@ -78,7 +79,7 @@ describe('Address Field Validation', () => {
 			validAddresses.forEach((address) => {
 				cy.visit(url);
 
-				const email = cy.generateRandomEmail('validemail');
+				const email = generateRandomEmail('validemail');
 				cy.get('#mc_mv_EMAIL').type(email);
 				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
 				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);

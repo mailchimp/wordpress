@@ -27,7 +27,3 @@ Cypress.Commands.add('checkMailchimpEnv', () => {
 
 	cy.log('Environment variables for Mailchimp are correctly set.');
 });
-
-Cypress.Commands.add('generateRandomEmail', (prefix) => {
-	return `${prefix}-unixtimestamp-${Date.now()}@10up.com`;
-});
