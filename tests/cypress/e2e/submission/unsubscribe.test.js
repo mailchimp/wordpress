@@ -26,6 +26,9 @@ describe('Unsubscribe form', () => {
 	});
 
 	after(() => {
+		// I don't know why we have to login again, but we do
+		cy.login(); // WP
+
 		// Uncheck unsubscription link
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_use_unsub_link').uncheck();
