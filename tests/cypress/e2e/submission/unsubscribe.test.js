@@ -6,12 +6,6 @@ describe('Unsubscribe form', () => {
 	let blockPostPostURL;
 
 	before(() => {
-		// TODO: Initialize tests from a blank state
-		// TODO: Wipe WP data related to a users options
-		// TODO: Delete all contacts in a users Mailchimp account
-		// TODO: Ensure the default audience list is "10up"
-		// TODO: Include all merge fields as "Visible" in the users Mailchimp account
-
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
 			shortcodePostURL = urls.shortcodePostURL;

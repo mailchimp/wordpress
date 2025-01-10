@@ -14,10 +14,12 @@
 // ***********************************************************
 
 import '@10up/cypress-wp-utils';
-
-// Import commands.js using ES2015 syntax:
 import './commands';
 
+// TODO: Initialize tests from a blank state
+// TODO: Wipe WP data related to a users options
+// TODO: Delete all contacts in a users Mailchimp account
+// TODO: Include all merge fields as "Visible" in the users Mailchimp account
 before(() => {
 	// Add global setup logic here
 	cy.checkMailchimpEnv(); // Example: Check environment variables
