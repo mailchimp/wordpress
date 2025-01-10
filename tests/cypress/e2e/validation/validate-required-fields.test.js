@@ -32,19 +32,26 @@ describe('Validate required fields', () => {
 
 		// Set all merge fields to required in the Mailchimp test user account
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldsByList(listId, { required: true });
+			cy.updateMergeFieldsByList(listId, { required: true }).then(() => {
+				cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+			});
 		});
-		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+
+		// Check all optional merge fields for testing
+		cy.toggleMergeFields('check');
 	});
 
 	after(() => {
-		// Cleanup: Set all merge fields to not in the Mailchimp test user account
+		// Cleanup: Set all merge fields to not required in the Mailchimp test user account
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldsByList(listId, { required: false });
 		});
 
 		// TODO: Resync Mailchimp to WP data
 		cy.selectList('10up'); // Ensure list is selected
+
+		// Cleanup: Uncheck all optional merge fields
+		cy.toggleMergeFields('uncheck');
 
 		// Cleanup: Uncheck all optional merge fields
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');

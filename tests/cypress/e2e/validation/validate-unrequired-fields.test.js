@@ -3,16 +3,6 @@ describe('Validate unrequired fields', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
-	// Merge fields array for reuse
-	const mergeFields = [
-		'#mc_mv_FNAME',
-		'#mc_mv_LNAME',
-		'#mc_mv_ADDRESS',
-		'#mc_mv_BIRTHDAY',
-		'#mc_mv_COMPANY',
-		'#mc_mv_PHONE'
-	];
-
 	before(() => {
 		// TODO: Initialize tests from a blank state
 		// TODO: Wipe WP data related to a users options
@@ -36,26 +26,19 @@ describe('Validate unrequired fields', () => {
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 
 		// Enable all merge fields
-		toggleMergeFields('check');
+		cy.toggleMergeFields('check');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
 	after(() => {
 		// Cleanup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		toggleMergeFields('uncheck'); // TODO: Do I need to uncheck all merge fields?
+		cy.toggleMergeFields('uncheck'); // TODO: Do I need to uncheck all merge fields?
 
 		// Re-enable JavaScript support
 		cy.get('#mc_use_javascript').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
-
-	// Function to toggle merge fields
-	function toggleMergeFields(action) {
-		mergeFields.forEach((field) => {
-			cy.get(field).should('exist')[action]();
-		});
-	}
 
 	function unrequiredFieldsSubmitWhileBlank() {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {

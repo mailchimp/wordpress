@@ -69,10 +69,14 @@ describe('Unsubscribe form', () => {
 			cy.get('input[type="submit"]').click();
 			cy.get('body').should('contain', 'Unsubscribe Successful');
 
-			// Navigate back to the website
-			cy.contains('a', 'return to our website').should('exist').click();
+			// Navigate back to the website button exists
+			cy.contains('a', 'return to our website')
+				.should('exist');
 			
-			// TODO: Assert that we're back on our website (this is a bug, it's broken currently)
+			// Navigate to website
+			// NOTE: The website URL is site in Mailchimp and it won't accept localhost or our test URL
+			// TODO: Assert that we're back on our website (we currently have no way to set this)
+			// cy.contains('a', 'return to our website').click();
 			// cy.url().should('include', baseUrl); // TODO: Do we want to assert a specific landing page?
 
 		});

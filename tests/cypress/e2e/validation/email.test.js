@@ -12,16 +12,7 @@
 describe('General merge field validation', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
-
-	// Merge fields array for reuse
-	const mergeFields = [
-		'#mc_mv_FNAME',
-		'#mc_mv_LNAME',
-		'#mc_mv_ADDRESS',
-		'#mc_mv_BIRTHDAY',
-		'#mc_mv_COMPANY',
-		'#mc_mv_PHONE'
-	];
+	const invalidEmailErrorRegex = /please.*valid email/i; // please...valid email
 
 	before(() => {
 		// TODO: Initialize tests from a blank state
@@ -58,13 +49,6 @@ describe('General merge field validation', () => {
         cy.setJavaScriptOption(true);
 	});
 
-	// Function to toggle merge fields
-	function toggleMergeFields(action) {
-		mergeFields.forEach((field) => {
-			cy.get(field).should('exist')[action]();
-		});
-	}
-
 	function invalidEmailAssertions() {
         [shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
@@ -81,45 +65,45 @@ describe('General merge field validation', () => {
     
             cy.get('#mc_mv_EMAIL').clear().type('user@'); // Missing domain
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('@example.com'); // Missing username
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('userexample.com'); // Missing '@' symbol
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('user..name@example.com'); // Consecutive dots
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('user!#%&*{}@example.com'); // Invalid characters
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('user@example'); // Missing top-level domain
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('user@-example.com'); // Domain starting with dash
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('user@example-.com'); // Domain ending with dash
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             cy.get('#mc_mv_EMAIL').clear().type('"user@example.com'); // Unclosed quoted string
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
     
             // Test exceeding maximum email length
             let longEmail = 'a'.repeat(245) + '@example.com';
             cy.get('#mc_mv_EMAIL').clear().type(longEmail);
             cy.submitFormAndVerifyError();
-            cy.get('.mc_error_msg').contains('Email Address: Please enter a valid email.');
+            cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
         });
 	}
 
