@@ -109,3 +109,57 @@ async function updateMergeField(listId, mergeId, name, data) {
     }
   );
 }
+
+/**
+ * Delete a contact from a Mailchimp list
+ *
+ * @param {string} listId - The Mailchimp list ID
+ * @param {string} email - The email address of the contact to delete
+ * @returns {Promise} - A promise that resolves when the contact is successfully deleted
+ *
+ * This function deletes a contact from the specified Mailchimp list by using the MD5 hash
+ * of the lowercase email address. Mailchimp requires this hashed value to uniquely identify
+ * contacts.
+ */
+Cypress.Commands.add('deleteContact', deleteContact);
+async function deleteContact(listId, email) {
+  try {
+      // Generate MD5 hash of the lowercase email address
+      const emailHash = require('crypto')
+          .createHash('md5')
+          .update(email.toLowerCase())
+          .digest('hex');
+
+      // Delete the contact from the list
+      await mailchimp.lists.deleteListMember(listId, emailHash);
+      console.log(`Successfully deleted contact: ${email}`);
+  } catch (error) {
+      console.error('Error deleting contact:', error.response ? error.response.body : error.message);
+  }
+}
+
+/**
+ * Subscribe an email to a Mailchimp list
+ *
+ * @param {string} listId - The Mailchimp list ID
+ * @param {string} email - The email address to subscribe
+ * @param {object} mergeFields - (Optional) Merge fields (e.g., { FNAME: 'John', LNAME: 'Doe' })
+ * @returns {Promise} - A promise that resolves when the subscription is successful
+ */
+Cypress.Commands.add('subscribeToList', subscribeToList);
+async function subscribeToList(listId, email, mergeFields = {}) {
+  try {
+    // Subscribe the contact to the list
+    const response = await mailchimp.lists.addListMember(listId, {
+      email_address: email,
+      status: 'subscribed', // 'subscribed', 'unsubscribed', 'pending', or 'cleaned'
+      merge_fields: mergeFields, // Optional merge fields for personalization
+    });
+
+    console.log(`Successfully subscribed ${email} to list ${listId}`);
+    return response;
+  } catch (error) {
+    console.error('Error subscribing email:', error.response ? error.response.body : error.message);
+    throw new Error(`Failed to subscribe ${email} to list ${listId}`);
+  }
+}
