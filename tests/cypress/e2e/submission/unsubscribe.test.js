@@ -109,10 +109,12 @@ describe('Unsubscribe form', () => {
 		});
 	});
 
+	// TODO: Test not written yet
 	it.skip('does not display an unsubscribe link when the unsubscribe option is disabled', () => {
 		// Test here...
 	});
 
+	// TODO: Test not written yet
 	it.skip('redirects the user back to the website when the user is finished unsubscribing and clicks the back link', () => {
 		// Test here...
 	});

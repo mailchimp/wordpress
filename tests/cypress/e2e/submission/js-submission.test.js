@@ -86,11 +86,7 @@ describe('JavaScript submission', () => {
 
 	// TODO: This is a bug and is currently broken
 	it.skip('Persist form data on Mailchimp API validation failure', () => {
-
-		// Confirm that we received an error
-		cy.get('#mc_signup_submit').click();
-		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address:');
+		// Write test...
 	});
 
 	// TODO: BUG: Single opt-in is currently broken, but a fix is scheduled for 1.7.0

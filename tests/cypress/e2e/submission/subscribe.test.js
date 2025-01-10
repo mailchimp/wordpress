@@ -14,6 +14,8 @@ describe('Subscribe actions', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+
+		cy.setDoubleOptInOption(false);
 	});
 
 	/**
@@ -87,28 +89,5 @@ describe('Subscribe actions', () => {
 				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
 			}
 		});
-	});
-
-	// TODO: BLOCKED - Need access to a service that can catch test emails so we can finish the email verification process.
-	it.skip('When double opt-in is enabled a subscriber must verify their email before their submission displays in Mailchimp', () => {
-		
-	});
-
-	// TODO: This is a known bug. The back link goes to a 404 page on the Mailchimp account.
-	it.skip('after a double optin subscribe a user can click a back link to return to the website', () => {
-		
-	});
-
-	it.skip('Update existing subscribers when they resubmit the signup form if option is checked', () => {
-
-	});
-
-	it.skip('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
-
-	});
-
-	// This answers the question whether a user can resubscribe after unsubscribing or not.
-	it.skip('Subscribers who have previously unsubscribed should be able to resubscribe using the signup form', () => {
-
 	});
 });
