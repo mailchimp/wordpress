@@ -33,7 +33,13 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
-		const testEmail = 'previously-subscribed-email@10up.com';
+		const randomDigits = Math.floor(1000 + Math.random() * 9000); // Generates random 4-digit number
+		const testEmail = `previously-subscribed-email-${randomDigits}@10up.com`;
+
+		// Subscribe email to setup test
+		cy.getListId('10up').then((listId) => {
+			cy.subscribeToList(listId, testEmail);
+		});
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			let baseUrl;
@@ -52,13 +58,6 @@ describe('Unsubscribe form', () => {
 			// Assert unsubscribe link exists
 			cy.get('a[href*="/unsubscribe"]').should('exist');
 
-			// TODO: Need to delete contact before each form submission or else the test will register
-			// the contact as subscribed
-			// Subscribe to email (to be a valid unsubscriber)
-			cy.get('#mc_mv_EMAIL').type(testEmail);
-			cy.get('#mc_signup_submit').click();
-			cy.get('.mc_success_msg').should('exist').contains(/success/i);
-
 			// Visit unsubscribe link
 			cy.get('a[href*="/unsubscribe"]')
 				.invoke('removeAttr', 'target') // Prevent opening in new window so that Cypress can test
@@ -72,6 +71,11 @@ describe('Unsubscribe form', () => {
 			// Navigate back to the website button exists
 			cy.contains('a', 'return to our website')
 				.should('exist');
+
+			// Delete contact to clean up
+			cy.getListId('10up').then((listId) => {
+				cy.deleteContact(listId, testEmail);
+			});
 			
 			// Navigate to website
 			// NOTE: The website URL is site in Mailchimp and it won't accept localhost or our test URL
