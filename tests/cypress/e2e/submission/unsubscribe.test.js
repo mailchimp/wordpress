@@ -33,7 +33,7 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
-		const testEmail = 'mailchimp-wordpress-test@10up.com';
+		const testEmail = 'previously-subscribed-email@10up.com';
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			let baseUrl;

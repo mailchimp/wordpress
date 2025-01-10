@@ -39,9 +39,10 @@ describe('Address Field Validation', () => {
 	after(() => {
 		// Cleanup: Reset address fields to optional
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: false });
+			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: false }).then(() => {
+				cy.selectList('10up'); // Refresh list in WordPress
+			});
 		});
-		cy.selectList('10up'); // Refresh list in WordPress
 	});
 
 	function testInvalidAddresses() {
@@ -62,10 +63,10 @@ describe('Address Field Validation', () => {
 				cy.submitFormAndVerifyError();
 
 				if (!address.addr1) {
-					cy.get('.mc_error_msg').contains('ADDRESS: Please enter a value');
+					cy.get('.mc_error_msg').contains('Address: Please enter a value');
 				}
 				if (!address.city) {
-					cy.get('.mc_error_msg').contains('ADDRESS: Please enter a value');
+					cy.get('.mc_error_msg').contains('Address: Please enter a value');
 				}
 			});
 		});

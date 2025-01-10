@@ -72,6 +72,7 @@ Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
  * The name is a mouth full, but is named as such to be explicit
  */
 Cypress.Commands.add('mailchimpLoginIfNotAlreadyLoggedIn', () => {
+	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 	// Log into Mailchimp account if we need to.
 	cy.get('body').then(($body) => {
 		const hasLogout = $body.find('input[value="Logout"]').length > 0;
