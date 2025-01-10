@@ -174,7 +174,7 @@ async function updateMergeField(listId, mergeId, name, data) {
 Cypress.Commands.add('deleteContactFrom10UpList', deleteContactFrom10UpList);
 function deleteContactFrom10UpList(email) {
   cy.getListId('10up').then((listId) => {
-    cy.deleteContact(listId, email);
+    deleteContact(listId, email);
   });
 }
 
