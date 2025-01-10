@@ -80,6 +80,8 @@ describe('Update Existing Subscriber?', () => {
 		cy.get('#mc_mv_FNAME').clear().type('Should not submit');
 		cy.get('#mc_mv_LNAME').clear().type('Should not submit');
 
+		// Verify error
 		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains(/This email address is already subscribed to the list./i);
 	});
 });
