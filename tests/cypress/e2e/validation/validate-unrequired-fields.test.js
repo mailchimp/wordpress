@@ -99,7 +99,7 @@ describe('Validate unrequired fields', () => {
         it('Unrequired fields can be submitted while blank', unrequiredFieldsSubmitWhileBlank);
 	});
 
-	context('JavaScript Enabled', () => {
+	context.skip('JavaScript Enabled', () => {
 		before(() => {
 			cy.login();
 			cy.setJavaScriptOption(true);

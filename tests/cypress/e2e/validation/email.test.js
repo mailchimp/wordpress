@@ -36,12 +36,15 @@ describe('General merge field validation', () => {
 		});
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 
-		// Enable all merge fields
-		toggleMergeFields('uncheck');
+		// Disable all merge fields
+		cy.toggleMergeFields('uncheck');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
 	after(() => {
+		// I don't know why we have to login again, but we do
+		cy.login(); // WP
+
 		// Cleanup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
