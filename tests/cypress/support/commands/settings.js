@@ -75,6 +75,17 @@ function setDoubleOptInOption(enabled) {
 	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 }
 
+Cypress.Commands.add('setSettingsOption', setSettingsOption);
+function setSettingsOption(selector, enabled) {
+	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+	if (enabled) {
+		cy.get(selector).check();
+	} else {
+		cy.get(selector).uncheck();
+	}
+	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+}
+
 /**
  * Custom Cypress command to enable or disable Mailchimp merge fields in the WordPress admin settings.
  *

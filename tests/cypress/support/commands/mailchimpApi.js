@@ -47,9 +47,36 @@ async function getListId(listName) {
  * Gets lists from the account of the API token set in the mailchimp config
  */
 Cypress.Commands.add('getContactsFromAList', getContactsFromAList);
-async function getContactsFromAList(listId) {
-  const response = await mailchimp.lists.getListMembersInfo(listId);
-  return response.members;
+async function getContactsFromAList(listId, status = null) {
+  let members = [];
+  let offset = 0;
+  const count = 100; // Number of members to fetch per request (Mailchimp's limit is usually 1000 per page)
+
+  while (true) {
+    const options = {
+      count,
+      offset,
+    };
+
+    // Add status filter if provided
+    if (status) {
+      options.status = status;
+    }
+
+    const response = await mailchimp.lists.getListMembersInfo(listId, options);
+
+    members = members.concat(response.members);
+
+    // Break the loop if we've fetched all members
+    if (members.length >= response.total_items) {
+      break;
+    }
+
+    // Increment the offset for the next page
+    offset += count;
+  }
+
+  return members;
 }
 
 /**
@@ -125,7 +152,7 @@ async function updateMergeFieldByTag(listId, tag, data) {
 async function getMergeFields(listId) {
   let mergeFields = [];
   let offset = 0;
-  const count = 25; // Number of fields to fetch per request
+  const count = 100; // Number of fields to fetch per request
 
   while (true) {
     const response = await mailchimp.lists.getListMergeFields(listId, {
