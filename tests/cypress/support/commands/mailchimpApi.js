@@ -162,6 +162,23 @@ async function updateMergeField(listId, mergeId, name, data) {
 }
 
 /**
+ * Wrapper function to delete a contact specifically from the "10up" Mailchimp list.
+ *
+ * This function wraps the generic `deleteContact` function and automatically
+ * retrieves the list ID for the "10up" list. It simplifies the process of 
+ * deleting contacts from this specific list by removing the need to manually 
+ * provide the list ID.
+ *
+ * @param {string} email - The email address of the contact to delete
+ */
+Cypress.Commands.add('deleteContactFrom10UpList', deleteContactFrom10UpList);
+function deleteContactFrom10UpList(email) {
+  cy.getListId('10up').then((listId) => {
+    cy.deleteContact(listId, email);
+  });
+}
+
+/**
  * Delete a contact from a Mailchimp list
  *
  * @param {string} listId - The Mailchimp list ID
@@ -172,7 +189,6 @@ async function updateMergeField(listId, mergeId, name, data) {
  * of the lowercase email address. Mailchimp requires this hashed value to uniquely identify
  * contacts.
  */
-Cypress.Commands.add('deleteContact', deleteContact);
 async function deleteContact(listId, email) {
   try {
       // Generate MD5 hash of the lowercase email address

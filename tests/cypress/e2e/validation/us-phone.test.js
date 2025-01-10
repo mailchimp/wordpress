@@ -64,6 +64,9 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 				cy.get('#mc_mv_EMAIL').type(randomEmail);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyWPSuccess();
+
+				// Delete contact to clean up
+				cy.deleteContactFrom10UpList(randomEmail);
 			});
 		});
 	}

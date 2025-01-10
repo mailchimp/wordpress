@@ -86,6 +86,9 @@ describe('Address Field Validation', () => {
 				cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
 				cy.get('#mc_mv_ADDRESS-country').type(address.country);
 				cy.submitFormAndVerifyWPSuccess();
+
+				// Delete contact to clean up
+				cy.deleteContactFrom10UpList(randomEmail);
 			});
 		});
 	}
