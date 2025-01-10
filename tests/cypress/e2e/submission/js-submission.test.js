@@ -99,7 +99,7 @@ describe('JavaScript submission', () => {
 
 		// Step 6: Verify that the contact was added to the Mailchimp account via the Mailchimp API
 		cy.wait(5000)
-			.verifyContactAddedToMailchimp(email);
+			.verifyContactInMailchimp(email);
 
 		// Step 7: Cleanup and delete contact
 		cy.deleteContactFromList(email);

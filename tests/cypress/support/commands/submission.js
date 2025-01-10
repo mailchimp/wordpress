@@ -23,7 +23,7 @@ Cypress.Commands.add('submitFormAndVerifyError', () => {
 /**
  * Custom command to verify that a contact was added to a specified list in Mailchimp
  */
-Cypress.Commands.add('verifyContactAddedToMailchimp', (email, listName = '10up') => {
+Cypress.Commands.add('verifyContactInMailchimp', (email, listName = '10up') => {
 	// Step 1: Get the list ID for the specified list name
 	cy.getListId(listName).then((listId) => {
 		// Step 2: Retrieve the contacts from the specified list
@@ -31,8 +31,22 @@ Cypress.Commands.add('verifyContactAddedToMailchimp', (email, listName = '10up')
 			cy.log('Contacts retrieved:', contacts); // Log the contacts for debugging
 
 			// Step 3: Verify that the contact with the provided email exists in the list
-			const contactJustRegistered = contacts.find((c) => c.email_address === email);
-			expect(contactJustRegistered).to.exist;
+			const contact = contacts.find((c) => c.email_address === email);
+			expect(contact).to.exist;
+			return contact;
 		});
 	});
+});
+
+/**
+ * Custom command to verify that a contact's status matches the expected status.
+ *
+ * @param {Object} contact - The contact object to verify.
+ * @param {string} status - The expected status to compare against.
+ * 
+ * @example
+ * cy.verifyContactStatus(contact, 'subscribed');
+ */
+Cypress.Commands.add('verifyContactStatus', (contact, status) => {
+	expect(contact.status).to.equal(status);
 });

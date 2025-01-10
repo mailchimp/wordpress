@@ -73,7 +73,7 @@ describe('Validate unrequired fields', () => {
 			// cy.submitFormAndVerifyWPSuccess();
 
 			// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-			// cy.verifyContactAddedToMailchimp(email);
+			// cy.verifyContactInMailchimp(email);
 
 			// // Step 8: Cleanup and delete contact
 			// cy.deleteContactFromList(email);

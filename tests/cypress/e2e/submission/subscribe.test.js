@@ -42,7 +42,7 @@ describe('Subscribe actions', () => {
 
 		// // TODO: This is failing because of a bug causing single opt-in to malfunction. Fix is ready for 1.7.0.
 		// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-		// cy.verifyContactAddedToMailchimp(email);
+		// cy.verifyContactInMailchimp(email);
 
 		// Step 8: Cleanup and delete contact
 		cy.deleteContactFromList(email);
