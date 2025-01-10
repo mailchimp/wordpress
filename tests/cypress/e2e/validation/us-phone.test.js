@@ -30,7 +30,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 		cy.login();
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
-		cy.fixture('postUrls.json').then((urls) => {
+		cy.fixture('postUrls').then((urls) => {
 			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});

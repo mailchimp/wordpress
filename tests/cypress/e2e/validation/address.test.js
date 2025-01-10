@@ -24,7 +24,7 @@ describe('Address Field Validation', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn(); // Log into Mailchimp
 
 		// Load post URLs for shortcode and block post tests
-		cy.fixture('postUrls.json').then((urls) => {
+		cy.fixture('postUrls').then((urls) => {
 			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});

@@ -33,7 +33,7 @@ describe('Validate required fields', () => {
 
 	before(() => {
 		// Load the post URLs from the JSON file
-		cy.fixture('postUrls.json').then((urls) => {
+		cy.fixture('postUrls').then((urls) => {
 			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});

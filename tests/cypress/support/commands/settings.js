@@ -67,21 +67,16 @@ function setJavaScriptOption(enabled) {
  */
 Cypress.Commands.add('toggleMergeFields', toggleMergeFields);
 function toggleMergeFields(action) {
-	// Merge fields array for reuse
-	const mergeFields = [
-		'#mc_mv_FNAME',
-		'#mc_mv_LNAME',
-		'#mc_mv_ADDRESS',
-		'#mc_mv_BIRTHDAY',
-		'#mc_mv_COMPANY',
-		'#mc_mv_PHONE'
-	];
+	// Load the fields from the fixture
+	cy.fixture('mergeFields').then((fields) => {
+		const mergeFields = Object.values(fields); // Extract field selectors as an array
 
-	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
-	mergeFields.forEach((field) => {
-		cy.get(field).should('exist')[action]();
+		mergeFields.forEach((field) => {
+			cy.get(field).should('exist')[action]();
+		});
+
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
-
-	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 }

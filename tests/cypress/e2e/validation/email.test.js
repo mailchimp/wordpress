@@ -22,7 +22,7 @@ describe('General merge field validation', () => {
 		// TODO: Include all merge fields as "Visible" in the users Mailchimp account
 
 		// Load the post URLs from the JSON file
-		cy.fixture('postUrls.json').then((urls) => {
+		cy.fixture('postUrls').then((urls) => {
 			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});
