@@ -15,12 +15,14 @@
 		// See if we're successful, if so, wipe the fields
 		const reg = /class="|'mc_success_msg"|'/i;
 
+		// TODO: Bug: The form data is always cleared regardless of JS or no JS support
 		if (reg.test(data)) {
 			$('#mc_signup_form').each(function () {
 				this.reset();
 			});
 			$('#mc_submit_type').val('js');
 		}
+
 		window.scrollTo({
 			top: document.getElementById('mc_signup').offsetTop - 28,
 			behavior: 'smooth',
