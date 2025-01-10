@@ -72,7 +72,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			cy.submitFormAndVerifyWPSuccess();
 
 			// Delete contact to clean up
-			cy.deleteContactFrom10UpList(email);
+			cy.deleteContactFromList(email);
 		});
 	});
 

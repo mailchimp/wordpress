@@ -63,7 +63,7 @@ describe('Address Field Validation', () => {
 			cy.submitFormAndVerifyWPSuccess();
 
 			// Delete contact to clean up
-			cy.deleteContactFrom10UpList(email);
+			cy.deleteContactFromList(email);
 		});
 	});
 

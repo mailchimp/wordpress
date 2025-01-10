@@ -81,7 +81,7 @@ describe('JavaScript submission', () => {
 		});
 
 		// Step 9: Cleanup and delete contact
-		cy.deleteContactFrom10UpList(email);
+		cy.deleteContactFromList(email);
 	});
 
 	// TODO: This is a bug and is currently broken
@@ -99,9 +99,9 @@ describe('JavaScript submission', () => {
 
 		// Step 6: Verify that the contact was added to the Mailchimp account via the Mailchimp API
 		cy.wait(5000)
-			.verifyContactAddedToMailchimp(email, '10up');
+			.verifyContactAddedToMailchimp(email);
 
 		// Step 7: Cleanup and delete contact
-		cy.deleteContactFrom10UpList(email);
+		cy.deleteContactFromList(email);
 	});
 });

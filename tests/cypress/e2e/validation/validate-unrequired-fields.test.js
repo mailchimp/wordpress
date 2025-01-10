@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
+
 describe('Validate unrequired fields', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
@@ -42,6 +44,7 @@ describe('Validate unrequired fields', () => {
     it('Unrequired fields can be submitted while blank', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
+
 			cy.get('#mc_signup').should('exist');
 			cy.get('#mc_mv_EMAIL').should('exist');
 			cy.get('#mc_signup_submit').should('exist');
@@ -62,15 +65,18 @@ describe('Validate unrequired fields', () => {
 			// Validation assertions
 
 			// Email is required
-			cy.get('#mc_mv_EMAIL').type('testemailuser1234@10up.com');
+			const email = generateRandomEmail('unrequired-validation-test');
+			cy.get('#mc_mv_EMAIL').type(email);
 
-			// // TODO: This is failing because we need to confirm the test email address subscription
-			// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
+			// // TODO: This is failing because of a bug causing single opt-in to malfunction. Fix is ready for 1.7.0.
 			// Step 6: Verify that the form was submitted successfully
 			// cy.submitFormAndVerifyWPSuccess();
 
 			// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-			// cy.verifyContactAddedToMailchimp(email, '10up');
+			// cy.verifyContactAddedToMailchimp(email);
+
+			// // Step 8: Cleanup and delete contact
+			// cy.deleteContactFromList(email);
 
 			/**
 			 * Phone Number - Handled in /validation/us-phone.test.js

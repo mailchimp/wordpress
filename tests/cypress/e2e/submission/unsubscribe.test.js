@@ -73,7 +73,7 @@ describe('Unsubscribe form', () => {
 				.should('exist');
 
 			// Delete contact to clean up
-			cy.deleteContactFrom10UpList(email);
+			cy.deleteContactFromList(email);
 			
 			// Navigate to website
 			// NOTE: The website URL is site in Mailchimp and it won't accept localhost or our test URL
