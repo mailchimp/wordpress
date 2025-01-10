@@ -72,6 +72,35 @@ async function updateMergeFieldsByList(listId, data) {
   return await Promise.all(updatedMergeFields);
 }
 
+// TODO: Can we implement batch synchronously?
+// async function updateMergeFieldsByList(listId, data) {
+//   const mergeFields = await getMergeFields(listId);
+
+//   // Prepare batch operations
+//   const operations = mergeFields.map((field) => ({
+//     method: "PATCH", // HTTP method for updating merge fields
+//     path: `/lists/${listId}/merge-fields/${field.merge_id}`, // API path for each merge field
+//     body: JSON.stringify({
+//       ...data,
+//       name: field.name, // Keep existing name
+//     }),
+//   }));
+
+//   try {
+//     // Send the batch request
+//     const response = await mailchimp.batches.start({
+//       operations, // Array of operations
+//     });
+
+//     console.log("Batch operation initiated:", response);
+
+//     return response;
+//   } catch (error) {
+//     console.error("Error starting batch operation:", error);
+//     throw error;
+//   }
+// }
+
 /**
  * Update merge field by tag
  *
@@ -90,10 +119,32 @@ async function updateMergeFieldByTag(listId, tag, data) {
 
 /**
  * Get all merge fields for a list
+ * 
+ * Mailchimp paginates merge fields
  */
 async function getMergeFields(listId) {
-  const response = await mailchimp.lists.getListMergeFields(listId);
-  return response.merge_fields;
+  let mergeFields = [];
+  let offset = 0;
+  const count = 25; // Number of fields to fetch per request
+
+  while (true) {
+    const response = await mailchimp.lists.getListMergeFields(listId, {
+      count,
+      offset,
+    });
+
+    mergeFields = mergeFields.concat(response.merge_fields);
+
+    // Break the loop if we've fetched all the merge fields
+    if (mergeFields.length >= response.total_items) {
+      break;
+    }
+
+    // Increment the offset for the next batch
+    offset += count;
+  }
+
+  return mergeFields;
 }
 
 /**
