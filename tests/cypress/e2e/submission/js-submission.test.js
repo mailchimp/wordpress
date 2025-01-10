@@ -65,11 +65,46 @@ describe('JavaScript submission', () => {
 		cy.get('.mc_error_msg').should('exist');
 	});
 
-	it.skip('Perform post submit actions after successful submission', () => {
-		// Re-enable submit button
-		// Display success message
-		// Clear form data
-		// Scroll to the top
+	it('Perform post submit actions after successful submission', () => {
+		const email = cy.generateRandomEmail('javascript-submission');
+
+		// Step 1: Visit the form page
+		cy.visit(blockPostPostURL);
+	
+		// Step 2: Fill in the required fields (email and other merge fields)
+		cy.get('#mc_mv_EMAIL').type(email);
+	
+		// Fill other merge fields if necessary
+		mergeFields.forEach((field) => {
+			cy.get(field.selector).type(field.value);
+		});
+	
+		// Step 3: Assert that the submit button is enabled and exists
+		cy.get('#mc_signup_submit').should('exist').and('be.enabled');
+	
+		// Step 4: Submit the form
+		cy.get('#mc_signup_submit').click();
+	
+		// Step 5: Assert that the success message is displayed
+		cy.get('.mc_success_msg').should('exist').and('contain.text', 'success');
+	
+		// Step 6: Verify that the form fields are cleared
+		cy.get('#mc_mv_EMAIL').should('have.value', '');
+		mergeFields.forEach((field) => {
+			cy.get(field.selector).should('have.value', '');
+		});
+	
+		// Step 7: Verify that the submit button is re-enabled
+		cy.get('#mc_signup_submit').should('be.enabled');
+	
+		// Step 8: Assert that the form scrolled to the top
+		cy.window().then((win) => {
+			const scrollTop = win.pageYOffset || win.document.documentElement.scrollTop;
+			expect(scrollTop).to.eq(0);
+		});
+
+		// Step 9: Cleanup and delete contact
+		cy.deleteContactFrom10UpList(email);
 	});
 
 	it.skip('Persist form data on Mailchimp API validation failure', () => {

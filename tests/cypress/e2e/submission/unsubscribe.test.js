@@ -38,12 +38,11 @@ describe('Unsubscribe form', () => {
 	})
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
-		const randomDigits = Math.floor(1000 + Math.random() * 9000); // Generates random 4-digit number
-		const testEmail = `previously-subscribed-email-${randomDigits}@10up.com`;
+		const email = cy.generateRandomEmail('previously-subscribed-email');
 
 		// Subscribe email to setup test
 		cy.getListId('10up').then((listId) => {
-			cy.subscribeToList(listId, testEmail);
+			cy.subscribeToList(listId, email);
 		});
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
@@ -69,7 +68,7 @@ describe('Unsubscribe form', () => {
 				.click();
 
 			// Unsubscribe
-			cy.get('#email-address').type(testEmail);
+			cy.get('#email-address').type(email);
 			cy.get('input[type="submit"]').click();
 			cy.get('body').should('contain', 'Unsubscribe Successful');
 
@@ -78,7 +77,7 @@ describe('Unsubscribe form', () => {
 				.should('exist');
 
 			// Delete contact to clean up
-			cy.deleteContactFrom10UpList(testEmail);
+			cy.deleteContactFrom10UpList(email);
 			
 			// Navigate to website
 			// NOTE: The website URL is site in Mailchimp and it won't accept localhost or our test URL
@@ -90,7 +89,7 @@ describe('Unsubscribe form', () => {
 	});
 	
 	it('throws an error when unsubscribing an email that was never subscribed to a list', () => {
-		const testEmail = 'never-subscribed-user@10up.com';
+		const email = cy.generateRandomEmail('never-subscribed-user');
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			// Visit the mailchimp block page
@@ -105,7 +104,7 @@ describe('Unsubscribe form', () => {
 				.click();
 
 			// Unsubscribe
-			cy.get('#email-address').type(testEmail);
+			cy.get('#email-address').type(email);
 			cy.get('input[type="submit"]').click();
 
 			// Assert that the unsubscribe didn't work because the email isn't subscribed

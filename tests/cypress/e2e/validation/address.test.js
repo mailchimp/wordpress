@@ -51,8 +51,8 @@ describe('Address Field Validation', () => {
 			invalidAddresses.forEach((address) => {
 				cy.visit(url);
 
-				const randomEmail = `invalidemail${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('invalidemail');
+				cy.get('#mc_mv_EMAIL').type(email);
 
 				if (address.addr1 !== '') {
 					cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
@@ -78,8 +78,8 @@ describe('Address Field Validation', () => {
 			validAddresses.forEach((address) => {
 				cy.visit(url);
 
-				const randomEmail = `validemail${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('validemail');
+				cy.get('#mc_mv_EMAIL').type(email);
 				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
 				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
 				cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
@@ -88,7 +88,7 @@ describe('Address Field Validation', () => {
 				cy.submitFormAndVerifyWPSuccess();
 
 				// Delete contact to clean up
-				cy.deleteContactFrom10UpList(randomEmail);
+				cy.deleteContactFrom10UpList(email);
 			});
 		});
 	}

@@ -60,13 +60,13 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			validPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const randomEmail = `validphone${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('validphone');
+				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyWPSuccess();
 
 				// Delete contact to clean up
-				cy.deleteContactFrom10UpList(randomEmail);
+				cy.deleteContactFrom10UpList(email);
 			});
 		});
 	}
@@ -76,8 +76,8 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			invalidPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const randomEmail = `invalidphone${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('invalidphone');
+				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();
 				cy.get('.mc_error_msg').contains('must consist of only numbers');
@@ -90,8 +90,8 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			tooShortPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const randomEmail = `shortphone${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('shortphone');
+				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();
 				cy.get('.mc_error_msg').contains('Phone number is too short');
@@ -100,8 +100,8 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			tooLongPhones.forEach((phone) => {
 				cy.visit(url);
 
-				const randomEmail = `longphone${Date.now()}@gmail.com`;
-				cy.get('#mc_mv_EMAIL').type(randomEmail);
+				const email = cy.generateRandomEmail('longphone');
+				cy.get('#mc_mv_EMAIL').type(email);
 				fillPhoneInputs(phone);
 				cy.submitFormAndVerifyError();
 				cy.get('.mc_error_msg').contains('Phone number is too long');

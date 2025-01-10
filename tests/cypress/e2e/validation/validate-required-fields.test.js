@@ -2,7 +2,7 @@
 describe('Validate required fields', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
-	const email = 'testemail-neversubmitted5925082@10up.com';
+	const email = cy.generateRandomEmail('testemail-neversubmitted');
 
 	// (almost) the same in the WP admin as on the FE
 	const requiredFields = [
