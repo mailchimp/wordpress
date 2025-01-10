@@ -36,9 +36,10 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 		});
 
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'PHONE', { required: true, options: { phone_format: 'US' } });
+			cy.updateMergeFieldByTag(listId, 'PHONE', { required: true, options: { phone_format: 'US' } }).then(() => {
+				cy.selectList('10up');
+			});
 		});
-		cy.selectList('10up');
 	});
 
 	after(() => {

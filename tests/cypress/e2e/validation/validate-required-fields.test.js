@@ -116,6 +116,7 @@ describe('Validate required fields', () => {
 		});
 	}
 
+	// TODO: Test just takes too long to run
 	it('JavaScript disabled', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
@@ -129,6 +130,7 @@ describe('Validate required fields', () => {
 		});
 	});
 
+	// TODO: Test just takes too long to run
 	it.skip('JavaScript enabled', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 

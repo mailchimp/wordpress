@@ -18,6 +18,8 @@ describe('Subscribe actions', () => {
 
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
+
+		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 	});
 
 	/**

@@ -21,9 +21,10 @@ describe('Validate unrequired fields', () => {
 
 		// Set all merge fields to not required in the Mailchimp test user account
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldsByList(listId, { required: false });
+			cy.updateMergeFieldsByList(listId, { required: false }).then(() => {
+				cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+			});
 		});
-		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 
 		// Enable all merge fields
 		cy.toggleMergeFields('check');
@@ -31,6 +32,9 @@ describe('Validate unrequired fields', () => {
 	});
 
 	after(() => {
+		// I don't know why we need to login again, but we do
+		cy.login(); // WordPress login
+
 		// Cleanup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.toggleMergeFields('uncheck'); // TODO: Do I need to uncheck all merge fields?
@@ -101,7 +105,6 @@ describe('Validate unrequired fields', () => {
 
 	context.skip('JavaScript Enabled', () => {
 		before(() => {
-			cy.login();
 			cy.setJavaScriptOption(true);
 		});
 

@@ -31,9 +31,10 @@ describe('Address Field Validation', () => {
 
 		// Set address fields (Addr 1 and City) as required
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: true });
+			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: true }).then(() => {
+				cy.selectList('10up'); // Refresh list in WordPress
+			});
 		});
-		cy.selectList('10up'); // Refresh list in WordPress
 	});
 
 	after(() => {

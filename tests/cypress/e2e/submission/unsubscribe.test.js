@@ -19,6 +19,8 @@ describe('Unsubscribe form', () => {
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
+		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
+
 		// Check unsubscription link
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_use_unsub_link').check();
