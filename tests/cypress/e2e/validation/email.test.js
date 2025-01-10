@@ -37,10 +37,8 @@ describe('General merge field validation', () => {
 		cy.setJavaScriptOption(false);
 	});
 
-	it('Invalid email addresses fail validation', invalidEmailAssertions);
-
-	function invalidEmailAssertions() {
-        [shortcodePostURL, blockPostPostURL].forEach((url) => {
+	it('Invalid email addresses fail validation', () => {
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 
             // Ensure the form exists
@@ -96,5 +94,5 @@ describe('General merge field validation', () => {
             cy.submitFormAndVerifyError();
             cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
         });
-	}
+	});
 });

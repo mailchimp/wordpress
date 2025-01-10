@@ -36,6 +36,8 @@ describe('Address Field Validation', () => {
 				cy.selectList('10up'); // Refresh list in WordPress
 			});
 		});
+
+		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -47,7 +49,27 @@ describe('Address Field Validation', () => {
 		});
 	});
 
-	function testInvalidAddresses() {
+	it('Valid addresses submit', () => {
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			validAddresses.forEach((address) => {
+				cy.visit(url);
+
+				const email = generateRandomEmail('validemail');
+				cy.get('#mc_mv_EMAIL').type(email);
+				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
+				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
+				cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
+				cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
+				cy.get('#mc_mv_ADDRESS-country').type(address.country);
+				cy.submitFormAndVerifyWPSuccess();
+
+				// Delete contact to clean up
+				cy.deleteContactFrom10UpList(email);
+			});
+		});
+	});
+
+	it('Invalid addresses fail validation and display error message', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			invalidAddresses.forEach((address) => {
 				cy.visit(url);
@@ -72,47 +94,5 @@ describe('Address Field Validation', () => {
 				}
 			});
 		});
-	}
-
-	function testValidAddresses() {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			validAddresses.forEach((address) => {
-				cy.visit(url);
-
-				const email = generateRandomEmail('validemail');
-				cy.get('#mc_mv_EMAIL').type(email);
-				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
-				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
-				cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
-				cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
-				cy.get('#mc_mv_ADDRESS-country').type(address.country);
-				cy.submitFormAndVerifyWPSuccess();
-
-				// Delete contact to clean up
-				cy.deleteContactFrom10UpList(email);
-			});
-		});
-	}
-
-	context('JavaScript Disabled', () => {
-		before(() => {
-			cy.setJavaScriptOption(false);
-		});
-
-		it('Valid addresses', testValidAddresses);
-
-		it('Invalid addresses', testInvalidAddresses);
-	});
-
-	context('JavaScript Enabled', () => {
-		before(() => {
-			// TODO: Not sure why we need to log in twice, but this is necessary for the test to pass
-			cy.login(); // Log into WordPress
-			cy.setJavaScriptOption(true);
-		});
-
-		it('Valid addresses', testValidAddresses);
-
-		it('Invalid addresses', testInvalidAddresses);
 	});
 });

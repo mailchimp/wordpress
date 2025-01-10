@@ -23,6 +23,8 @@ describe('Validate unrequired fields', () => {
 		// Enable all merge fields
 		cy.toggleMergeFields('check');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -38,7 +40,7 @@ describe('Validate unrequired fields', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
-	function unrequiredFieldsSubmitWhileBlank() {
+    it('Unrequired fields can be submitted while blank', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 			cy.get('#mc_signup').should('exist');
@@ -87,21 +89,5 @@ describe('Validate unrequired fields', () => {
 			// Test first name - no validation
 			// Test last name - no validation
 		});
-	}
-
-	context('JavaScript Disabled', () => {
-		before(() => {
-			cy.setJavaScriptOption(false);
-		});
-
-        it('Unrequired fields can be submitted while blank', unrequiredFieldsSubmitWhileBlank);
-	});
-
-	context.skip('JavaScript Enabled', () => {
-		before(() => {
-			cy.setJavaScriptOption(true);
-		});
-
-        it('Unrequired fields can be submitted while blank', unrequiredFieldsSubmitWhileBlank);
 	});
 });

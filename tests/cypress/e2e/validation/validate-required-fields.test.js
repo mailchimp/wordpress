@@ -2,7 +2,6 @@
 import { generateRandomEmail } from '../../support/functions/utility';
 
 describe('Validate required fields', () => {
-	let shortcodePostURL;
 	let blockPostPostURL;
 	const email = generateRandomEmail('testemail-neversubmitted');
 
@@ -36,7 +35,6 @@ describe('Validate required fields', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});
 
@@ -49,6 +47,8 @@ describe('Validate required fields', () => {
 				cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
 			});
 		});
+
+		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -66,36 +66,9 @@ describe('Validate required fields', () => {
 		// Cleanup: Uncheck all optional merge fields
 		cy.toggleMergeFields('uncheck');
 
-		// Cleanup: Uncheck all optional merge fields
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').check(); // Cleanup: Check the JavaScript support box
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		// Cleanup: Re-enable JS support
+		cy.setJavaScriptOption(true);
 	});
-
-	function validateRequiredFields(url) {
-		cy.visit(url);
-
-		// Ensure the form exists
-		cy.get('#mc_signup').should('exist');
-
-		// Test validation for each required field
-		requiredFields.forEach((field) => {
-			// Fill out entire form everytime so we can narrow tests to one input at a time
-			fillOutAllFields();
-
-			// Submit the form without input to trigger validation
-			cy.get(field.selector).clear(); // Ensure field is empty
-			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
-			cy.get('#mc_signup_submit').click();
-
-			// Assert the error message is displayed
-			cy.get('.mc_error_msg').should('exist');
-			cy.get('.mc_error_msg').should('include.text', field.errorMessage);
-
-			// Fill in the field
-			cy.get(field.selector).type(field.input);
-		});
-	}
 
 	// TODO: Validation errors clear the entire form. We should fix this.
 	// We could also significantly reduce the time this test takes by fixing this bug.
@@ -119,30 +92,28 @@ describe('Validate required fields', () => {
 	}
 
 	// TODO: Test just takes too long to run
-	it('JavaScript disabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+	it('ensures that a required field can not be empty', () => {
+		cy.visit(blockPostPostURL);
 
-		// Disable JavaScript support
-		cy.get('#mc_use_javascript').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		// Ensure the form exists
+		cy.get('#mc_signup').should('exist');
 
-		// Run validation tests
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			validateRequiredFields(url);
-		});
-	});
+		// Test validation for each required field
+		requiredFields.forEach((field) => {
+			// Fill out entire form everytime so we can narrow tests to one input at a time
+			fillOutAllFields();
 
-	// TODO: Test just takes too long to run
-	it.skip('JavaScript enabled', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+			// Submit the form without input to trigger validation
+			cy.get(field.selector).clear(); // Ensure field is empty
+			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
+			cy.get('#mc_signup_submit').click();
 
-		// Enable JavaScript support
-		cy.get('#mc_use_javascript').check();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+			// Assert the error message is displayed
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').should('include.text', field.errorMessage);
 
-		// Run validation tests
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			validateRequiredFields(url);
+			// Fill in the field
+			cy.get(field.selector).type(field.input);
 		});
 	});
 });

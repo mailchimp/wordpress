@@ -41,6 +41,8 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 				cy.selectList('10up');
 			});
 		});
+
+		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -56,7 +58,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 		cy.get('#mc_mv_PHONE-detail2').clear().type(phone.detail2);
 	}
 
-	function testValidPhones() {
+	it('Valid phone numbers', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			validPhones.forEach((phone) => {
 				cy.visit(url);
@@ -70,9 +72,9 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 				cy.deleteContactFrom10UpList(email);
 			});
 		});
-	}
+	});
 
-	function testInvalidPhones() {
+	it('Invalid phone numbers', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			invalidPhones.forEach((phone) => {
 				cy.visit(url);
@@ -84,9 +86,9 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 				cy.get('.mc_error_msg').contains('must consist of only numbers');
 			});
 		});
-	}
+	});
 
-	function testPhoneLengthValidation() {
+	it('Phone length validation', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			tooShortPhones.forEach((phone) => {
 				cy.visit(url);
@@ -108,30 +110,5 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 				cy.get('.mc_error_msg').contains('Phone number is too long');
 			});
 		});
-	}
-
-	context('JavaScript Disabled', () => {
-		before(() => {
-			cy.setJavaScriptOption(false);
-		});
-
-		it('Valid phone numbers', testValidPhones);
-
-		it('Invalid phone numbers', testInvalidPhones);
-
-		it('Phone length validation', testPhoneLengthValidation);
-	});
-
-	context('JavaScript Enabled', () => {
-		before(() => {
-			cy.login();
-			cy.setJavaScriptOption(true);
-		});
-
-		it('Valid phone numbers', testValidPhones);
-
-		it('Invalid phone numbers', testInvalidPhones);
-
-		it('Phone length validation', testPhoneLengthValidation);
 	});
 });
