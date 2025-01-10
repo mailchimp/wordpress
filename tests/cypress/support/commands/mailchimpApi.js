@@ -171,9 +171,9 @@ async function updateMergeField(listId, mergeId, name, data) {
  *
  * @param {string} email - The email address of the contact to delete
  */
-Cypress.Commands.add('deleteContactFrom10UpList', deleteContactFrom10UpList);
-function deleteContactFrom10UpList(email) {
-  cy.getListId('10up').then((listId) => {
+Cypress.Commands.add('deleteContactFromList', deleteContactFromList);
+function deleteContactFromList(email, listName = '10up') {
+  cy.getListId(listName).then((listId) => {
     deleteContact(listId, email);
   });
 }

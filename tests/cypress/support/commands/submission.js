@@ -23,7 +23,7 @@ Cypress.Commands.add('submitFormAndVerifyError', () => {
 /**
  * Custom command to verify that a contact was added to a specified list in Mailchimp
  */
-Cypress.Commands.add('verifyContactAddedToMailchimp', (email, listName) => {
+Cypress.Commands.add('verifyContactAddedToMailchimp', (email, listName = '10up') => {
 	// Step 1: Get the list ID for the specified list name
 	cy.getListId(listName).then((listId) => {
 		// Step 2: Retrieve the contacts from the specified list

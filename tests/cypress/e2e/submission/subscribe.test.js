@@ -1,4 +1,6 @@
 /* eslint-disable no-undef */
+import { generateRandomEmail } from '../../support/functions/utility';
+
 describe('Subscribe actions', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
@@ -17,6 +19,34 @@ describe('Subscribe actions', () => {
 
 		cy.setDoubleOptInOption(false);
 	});
+
+	function signUpAndVerify(url) {
+		cy.visit(url);
+
+		// Step 3: Verify the form is displayed
+		cy.get('#mc_signup').should('exist');
+		cy.get('#mc_mv_EMAIL').should('exist');
+		cy.get('#mc_signup_submit').should('exist');
+
+		// Step 4: Test error handling
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+
+		// Step 5: Test that the form can be submitted
+		const email = generateRandomEmail('shortcode-signup-test');
+		cy.get('#mc_mv_EMAIL').type(email);
+
+		// Step 6: Verify that the form was submitted successfully
+		cy.submitFormAndVerifyWPSuccess();
+
+		// // TODO: This is failing because of a bug causing single opt-in to malfunction. Fix is ready for 1.7.0.
+		// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
+		// cy.verifyContactAddedToMailchimp(email);
+
+		// Step 8: Cleanup and delete contact
+		cy.deleteContactFromList(email);
+	}
 
 	/**
 	 * - Test form creation
@@ -41,52 +71,24 @@ describe('Subscribe actions', () => {
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
 			if (post) {
 				shortcodePostURL = `/?p=${post.id}`;
-				cy.visit(shortcodePostURL);
-
-				// Step 3: Verify the form is displayed
-				cy.get('#mc_signup').should('exist');
-				cy.get('#mc_mv_EMAIL').should('exist');
-				cy.get('#mc_signup_submit').should('exist');
-
-				// Step 4: Test error handling
-				cy.get('#mc_signup_submit').click();
-				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
-
-				// Step 5: Test that the form can be submitted
-				// TODO: Is this email address name a security hazard? "@example.com" emails will not pass validation.
-				const email = 'max.garceau+shortcodesignuptest@10up.com';
-				cy.get('#mc_mv_EMAIL').type(email);
-
-				// // TODO: This is failing because we need to confirm the test email address subscription
-				// // TODO: We will also have to delete the contact before each form submission via the Mailchimp API
-				// Step 6: Verify that the form was submitted successfully
-				// cy.submitFormAndVerifyWPSuccess();
-
-				// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-				// cy.verifyContactAddedToMailchimp(email, '10up');
+				signUpAndVerify(shortcodePostURL);
 			}
 		});
 	});
 
 	it('Admin can create and subscribe to a signup form using the Mailchimp block', () => {
+		// Step 1: Set up the post with the shortcode
 		const postTitle = 'Mailchimp signup form - Block';
 		const beforeSave = () => {
 			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
 			cy.wait(500);
 		};
+
+		// Step 2: Create the post
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
 			if (postBlock) {
 				blockPostPostURL = `/?p=${postBlock.id}`;
-				cy.visit(blockPostPostURL);
-				cy.get('#mc_signup').should('exist');
-				cy.get('#mc_mv_EMAIL').should('exist');
-				cy.get('#mc_signup_submit').should('exist');
-
-				// Test error handling
-				cy.get('#mc_signup_submit').click();
-				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+				signUpAndVerify(blockPostPostURL);
 			}
 		});
 	});
