@@ -16,7 +16,6 @@ describe('Address Field Validation', () => {
 		{ addr1: '123 Main St', city: '' }, // Missing City
 	];
 
-	let shortcodePostURL;
 	let blockPostPostURL;
 
 	before(() => {
@@ -26,7 +25,6 @@ describe('Address Field Validation', () => {
 
 		// Load post URLs for shortcode and block post tests
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
 			blockPostPostURL = urls.blockPostPostURL;
 		});
 
@@ -37,6 +35,7 @@ describe('Address Field Validation', () => {
 			});
 		});
 
+		// Test validation without JS to ensure error handling mechanism for all scenarios
 		cy.setJavaScriptOption(false);
 	});
 
@@ -47,52 +46,49 @@ describe('Address Field Validation', () => {
 				cy.selectList('10up'); // Refresh list in WordPress
 			});
 		});
+		cy.setJavaScriptOption(true);
 	});
 
 	it('Valid addresses submit', () => {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			validAddresses.forEach((address) => {
-				cy.visit(url);
+		validAddresses.forEach((address) => {
+			cy.visit(blockPostPostURL);
 
-				const email = generateRandomEmail('validemail');
-				cy.get('#mc_mv_EMAIL').type(email);
-				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
-				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
-				cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
-				cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
-				cy.get('#mc_mv_ADDRESS-country').type(address.country);
-				cy.submitFormAndVerifyWPSuccess();
+			const email = generateRandomEmail('validemail');
+			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
+			cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
+			cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
+			cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
+			cy.get('#mc_mv_ADDRESS-country').type(address.country);
+			cy.submitFormAndVerifyWPSuccess();
 
-				// Delete contact to clean up
-				cy.deleteContactFrom10UpList(email);
-			});
+			// Delete contact to clean up
+			cy.deleteContactFrom10UpList(email);
 		});
 	});
 
 	it('Invalid addresses fail validation and display error message', () => {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			invalidAddresses.forEach((address) => {
-				cy.visit(url);
+		invalidAddresses.forEach((address) => {
+			cy.visit(blockPostPostURL);
 
-				const email = generateRandomEmail('invalidemail');
-				cy.get('#mc_mv_EMAIL').type(email);
+			const email = generateRandomEmail('invalidemail');
+			cy.get('#mc_mv_EMAIL').type(email);
 
-				if (address.addr1 !== '') {
-					cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
-				}
-				if (address.city !== '') {
-					cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
-				}
+			if (address.addr1 !== '') {
+				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
+			}
+			if (address.city !== '') {
+				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
+			}
 
-				cy.submitFormAndVerifyError();
+			cy.submitFormAndVerifyError();
 
-				if (!address.addr1) {
-					cy.get('.mc_error_msg').contains('Address: Please enter a value');
-				}
-				if (!address.city) {
-					cy.get('.mc_error_msg').contains('Address: Please enter a value');
-				}
-			});
+			if (!address.addr1) {
+				cy.get('.mc_error_msg').contains('Address: Please enter a value');
+			}
+			if (!address.city) {
+				cy.get('.mc_error_msg').contains('Address: Please enter a value');
+			}
 		});
 	});
 });

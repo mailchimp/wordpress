@@ -48,6 +48,7 @@ describe('Validate required fields', () => {
 			});
 		});
 
+		// Test validation without JS to ensure error handling mechanism for all scenarios
 		cy.setJavaScriptOption(false);
 	});
 

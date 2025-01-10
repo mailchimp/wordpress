@@ -5,9 +5,11 @@ import { generateRandomEmail } from '../../support/functions/utility';
  * Test Suite for Multi-Input Phone Number Validation
  * Handles both JavaScript-enabled and disabled scenarios for length and format validation.
  */
-// TODO: Skipping for now because the Mailchimp API is not changing the format to US
+// TODO: BUG: Skipping for now because when a US phone number is selected in the Mailchimp account, but
+// not present on the webform there will always be a fatal error. There is a fix pending for 1.7.0.
+// TODO: Skipping for now because the Mailchimp API does not allow changing the format for a phone merge
+// field to the US style
 describe.skip('US Multi-Input Phone Number Validation', () => {
-	let shortcodePostURL;
 	let blockPostPostURL;
 
 	const validPhones = [
@@ -42,6 +44,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			});
 		});
 
+		// Test validation without JS to ensure error handling mechanism for all scenarios
 		cy.setJavaScriptOption(false);
 	});
 
@@ -50,6 +53,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			cy.updateMergeFieldByTag(listId, 'PHONE', { required: false, options: { phone_format: 'none' } });
 		});
 		cy.selectList('10up');
+		cy.setJavaScriptOption(true);
 	});
 
 	function fillPhoneInputs(phone) {
@@ -59,56 +63,48 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 	}
 
 	it('Valid phone numbers', () => {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			validPhones.forEach((phone) => {
-				cy.visit(url);
+		cy.visit(blockPostPostURL);
 
-				const email = generateRandomEmail('validphone');
-				cy.get('#mc_mv_EMAIL').type(email);
-				fillPhoneInputs(phone);
-				cy.submitFormAndVerifyWPSuccess();
+		validPhones.forEach((phone) => {
+			const email = generateRandomEmail('validphone');
+			cy.get('#mc_mv_EMAIL').type(email);
+			fillPhoneInputs(phone);
+			cy.submitFormAndVerifyWPSuccess();
 
-				// Delete contact to clean up
-				cy.deleteContactFrom10UpList(email);
-			});
+			// Delete contact to clean up
+			cy.deleteContactFrom10UpList(email);
 		});
 	});
 
 	it('Invalid phone numbers', () => {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			invalidPhones.forEach((phone) => {
-				cy.visit(url);
+		cy.visit(blockPostPostURL);
 
-				const email = generateRandomEmail('invalidphone');
-				cy.get('#mc_mv_EMAIL').type(email);
-				fillPhoneInputs(phone);
-				cy.submitFormAndVerifyError();
-				cy.get('.mc_error_msg').contains('must consist of only numbers');
-			});
+		invalidPhones.forEach((phone) => {
+			const email = generateRandomEmail('invalidphone');
+			cy.get('#mc_mv_EMAIL').type(email);
+			fillPhoneInputs(phone);
+			cy.submitFormAndVerifyError();
+			cy.get('.mc_error_msg').contains('must consist of only numbers');
 		});
 	});
 
 	it('Phone length validation', () => {
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			tooShortPhones.forEach((phone) => {
-				cy.visit(url);
+		cy.visit(blockPostPostURL);
 
-				const email = generateRandomEmail('shortphone');
-				cy.get('#mc_mv_EMAIL').type(email);
-				fillPhoneInputs(phone);
-				cy.submitFormAndVerifyError();
-				cy.get('.mc_error_msg').contains('Phone number is too short');
-			});
+		tooShortPhones.forEach((phone) => {
+			const email = generateRandomEmail('shortphone');
+			cy.get('#mc_mv_EMAIL').type(email);
+			fillPhoneInputs(phone);
+			cy.submitFormAndVerifyError();
+			cy.get('.mc_error_msg').contains('Phone number is too short');
+		});
 
-			tooLongPhones.forEach((phone) => {
-				cy.visit(url);
-
-				const email = generateRandomEmail('longphone');
-				cy.get('#mc_mv_EMAIL').type(email);
-				fillPhoneInputs(phone);
-				cy.submitFormAndVerifyError();
-				cy.get('.mc_error_msg').contains('Phone number is too long');
-			});
+		tooLongPhones.forEach((phone) => {
+			const email = generateRandomEmail('longphone');
+			cy.get('#mc_mv_EMAIL').type(email);
+			fillPhoneInputs(phone);
+			cy.submitFormAndVerifyError();
+			cy.get('.mc_error_msg').contains('Phone number is too long');
 		});
 	});
 });
