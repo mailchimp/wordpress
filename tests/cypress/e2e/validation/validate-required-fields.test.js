@@ -42,27 +42,18 @@ describe('Validate required fields', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		// Set all merge fields to required in the Mailchimp test user account
-		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldsByList(listId, { required: true }).then(() => {
-				cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
-			});
-		});
+		cy.setMergeFieldsRequired(true);
 
 		// Test validation without JS to ensure error handling mechanism for all scenarios
 		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
-		// Cleanup: Set all merge fields to not required in the Mailchimp test user account
-		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldsByList(listId, { required: false });
-		});
-
 		// I don't know why we need to login again, but we do
 		cy.login(); // WordPress login
 
-		// TODO: Resync Mailchimp to WP data
-		cy.selectList('10up'); // Ensure list is selected
+		// Cleanup: Set all merge fields to not required in the Mailchimp test user account
+		cy.setMergeFieldsRequired(false);
 
 		// Cleanup: Uncheck all optional merge fields
 		cy.toggleMergeFields('uncheck');

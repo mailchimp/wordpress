@@ -46,9 +46,7 @@ describe('Unsubscribe form', () => {
 		const email = generateRandomEmail('previously-subscribed-email');
 
 		// Subscribe email to setup test
-		cy.getListId('10up').then((listId) => {
-			cy.subscribeToList(listId, email);
-		});
+		cy.subscribeToListByName(email);
 
 		let baseUrl;
 
