@@ -27,7 +27,7 @@ describe('Mailchimp lists ', () => {
 
 	it('All lists from user\'s account populate the WP admin dropdown list', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		const $wpLists = cy.get('#mc_list_id'); // Lists from the WP admin dropdown
+		const $wpLists = cy.get('#mc_list_id > option[value]:not([value=""])'); // Lists from the WP admin dropdown
 		const mailchimpLists = Cypress.env('mailchimpLists');
 
 		// Verify that the same number of lists exist in the dropdown as in the Mailchimp account
