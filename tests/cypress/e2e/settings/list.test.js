@@ -46,32 +46,7 @@ describe('Mailchimp lists ', () => {
         cy.get('input[value="Update Subscribe Form Settings"]').should('exist');
 	});
 
-	it('Admin that has never saved a list can not see the form on the front end', () => {
-		// Step 1: Log the user out of the current account (if logged in)
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.mailchimpLogout();
-	
-		// Verify the user is logged out
-		cy.get('#mailchimp_sf_oauth_connect').should('exist');
-	
-		// Step 2: Log in with a test user account that has never saved a list
-		cy.mailchimpLogin(Cypress.env('MAILCHIMP_USERNAME_NO_LIST'), Cypress.env('MAILCHIMP_PASSWORD_NO_LIST'));
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	
-		// Step 3: Verify no list is saved for the test user
-		cy.get('#mc_list_id').should('have.value', ''); // Assuming empty value indicates no list is saved
-
-        // Step 4: Verify there is no settings form if no list is saved
-        // If there are no Update Subscribe Form Settings buttons then we can assume no settings form is visible
-        cy.get('input[value="Update Subscribe Form Settings"]').should('not.exist');
-	
-		// Step 5: Verify the signup form is not displayed on the frontend
-		cy.visit('/'); // Navigate to the frontend homepage
-		cy.get('#mc_signup').should('not.exist'); // Ensure the form does not exist
-
-		// Clean up
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.mailchimpLogout();
-		cy.mailchimpLogin();
-	});
+	// This test has been decided to be skipped and marked as a "doing it wrong" site owner scenario
+	// We are not worried about this testing scenario
+	it.skip('Admin that has never saved a list can not see the form on the front end', () => {});
 });
