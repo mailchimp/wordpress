@@ -2,8 +2,6 @@
  * Log out of Mailchimp account
  */
 Cypress.Commands.add('mailchimpLogout', () => {
-	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
 	// Logout if already connected.
 	cy.get('body').then(($body) => {
 		if ($body.find('input[value="Logout"]').length > 0) {
