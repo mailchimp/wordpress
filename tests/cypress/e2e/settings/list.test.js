@@ -21,6 +21,7 @@ describe('Mailchimp lists ', () => {
 
 	it('All lists from user\'s account populate the WP admin dropdown list', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+
 		const $wpLists = cy.get('#mc_list_id > option[value]:not([value=""])'); // Lists from the WP admin dropdown
 		const mailchimpLists = Cypress.env('mailchimpLists');
 
@@ -69,6 +70,7 @@ describe('Mailchimp lists ', () => {
 		cy.get('#mc_signup').should('not.exist'); // Ensure the form does not exist
 
 		// Clean up
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.mailchimpLogout();
 		cy.mailchimpLogin();
 	});
