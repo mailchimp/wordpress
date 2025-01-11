@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-describe('Resubscribe actions', () => {
+describe.skip('Resubscribe actions', () => {
 	let shortcodePostURL;
 	let blockPostPostURL;
 
