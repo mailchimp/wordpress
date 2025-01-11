@@ -31,6 +31,8 @@ before(() => {
 	cy.login(); // WP
 	cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
+	cy.selectList('10up');
+
 	cy.setDoubleOptInOption(false);
 	cy.setJavaScriptOption(true);
 	cy.setSettingsOption('#mc_update_existing', false);
