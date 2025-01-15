@@ -70,7 +70,7 @@ function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
  */
 function mailchimp_sf_where_am_i() {
 	_deprecated_function( __FUNCTION__, '1.6.2', 'Mailchimp_Location_Detector::init' );
-	$plugin_root_path = dirname( dirname( __DIR__ ) ) . '/mailchimp.php';
+	$plugin_root_path            = dirname( dirname( __DIR__ ) ) . '/mailchimp.php';
 	$mailchimp_location_detector = new Mailchimp_Location_Detector( $plugin_root_path );
 	$mailchimp_location_detector->init();
 }
