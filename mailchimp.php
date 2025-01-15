@@ -74,6 +74,9 @@ define( 'MCSF_VER', '1.6.3' );
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
 
+// Keep deprecated functions high in the load order to include `mailchimp_sf_where_am_i` as soon as possible
+require_once plugin_dir_path( __FILE__ ) . '/includes/deprecated/deprecated-functions.php';
+
 // Define our location constants, both MCSF_DIR and MCSF_URL
 require_once plugin_dir_path( __FILE__ ) . 'includes/utility/class-mailchimp-location-detector.php';
 $mailchimp_location_detector = new Mailchimp_Location_Detector( __FILE__ );
@@ -106,8 +109,6 @@ $admin->init();
 require_once plugin_dir_path( __FILE__ ) . 'includes/validation/class-mailchimp-validation.php';
 $validation = new Mailchimp_Validation();
 $validation->init();
-
-require_once plugin_dir_path( __FILE__ ) . '/includes/deprecated/deprecated-functions.php';
 
 /**
  * Do the following plugin setup steps here
