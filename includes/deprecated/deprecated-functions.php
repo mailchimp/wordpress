@@ -33,6 +33,7 @@ require_once dirname( __DIR__, 2 ) . '/includes/validation/class-mailchimp-valid
  * @return void|WP_Error Returns an error object if validation fails, otherwise processes the value.
  */
 function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
+	_deprecated_function( __FUNCTION__, '1.6.2', 'Validate_Merge_Fields::validate_phone' );
 	$validator = new Validate_Merge_Fields();
 	return $validator->validate_phone( $opt_val, $data );
 }
@@ -50,6 +51,7 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
  * @return void|WP_Error Returns an error object if validation fails, otherwise processes the value.
  */
 function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
+	_deprecated_function( __FUNCTION__, '1.6.2', 'Validate_Merge_Fields::validate_address' );
 	$validator = new Validate_Merge_Fields();
 	return $validator->validate_address( $opt_val, $data );
 }
