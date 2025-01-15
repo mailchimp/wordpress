@@ -15,10 +15,12 @@
  */
 
 use Mailchimp\WordPress\Includes\Validation\Validate_Merge_Fields;
+use Mailchimp\WordPress\Includes\Utility\Mailchimp_Location_Detector;
 
 // Require here in case this file is loaded before the mailchimp.php plugin entrypoint
 // TODO: Remove this after composer autoloading is merged into develop
 require_once dirname( __DIR__, 2 ) . '/includes/validation/class-mailchimp-validation.php';
+require_once dirname( __DIR__, 2 ) . '/includes/utility/class-mailchimp-location-detector.php';
 
 /**
  * Validate phone.
@@ -54,4 +56,21 @@ function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
 	_deprecated_function( __FUNCTION__, '1.6.2', 'Validate_Merge_Fields::validate_address' );
 	$validator = new Validate_Merge_Fields();
 	return $validator->validate_address( $opt_val, $data );
+}
+
+/**
+ * Initialize location detection.
+ *
+ * This function initializes the Mailchimp location detection logic but has been deprecated
+ * since version 1.6.2. Use the Mailchimp_Location_Detector::init method instead.
+ *
+ * @deprecated 1.6.2 Use Mailchimp_Location_Detector::init.
+ *
+ * @return void
+ */
+function mailchimp_sf_where_am_i() {
+	_deprecated_function( __FUNCTION__, '1.6.2', 'Mailchimp_Location_Detector::init' );
+	$plugin_root_path = dirname( dirname( __DIR__ ) ) . '/mailchimp.php';
+	$mailchimp_location_detector = new Mailchimp_Location_Detector( $plugin_root_path );
+	$mailchimp_location_detector->init();
 }
