@@ -11,7 +11,7 @@ describe('Admin can update plugin settings', () => {
 		});
 
 		cy.login(); // WP
-        cy.mailchimpLoginIfNotAlreadyLoggedIn();
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 		cy.selectList('10up'); // Ensure a list is selected
 	});
 
