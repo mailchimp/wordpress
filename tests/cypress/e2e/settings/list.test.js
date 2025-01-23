@@ -11,7 +11,7 @@ describe('Mailchimp lists ', () => {
 		});
 
 		cy.login(); // WP
-        cy.mailchimpLoginIfNotAlreadyLoggedIn();
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		// Call mailchimpLists once and store the result in the alias 'mailchimpLists'
 		cy.getMailchimpLists().then((mailchimpLists) => {
