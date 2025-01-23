@@ -66,7 +66,7 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	it('Admin can set custom styling on signup form', () => {		
+	it('Admin can set custom styling on signup form', () => {
 		// Enable custom styling and set values.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mc_custom_style').check();
