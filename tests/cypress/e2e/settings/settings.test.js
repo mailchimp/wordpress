@@ -240,7 +240,6 @@ describe('Admin can update plugin settings', () => {
 	
 		// Step 3: Log out of the Mailchimp account
 		cy.get('input[value="Logout"]').click();
-	
 		// Verify the logout was successful
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
 	
