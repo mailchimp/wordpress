@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.7
-Stable tag:   1.6.1
+Stable tag:   1.6.2
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -81,6 +81,13 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 1.6.2 - 2024-11-12 =
+**Note that this release bumps the WordPress minimum version from 6.1 to 6.3.**
+
+* **Changed:** Bump WordPress "tested up to" version 6.7 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+* **Changed:** Bump WordPress minimum supported version from 6.1 to 6.3 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@vikrampm1](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#71](https://github.com/mailchimp/wordpress/pull/71)).
+* **Fixed:** Ensure the field name is properly added to the error message when the email address is blank (props [@iamdharmesh](https://github.com/iamdharmesh), [@jerclarke](https://github.com/jerclarke), [@dkotter](https://github.com/dkotter) via [#74](https://github.com/mailchimp/wordpress/pull/74)).
+
 = 1.6.1 - 2024-10-14 =
 * **Changed:** Improved migration flow from API Key to OAuth authentication for a better user experience (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#67](https://github.com/mailchimp/wordpress/pull/67)).
 * **Changed:** Updated the menu SVG icon (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#65](https://github.com/mailchimp/wordpress/pull/65)).
@@ -128,6 +135,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.6.2 =
+This release bumps the WordPress minimum version from 6.1 to 6.3.
 
 = 1.6.0 =
 This version increased the WordPress minimum version to 6.1 and the PHP minimum version to 7.0.

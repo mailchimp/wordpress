@@ -39,6 +39,11 @@ jobs:
         run: |
           npm run build
 
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install subversion
+
       - name: Generate ZIP file
         uses: 10up/action-wordpress-plugin-build-zip@stable
         env:
