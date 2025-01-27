@@ -105,8 +105,6 @@ $admin->init();
  */
 function mailchimp_sf_plugin_init() {
 
-	// Remove Sopresto check. If user does not have API key, make them authenticate.
-
 	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== '1' && mailchimp_sf_get_api() !== false ) {
 		mailchimp_sf_update_merge_fields();
 	}
@@ -247,7 +245,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
@@ -290,58 +288,6 @@ function mailchimp_sf_request_handler() {
 	}
 }
 add_action( 'init', 'mailchimp_sf_request_handler' );
-
-/**
- * Migrate Sopresto
- *
- * @return void
- */
-function mailchimp_sf_migrate_sopresto() {
-	$sopresto = get_option( 'mc_sopresto_secret_key' );
-	if ( ! $sopresto ) {
-		return;
-	}
-
-	// Talk to Sopresto, make exchange, delete old sopresto things.
-	$body = array(
-		'public_key' => get_option( 'mc_sopresto_public_key' ),
-		'hash'       => sha1( get_option( 'mc_sopresto_public_key' ) . get_option( 'mc_sopresto_secret_key' ) ),
-	);
-
-	$url  = 'https://sopresto.socialize-this.com/mailchimp/exchange';
-	$args = array(
-		'method'      => 'POST',
-		'timeout'     => 500,
-		'redirection' => 5,
-		'httpversion' => '1.0',
-		'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
-		'body'        => $body,
-	);
-
-	// post to sopresto
-	$key = wp_remote_post( $url, $args );
-	if ( ! is_wp_error( $key ) && 200 === $key['response']['code'] ) {
-		$key = json_decode( $key['body'] );
-		try {
-			$api = new MailChimp_API( $key->response );
-		} catch ( Exception $e ) {
-			$msg = '<strong class="mc_error_msg">' . $e->getMessage() . '</strong>';
-			mailchimp_sf_global_msg( $msg );
-			return;
-		}
-
-		$verify = mailchimp_sf_verify_key( $api );
-
-		// something went wrong with the key that we had
-		if ( is_wp_error( $verify ) ) {
-			return;
-		}
-
-		delete_option( 'mc_sopresto_public_key' );
-		delete_option( 'mc_sopresto_secret_key' );
-		delete_option( 'mc_sopresto_user' );
-	}
-}
 
 /**
  * Update merge fields
@@ -421,13 +367,13 @@ function mailchimp_sf_needs_upgrade() {
 
 /**
  * Deletes all Mailchimp options
+ *
+ * TODO: The options names should be moved to a config file
+ * or to a class dedicated to options
  **/
 function mailchimp_sf_delete_setup() {
 	$options = array(
 		'mc_user_id',
-		'mc_sopresto_user',
-		'mc_sopresto_public_key',
-		'mc_sopresto_secret_key',
 		'mc_use_javascript',
 		'mc_use_datepicker',
 		'mc_use_unsub_link',
