@@ -904,13 +904,17 @@ function mailchimp_sf_signup_submit() {
 	$url    = 'lists/' . $list_id . '/members/' . md5( strtolower( $email ) );
 	$status = mailchimp_sf_check_status( $url );
 
-	// If update existing is turned off and the subscriber exists, error out.
-	if ( get_option( 'mc_update_existing' ) === false && 'subscribed' === $status ) {
-		$msg   = esc_html__( 'This email address is already subscribed to the list.', 'mailchimp' );
+	// If update existing is turned off and the subscriber is not new, error out.
+	$is_new_subscriber = false === $status;
+	if ( ! get_option( 'mc_update_existing' ) && ! $is_new_subscriber ) {
+		$msg   = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
 		mailchimp_sf_global_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
 		return false;
 	}
+
+	// TODO: If get_option( 'mc_update_existing' ) && 'unsubscribed' === $status then
+	// make an API request to fetch Mailchimp hosted sign up form and display to user
 
 	$body   = mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, get_option( 'mc_double_optin' ) );
 	$retval = $api->post( $url, $body, 'PUT' );
@@ -940,12 +944,12 @@ function mailchimp_sf_signup_submit() {
  * Cleans up merge fields and interests to make them
  * API 3.0-friendly.
  *
- * @param [type] $merge Merge fields
- * @param [type] $igs Interest groups
- * @param string $email_type Email type
- * @param string $email Email
- * @param string $status Status
- * @param bool   $double_optin Whether this is double optin
+ * @param [type]       $merge Merge fields
+ * @param [type]       $igs Interest groups
+ * @param string       $email_type Email type
+ * @param string       $email Email
+ * @param string|false $status Status The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if an error occurred.
+ * @param string       $double_optin Whether double opt-in is enabled. "1" for enabled and "" for disabled.
  * @return stdClass
  */
 function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, $double_optin ) {
@@ -953,27 +957,29 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 	$body->email_address = $email;
 	$body->email_type    = $email_type;
 	$body->merge_fields  = $merge;
+
 	if ( ! empty( $igs ) ) {
 		$body->interests = $igs;
 	}
 
-	if ( 'subscribed' !== $status ) {
-		// single opt-in that covers new subscribers
-		if ( false === ! $status && $double_optin ) {
-			$body->status = 'subscribed';
-		} else {
-			// anyone else
-			$body->status = 'pending';
-		}
+	// Early return for already subscribed users
+	if ( 'subscribed' === $status ) {
+		return $body;
 	}
+
+	// Subscribe the email immediately unless double opt-in is enabled
+	// "unsubscribed" and "subscribed" existing emails have been excluded at this stage
+	// "pending" emails should follow double opt-in rules
+	$body->status = $double_optin ? 'pending' : 'subscribed';
+
 	return $body;
 }
 
 /**
- * Check status.
+ * Check the status of a subscriber in the list.
  *
- * @param string $endpoint Endpoint.
- * @return string
+ * @param string $endpoint API endpoint to check the status.
+ * @return string|false The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if the API returned 404 or an error occurred.
  */
 function mailchimp_sf_check_status( $endpoint ) {
 	$endpoint  .= '?fields=status';
