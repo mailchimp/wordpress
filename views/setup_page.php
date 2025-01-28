@@ -6,7 +6,6 @@
  */
 
 $user = get_option( 'mc_user' );
-/* TODO MC SOPRESTO USER INFO */
 
 // If we have an API Key, see if we need to change the lists and its options
 mailchimp_sf_change_list_if_necessary();
