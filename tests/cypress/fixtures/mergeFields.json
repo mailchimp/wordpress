@@ -1,0 +1,8 @@
+{
+    "FNAME": "#mc_mv_FNAME",
+    "LNAME": "#mc_mv_LNAME",
+    "ADDRESS": "#mc_mv_ADDRESS",
+    "BIRTHDAY": "#mc_mv_BIRTHDAY",
+    "COMPANY": "#mc_mv_COMPANY",
+    "PHONE": "#mc_mv_PHONE"
+}

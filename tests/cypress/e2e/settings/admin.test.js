@@ -23,6 +23,9 @@ describe('Admin can login and make sure plugin is activated', () => {
 	it('Admin can see "Create account" button and Can visit "Create account" settings page.', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
+		// If logged in then log out
+		cy.mailchimpLogout();
+
 		// Check Create account button.
 		cy.get('.button.mailchimp-sf-button.button-secondary').should('be.visible');
 		cy.get('.button.mailchimp-sf-button.button-secondary').contains('Create an account');
@@ -32,8 +35,11 @@ describe('Admin can login and make sure plugin is activated', () => {
 		cy.get('#mailchimp-sf-create-activate-account').should('be.visible');
 	});
 
-	it("Admin shouldn't able to submit create account form with invalid data", () => {
+	it("Admin shouldn't be able to submit create account form with invalid data", () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_create_account');
+
+		// If logged in then log out
+		cy.mailchimpLogout();
 
 		// Submit form without filling any data.
 		cy.get('#mailchimp-sf-create-activate-account').click();
