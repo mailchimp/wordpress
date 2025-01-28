@@ -23,6 +23,18 @@ describe('Admin can connect to "Mailchimp" Account', () => {
 		cy.get('#mailchimp_sf_oauth_connect').click();
 		cy.wait(6000);
 
+		// Accept cookie consent popup window (if present)
+		cy.popup().then(($popup) => {
+			const acceptButtonSelector = '#onetrust-accept-btn-handler';
+
+			// Check if the accept button is visible and click it
+			if ($popup.find(acceptButtonSelector).length > 0 && $popup.find(acceptButtonSelector).is(':visible')) {
+				$popup.find(acceptButtonSelector).click();
+			} else {
+				cy.log('Cookie consent popup not found or not visible.');
+			}
+		});
+
 		cy.popup()
 			.find('input#username')
 			.clear()

@@ -1003,32 +1003,72 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
-		// Handle phone number logic
-		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
-			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
-			if ( is_wp_error( $opt_val ) ) {
-				return $opt_val;
-			}
-		} elseif ( is_array( $opt_val ) && 'address' === $mv_var['type'] ) { // Handle address logic
-			$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
-			if ( is_wp_error( $validate ) ) {
-				return $validate;
-			}
+		switch ( $mv_var['type'] ) {
+			/**
+			 * US Phone validation
+			 *
+			 * - Merge field is phone
+			 * - Merge field is "included" in the Mailchimp admin options
+			 * - Phone format is set in Mailchimp account
+			 * - Phone format is US in Mailchimp account
+			 */
+			case 'phone':
+				if (
+					'on' === get_option( $opt )
+					&& isset( $mv_var['options']['phone_format'] )
+					&& 'US' === $mv_var['options']['phone_format']
+				) {
+					$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
+					if ( is_wp_error( $opt_val ) ) {
+						return $opt_val;
+					}
+				}
+				break;
 
-			if ( $validate ) {
-				$merge->$tag = $validate;
-			}
-			continue;
+			/**
+			 * Address validation
+			 *
+			 * - Merge field is address
+			 * - Merge field is "included" in the Mailchimp admin options
+			 * - Merge field is an array (address contains multiple <input> elements)
+			 */
+			case 'address':
+				if ( 'on' === get_option( $opt ) && is_array( $opt_val ) ) {
+					$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
+					if ( is_wp_error( $validate ) ) {
+						return $validate;
+					}
 
-		} elseif ( is_array( $opt_val ) ) {
-			$keys = array_keys( $opt_val );
-			$val  = new stdClass();
-			foreach ( $keys as $key ) {
-				$val->$key = $opt_val[ $key ];
-			}
-			$opt_val = $val;
+					if ( $validate ) {
+						$merge->$tag = $validate;
+					}
+				}
+				break;
+
+			/**
+			 * Handle generic array values
+			 *
+			 * Not sure what this does or is for
+			 *
+			 * - Merge field is an array, not specifically phone or address
+			 */
+			default:
+				if ( is_array( $opt_val ) ) {
+					$keys = array_keys( $opt_val );
+					$val  = new stdClass();
+					foreach ( $keys as $key ) {
+						$val->$key = $opt_val[ $key ];
+					}
+					$opt_val = $val;
+				}
+				break;
 		}
 
+		/**
+		 * Required fields
+		 *
+		 * If the field is required and empty, return an error
+		 */
 		if ( 'Y' === $mv_var['required'] && trim( $opt_val ) === '' ) {
 			/* translators: %s: field name */
 			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
