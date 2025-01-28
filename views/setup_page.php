@@ -6,7 +6,6 @@
  */
 
 $user = get_option( 'mc_user' );
-/* TODO MC SOPRESTO USER INFO */
 
 // If we have an API Key, see if we need to change the lists and its options
 mailchimp_sf_change_list_if_necessary();
@@ -300,10 +299,10 @@ $is_list_selected = false;
 							<tr valign="top">
 								<td><?php echo esc_html( $mv_var['name'] ); ?></td>
 								<td><?php echo esc_html( $mv_var['tag'] ); ?></td>
-								<td><?php echo esc_html( ( 1 === $mv_var['required'] ) ? 'Y' : 'N' ); ?></td>
+								<td><?php echo esc_html( ( 1 === intval( $mv_var['required'] ) ) ? 'Y' : 'N' ); ?></td>
 								<td>
 									<?php
-									if ( ! $mv_var['required'] ) {
+									if ( ! $mv_var['required'] && $mv_var['public'] ) {
 										$opt = 'mc_mv_' . $mv_var['tag'];
 										?>
 										<label class="screen-reader-text" for="<?php echo esc_attr( $opt ); ?>">
