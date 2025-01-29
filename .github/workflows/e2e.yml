@@ -11,7 +11,7 @@ on:
 
 jobs:
   build:
-    uses: mailchimp/wordpress/.github/workflows/build-release-zip.yml@enhancement/add-composer-autoload
+    uses: mailchimp/wordpress/.github/workflows/build-release-zip.yml@develop
 
   cypress:
     needs: build
