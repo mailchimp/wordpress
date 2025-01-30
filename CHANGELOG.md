@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
-## [1.6.3] - 2025-01-29
+## [1.6.3] - 2025-01-30
 ### Added
 - Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).
 

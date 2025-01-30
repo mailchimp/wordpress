@@ -81,7 +81,7 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
-= 1.6.3 - 2025-01-29 =
+= 1.6.3 - 2025-01-30 =
 * **Added:** Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).
 * **Removed:** Deprecated Sopresto code (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#98](https://github.com/mailchimp/wordpress/pull/98)).
 * **Fixed:** Fatal PHP error that would occur when the phone merge field was set to US format, but the merge field was not included in the Mailchimp plugin (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#108](https://github.com/mailchimp/wordpress/pull/108)).
