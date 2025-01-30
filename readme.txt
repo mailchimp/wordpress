@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.7
-Stable tag:   1.6.2
+Stable tag:   1.6.3
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -80,6 +80,17 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.6.3 - 2025-01-30 =
+* **Added:** Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).
+* **Removed:** Deprecated Sopresto code (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter) via [#98](https://github.com/mailchimp/wordpress/pull/98)).
+* **Fixed:** Fatal PHP error that would occur when the phone merge field was set to US format, but the merge field was not included in the Mailchimp plugin (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#108](https://github.com/mailchimp/wordpress/pull/108)).
+* **Fixed:** Bug causing merge fields on the Mailchimp WP admin page to incorrectly display as not required when they were, in fact, required (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#109](https://github.com/mailchimp/wordpress/pull/109)).
+* **Fixed:** Fix an issue that allows a user to select merge fields that were not selected as visible in the Mailchimp account (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#110](https://github.com/mailchimp/wordpress/pull/110)).
+* **Fixed:** Bug causing all new subscribers to receive a double opt-in email (props Nathan Tetzlaff, [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+* **Fixed:** Bug causing contacts with any Mailchimp status (subscribed, unsubscribed, pending, etc.) to be able to submit the sign-up form even if "Update Existing Subscriber?" was disabled (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+* **Fixed:** Pending contacts will now still be required to confirm their original confirmation email if they try to update their contact while "Update Existing Subscribers?" and "Double Opt-in" are both enabled (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+* **Security:** Bump `nanoid` from 3.3.7 to 3.3.8 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#111](https://github.com/mailchimp/wordpress/pull/111)).
 
 = 1.6.2 - 2024-11-12 =
 **Note that this release bumps the WordPress minimum version from 6.1 to 6.3.**
