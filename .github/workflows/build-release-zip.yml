@@ -35,9 +35,19 @@ jobs:
         if: steps.cache-node-modules.outputs.cache-hit != 'true'
         run: npm ci --no-optional
 
+      - name: Install Composer dependencies and dump autoload
+        run: |
+          composer install --no-dev --optimize-autoloader
+          composer dump-autoload
+
       - name: Build plugin
         run: |
           npm run build
+
+      - name: Install SVN
+        run: |
+          sudo apt-get update
+          sudo apt-get install subversion
 
       - name: Generate ZIP file
         uses: 10up/action-wordpress-plugin-build-zip@stable

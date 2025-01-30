@@ -2,7 +2,6 @@
 /.wordpress-org export-ignore
 /node_modules export-ignore
 /tests export-ignore
-/vendor export-ignore
 
 /.* export-ignore
 /CHANGELOG.md export-ignore
