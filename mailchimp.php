@@ -34,6 +34,10 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// Validation
+use Mailchimp\WordPress\Includes\Validation\Mailchimp_Validation;
+use Mailchimp\WordPress\Includes\Utility\Mailchimp_Location_Detector;
+
 // Check if the autoload file exists
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
@@ -70,8 +74,13 @@ define( 'MCSF_VER', '1.6.3' );
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
 
+// Keep deprecated functions high in the load order to include `mailchimp_sf_where_am_i` as soon as possible
+require_once plugin_dir_path( __FILE__ ) . '/includes/deprecated/deprecated-functions.php';
+
 // Define our location constants, both MCSF_DIR and MCSF_URL
-mailchimp_sf_where_am_i();
+require_once plugin_dir_path( __FILE__ ) . 'includes/utility/class-mailchimp-location-detector.php';
+$mailchimp_location_detector = new Mailchimp_Location_Detector( __FILE__ );
+$mailchimp_location_detector->init();
 
 // Get our Mailchimp API class in scope
 if ( ! class_exists( 'MailChimp_API' ) ) {
@@ -95,6 +104,11 @@ require_once 'mailchimp_upgrade.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
+
+// Init Validation functions.
+require_once plugin_dir_path( __FILE__ ) . 'includes/validation/class-mailchimp-validation.php';
+$validation = new Mailchimp_Validation();
+$validation->init();
 
 /**
  * Do the following plugin setup steps here
@@ -1064,65 +1078,6 @@ function mailchimp_sf_merge_submit( $mv ) {
 }
 
 /**
- * Validate phone
- *
- * @param array $opt_val Option value
- * @param array $data Data
- * @return void
- */
-function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
-	// This filters out all 'falsey' elements
-	$opt_val = array_filter( $opt_val );
-	// If they weren't all empty
-	if ( ! $opt_val ) {
-		return;
-	}
-
-	$opt_val = implode( '-', $opt_val );
-	if ( strlen( $opt_val ) < 12 ) {
-		$opt_val = '';
-	}
-
-	if ( ! preg_match( '/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A', $opt_val ) ) {
-		/* translators: %s: field name */
-		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
-		$error   = new WP_Error( 'mc_phone_validation', $message );
-		return $error;
-	}
-
-	return $opt_val;
-}
-
-/**
- * Validate address
- *
- * @param array $opt_val Option value
- * @param array $data Data
- * @return mixed
- */
-function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
-	if ( 'Y' === $data['required'] ) {
-		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-			/* translators: %s: field name */
-			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'invalid_address_merge', $message );
-			return $error;
-		}
-	} elseif ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-		return false;
-	}
-
-	$merge          = new stdClass();
-	$merge->addr1   = $opt_val['addr1'];
-	$merge->addr2   = $opt_val['addr2'];
-	$merge->city    = $opt_val['city'];
-	$merge->state   = $opt_val['state'];
-	$merge->zip     = $opt_val['zip'];
-	$merge->country = $opt_val['country'];
-	return $merge;
-}
-
-/**
  * Merge remove empty
  *
  * @param stdObj $merge Merge
@@ -1279,54 +1234,6 @@ function mailchimp_sf_delete_options( $options = array() ) {
 /**********************
  * Utility Functions *
  **********************/
-/**
- * Utility function to allow placement of plugin in plugins, mu-plugins, child or parent theme's plugins folders
- *
- * This function must be ran _very early_ in the load process, as it sets up important constants for the rest of the plugin
- */
-function mailchimp_sf_where_am_i() {
-	$locations = array(
-		'plugins'    => array(
-			'dir' => plugin_dir_path( __FILE__ ),
-			'url' => plugins_url(),
-		),
-		'mu_plugins' => array(
-			'dir' => plugin_dir_path( __FILE__ ),
-			'url' => plugins_url(),
-		),
-		'template'   => array(
-			'dir' => trailingslashit( get_template_directory() ) . 'plugins/',
-			'url' => trailingslashit( get_template_directory_uri() ) . 'plugins/',
-		),
-		'stylesheet' => array(
-			'dir' => trailingslashit( get_stylesheet_directory() ) . 'plugins/',
-			'url' => trailingslashit( get_stylesheet_directory_uri() ) . 'plugins/',
-		),
-	);
-
-	// Set defaults
-	$mscf_dirbase = trailingslashit( basename( __DIR__ ) );  // Typically wp-mailchimp/ or mailchimp/
-	$mscf_dir     = trailingslashit( plugin_dir_path( __FILE__ ) );
-	$mscf_url     = trailingslashit( plugins_url( '', __FILE__ ) );
-
-	// Try our hands at finding the real location
-	foreach ( $locations as $key => $loc ) {
-		$dir = trailingslashit( $loc['dir'] ) . $mscf_dirbase;
-		$url = trailingslashit( $loc['url'] ) . $mscf_dirbase;
-		if ( is_file( $dir . basename( __FILE__ ) ) ) {
-			$mscf_dir = $dir;
-			$mscf_url = $url;
-			break;
-		}
-	}
-
-	// Define our complete filesystem path
-	define( 'MCSF_DIR', $mscf_dir );
-
-	// Define our complete URL to the plugin folder
-	define( 'MCSF_URL', $mscf_url );
-}
-
 
 /**
  * MODIFIED VERSION of wp_verify_nonce from WP Core. Core was not overridden to prevent problems when replacing
