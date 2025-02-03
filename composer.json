@@ -23,7 +23,10 @@
       "Mailchimp\\WordPress\\": "src/"
     },
     "classmap": [
-      "includes"
+      "includes/"
+    ],
+    "files": [
+      "includes/admin/admin-notices.php"
     ]
   },
   "config": {

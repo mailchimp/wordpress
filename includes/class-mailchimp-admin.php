@@ -1,6 +1,14 @@
 <?php
 /**
  * Class responsible for admin side functionalities.
+ * 
+ * The long term plan is to break up admin functionality into smaller, more focused
+ * files to improve maintainability. This could also include:
+ * - Moving OAuth related code to oauth.php
+ * - Moving account creation code to account.php
+ * - Moving settings page code to settings.php
+ * - Moving notices code to notices.php (already done)
+ * This will help avoid having too much code in a single file and make the codebase more modular.
  *
  * @package Mailchimp
  */
