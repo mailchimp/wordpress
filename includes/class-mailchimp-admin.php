@@ -1,6 +1,14 @@
 <?php
 /**
  * Class responsible for admin side functionalities.
+ * 
+ * The long term plan is to break up admin functionality into smaller, more focused
+ * files to improve maintainability. This could also include:
+ * - Moving OAuth related code to oauth.php
+ * - Moving account creation code to account.php
+ * - Moving settings page code to settings.php
+ * - Moving notices code to notices.php (already done)
+ * This will help avoid having too much code in a single file and make the codebase more modular.
  *
  * @package Mailchimp
  */
@@ -38,28 +46,6 @@ class Mailchimp_Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ) );
-
-		/**
-		 * Load modularized admin functionality here
-		 */
-		$this->require_admin_utils();
-	}
-
-	/**
-	 * Require admin utils.
-	 *
-	 * Currently includes admin notices from a single file. Long term plan is to break up admin
-	 * functionality into smaller, more focused files to improve maintainability. This could also include:
-	 * - Moving OAuth related code to oauth.php
-	 * - Moving account creation code to account.php
-	 * - Moving settings page code to settings.php
-	 * - Moving notices code to notices.php (already done)
-	 * This will help avoid having too much code in a single file and make the codebase more modular.
-	 *
-	 * @since 1.7.0
-	 */
-	private function require_admin_utils() {
-		include_once MCSF_DIR . 'includes/admin/admin-notices.php';
 	}
 
 	/**
