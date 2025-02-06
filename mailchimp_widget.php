@@ -366,8 +366,9 @@ function mailchimp_interest_group_field( $ig ) {
 /**
  * Generate and display markup for form fields
  *
- * @param array $data Array containing informaoin about the field
- * @param int   $num_fields The number of fields total we'll be generating markup for. Used in calculating required text logic
+ * @param array $data           Array containing informaoin about the field.
+ * @param int   $num_fields     The number of fields total we'll be generating markup for. Used in calculating required text logic.
+ * @param bool  $should_display Whether or not the field should be displayed.
  * @return string
  */
 function mailchimp_form_field( $data, $num_fields, $should_display = null ) {
