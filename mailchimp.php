@@ -96,6 +96,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
 
+// Init the block.
+require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/mailchimp/class-mailchimp-list-subscribe-form-block.php';
+$block = new Mailchimp_List_Subscribe_Form_Block();
+$block->init();
+
 /**
  * Do the following plugin setup steps here
  *
@@ -777,38 +782,6 @@ function mailchimp_sf_shortcode() {
 	return ob_get_clean();
 }
 add_shortcode( 'mailchimpsf_form', 'mailchimp_sf_shortcode' );
-
-/**
- * Add block
- *
- * @return void
- */
-function mailchimp_sf_block() {
-	// In line with conditional register of the widget.
-	if ( ! mailchimp_sf_get_api() ) {
-		return;
-	}
-
-	$blocks_dist_path = plugin_dir_path( __FILE__ ) . 'dist/blocks/';
-
-	if ( file_exists( $blocks_dist_path ) ) {
-		$block_json_files = glob( $blocks_dist_path . '*/block.json' );
-		foreach ( $block_json_files as $filename ) {
-			$block_folder = dirname( $filename );
-			register_block_type( $block_folder );
-		}
-	}
-
-	$data = 'window.MAILCHIMP_ADMIN_SETTINGS_URL = "' . esc_js( esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) ) . '";';
-	wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
-
-	ob_start();
-	require_once MCSF_DIR . '/views/css/frontend.php';
-	$data = ob_get_clean();
-	wp_add_inline_style( 'mailchimp-mailchimp-editor-style', $data );
-}
-
-add_action( 'init', 'mailchimp_sf_block' );
 
 /**
  * Attempts to signup a user, per the $_POST args.

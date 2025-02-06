@@ -370,11 +370,15 @@ function mailchimp_interest_group_field( $ig ) {
  * @param int   $num_fields The number of fields total we'll be generating markup for. Used in calculating required text logic
  * @return string
  */
-function mailchimp_form_field( $data, $num_fields ) {
-	$opt  = 'mc_mv_' . $data['tag'];
+function mailchimp_form_field( $data, $num_fields, $should_display = null ) {
 	$html = '';
+	$opt  = 'mc_mv_' . $data['tag'];
+	if ( is_null( $should_display ) ) {
+		$should_display = get_option( $opt ) === 'on';
+	}
+
 	// See if that var is set as required, or turned on (for display)
-	if ( $data['required'] || get_option( $opt ) === 'on' ) {
+	if ( $data['required'] || $should_display ) {
 		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $data['name'] );
 		if ( $data['required'] && $num_fields > 1 ) {
 			$label .= '<span class="mc_required">*</span>';
