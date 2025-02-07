@@ -162,7 +162,6 @@ describe('Admin can update plugin settings', () => {
 	it('Admin can set list options settings', () => {
 		// Remove mailchimp CSS.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_datepicker').uncheck();
 		cy.get('#mc_use_unsub_link').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
@@ -177,7 +176,6 @@ describe('Admin can update plugin settings', () => {
 
 		// Reset
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_datepicker').check();
 		cy.get('#mc_use_unsub_link').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
