@@ -3,7 +3,7 @@
 	"apiVersion": 2,
 	"name": "mailchimp/mailchimp",
 	"title": "Mailchimp List Subscribe Form",
-	"category": "text",
+	"category": "widgets",
 	"description": "Mailchimp List Subscribe Form",
 	"attributes": {
 		"json": {
@@ -32,8 +32,14 @@
 		},
 		"color": {
 			"background": true,
-			"text": true
-		}
+			"text": true,
+      "border": true
+		},
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "textAlign": true
+    }
 	},
 	"textdomain": "mailchimp",
 	"editorScript": "file:./index.js",

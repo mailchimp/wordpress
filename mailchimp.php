@@ -96,6 +96,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
 
+// Init the block.
+require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/mailchimp/class-mailchimp-list-subscribe-form-block.php';
+$block = new Mailchimp_List_Subscribe_Form_Block();
+$block->init();
+
 /**
  * Do the following plugin setup steps here
  *
@@ -138,22 +143,20 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'mailchimp_sf_
  */
 function mailchimp_sf_load_resources() {
 	// JS
-	if ( get_option( 'mc_use_javascript' ) === 'on' ) {
-		if ( ! is_admin() ) {
-			wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
-			// some javascript to get ajax version submitting to the proper location
-			global $wp_scripts;
-			$wp_scripts->localize(
-				'mailchimp_sf_main_js',
-				'mailchimpSF',
-				array(
-					'ajax_url' => trailingslashit( home_url() ),
-				)
-			);
-		}
+	if ( ! is_admin() ) {
+		wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
+		// some javascript to get ajax version submitting to the proper location
+		global $wp_scripts;
+		$wp_scripts->localize(
+			'mailchimp_sf_main_js',
+			'mailchimpSF',
+			array(
+				'ajax_url' => trailingslashit( home_url() ),
+			)
+		);
 	}
 
-	if ( get_option( 'mc_use_datepicker' ) === 'on' && ! is_admin() ) {
+	if ( ! is_admin() ) {
 		// Datepicker theme
 		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 
@@ -175,7 +178,7 @@ function mc_datepicker_load() {
 	require_once MCSF_DIR . '/views/datepicker.php';
 }
 
-if ( get_option( 'mc_use_datepicker' ) === 'on' && ! is_admin() ) {
+if ( ! is_admin() ) {
 	add_action( 'wp_head', 'mc_datepicker_load' );
 }
 
@@ -374,8 +377,6 @@ function mailchimp_sf_needs_upgrade() {
 function mailchimp_sf_delete_setup() {
 	$options = array(
 		'mc_user_id',
-		'mc_use_javascript',
-		'mc_use_datepicker',
 		'mc_use_unsub_link',
 		'mc_list_id',
 		'mc_list_name',
@@ -436,9 +437,7 @@ function mailchimp_sf_set_form_defaults( $list_name = '' ) {
 	update_option( 'mc_header_content', esc_html__( 'Sign up for', 'mailchimp' ) . ' ' . $list_name );
 	update_option( 'mc_submit_text', esc_html__( 'Subscribe', 'mailchimp' ) );
 
-	update_option( 'mc_use_datepicker', 'on' );
 	update_option( 'mc_custom_style', 'off' );
-	update_option( 'mc_use_javascript', 'on' );
 	update_option( 'mc_double_optin', true );
 	update_option( 'mc_use_unsub_link', 'off' );
 	update_option( 'mc_header_border_width', '1' );
@@ -458,27 +457,6 @@ function mailchimp_sf_set_form_defaults( $list_name = '' ) {
  * @return void
  **/
 function mailchimp_sf_save_general_form_settings() {
-
-	// IF NOT DEV MODE
-	if ( isset( $_POST['mc_use_javascript'] ) ) {
-		update_option( 'mc_use_javascript', 'on' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Fancy Javascript submission turned On!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	} elseif ( get_option( 'mc_use_javascript' ) !== 'off' ) {
-		update_option( 'mc_use_javascript', 'off' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Fancy Javascript submission turned Off!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	}
-
-	if ( isset( $_POST['mc_use_datepicker'] ) ) {
-		update_option( 'mc_use_datepicker', 'on' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Datepicker turned On!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	} elseif ( get_option( 'mc_use_datepicker' ) !== 'off' ) {
-		update_option( 'mc_use_datepicker', 'off' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Datepicker turned Off!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
-	}
 
 	/*Enable double optin toggle*/
 	if ( isset( $_POST['mc_double_optin'] ) ) {
@@ -777,38 +755,6 @@ function mailchimp_sf_shortcode() {
 	return ob_get_clean();
 }
 add_shortcode( 'mailchimpsf_form', 'mailchimp_sf_shortcode' );
-
-/**
- * Add block
- *
- * @return void
- */
-function mailchimp_sf_block() {
-	// In line with conditional register of the widget.
-	if ( ! mailchimp_sf_get_api() ) {
-		return;
-	}
-
-	$blocks_dist_path = plugin_dir_path( __FILE__ ) . 'dist/blocks/';
-
-	if ( file_exists( $blocks_dist_path ) ) {
-		$block_json_files = glob( $blocks_dist_path . '*/block.json' );
-		foreach ( $block_json_files as $filename ) {
-			$block_folder = dirname( $filename );
-			register_block_type( $block_folder );
-		}
-	}
-
-	$data = 'window.MAILCHIMP_ADMIN_SETTINGS_URL = "' . esc_js( esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ) ) . '";';
-	wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
-
-	ob_start();
-	require_once MCSF_DIR . '/views/css/frontend.php';
-	$data = ob_get_clean();
-	wp_add_inline_style( 'mailchimp-mailchimp-editor-style', $data );
-}
-
-add_action( 'init', 'mailchimp_sf_block' );
 
 /**
  * Attempts to signup a user, per the $_POST args.

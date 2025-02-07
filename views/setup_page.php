@@ -230,20 +230,6 @@ $is_list_selected = false;
 					<tr><th colspan="2"><?php esc_html_e( 'List Options', 'mailchimp' ); ?></th></tr>
 
 					<tr valign="top">
-						<th scope="row"><?php esc_html_e( 'Use JavaScript Support?', 'mailchimp' ); ?></th>
-						<td><input name="mc_use_javascript" type="checkbox" <?php checked( get_option( 'mc_use_javascript' ), 'on' ); ?> id="mc_use_javascript" class="code" />
-							<em><label for="mc_use_javascript"><?php esc_html_e( 'This plugin uses JavaScript submission, and it should degrade gracefully for users not using JavaScript. It is optional, and you can turn it off at any time.', 'mailchimp' ); ?></label></em>
-						</td>
-					</tr>
-
-					<tr valign="top">
-						<th scope="row"><?php esc_html_e( 'Use JavaScript Datepicker?', 'mailchimp' ); ?></th>
-						<td><input name="mc_use_datepicker" type="checkbox" <?php checked( get_option( 'mc_use_datepicker' ), 'on' ); ?> id="mc_use_datepicker" class="code" />
-							<em><label for="mc_use_datepicker"><?php esc_html_e( 'We\'ll use the jQuery UI Datepicker for dates.', 'mailchimp' ); ?></label></em>
-						</td>
-					</tr>
-
-					<tr valign="top">
 						<th scope="row"><?php esc_html_e( 'Use Double Opt-In (Recommended)?', 'mailchimp' ); ?></th>
 						<td><input name="mc_double_optin" type="checkbox" <?php checked( get_option( 'mc_double_optin' ), true ); ?> id="mc_double_optin" class="code" />
 							<em><label for="mc_double_optin"><?php esc_html_e( 'Before new your subscribers are added via the plugin, they\'ll need to confirm their email address.', 'mailchimp' ); ?></label></em>
@@ -391,65 +377,6 @@ $is_list_selected = false;
 				}
 			}
 			?>
-
-			<div class="mc-section" style="margin-top: 35px;">
-				<table class="widefat mc-widefat">
-					<tr><th colspan="2"><?php esc_html_e( 'CSS Cheat Sheet', 'mailchimp' ); ?></th></tr>
-					<tr valign="top">
-						<th scope="row">.widget_mailchimpsf_widget </th>
-						<td><?php esc_html_e( 'This targets the entire widget container.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.widget-title</th>
-						<td>
-							<?php
-							echo wp_kses(
-								__( 'This styles the title of your Mailchimp widget. <i>Modifying this class will affect your other widget titles.</i>', 'mailchimp' ),
-								[
-									'i' => [],
-								]
-							);
-							?>
-						</td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">#mc_signup</th>
-						<td><?php esc_html_e( 'This targets the entirity of the widget beneath the widget title.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">#mc_subheader</th>
-						<td><?php esc_html_e( 'This styles the subheader text.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.mc_form_inside</th>
-						<td><?php esc_html_e( 'The guts and main container for the all of the form elements (the entirety of the widget minus the header and the sub header).', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.mc_header</th>
-						<td><?php esc_html_e( 'This targets the label above the input fields.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.mc_input</th>
-						<td><?php esc_html_e( 'This attaches to the input fields.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.mc_header_address</th>
-						<td><?php esc_html_e( 'This is the label above an address group.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">.mc_radio_label</th>
-						<td><?php esc_html_e( 'These are the labels associated with radio buttons.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">#mc-indicates-required</th>
-						<td><?php esc_html_e( 'This targets the “Indicates Required Field” text.', 'mailchimp' ); ?></td>
-					</tr>
-					<tr valign="top">
-						<th scope="row">#mc_signup_submit</th>
-						<td><?php esc_html_e( 'Use this to style the submit button.', 'mailchimp' ); ?></td>
-					</tr>
-				</table>
-			</div>
 		</form>
 	</div>
 </div>
