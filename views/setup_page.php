@@ -230,13 +230,6 @@ $is_list_selected = false;
 					<tr><th colspan="2"><?php esc_html_e( 'List Options', 'mailchimp' ); ?></th></tr>
 
 					<tr valign="top">
-						<th scope="row"><?php esc_html_e( 'Use JavaScript Support?', 'mailchimp' ); ?></th>
-						<td><input name="mc_use_javascript" type="checkbox" <?php checked( get_option( 'mc_use_javascript' ), 'on' ); ?> id="mc_use_javascript" class="code" />
-							<em><label for="mc_use_javascript"><?php esc_html_e( 'This plugin uses JavaScript submission, and it should degrade gracefully for users not using JavaScript. It is optional, and you can turn it off at any time.', 'mailchimp' ); ?></label></em>
-						</td>
-					</tr>
-
-					<tr valign="top">
 						<th scope="row"><?php esc_html_e( 'Use JavaScript Datepicker?', 'mailchimp' ); ?></th>
 						<td><input name="mc_use_datepicker" type="checkbox" <?php checked( get_option( 'mc_use_datepicker' ), 'on' ); ?> id="mc_use_datepicker" class="code" />
 							<em><label for="mc_use_datepicker"><?php esc_html_e( 'We\'ll use the jQuery UI Datepicker for dates.', 'mailchimp' ); ?></label></em>

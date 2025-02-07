@@ -162,7 +162,6 @@ describe('Admin can update plugin settings', () => {
 	it('Admin can set list options settings', () => {
 		// Remove mailchimp CSS.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').uncheck();
 		cy.get('#mc_use_datepicker').uncheck();
 		cy.get('#mc_use_unsub_link').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
@@ -170,7 +169,6 @@ describe('Admin can update plugin settings', () => {
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_submit_type').should('have.value', 'html');
 			cy.get('#mc_mv_BIRTHDAY').should('not.have.class', 'hasDatepicker');
 			cy.get('#mc_mv_BIRTHDAY').click();
 			cy.get('#ui-datepicker-div').should('not.exist');
@@ -179,14 +177,12 @@ describe('Admin can update plugin settings', () => {
 
 		// Reset
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').check();
 		cy.get('#mc_use_datepicker').check();
 		cy.get('#mc_use_unsub_link').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_submit_type').should('have.value', 'js');
 			cy.get('#mc_mv_BIRTHDAY').should('have.class', 'hasDatepicker');
 			cy.get('#mc_mv_BIRTHDAY').click();
 			cy.get('#ui-datepicker-div').should('exist');
