@@ -17,4 +17,4 @@ tests/cypress/downloads
 mailchimp.zip
 
 # IDE
-/.vscode
+.vscode

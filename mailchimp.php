@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.6.2
+ * Version:           1.6.3
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -34,8 +34,38 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+// Check if the autoload file exists
+if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+} else {
+	add_action(
+		'admin_notices',
+		function () {
+			?>
+			<div class="notice notice-error">
+				<p>
+					<?php
+					echo wp_kses_post(
+						sprintf(
+							/* translators: 1: Command to run, e.g., <code>composer install</code>, 2: Support URL, e.g., https://wordpress.org/support/plugin/mailchimp/. */
+							__( 'The composer autoload file is not found or not readable. Please contact <a href="%2$s" target="_blank">support</a> if you\'re a user. Please run %1$s if you\'re a developer in a development environment.', 'mailchimp' ),
+							'<code>composer install</code>',
+							'https://wordpress.org/support/plugin/mailchimp/'
+						)
+					);
+					?>
+				</p>
+			</div>
+			<?php
+		}
+	);
+
+	// Exit early.
+	return;
+}
+
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.6.2' );
+define( 'MCSF_VER', '1.6.3' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -74,8 +104,6 @@ $admin->init();
  * @return void
  */
 function mailchimp_sf_plugin_init() {
-
-	// Remove Sopresto check. If user does not have API key, make them authenticate.
 
 	if ( get_option( 'mc_list_id' ) && get_option( 'mc_merge_field_migrate' ) !== '1' && mailchimp_sf_get_api() !== false ) {
 		mailchimp_sf_update_merge_fields();
@@ -217,7 +245,7 @@ function mailchimp_sf_request_handler() {
 				}
 
 				// erase auth information
-				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login', 'mc_sopresto_user', 'mc_sopresto_public_key', 'mc_sopresto_secret_key' );
+				$options = array( 'mc_api_key', 'mailchimp_sf_access_token', 'mc_datacenter', 'mailchimp_sf_auth_error', 'mailchimp_sf_waiting_for_login' );
 				mailchimp_sf_delete_options( $options );
 				break;
 			case 'change_form_settings':
@@ -260,58 +288,6 @@ function mailchimp_sf_request_handler() {
 	}
 }
 add_action( 'init', 'mailchimp_sf_request_handler' );
-
-/**
- * Migrate Sopresto
- *
- * @return void
- */
-function mailchimp_sf_migrate_sopresto() {
-	$sopresto = get_option( 'mc_sopresto_secret_key' );
-	if ( ! $sopresto ) {
-		return;
-	}
-
-	// Talk to Sopresto, make exchange, delete old sopresto things.
-	$body = array(
-		'public_key' => get_option( 'mc_sopresto_public_key' ),
-		'hash'       => sha1( get_option( 'mc_sopresto_public_key' ) . get_option( 'mc_sopresto_secret_key' ) ),
-	);
-
-	$url  = 'https://sopresto.socialize-this.com/mailchimp/exchange';
-	$args = array(
-		'method'      => 'POST',
-		'timeout'     => 500,
-		'redirection' => 5,
-		'httpversion' => '1.0',
-		'user-agent'  => 'Mailchimp WordPress Plugin/' . get_bloginfo( 'url' ),
-		'body'        => $body,
-	);
-
-	// post to sopresto
-	$key = wp_remote_post( $url, $args );
-	if ( ! is_wp_error( $key ) && 200 === $key['response']['code'] ) {
-		$key = json_decode( $key['body'] );
-		try {
-			$api = new MailChimp_API( $key->response );
-		} catch ( Exception $e ) {
-			$msg = '<strong class="mc_error_msg">' . $e->getMessage() . '</strong>';
-			mailchimp_sf_global_msg( $msg );
-			return;
-		}
-
-		$verify = mailchimp_sf_verify_key( $api );
-
-		// something went wrong with the key that we had
-		if ( is_wp_error( $verify ) ) {
-			return;
-		}
-
-		delete_option( 'mc_sopresto_public_key' );
-		delete_option( 'mc_sopresto_secret_key' );
-		delete_option( 'mc_sopresto_user' );
-	}
-}
 
 /**
  * Update merge fields
@@ -391,13 +367,13 @@ function mailchimp_sf_needs_upgrade() {
 
 /**
  * Deletes all Mailchimp options
+ *
+ * TODO: The options names should be moved to a config file
+ * or to a class dedicated to options
  **/
 function mailchimp_sf_delete_setup() {
 	$options = array(
 		'mc_user_id',
-		'mc_sopresto_user',
-		'mc_sopresto_public_key',
-		'mc_sopresto_secret_key',
 		'mc_use_javascript',
 		'mc_use_datepicker',
 		'mc_use_unsub_link',
@@ -904,13 +880,17 @@ function mailchimp_sf_signup_submit() {
 	$url    = 'lists/' . $list_id . '/members/' . md5( strtolower( $email ) );
 	$status = mailchimp_sf_check_status( $url );
 
-	// If update existing is turned off and the subscriber exists, error out.
-	if ( get_option( 'mc_update_existing' ) === false && 'subscribed' === $status ) {
-		$msg   = esc_html__( 'This email address is already subscribed to the list.', 'mailchimp' );
+	// If update existing is turned off and the subscriber is not new, error out.
+	$is_new_subscriber = false === $status;
+	if ( ! get_option( 'mc_update_existing' ) && ! $is_new_subscriber ) {
+		$msg   = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
 		$error = new WP_Error( 'mailchimp-update-existing', $msg );
 		mailchimp_sf_global_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
 		return false;
 	}
+
+	// TODO: If get_option( 'mc_update_existing' ) && 'unsubscribed' === $status then
+	// make an API request to fetch Mailchimp hosted sign up form and display to user
 
 	$body   = mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, get_option( 'mc_double_optin' ) );
 	$retval = $api->post( $url, $body, 'PUT' );
@@ -940,12 +920,12 @@ function mailchimp_sf_signup_submit() {
  * Cleans up merge fields and interests to make them
  * API 3.0-friendly.
  *
- * @param [type] $merge Merge fields
- * @param [type] $igs Interest groups
- * @param string $email_type Email type
- * @param string $email Email
- * @param string $status Status
- * @param bool   $double_optin Whether this is double optin
+ * @param [type]       $merge Merge fields
+ * @param [type]       $igs Interest groups
+ * @param string       $email_type Email type
+ * @param string       $email Email
+ * @param string|false $status Status The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if an error occurred.
+ * @param string       $double_optin Whether double opt-in is enabled. "1" for enabled and "" for disabled.
  * @return stdClass
  */
 function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, $double_optin ) {
@@ -953,27 +933,29 @@ function mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status
 	$body->email_address = $email;
 	$body->email_type    = $email_type;
 	$body->merge_fields  = $merge;
+
 	if ( ! empty( $igs ) ) {
 		$body->interests = $igs;
 	}
 
-	if ( 'subscribed' !== $status ) {
-		// single opt-in that covers new subscribers
-		if ( false === ! $status && $double_optin ) {
-			$body->status = 'subscribed';
-		} else {
-			// anyone else
-			$body->status = 'pending';
-		}
+	// Early return for already subscribed users
+	if ( 'subscribed' === $status ) {
+		return $body;
 	}
+
+	// Subscribe the email immediately unless double opt-in is enabled
+	// "unsubscribed" and "subscribed" existing emails have been excluded at this stage
+	// "pending" emails should follow double opt-in rules
+	$body->status = $double_optin ? 'pending' : 'subscribed';
+
 	return $body;
 }
 
 /**
- * Check status.
+ * Check the status of a subscriber in the list.
  *
- * @param string $endpoint Endpoint.
- * @return string
+ * @param string $endpoint API endpoint to check the status.
+ * @return string|false The subscription status ('subscribed', 'unsubscribed', 'pending', etc.) or false if the API returned 404 or an error occurred.
  */
 function mailchimp_sf_check_status( $endpoint ) {
 	$endpoint  .= '?fields=status';
@@ -1003,32 +985,72 @@ function mailchimp_sf_merge_submit( $mv ) {
 
 		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
-		// Handle phone number logic
-		if ( isset( $mv_var['options']['phone_format'] ) && 'phone' === $mv_var['type'] && 'US' === $mv_var['options']['phone_format'] ) {
-			$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
-			if ( is_wp_error( $opt_val ) ) {
-				return $opt_val;
-			}
-		} elseif ( is_array( $opt_val ) && 'address' === $mv_var['type'] ) { // Handle address logic
-			$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
-			if ( is_wp_error( $validate ) ) {
-				return $validate;
-			}
+		switch ( $mv_var['type'] ) {
+			/**
+			 * US Phone validation
+			 *
+			 * - Merge field is phone
+			 * - Merge field is "included" in the Mailchimp admin options
+			 * - Phone format is set in Mailchimp account
+			 * - Phone format is US in Mailchimp account
+			 */
+			case 'phone':
+				if (
+					'on' === get_option( $opt )
+					&& isset( $mv_var['options']['phone_format'] )
+					&& 'US' === $mv_var['options']['phone_format']
+				) {
+					$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
+					if ( is_wp_error( $opt_val ) ) {
+						return $opt_val;
+					}
+				}
+				break;
 
-			if ( $validate ) {
-				$merge->$tag = $validate;
-			}
-			continue;
+			/**
+			 * Address validation
+			 *
+			 * - Merge field is address
+			 * - Merge field is "included" in the Mailchimp admin options
+			 * - Merge field is an array (address contains multiple <input> elements)
+			 */
+			case 'address':
+				if ( 'on' === get_option( $opt ) && is_array( $opt_val ) ) {
+					$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
+					if ( is_wp_error( $validate ) ) {
+						return $validate;
+					}
 
-		} elseif ( is_array( $opt_val ) ) {
-			$keys = array_keys( $opt_val );
-			$val  = new stdClass();
-			foreach ( $keys as $key ) {
-				$val->$key = $opt_val[ $key ];
-			}
-			$opt_val = $val;
+					if ( $validate ) {
+						$merge->$tag = $validate;
+					}
+				}
+				break;
+
+			/**
+			 * Handle generic array values
+			 *
+			 * Not sure what this does or is for
+			 *
+			 * - Merge field is an array, not specifically phone or address
+			 */
+			default:
+				if ( is_array( $opt_val ) ) {
+					$keys = array_keys( $opt_val );
+					$val  = new stdClass();
+					foreach ( $keys as $key ) {
+						$val->$key = $opt_val[ $key ];
+					}
+					$opt_val = $val;
+				}
+				break;
 		}
 
+		/**
+		 * Required fields
+		 *
+		 * If the field is required and empty, return an error
+		 */
 		if ( 'Y' === $mv_var['required'] && trim( $opt_val ) === '' ) {
 			/* translators: %s: field name */
 			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
