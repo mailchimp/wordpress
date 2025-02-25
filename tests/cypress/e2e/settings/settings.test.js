@@ -89,13 +89,12 @@ describe('Admin can update plugin settings', () => {
 				.scrollIntoView({ offset: { top: -100, left: 0 } })
 				.should('be.visible')   // Check if the button is visible
 				.and('not.be.disabled'); // Ensure the button is not disabled
-				// .click();               // Perform the click action
 
 			// Ensure that custom CSS does not cover submit button
 			cy.get('#mc_signup_submit')
 			.then(($el) => {
 				const rect = $el[0].getBoundingClientRect();
-				
+
 				// Check that the element is within the viewport
 				cy.window().then((win) => {
 					const windowHeight = win.innerHeight;
@@ -112,7 +111,7 @@ describe('Admin can update plugin settings', () => {
 					// Check if the center of the element is not covered by another element
 					const centerX = rect.x + $el[0].offsetWidth / 2;
 					const centerY = rect.y + $el[0].offsetHeight / 2;
-				
+
 					cy.document().then((doc) => {
 						const topElement = doc.elementFromPoint(centerX, centerY);
 						expect(topElement).to.equal($el[0]);
@@ -228,43 +227,43 @@ describe('Admin can update plugin settings', () => {
 		// Step 1: Visit Mailchimp settings page
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
-	
+
 		// Step 2: Set an option different from the default
 		const customHeader = 'My Custom Header';
 		cy.get('#mc_header_content').clear().type(customHeader);
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-	
+
 		// Verify the custom header is saved
 		cy.get('#mc-message .success_msg b').contains('Success!');
 		cy.get('#mc_header_content').should('have.value', customHeader);
-	
+
 		// Step 3: Log out of the Mailchimp account
 		cy.get('input[value="Logout"]').click();
 		// Verify the logout was successful
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
-	
+
 		// Step 4: Log in with a different Mailchimp account
 		// TODO: BLOCKED - We need a separate Mailchimp account to test the login here
 		cy.mailchimpLogin('different@mailchimp.com', 'password123'); // TODO: CHANGE LOG IN HERE
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	
+
 		// Verify the default options are displayed for the new account
 		cy.get('#mc_header_content').should('not.have.value', customHeader); // Expect default value
-	
+
 		// Step 5: Set another option with the second account to test persistence
 		const differentHeader = 'Another Custom Header';
 		cy.get('#mc_header_content').clear().type(differentHeader);
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-	
+
 		// Verify the new setting is saved for the second account
 		cy.get('#mc-message .success_msg b').contains('Success!');
 		cy.get('#mc_header_content').should('have.value', differentHeader);
-	
+
 		// Step 6: Log back in with the original Mailchimp account
 		cy.get('input[value="Logout"]').click();
 		cy.mailchimpLogin(); // Default to user set in env
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	
+
 		// Step 7: Ensure the original settings persist
 		cy.get('#mc_header_content').should('have.value', customHeader);
 	});
