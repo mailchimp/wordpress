@@ -2,16 +2,7 @@
 import { generateRandomEmail } from '../../support/functions/utility';
 
 describe('Subscribe actions', () => {
-	let shortcodePostURL;
-	let blockPostPostURL;
-
 	before(() => {
-		// Load the post URLs from the JSON file
-		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
-		});
-
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
@@ -70,7 +61,7 @@ describe('Subscribe actions', () => {
 		// Step 2: Create the post
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((post) => {
 			if (post) {
-				shortcodePostURL = `/?p=${post.id}`;
+				const shortcodePostURL = `/?p=${post.id}`;
 				signUpAndVerify(shortcodePostURL);
 			}
 		});
@@ -87,7 +78,7 @@ describe('Subscribe actions', () => {
 		// Step 2: Create the post
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
 			if (postBlock) {
-				blockPostPostURL = `/?p=${postBlock.id}`;
+				const blockPostPostURL = `/?p=${postBlock.id}`;
 				signUpAndVerify(blockPostPostURL);
 			}
 		});
