@@ -87,12 +87,11 @@ describe('Admin can update plugin settings', () => {
 			// Form is able to be submitted with custom styles
 			cy.get('#mc_signup_submit')
 				.scrollIntoView({ offset: { top: -100, left: 0 } })
-				.should('be.visible')   // Check if the button is visible
+				.should('be.visible') // Check if the button is visible
 				.and('not.be.disabled'); // Ensure the button is not disabled
 
 			// Ensure that custom CSS does not cover submit button
-			cy.get('#mc_signup_submit')
-			.then(($el) => {
+			cy.get('#mc_signup_submit').then(($el) => {
 				const rect = $el[0].getBoundingClientRect();
 
 				// Check that the element is within the viewport
@@ -106,17 +105,17 @@ describe('Admin can update plugin settings', () => {
 					expect(windowWidth).to.be.greaterThan(0);
 					expect(rect.bottom).to.be.lessThan(windowHeight);
 					expect(rect.right).to.be.lessThan(windowWidth);
-					});
-
-					// Check if the center of the element is not covered by another element
-					const centerX = rect.x + $el[0].offsetWidth / 2;
-					const centerY = rect.y + $el[0].offsetHeight / 2;
-
-					cy.document().then((doc) => {
-						const topElement = doc.elementFromPoint(centerX, centerY);
-						expect(topElement).to.equal($el[0]);
-					});
 				});
+
+				// Check if the center of the element is not covered by another element
+				const centerX = rect.x + $el[0].offsetWidth / 2;
+				const centerY = rect.y + $el[0].offsetHeight / 2;
+
+				cy.document().then((doc) => {
+					const topElement = doc.elementFromPoint(centerX, centerY);
+					expect(topElement).to.equal($el[0]);
+				});
+			});
 		});
 
 		// Reset
@@ -222,8 +221,8 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	// TODO: BLOCKED - Need separate Mailchimp user to finish this test
-	it.skip('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
+	// TODO: Add case for separate account login and settings get reset.
+	it('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
 		// Step 1: Visit Mailchimp settings page
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
@@ -234,37 +233,22 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify the custom header is saved
-		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('#mc-message .success_msg').contains(
+			'Successfully Updated your List Subscribe Form Settings!',
+		);
 		cy.get('#mc_header_content').should('have.value', customHeader);
 
 		// Step 3: Log out of the Mailchimp account
 		cy.get('input[value="Logout"]').click();
+
 		// Verify the logout was successful
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
 
-		// Step 4: Log in with a different Mailchimp account
-		// TODO: BLOCKED - We need a separate Mailchimp account to test the login here
-		cy.mailchimpLogin('different@mailchimp.com', 'password123'); // TODO: CHANGE LOG IN HERE
+		// Step 4: Log in back
+		cy.mailchimpLogin();
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
-		// Verify the default options are displayed for the new account
-		cy.get('#mc_header_content').should('not.have.value', customHeader); // Expect default value
-
-		// Step 5: Set another option with the second account to test persistence
-		const differentHeader = 'Another Custom Header';
-		cy.get('#mc_header_content').clear().type(differentHeader);
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Verify the new setting is saved for the second account
-		cy.get('#mc-message .success_msg b').contains('Success!');
-		cy.get('#mc_header_content').should('have.value', differentHeader);
-
-		// Step 6: Log back in with the original Mailchimp account
-		cy.get('input[value="Logout"]').click();
-		cy.mailchimpLogin(); // Default to user set in env
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-
-		// Step 7: Ensure the original settings persist
+		// Step 5: Ensure the original settings persist
 		cy.get('#mc_header_content').should('have.value', customHeader);
 	});
 });

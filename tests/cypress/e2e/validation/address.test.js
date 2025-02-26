@@ -84,10 +84,10 @@ describe('Address Field Validation', () => {
 			cy.submitFormAndVerifyError();
 
 			if (!address.addr1) {
-				cy.get('.mc_error_msg').contains('Address: Please enter a value');
+				cy.get('.mc_error_msg').contains('Address: Please enter a complete address');
 			}
 			if (!address.city) {
-				cy.get('.mc_error_msg').contains('Address: Please enter a value');
+				cy.get('.mc_error_msg').contains('Address: Please enter a complete address');
 			}
 		});
 	});
