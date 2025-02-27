@@ -6,18 +6,12 @@ describe('Admin can update plugin settings', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ shortcodePostURL, blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 		cy.selectList('10up'); // Ensure a list is selected
-	});
-
-	// TODO: Default settings are populated as expected
-	it.skip('The default settings populate as expected', () => {
-		// Test here...
 	});
 
 	it('Admin can set content options for signup form', () => {
@@ -250,5 +244,66 @@ describe('Admin can update plugin settings', () => {
 
 		// Step 5: Ensure the original settings persist
 		cy.get('#mc_header_content').should('have.value', customHeader);
+	});
+
+	it('The default settings populate as expected', () => {
+		const options = [
+			'mc_header_content',
+			'mc_subheader_content',
+			'mc_submit_text',
+			'mc_nuke_all_styles',
+			'mc_custom_style',
+			'mc_form_border_width',
+			'mc_form_border_color',
+			'mc_form_background',
+			'mc_form_text_color',
+			'mc_update_existing',
+			'mc_double_optin',
+			'mc_user_id',
+			'mc_use_javascript',
+			'mc_use_datepicker',
+			'mc_use_unsub_link',
+			'mc_list_id',
+			'mc_list_name',
+			'mc_interest_groups',
+			'mc_merge_vars',
+		];
+
+		// Clear all options
+		cy.getListId('10up').then((listId) => {
+			cy.getMergeFields(listId).then((mergeFields) => {
+				const mergeFieldOptions = mergeFields.map((field) => `mc_mv_${field.tag}`);
+				options.push(...mergeFieldOptions);
+				cy.wpCli(`wp option delete ${options.join(' ')}`).then(() => {
+					cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+					cy.mailchimpLogout();
+					cy.mailchimpLogin();
+					cy.get('.mc-user h3').contains('Logged in as: ');
+					cy.get('input[value="Logout"]').should('exist');
+
+					cy.selectList('10up');
+
+					// Verify default settings
+					cy.get('#mc_header_content').should('have.value', 'Sign up for 10up');
+					cy.get('#mc_subheader_content').should('have.value', '');
+					cy.get('#mc_submit_text').should('have.value', 'Subscribe');
+					cy.get('#mc_nuke_all_styles').should('not.be.checked');
+					cy.get('#mc_custom_style').should('not.be.checked');
+					cy.get('#mc_form_border_width').should('have.value', '1');
+					cy.get('#mc_form_border_color').should('have.value', 'E0E0E0');
+					cy.get('#mc_form_background').should('have.value', 'FFFFFF');
+					cy.get('#mc_form_text_color').should('have.value', '3F3F3f');
+					cy.get('#mc_update_existing').should('not.be.checked');
+					cy.get('#mc_double_optin').should('be.checked');
+					cy.get('#mc_use_unsub_link').should('not.be.checked');
+					cy.get('#mc_mv_FNAME').should('be.checked');
+					cy.get('#mc_mv_LNAME').should('be.checked');
+					cy.get('#mc_mv_ADDRESS').should('be.checked');
+					cy.get('#mc_mv_BIRTHDAY').should('be.checked');
+					cy.get('#mc_mv_COMPANY').should('be.checked');
+					cy.get('#mc_mv_PHONE').should('be.checked');
+				});
+			});
+		});
 	});
 });

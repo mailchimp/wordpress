@@ -88,11 +88,11 @@ async function getContactsFromAList(listId, status = null) {
  *
  * @param {string} listId - The Mailchimp list ID to search within.
  * @param {string} email - The email address of the contact to retrieve.
- * @returns {Promise<object|null>} - A promise that resolves with the contact's details 
+ * @returns {Promise<object|null>} - A promise that resolves with the contact's details
  *                                   if found, or `null` if the contact does not exist.
- * 
+ *
  * @throws {Error} - Throws an error for unexpected failures (non-404 errors).
- * 
+ *
  * Example:
  * cy.getContact(listId, 'user@example.com').then((contact) => {
  *   if (contact) {
@@ -142,7 +142,7 @@ function getContactFromList(email, listName = '10up') {
  *
  * TODO: Configuration this to use the batch endpoint. Is the /batch endpoint worth the lift?
  * https://mailchimp.com/developer/marketing/guides/run-async-requests-batch-endpoint/#make-a-batch-operations-request
- * 
+ *
  * @param {string} listId - The Mailchimp list ID
  * @param {object} data - The data to update the merge fields with - Docs: https://mailchimp.com/developer/marketing/api/list-merges/update-merge-field/
  * @returns {Promise} - A promise that resolves when all merge fields are updated
@@ -156,35 +156,6 @@ async function updateMergeFieldsByList(listId, data) {
 
   return await Promise.all(updatedMergeFields);
 }
-
-// TODO: Can we implement batch synchronously?
-// async function updateMergeFieldsByList(listId, data) {
-//   const mergeFields = await getMergeFields(listId);
-
-//   // Prepare batch operations
-//   const operations = mergeFields.map((field) => ({
-//     method: "PATCH", // HTTP method for updating merge fields
-//     path: `/lists/${listId}/merge-fields/${field.merge_id}`, // API path for each merge field
-//     body: JSON.stringify({
-//       ...data,
-//       name: field.name, // Keep existing name
-//     }),
-//   }));
-
-//   try {
-//     // Send the batch request
-//     const response = await mailchimp.batches.start({
-//       operations, // Array of operations
-//     });
-
-//     console.log("Batch operation initiated:", response);
-
-//     return response;
-//   } catch (error) {
-//     console.error("Error starting batch operation:", error);
-//     throw error;
-//   }
-// }
 
 /**
  * Update merge field by tag
@@ -202,10 +173,23 @@ async function updateMergeFieldByTag(listId, tag, data) {
   return response;
 }
 
+
 /**
  * Get all merge fields for a list
- * 
+ *
+ * @param {string} listId - The Mailchimp list ID
+ * @returns {Promise} - A promise that resolves with all merge fields for the list
+ */
+Cypress.Commands.add('getMergeFields', async (listId) => {
+	return getMergeFields(listId);
+});
+
+/**
+ * Get all merge fields for a list
+ *
  * Mailchimp paginates merge fields
+ * @param {string} listId - The Mailchimp list ID
+ * @returns {Promise} - A promise that resolves with all merge fields for the list
  */
 async function getMergeFields(listId) {
   let mergeFields = [];
@@ -250,8 +234,8 @@ async function updateMergeField(listId, mergeId, name, data) {
  * Wrapper function to delete a contact specifically from the "10up" Mailchimp list.
  *
  * This function wraps the generic `deleteContact` function and automatically
- * retrieves the list ID for the "10up" list. It simplifies the process of 
- * deleting contacts from this specific list by removing the need to manually 
+ * retrieves the list ID for the "10up" list. It simplifies the process of
+ * deleting contacts from this specific list by removing the need to manually
  * provide the list ID.
  *
  * @param {string} email - The email address of the contact to delete

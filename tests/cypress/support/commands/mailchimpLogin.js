@@ -12,14 +12,14 @@ Cypress.Commands.add('mailchimpLogout', () => {
 
 /**
  * Log into Mailchimp account
- * 
+ *
  * Not sure we should put this much logic into one command, but we need
  * the Mailchimp login functionality to test settings.test.js independently
  */
 Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
 	username = username ?? Cypress.env('MAILCHIMP_USERNAME');
 	password = password ?? Cypress.env('MAILCHIMP_PASSWORD');
-	
+
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 	// Logout if already connected.
@@ -66,9 +66,9 @@ Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
 /**
  * Adds a wrapper over the mailchimpLogin command to check if
  * a user is already logged in.
- * 
+ *
  * This is to increase testing speed
- * 
+ *
  * The name is a mouth full, but is named as such to be explicit
  */
 Cypress.Commands.add('mailchimpLoginIfNotAlreadyLoggedIn', () => {
@@ -78,6 +78,7 @@ Cypress.Commands.add('mailchimpLoginIfNotAlreadyLoggedIn', () => {
 		const hasLogout = $body.find('input[value="Logout"]').length > 0;
 		if (!hasLogout) {
 			cy.mailchimpLogin();
+			cy.get('.mc-user h3').contains('Logged in as: ');
 		} else {
 			cy.log('Already logged into Mailchimp account');
 		}

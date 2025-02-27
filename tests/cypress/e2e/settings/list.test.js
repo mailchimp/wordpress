@@ -19,7 +19,7 @@ describe('Mailchimp lists ', () => {
 		});
 	});
 
-	it('All lists from user\'s account populate the WP admin dropdown list', () => {
+	it("All lists from user's account populate the WP admin dropdown list", () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		const $wpLists = cy.get('#mc_list_id > option[value]:not([value=""])'); // Lists from the WP admin dropdown
@@ -42,11 +42,20 @@ describe('Mailchimp lists ', () => {
 		cy.selectList('10up');
 		cy.get('#mc-message .success_msg b').contains('Success!');
 
-        // Verify that the settings are visible if a list is saved
-        cy.get('input[value="Update Subscribe Form Settings"]').should('exist');
+		// Verify that the settings are visible if a list is saved
+		cy.get('input[value="Update Subscribe Form Settings"]').should('exist');
 	});
 
-	// This test has been decided to be skipped and marked as a "doing it wrong" site owner scenario
-	// We are not worried about this testing scenario
-	it.skip('Admin that has never saved a list can not see the form on the front end', () => {});
+	it('Admin that has never saved a list can not see the form on the front end', () => {
+		cy.wpCli('wp option delete mc_list_id').then(() => {
+			cy.visit(shortcodePostURL);
+			cy.get('#mc_signup_form').should('not.exist');
+
+			cy.visit(blockPostPostURL);
+			cy.get('#mc_signup_form').should('not.exist');
+
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+			cy.selectList('10up');
+		});
+	});
 });
