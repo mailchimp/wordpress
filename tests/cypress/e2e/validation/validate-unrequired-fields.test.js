@@ -8,8 +8,7 @@ describe('Validate unrequired fields', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ shortcodePostURL, blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP
@@ -37,7 +36,7 @@ describe('Validate unrequired fields', () => {
 		cy.setJavaScriptOption(true);
 	});
 
-    it('Unrequired fields can be submitted while blank', () => {
+	it('Unrequired fields can be submitted while blank', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 
@@ -64,15 +63,14 @@ describe('Validate unrequired fields', () => {
 			const email = generateRandomEmail('unrequired-validation-test');
 			cy.get('#mc_mv_EMAIL').type(email);
 
-			// // TODO: This is failing because of a bug causing single opt-in to malfunction. Fix is ready for 1.7.0.
 			// Step 6: Verify that the form was submitted successfully
-			// cy.submitFormAndVerifyWPSuccess();
+			cy.submitFormAndVerifyWPSuccess();
 
-			// // Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-			// cy.verifyContactInMailchimp(email);
+			// Step 7: Verify that the contact was added to the Mailchimp account via the Mailchimp API
+			cy.verifyContactInMailchimp(email);
 
-			// // Step 8: Cleanup and delete contact
-			// cy.deleteContactFromList(email);
+			// Step 8: Cleanup and delete contact
+			cy.deleteContactFromList(email);
 
 			/**
 			 * Phone Number - Handled in /validation/us-phone.test.js

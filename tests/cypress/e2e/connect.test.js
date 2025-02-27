@@ -23,8 +23,6 @@ describe('Admin can connect to "Mailchimp" Account', () => {
 
 		// Mailchimp lists exists and has at least one audience
 		cy.get('#mc_list_id').should('exist');
-		cy.get('#mc_list_id')
-		.children()
-		.should('have.length.greaterThan', 1); // The " — Select A List — " default option will always be present
+		cy.get('#mc_list_id').children().should('have.length.greaterThan', 1); // The " — Select A List — " default option will always be present
 	});
 });

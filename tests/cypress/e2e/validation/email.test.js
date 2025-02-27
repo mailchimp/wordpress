@@ -16,7 +16,7 @@ describe('General merge field validation', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			blockPostPostURL = urls.blockPostPostURL;
+			({ blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP

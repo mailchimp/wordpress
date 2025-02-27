@@ -19,7 +19,11 @@ describe('Validate required fields', () => {
 		{ selector: '#mc_mv_MMERGE8', errorMessage: 'Date:', input: '01/01/2030' },
 		{ selector: '#mc_mv_MMERGE9', errorMessage: 'Zip Code:', input: '12345' },
 		{ selector: '#mc_mv_MMERGE10', errorMessage: 'Website:', input: 'https://10up.com' },
-		{ selector: '#mc_mv_MMERGE11', errorMessage: 'Image:', input: 'https://10up.com/wp-content/themes/10up-sept2016/assets/img/icon-strategy.png' },
+		{
+			selector: '#mc_mv_MMERGE11',
+			errorMessage: 'Image:',
+			input: 'https://10up.com/wp-content/themes/10up-sept2016/assets/img/icon-strategy.png',
+		},
 	];
 
 	const requiredSelectFields = [
@@ -34,8 +38,8 @@ describe('Validate required fields', () => {
 
 	before(() => {
 		// Load the post URLs from the JSON file
-		cy.fixture('postUrls').then((urls) => {
-			blockPostPostURL = urls.blockPostPostURL;
+		cy.fixture('postUrls').then(({ blockPostPostURL: url }) => {
+			blockPostPostURL = url;
 		});
 
 		cy.login(); // WordPress login

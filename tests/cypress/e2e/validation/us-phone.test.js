@@ -14,19 +14,19 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 	const validPhones = [
 		{ area: '123', detail1: '456', detail2: '7890' },
-		{ area: '987', detail1: '654', detail2: '3210' }
+		{ area: '987', detail1: '654', detail2: '3210' },
 	];
 	const invalidPhones = [
 		{ area: '123', detail1: '456', detail2: '78a0' },
-		{ area: '123', detail1: '45!', detail2: '7890' }
+		{ area: '123', detail1: '45!', detail2: '7890' },
 	];
 	const tooShortPhones = [
 		{ area: '12', detail1: '456', detail2: '789' },
-		{ area: '', detail1: '45', detail2: '7890' }
+		{ area: '', detail1: '45', detail2: '7890' },
 	];
 	const tooLongPhones = [
 		{ area: '1234', detail1: '567', detail2: '890' },
-		{ area: '123', detail1: '4567', detail2: '8901' }
+		{ area: '123', detail1: '4567', detail2: '8901' },
 	];
 
 	before(() => {
@@ -34,12 +34,14 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ blockPostPostURL } = urls);
 		});
 
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'PHONE', { required: true, options: { phone_format: 'US' } }).then(() => {
+			cy.updateMergeFieldByTag(listId, 'PHONE', {
+				required: true,
+				options: { phone_format: 'US' },
+			}).then(() => {
 				cy.selectList('10up');
 			});
 		});
@@ -50,7 +52,10 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 	after(() => {
 		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'PHONE', { required: false, options: { phone_format: 'none' } });
+			cy.updateMergeFieldByTag(listId, 'PHONE', {
+				required: false,
+				options: { phone_format: 'none' },
+			});
 		});
 		cy.selectList('10up');
 		cy.setJavaScriptOption(true);

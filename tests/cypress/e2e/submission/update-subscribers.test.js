@@ -28,11 +28,12 @@ describe('Update Existing Subscriber?', () => {
 				console.log(`${email} exists`);
 			}
 		});
-
 	});
 
 	function generateRandomString(length = 10) {
-		return Math.random().toString(36).substring(2, 2 + length);
+		return Math.random()
+			.toString(36)
+			.substring(2, 2 + length);
 	}
 
 	it('Update existing subscribers when they resubmit the signup form if option is checked', () => {
@@ -58,7 +59,7 @@ describe('Update Existing Subscriber?', () => {
 			expect(contact.merge_fields.LNAME).to.equal(lastName);
 		});
 	});
-	
+
 	it('Verify that existing subscriber data is updated accurately without creating duplicate records', () => {
 		// Navigate to the shortcode post
 		cy.visit(blockPostPostURL);
@@ -78,7 +79,9 @@ describe('Update Existing Subscriber?', () => {
 		// Verify a duplicate contact has not been created
 		cy.getListId('10up').then((listId) => {
 			cy.getContactsFromAList(listId).then((contacts) => {
-				const filteredByEmail = contacts.filter((contact) => contact.email_address === email);
+				const filteredByEmail = contacts.filter(
+					(contact) => contact.email_address === email,
+				);
 
 				expect(filteredByEmail.length).to.equal(1); // Only one match found
 				expect(filteredByEmail[0].email_address).to.equal(email); // The one match is our email
@@ -89,7 +92,7 @@ describe('Update Existing Subscriber?', () => {
 	// TODO: This test is correct, but failing to a bug allowing contacts to be updated
 	// regardless of the "Update Existing Subscriber?" option
 	// Fix in issue 113 scheduled for 1.7.0.
-	it.skip('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
+	it('Do not update existing subscribers when they resubmit the signup form if option is unchecked', () => {
 		// Not sure why we have to log in here, but we do
 		cy.login(); // WP
 
@@ -106,6 +109,8 @@ describe('Update Existing Subscriber?', () => {
 
 		// Verify error
 		cy.submitFormAndVerifyError();
-		cy.get('.mc_error_msg').contains(/This email address is already subscribed to the list./i);
+		cy.get('.mc_error_msg').contains(
+			/This email address has already been subscribed to this list./i,
+		);
 	});
 });
