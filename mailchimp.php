@@ -96,9 +96,9 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
 
-// Init the block.
-require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/mailchimp/class-mailchimp-list-subscribe-form-block.php';
-$block = new Mailchimp_List_Subscribe_Form_Block();
+// Init the blocks.
+require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/class-mailchimp-list-subscribe-form-blocks.php';
+$block = new Mailchimp_List_Subscribe_Form_Blocks();
 $block->init();
 
 /**

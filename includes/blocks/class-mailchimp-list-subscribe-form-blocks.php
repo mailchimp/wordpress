@@ -1,6 +1,6 @@
 <?php
 /**
- * Class responsible for Mailchimp List Subscribe Form block.
+ * Class responsible for Mailchimp List Subscribe Form blocks.
  *
  * @package Mailchimp
  */
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *
  * @since 1.6.0
  */
-class Mailchimp_List_Subscribe_Form_Block {
+class Mailchimp_List_Subscribe_Form_Blocks {
 
 	/**
 	 * Initialize the class.
@@ -26,7 +26,7 @@ class Mailchimp_List_Subscribe_Form_Block {
 			return;
 		}
 
-		add_action( 'init', array( $this, 'register_block' ) );
+		add_action( 'init', array( $this, 'register_blocks' ) );
 
 		add_action( 'rest_api_init', array( $this, 'register_rest_endpoints' ) );
 	}
@@ -34,9 +34,7 @@ class Mailchimp_List_Subscribe_Form_Block {
 	/**
 	 * Register the block.
 	 */
-	public function register_block() {
-		$block_json_file = MCSF_DIR . 'dist/blocks/mailchimp/block.json';
-
+	public function register_blocks() {
 		// Get the default visibility of merge fields.
 		$merge_fields_visibility = array();
 		$merge_fields            = get_option( 'mc_merge_vars', array() );
@@ -57,63 +55,74 @@ class Mailchimp_List_Subscribe_Form_Block {
 			}
 		}
 
+		$attributes = array(
+			'header'                      => array(
+				'type'    => 'string',
+				'default' => get_option( 'mc_header_content', '' ),
+			),
+			'sub_header'                  => array(
+				'type'    => 'string',
+				'default' => get_option( 'mc_subheader_content', '' ),
+			),
+			'list_id'                     => array(
+				'type'    => 'string',
+				'default' => get_option( 'mc_list_id', '' ),
+			),
+			'submit_text'                 => array(
+				'type'    => 'string',
+				'default' => get_option( 'mc_submit_text', esc_html__( 'Subscribe', 'mailchimp' ) ),
+			),
+			'show_default_fields'         => array(
+				'type'    => 'boolean',
+				'default' => false,
+			),
+			'merge_fields_visibility'     => array(
+				'type'    => 'object',
+				'default' => $merge_fields_visibility,
+			),
+			'interest_groups_visibility'  => array(
+				'type'    => 'object',
+				'default' => $interest_groups_visibility,
+			),
+			'is_preview'                  => array(
+				'type'    => 'boolean',
+				'default' => false,
+			),
+			'double_opt_in'               => array(
+				'type'    => 'boolean',
+				'default' => (bool) get_option( 'mc_double_optin', true ),
+			),
+			'update_existing_subscribers' => array(
+				'type'    => 'boolean',
+				'default' => (bool) get_option( 'mc_update_existing', true ),
+			),
+			'show_unsubscribe_link'       => array(
+				'type'    => 'boolean',
+				'default' => (bool) get_option( 'mc_use_unsub_link', 'off' ) === 'on',
+			),
+			'unsubscribe_link_text'       => array(
+				'type'    => 'string',
+				'default' => esc_html__( 'unsubscribe from list', 'mailchimp' ),
+			)
+		);
+
+		// Register the Mailchimp List Subscribe Form block.
+		$block_json_file = MCSF_DIR . 'dist/blocks/mailchimp/block.json';
 		if ( file_exists( $block_json_file ) ) {
 			$block_folder = dirname( $block_json_file );
 			register_block_type(
 				$block_folder,
 				array(
-					'attributes' => array(
-						'header'                      => array(
-							'type'    => 'string',
-							'default' => get_option( 'mc_header_content', '' ),
-						),
-						'sub_header'                  => array(
-							'type'    => 'string',
-							'default' => get_option( 'mc_subheader_content', '' ),
-						),
-						'list_id'                     => array(
-							'type'    => 'string',
-							'default' => get_option( 'mc_list_id', '' ),
-						),
-						'submit_text'                 => array(
-							'type'    => 'string',
-							'default' => get_option( 'mc_submit_text', esc_html__( 'Subscribe', 'mailchimp' ) ),
-						),
-						'show_default_fields'         => array(
-							'type'    => 'boolean',
-							'default' => false,
-						),
-						'merge_fields_visibility'     => array(
-							'type'    => 'object',
-							'default' => $merge_fields_visibility,
-						),
-						'interest_groups_visibility'  => array(
-							'type'    => 'object',
-							'default' => $interest_groups_visibility,
-						),
-						'is_preview'                  => array(
-							'type'    => 'boolean',
-							'default' => false,
-						),
-						'double_opt_in'               => array(
-							'type'    => 'boolean',
-							'default' => (bool) get_option( 'mc_double_optin', true ),
-						),
-						'update_existing_subscribers' => array(
-							'type'    => 'boolean',
-							'default' => (bool) get_option( 'mc_update_existing', true ),
-						),
-						'show_unsubscribe_link'       => array(
-							'type'    => 'boolean',
-							'default' => (bool) get_option( 'mc_use_unsub_link', 'off' ) === 'on',
-						),
-						'unsubscribe_link_text'       => array(
-							'type'    => 'string',
-							'default' => esc_html__( 'unsubscribe from list', 'mailchimp' ),
-						),
-					),
+					'attributes' => $attributes,
 				)
 			);
+		}
+
+		// Register the Mailchimp form field block.
+		$form_field_block_json_file = MCSF_DIR . 'dist/blocks/mailchimp-form-field/block.json';
+		if ( file_exists( $form_field_block_json_file ) ) {
+			$form_field_block_folder = dirname( $form_field_block_json_file );
+			register_block_type($form_field_block_folder );
 		}
 
 		$data = array(

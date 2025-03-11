@@ -1,0 +1,40 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "mailchimp/mailchimp-form-field",
+  "title": "Form Field",
+  "category": "widgets",
+	"attributes": {
+		"tag": {
+			"type": "string"
+		},
+    "label": {
+      "type": "string"
+    },
+    "visible": {
+      "type": "boolean"
+    },
+    "type": {
+      "type": "string"
+    }
+	},
+	"supports": {
+		"html": false,
+		"reusable": true,
+    "lock": false,
+		"spacing": {
+			"padding": true,
+			"margin": true
+		},
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    }
+	},
+  "parent": [
+		"mailchimp/mailchimp"
+	],
+  "usesContext": ["mailchimp/list_id"],
+  "editorScript": "file:./index.js",
+	"render": "file:./field-markup.php"
+}
