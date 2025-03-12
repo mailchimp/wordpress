@@ -34,8 +34,7 @@ $num_fields = count( $merge_fields );
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php
-	var_dump($attributes);
-	if ( ! $merge_field['public'] ) {
+	if ( ! $merge_field['public'] ) { // TODO: Do we need this?
 		echo '<div style="display:none;">' . mailchimp_form_field( $merge_field, $num_fields, $is_visible, $label ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 	} else {
 		echo mailchimp_form_field( $merge_field, $num_fields, $is_visible, $label ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function

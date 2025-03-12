@@ -13,6 +13,18 @@
 		return;
 	}
 
+	$block_instance = $block->parsed_block;
+
+	// Backwards compatibility for old block.
+	$inner_blocks = $block_instance['innerBlocks'] ?? [];
+	if ( empty( $inner_blocks ) ) {
+		mailchimp_sf_signup_form();
+		?>
+		</div>
+		<?php
+		return;
+	}
+
 	$list_id                    = $attributes['list_id'] ?? '';
 	$header                     = $attributes['header'] ?? '';
 	$sub_heading                = $attributes['sub_header'] ?? '';
@@ -20,9 +32,7 @@
 	$submit_text                = $attributes['submit_text'] ?? __( 'Subscribe', 'mailchimp' );
 	$merge_fields               = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
 	$igs                        = get_option( 'mailchimp_sf_interest_groups_' . $list_id );
-	$merge_fields_visibility    = $attributes['merge_fields_visibility'] ?? array();
 	$interest_groups_visibility = $attributes['interest_groups_visibility'] ?? array();
-	$show_default_fields        = $attributes['show_default_fields'] ?? true;
 	$show_unsubscribe_link      = $attributes['show_unsubscribe_link'] ?? get_option( 'mc_use_unsub_link' ) === 'on';
 	$unsubscribe_link_text      = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 
@@ -164,32 +174,17 @@
 					</div>
 
 					<?php
-					// don't show the "required" stuff if there's only 1 field to display.
-					$num_fields = 0;
-					foreach ( (array) $merge_fields as $merge_field ) {
-						$should_display = ( isset( $merge_fields_visibility[ $merge_field['tag'] ] ) && 'on' === $merge_fields_visibility[ $merge_field['tag'] ] ) || $show_default_fields;
-						if ( $merge_field['required'] || $should_display ) {
-							++$num_fields;
-						}
-					}
+					echo $content;
 
-					if ( is_array( $merge_fields ) ) {
-						// head on back to the beginning of the array
-						reset( $merge_fields );
-					}
-
-					// Loop over our vars, and output the ones that are set to display
-					foreach ( $merge_fields as $merge_field ) {
-						$should_display = ( isset( $merge_fields_visibility[ $merge_field['tag'] ] ) && 'on' === $merge_fields_visibility[ $merge_field['tag'] ] ) || $show_default_fields;
-						if ( ! $merge_field['public'] ) {
-							echo '<div style="display:none;">' . mailchimp_form_field( $merge_field, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-						} else {
-							echo mailchimp_form_field( $merge_field, $num_fields, $should_display ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
+					$visible_inner_blocks = array_filter(
+						$inner_blocks,
+						function( $inner_block ) {
+							return $inner_block['attrs']['visible'] ?? false;
 						}
-					}
+					);
 
 					// Show an explanation of the * if there's more than one field
-					if ( $num_fields > 1 ) {
+					if ( count( $visible_inner_blocks ) > 1 ) {
 						?>
 						<div id="mc-indicates-required">
 							* = <?php esc_html_e( 'required field', 'mailchimp' ); ?>
