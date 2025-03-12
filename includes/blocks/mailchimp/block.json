@@ -1,15 +1,11 @@
 {
 	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
+	"apiVersion": 3,
 	"name": "mailchimp/mailchimp",
 	"title": "Mailchimp List Subscribe Form",
 	"category": "widgets",
 	"description": "Mailchimp List Subscribe Form",
-	"attributes": {
-		"json": {
-			"type": "string"
-		}
-	},
+	"attributes": {},
 	"supports": {
 		"html": false,
 		"multiple": false,
@@ -41,6 +37,12 @@
       "textAlign": true
     }
 	},
+  "allowedBlocks": [
+		"mailchimp/mailchimp-form-field"
+	],
+  "providesContext": {
+    "mailchimp/list_id": "list_id"
+  },
 	"textdomain": "mailchimp",
 	"editorScript": "file:./index.js",
 	"render": "file:./markup.php",

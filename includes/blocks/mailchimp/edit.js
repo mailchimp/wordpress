@@ -1,161 +1,285 @@
-import { RichText, InspectorControls, useBlockProps } from '@wordpress/block-editor';
-import { __ } from '@wordpress/i18n';
+import {
+	RichText,
+	InspectorControls,
+	useBlockProps,
+	store as blockEditorStore,
+	InnerBlocks,
+} from '@wordpress/block-editor';
+import { __, sprintf } from '@wordpress/i18n';
 import {
 	PanelBody,
 	ToggleControl,
-	Disabled,
-	CheckboxControl,
 	SelectControl,
+	Spinner,
+	Placeholder,
 } from '@wordpress/components';
-import ServerSideRender from '@wordpress/server-side-render';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { createBlock } from '@wordpress/blocks';
+import Icon from './icon';
+
+const SelectListPlaceholder = () => {
+	return (
+		<Placeholder
+			icon={Icon}
+			label={__('Mailchimp Block', 'mailchimp')}
+			instructions={__(
+				'Please select the Mailchimp list in block settings sidebar.',
+				'mailchimp',
+			)}
+		/>
+	);
+};
 
 export const BlockEdit = (props) => {
-	const { attributes, setAttributes } = props;
+	const { clientId, attributes, setAttributes } = props;
 	const {
 		header,
 		sub_header,
 		list_id,
 		submit_text,
-		show_default_fields,
 		double_opt_in,
 		update_existing_subscribers,
 		show_unsubscribe_link,
 		unsubscribe_link_text,
-		merge_fields_visibility,
 		interest_groups_visibility,
 	} = attributes;
 	const blockProps = useBlockProps();
+	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
 
 	const { mailchimp_sf_block_data } = window;
-	const listOptions =
-		mailchimp_sf_block_data?.lists.map((list) => ({
+	const { lists, merge_fields_visibility } = mailchimp_sf_block_data;
+
+	const listOptions = [];
+	// Check if selected list is not in the list of available lists.
+	const listIds = lists?.map((list) => list.id) || [];
+	if (!listIds.includes(list_id) && listIds.length > 0) {
+		listOptions.push({
+			label: __('Select a list', 'mailchimp'),
+			value: '',
+		});
+		setAttributes({ list_id: '' });
+	}
+
+	listOptions.push(
+		...(lists?.map((list) => ({
 			label: list.name,
 			value: list.id,
-		})) || [];
+		})) || []),
+	);
 
 	const [listData, setListData] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState('');
 
-	useEffect(() => {
+	// Select current innerBlocks
+	const innerBlocks = useSelect(
+		(select) => select(blockEditorStore).getBlocksByClientId(clientId)?.[0]?.innerBlocks || [],
+		[clientId],
+	);
+	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag);
+
+	const updateList = (listId, replaceBlocks = false) => {
+		setError('');
+		setIsLoading(true);
+
 		// Fetch data from your API
-		apiFetch({ path: `/mailchimp/v1/list-data/${list_id}` })
+		apiFetch({ path: `/mailchimp/v1/list-data/${listId}` })
 			.then((data) => {
+				if (replaceBlocks) {
+					// Replace all innerBlocks with new ones on list change.
+					const listInnerBlocks = data?.merge_fields?.map((field) =>
+						createBlock('mailchimp/mailchimp-form-field', {
+							tag: field.tag,
+							label: field.name,
+							type: field.type,
+							visible:
+								(field.required || merge_fields_visibility?.[field.tag] === 'on') &&
+								field.public,
+						}),
+					);
+					replaceInnerBlocks(clientId, [...listInnerBlocks], false);
+				} else if (exisingTags && exisingTags.length > 0) {
+					// Update existing innerBlocks with if new fields are added to the list or removed from the list.
+					const newFormFields = data?.merge_fields?.filter(
+						(field) => !exisingTags.includes(field.tag),
+					);
+					const updatedInnerBlocks = innerBlocks.filter((block) => {
+						const { tag } = block.attributes;
+						return data?.merge_fields?.find((field) => field.tag === tag);
+					});
+					if (
+						newFormFields.length > 0 ||
+						updatedInnerBlocks.length !== innerBlocks.length
+					) {
+						const newBlocks = newFormFields.map((field) =>
+							createBlock('mailchimp/mailchimp-form-field', {
+								tag: field.tag,
+								label: field.name,
+								type: field.type,
+								visible:
+									(field.required ||
+										merge_fields_visibility?.[field.tag] === 'on') &&
+									field.public,
+							}),
+						);
+						replaceInnerBlocks(clientId, [...updatedInnerBlocks, ...newBlocks], false);
+					}
+				}
+
 				setListData(data);
+
+				// Set list data in global variable to be used in form field block.
+				if (!window.mailchimpListData) {
+					window.mailchimpListData = {};
+				}
+				window.mailchimpListData[listId] = data?.merge_fields?.reduce((acc, field) => {
+					acc[field.tag] = field;
+					return acc;
+				}, {});
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				// eslint-disable-next-line no-console
 				console.error('Error fetching list data:', error);
+				setError(error.message);
+				setIsLoading(false);
 			});
-	}, [list_id]);
+	};
+
+	// Update the innerBlocks on initial render if needed.
+	useEffect(() => {
+		const listIds = lists?.map((list) => list.id) || [];
+		if (!list_id || !listIds.includes(list_id)) {
+			setListData({});
+			setIsLoading(false);
+			return;
+		}
+		setError('');
+		setIsLoading(true);
+
+		updateList(list_id, false);
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps -- Only run on initial render.
+
+	if (isLoading) {
+		return (
+			<div style={{ position: 'relative' }}>
+				<div
+					style={{
+						position: 'absolute',
+						top: '50%',
+						left: '50%',
+						marginTop: '-9px',
+						marginLeft: '-9px',
+					}}
+				>
+					<Spinner />
+				</div>
+			</div>
+		);
+	}
+
+	// Create a template for innerBlocks based on list data and visibility settings.
+	const template = listData?.merge_fields?.map((field) => [
+		'mailchimp/mailchimp-form-field',
+		{
+			tag: field.tag,
+			label: field.name,
+			type: field.type,
+			visible:
+				(field.required || merge_fields_visibility?.[field.tag] === 'on') && field.public,
+		},
+	]);
 
 	return (
 		<>
 			<div {...blockProps}>
-				<RichText
-					className="wp-block-example-block__header"
-					tagName="h2"
-					placeholder={__('Please enter a header text.', 'mailchimp')}
-					value={header}
-					onChange={(header) => setAttributes({ header })}
-				/>
-				<RichText
-					className="wp-block-example-block__sub-header"
-					tagName="h3"
-					placeholder={__('Please enter a sub header text.', 'mailchimp')}
-					value={sub_header}
-					onChange={(sub_header) => setAttributes({ sub_header })}
-				/>
-				<Disabled>
-					<ServerSideRender
-						attributes={{
-							list_id,
-							show_default_fields,
-							merge_fields_visibility,
-							interest_groups_visibility,
-							is_preview: true,
-						}}
-						block="mailchimp/mailchimp"
-					/>
-				</Disabled>
-				<div className="mc_signup_submit">
-					<RichText
-						id="mc_signup_submit"
-						className="button"
-						tagName="button"
-						placeholder={__('Enter button text.', 'mailchimp')}
-						value={submit_text}
-						onChange={(submit_text) => setAttributes({ submit_text })}
-					/>
-				</div>
-				{!!show_unsubscribe_link && (
-					<div id="mc_unsub_link">
+				{!list_id && <SelectListPlaceholder />}
+				{list_id && (
+					<>
 						<RichText
-							tagName="a"
-							value={unsubscribe_link_text}
-							onChange={(unsubscribe_link_text) =>
-								setAttributes({ unsubscribe_link_text })
-							}
+							className="wp-block-example-block__header"
+							tagName="h2"
+							placeholder={__('Please enter a header text.', 'mailchimp')}
+							value={header}
+							onChange={(header) => setAttributes({ header })}
 						/>
-					</div>
+						<RichText
+							className="wp-block-example-block__sub-header"
+							tagName="h3"
+							placeholder={__('Please enter a sub header text.', 'mailchimp')}
+							value={sub_header}
+							onChange={(sub_header) => setAttributes({ sub_header })}
+						/>
+						{error && (
+							<Placeholder>
+								{sprintf(
+									// translators: %s: error message describing the problem
+									__('Error fetching list data: %s'),
+									error,
+								)}
+							</Placeholder>
+						)}
+						<div id="mc_signup_form">
+							<div className="mc_form_inside">
+								<InnerBlocks
+									allowedBlocks={['mailchimp/mailchimp-form-field']}
+									orientation="vertical"
+									template={template}
+									templateLock="insert"
+								/>
+								<div id="mc-indicates-required">
+									{__('* = required field', 'mailchimp')}
+								</div>
+								<div className="mc_signup_submit">
+									<RichText
+										id="mc_signup_submit"
+										className="button"
+										tagName="button"
+										placeholder={__('Enter button text.', 'mailchimp')}
+										value={submit_text}
+										onChange={(submit_text) => setAttributes({ submit_text })}
+									/>
+								</div>
+								{!!show_unsubscribe_link && (
+									<div id="mc_unsub_link">
+										<RichText
+											tagName="a"
+											value={unsubscribe_link_text}
+											onChange={(unsubscribe_link_text) =>
+												setAttributes({ unsubscribe_link_text })
+											}
+										/>
+									</div>
+								)}
+							</div>
+						</div>
+					</>
 				)}
 			</div>
-
 			<InspectorControls>
 				<PanelBody title={__('Settings', 'mailchimp')} initialOpen>
 					<SelectControl
 						label={__('Select a list', 'mailchimp')}
 						value={list_id}
 						options={listOptions}
-						onChange={(list_id) => setAttributes({ list_id })}
+						onChange={(list_id) => {
+							setIsLoading(true);
+							setAttributes({ list_id });
+							updateList(list_id, true);
+						}}
 						help={__(
 							"Please select the Mailchimp list you'd like to connect to your form.",
 							'mailchimp',
 						)}
 						__nextHasNoMarginBottom
 					/>
-					<h3>{__('Form Fields', 'mailchimp')}</h3>
-					<ToggleControl
-						label={__('Show default fields', 'mailchimp')}
-						checked={show_default_fields}
-						onChange={(show_default_fields) => {
-							setAttributes({ show_default_fields });
-						}}
-						help={__(
-							'Show fields marked as visible in Mailchimp settings.',
-							'mailchimp',
-						)}
-						__nextHasNoMarginBottom
-					/>
-					{!show_default_fields &&
-						listData?.merge_fields?.map((field) => (
-							<div>
-								<CheckboxControl
-									key={field.tag}
-									label={`${field.name} (${field.tag})`}
-									checked={
-										merge_fields_visibility?.[field.tag] === 'on' ||
-										field.required
-									}
-									onChange={(checked) => {
-										setAttributes({
-											merge_fields_visibility: {
-												...merge_fields_visibility,
-												[field.tag]: checked ? 'on' : 'off',
-											},
-										});
-									}}
-									className="mailchimp-merge-field-checkbox"
-									disabled={field.required}
-									__nextHasNoMarginBottom
-								/>
-							</div>
-						))}
 					{listData?.interest_groups?.length > 0 && (
 						<div style={{ marginTop: '20px' }}>
 							<h3>{__('Groups Settings', 'mailchimp')}</h3>
 							{listData?.interest_groups?.map((group) => (
-								<CheckboxControl
+								<ToggleControl
 									key={group.id}
 									label={group.title}
 									checked={interest_groups_visibility?.[group.id] === 'on'}
@@ -167,7 +291,6 @@ export const BlockEdit = (props) => {
 											},
 										});
 									}}
-									className="mailchimp-group-checkbox"
 									__nextHasNoMarginBottom
 								/>
 							))}

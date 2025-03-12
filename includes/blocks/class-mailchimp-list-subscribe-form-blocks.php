@@ -72,21 +72,9 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 				'type'    => 'string',
 				'default' => get_option( 'mc_submit_text', esc_html__( 'Subscribe', 'mailchimp' ) ),
 			),
-			'show_default_fields'         => array(
-				'type'    => 'boolean',
-				'default' => false,
-			),
-			'merge_fields_visibility'     => array(
-				'type'    => 'object',
-				'default' => $merge_fields_visibility,
-			),
 			'interest_groups_visibility'  => array(
 				'type'    => 'object',
 				'default' => $interest_groups_visibility,
-			),
-			'is_preview'                  => array(
-				'type'    => 'boolean',
-				'default' => false,
 			),
 			'double_opt_in'               => array(
 				'type'    => 'boolean',
@@ -126,8 +114,9 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		}
 
 		$data = array(
-			'admin_settings_url' => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
-			'lists'              => $this->mailchimp_sf_get_lists(),
+			'admin_settings_url'      => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'lists'                   => $this->mailchimp_sf_get_lists(),
+			'merge_fields_visibility' => $merge_fields_visibility,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );

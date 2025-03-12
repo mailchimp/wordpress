@@ -366,21 +366,24 @@ function mailchimp_interest_group_field( $ig ) {
 /**
  * Generate and display markup for form fields
  *
- * @param array $data           Array containing informaoin about the field.
- * @param int   $num_fields     The number of fields total we'll be generating markup for. Used in calculating required text logic.
- * @param bool  $should_display Whether or not the field should be displayed.
+ * @param array  $data           Array containing informaoin about the field.
+ * @param int    $num_fields     The number of fields total we'll be generating markup for. Used in calculating required text logic.
+ * @param bool   $should_display Whether or not the field should be displayed.
+ * @param string $label          The label for the field.
  * @return string
  */
-function mailchimp_form_field( $data, $num_fields, $should_display = null ) {
+function mailchimp_form_field( $data, $num_fields, $should_display = null, $label = '' ) {
 	$html = '';
 	$opt  = 'mc_mv_' . $data['tag'];
 	if ( is_null( $should_display ) ) {
-		$should_display = get_option( $opt ) === 'on';
+		$should_display = 'on' === get_option( $opt );
 	}
+
+	$label = ( ! empty( $label ) ) ? $label : $data['name'];
 
 	// See if that var is set as required, or turned on (for display)
 	if ( $data['required'] || $should_display ) {
-		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $data['name'] );
+		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $label );
 		if ( $data['required'] && $num_fields > 1 ) {
 			$label .= '<span class="mc_required">*</span>';
 		}

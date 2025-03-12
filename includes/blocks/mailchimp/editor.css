@@ -11,6 +11,23 @@
 	opacity: 0.5;
 }
 
+
+.mailchimp_merge_field_hidden {
+	display: none;
+}
+
+.is-selected .mailchimp_merge_field_hidden,
+.has-child-selected .mailchimp_merge_field_hidden {
+	display: block;
+	opacity: 0.2;
+	border: 1px dashed grey;
+}
+
+#mc_signup_form .mailchimp_merge_field_hidden .mc_var_label {
+	padding: 0.25em 0.5em;
+	margin: 0px;
+}
+
 #mc_subheader {
 	line-height: 1.25em;
 	margin-bottom: 18px;
@@ -27,4 +44,72 @@
 #mc_unsub_link {
 	margin-top: 1.0em;
 	text-align: center;
+}
+
+.mc_merge_var {
+	margin-bottom: 1.0em;
+}
+.mc_var_label,
+.mc_interest_label {
+	display: block;
+	margin-bottom: 0.5em;
+}
+.mc_input {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_input.mc_phone {
+	width: auto;
+}
+select.mc_select {
+	max-width: 100%;
+	width: 100%;
+}
+.mc_address_label {
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+	display: block;
+}
+.mc_address_label ~ select {
+	max-width: 100%;
+	width: 100%;
+}
+.mc_list li {
+	list-style: none;
+	background: none !important;
+}
+.mc_interests_header {
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_interest label,
+.mc_interest input {
+	margin-bottom: 0.4em;
+}
+#mc_signup_submit {
+	margin-top: 1.5em;
+	padding: 10px 8px;
+	width: 80%;
+}
+#mc_unsub_link a {
+	font-size: 0.75em;
+}
+#mc_unsub_link {
+	margin-top: 1.0em;
+}
+.mc_header_address,
+.mc_email_format {
+	display: block;
+	font-weight: bold;
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_email_options {
+	margin-top: 0.5em;
+}
+.mc_email_type {
+	padding-left: 4px;
 }
