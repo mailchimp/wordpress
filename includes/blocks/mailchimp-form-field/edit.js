@@ -306,18 +306,27 @@ export const MailchimpFormField = (props) => {
 
 export const BlockEdit = (props) => {
 	const blockProps = useBlockProps();
-	const { attributes, setAttributes } = props;
-	const { visible } = attributes;
+	const {
+		attributes,
+		setAttributes,
+		context: { 'mailchimp/list_id': listId },
+	} = props;
+	const { visible, tag } = attributes;
+	const { mailchimpListData } = window;
+	const isPublic = mailchimpListData?.[listId]?.[tag]?.public || true;
+	const isRequired = mailchimpListData?.[listId]?.[tag]?.required || false;
 
 	return (
 		<div {...blockProps}>
 			<MailchimpFormField {...props} />
-			<BlockControls>
-				<ToolbarVisibilityGroup
-					visible={visible}
-					onClick={() => setAttributes({ visible: !visible })}
-				/>
-			</BlockControls>
+			{isPublic && !isRequired && (
+				<BlockControls>
+					<ToolbarVisibilityGroup
+						visible={visible}
+						onClick={() => setAttributes({ visible: !visible })}
+					/>
+				</BlockControls>
+			)}
 		</div>
 	);
 };
