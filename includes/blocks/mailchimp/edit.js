@@ -12,12 +12,14 @@ import {
 	SelectControl,
 	Spinner,
 	Placeholder,
+	Disabled,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import Icon from './icon';
+import { InterestGroups } from './interest-groups';
 
 const SelectListPlaceholder = () => {
 	return (
@@ -232,6 +234,12 @@ export const BlockEdit = (props) => {
 								<div id="mc-indicates-required">
 									{__('* = required field', 'mailchimp')}
 								</div>
+								<Disabled>
+									<InterestGroups
+										listData={listData}
+										visibility={interest_groups_visibility}
+									/>
+								</Disabled>
 								<div className="mc_signup_submit">
 									<RichText
 										id="mc_signup_submit"
