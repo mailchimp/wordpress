@@ -91,7 +91,7 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			'unsubscribe_link_text'       => array(
 				'type'    => 'string',
 				'default' => esc_html__( 'unsubscribe from list', 'mailchimp' ),
-			)
+			),
 		);
 
 		// Register the Mailchimp List Subscribe Form block.
@@ -110,7 +110,7 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		$form_field_block_json_file = MCSF_DIR . 'dist/blocks/mailchimp-form-field/block.json';
 		if ( file_exists( $form_field_block_json_file ) ) {
 			$form_field_block_folder = dirname( $form_field_block_json_file );
-			register_block_type($form_field_block_folder );
+			register_block_type( $form_field_block_folder );
 		}
 
 		$data = array(

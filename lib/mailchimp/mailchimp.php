@@ -183,8 +183,8 @@ class MailChimp_API {
 				update_option( 'mailchimp_sf_auth_error', true );
 			}
 
-			$body       = json_decode( $request['body'], true );
-			$merges     = get_option( 'mc_merge_vars' );
+			$body   = json_decode( $request['body'], true );
+			$merges = get_option( 'mc_merge_vars' );
 			// Get merge fields for the list if we have a list id.
 			if ( ! empty( $list_id ) ) {
 				$merges = get_option( 'mailchimp_sf_merge_fields_' . $list_id );

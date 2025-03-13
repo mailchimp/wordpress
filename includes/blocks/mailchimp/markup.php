@@ -37,11 +37,15 @@
 	$unsubscribe_link_text       = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
 	$double_opt_in               = ( $attributes['double_opt_in'] ?? get_option( 'mc_double_optin' ) === 'on' ) ? 'yes' : 'no';
-	$hash                        = wp_hash( serialize( array(
-		'list_id'         => $list_id,
-		'update_existing' => $update_existing_subscribers,
-		'double_opt_in'   => $double_opt_in,
-	) ) );
+	$hash                        = wp_hash(
+		serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+			array(
+				'list_id'         => $list_id,
+				'update_existing' => $update_existing_subscribers,
+				'double_opt_in'   => $double_opt_in,
+			)
+		)
+	);
 
 	// See if we have valid Merge Vars
 	if ( ! is_array( $merge_fields ) || empty( $list_id ) ) {
@@ -185,11 +189,20 @@
 					</div>
 
 					<?php
-					echo $content;
+					/**
+					 * the $content is the html generated from innerBlocks
+					 * it is being created from the save method in JS or the render_callback
+					 * in php and is sanitized.
+					 *
+					 * Re sanitizing it through `wp_kses_post` causes
+					 * embed blocks to break and other core filters don't apply.
+					 * therefore no additional sanitization is done and it is being output as is
+					 */
+					echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
 					$visible_inner_blocks = array_filter(
 						$inner_blocks,
-						function( $inner_block ) {
+						function ( $inner_block ) {
 							return $inner_block['attrs']['visible'] ?? false;
 						}
 					);

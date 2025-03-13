@@ -22,12 +22,12 @@ $num_fields = count( $merge_fields );
 
 $merge_fields = array_filter(
 	$merge_fields,
-	function( $field ) use ( $field_tag ) {
+	function ( $field ) use ( $field_tag ) {
 		return $field['tag'] === $field_tag;
 	}
 );
 
-$merge_field  = current( $merge_fields );
+$merge_field = current( $merge_fields );
 // Bail if we don't have a merge field.
 if ( empty( $merge_field ) ) {
 	return;

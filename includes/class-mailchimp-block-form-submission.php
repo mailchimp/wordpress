@@ -27,11 +27,15 @@ class Mailchimp_Block_Form_Submission {
 		$update_existing = isset( $_POST['mailchimp_sf_update_existing_subscribers'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_update_existing_subscribers'] ) ) : '';
 		$double_opt_in   = isset( $_POST['mailchimp_sf_double_opt_in'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_double_opt_in'] ) ) : '';
 		$hash            = isset( $_POST['mailchimp_sf_hash'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_hash'] ) ) : '';
-		$expected        = wp_hash( serialize( array(
-			'list_id'         => $list_id,
-			'update_existing' => $update_existing,
-			'double_opt_in'   => $double_opt_in,
-		) ) );
+		$expected        = wp_hash(
+			serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
+				array(
+					'list_id'         => $list_id,
+					'update_existing' => $update_existing,
+					'double_opt_in'   => $double_opt_in,
+				)
+			)
+		);
 
 		// Bail if the hash is invalid.
 		if ( ! hash_equals( $expected, $hash ) ) {
@@ -285,7 +289,7 @@ class Mailchimp_Block_Form_Submission {
 		foreach ( $interest_groups as $$interest_group ) {
 			if ( 'hidden' !== $interest_group['type'] ) {
 				foreach ( $interest_group['groups'] as $group ) {
-					$id            = $group['id'];
+					$id          = $group['id'];
 					$groups->$id = false;
 				}
 			}
@@ -297,12 +301,13 @@ class Mailchimp_Block_Form_Submission {
 	/**
 	 * Get signup form URL for the Mailchimp list.
 	 *
+	 * @param string $list_id The list ID.
 	 * @return string
 	 */
 	protected function get_signup_form_url( $list_id ) {
-		$dc      = get_option( 'mc_datacenter' );
-		$user    = get_option( 'mc_user' );
-		$url     = 'https://' . $dc . '.list-manage.com/subscribe?u=' . $user['account_id'] . '&id=' . $list_id;
+		$dc   = get_option( 'mc_datacenter' );
+		$user = get_option( 'mc_user' );
+		$url  = 'https://' . $dc . '.list-manage.com/subscribe?u=' . $user['account_id'] . '&id=' . $list_id;
 		return $url;
 	}
 }
