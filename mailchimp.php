@@ -101,6 +101,9 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/class-mailchimp-list
 $block = new Mailchimp_List_Subscribe_Form_Blocks();
 $block->init();
 
+// Block form submission handler class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-block-form-submission.php';
+
 /**
  * Do the following plugin setup steps here
  *
@@ -272,8 +275,14 @@ function mailchimp_sf_request_handler() {
 					wp_die( 'Cheatin&rsquo; huh?' );
 				}
 
-				// Attempt the signup
-				mailchimp_sf_signup_submit();
+				// Check if request from latest block.
+				if ( isset( $_POST['mailchimp_sf_list_id'] ) ) {
+					$block_form_submission = new Mailchimp_Block_Form_Submission();
+					$block_form_submission->handle_form_submission();
+				} else {
+					// Attempt the signup
+					mailchimp_sf_signup_submit();
+				}
 
 				// Do a different action for html vs. js
 				switch ( isset( $_POST['mc_submit_type'] ) ? $_POST['mc_submit_type'] : '' ) {

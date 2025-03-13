@@ -132,7 +132,7 @@ class MailChimp_API {
 			}
 
 			$error = json_decode( $request['body'], true );
-			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] );
+			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] ?? esc_html__( 'Something went wrong, Please try again later.', 'mailchimp' ) );
 			return $error;
 		} else {
 			return false;
@@ -145,9 +145,10 @@ class MailChimp_API {
 	 * @param string $endpoint The endpoint to send the request.
 	 * @param string $body The body of the request
 	 * @param string $method The request method.
+	 * @param string $list_id The list id.
 	 * @return mixed
 	 */
-	public function post( $endpoint, $body, $method = 'POST' ) {
+	public function post( $endpoint, $body, $method = 'POST', $list_id = '' ) {
 		$url = $this->api_url . $endpoint;
 
 		$headers = array();
@@ -184,6 +185,11 @@ class MailChimp_API {
 
 			$body       = json_decode( $request['body'], true );
 			$merges     = get_option( 'mc_merge_vars' );
+			// Get merge fields for the list if we have a list id.
+			if ( ! empty( $list_id ) ) {
+				$merges = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
+			}
+
 			$field_name = '';
 			foreach ( $merges as $merge ) {
 				if ( empty( $body['errors'] ) ) {

@@ -383,7 +383,7 @@ function mailchimp_form_field( $data, $num_fields, $should_display = null, $labe
 
 	// See if that var is set as required, or turned on (for display)
 	if ( $data['required'] || $should_display ) {
-		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $label );
+		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . wp_kses_post( $label );
 		if ( $data['required'] && $num_fields > 1 ) {
 			$label .= '<span class="mc_required">*</span>';
 		}
