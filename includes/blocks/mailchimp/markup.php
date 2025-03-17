@@ -28,7 +28,6 @@
 	$list_id                     = $attributes['list_id'] ?? '';
 	$header                      = $attributes['header'] ?? '';
 	$sub_heading                 = $attributes['sub_header'] ?? '';
-	$is_preview                  = $attributes['is_preview'] ?? false;
 	$submit_text                 = $attributes['submit_text'] ?? __( 'Subscribe', 'mailchimp' );
 	$merge_fields                = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
 	$igs                         = get_option( 'mailchimp_sf_interest_groups_' . $list_id );
@@ -155,7 +154,7 @@
 	<div class="mc_container">
 		<?php
 		// See if we have custom header content
-		if ( ! empty( $header ) && ! $is_preview ) {
+		if ( ! empty( $header ) ) {
 			?>
 			<h2>
 				<?php echo wp_kses_post( $header ); ?>
@@ -165,7 +164,7 @@
 		?>
 		<div id="mc_signup">
 			<?php
-			if ( $sub_heading && ! $is_preview ) {
+			if ( $sub_heading ) {
 				?>
 				<div id="mc_subheader">
 					<h3>
@@ -245,39 +244,23 @@
 						}
 					}
 
-					// TODO: This should be based on selected list in block settings.
-					if ( get_option( 'mc_email_type_option' ) ) {
+					?>
+					<div class="mc_signup_submit">
+						<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
+					</div><!-- /mc_signup_submit -->
+
+					<?php
+					$user = get_option( 'mc_user' );
+					if ( $user && $show_unsubscribe_link ) {
+						$api  = mailchimp_sf_get_api();
+						$host = 'https://' . $api->datacenter . '.list-manage.com';
 						?>
-						<div class="mergeRow">
-							<label class="mc_email_format"><?php esc_html_e( 'Preferred Format', 'mailchimp' ); ?></label>
-							<div class="field-group groups mc_email_options">
-								<ul class="mc_list">
-									<li><input type="radio" name="email_type" id="email_type_html" value="html" checked="checked"><label for="email_type_html" class="mc_email_type"><?php esc_html_e( 'HTML', 'mailchimp' ); ?></label></li>
-									<li><input type="radio" name="email_type" id="email_type_text" value="text"><label for="email_type_text" class="mc_email_type"><?php esc_html_e( 'Text', 'mailchimp' ); ?></label></li>
-								</ul>
-							</div>
-						</div>
-
+						<div id="mc_unsub_link" align="center">
+							<a href="<?php echo esc_url( $host . '/unsubscribe/?u=' . $user['account_id'] . '&amp;id=' . $list_id ); ?>" target="_blank">
+								<?php echo esc_html( $unsubscribe_link_text ); ?>
+							</a>
+						</div><!-- /mc_unsub_link -->
 						<?php
-					}
-
-					if ( ! $is_preview ) {
-						?>
-						<div class="mc_signup_submit">
-							<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
-						</div><!-- /mc_signup_submit -->
-
-						<?php
-						$user = get_option( 'mc_user' );
-						if ( $user && $show_unsubscribe_link ) {
-							$api  = mailchimp_sf_get_api();
-							$host = 'https://' . $api->datacenter . '.list-manage.com';
-							?>
-							<div id="mc_unsub_link" align="center">
-								<a href="<?php echo esc_url( $host . '/unsubscribe/?u=' . $user['account_id'] . '&amp;id=' . $list_id ); ?>" target="_blank"><?php echo esc_html( $unsubscribe_link_text ); ?></a>
-							</div><!-- /mc_unsub_link -->
-							<?php
-						}
 					}
 					?>
 				</div><!-- /mc_form_inside -->
