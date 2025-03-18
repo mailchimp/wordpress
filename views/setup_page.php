@@ -331,7 +331,7 @@ $is_list_selected = false;
 				<?php
 				// Interest Groups Table
 				$igs = get_option( 'mc_interest_groups' );
-				if ( is_array( $igs ) && ! isset( $igs['id'] ) ) {
+				if ( is_array( $igs ) && ! empty( $igs ) ) {
 					?>
 					<div class="mc-section">
 						<h3 class="mc-h3"><?php esc_html_e( 'Group Settings', 'mailchimp' ); ?></h3>
