@@ -119,7 +119,7 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 
 		$data = array(
 			'admin_settings_url'      => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
-			'lists'                   => $this->mailchimp_sf_get_lists(),
+			'lists'                   => $this->get_lists(),
 			'merge_fields_visibility' => $merge_fields_visibility,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
@@ -136,8 +136,14 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 	 *
 	 * @return array List of Mailchimp lists.
 	 */
-	public function mailchimp_sf_get_lists() {
-		// Just get out if nothing else matters...
+	public function get_lists() {
+		$lists = get_option( 'mailchimp_sf_lists', array() );
+		// If we have lists, return them.
+		if ( ! empty( $lists ) ) {
+			return $lists;
+		}
+
+		// If we don't have any lists, get them from the API.
 		$api = mailchimp_sf_get_api();
 		if ( ! $api ) {
 			return array();
@@ -148,7 +154,13 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		if ( is_wp_error( $lists ) ) {
 			return array();
 		}
-		return $lists['lists'] ?? array();
+
+		$lists = $lists['lists'] ?? array();
+
+		// Update the option with the lists.
+		update_option( 'mailchimp_sf_lists', $lists );
+
+		return $lists;
 	}
 
 	/**

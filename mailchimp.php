@@ -609,6 +609,15 @@ function mailchimp_sf_change_list_if_necessary() {
 				$list_name = $list['name'];
 				$list_key  = $key;
 			}
+
+			$merge_fields = mailchimp_sf_get_merge_vars( $list['id'], false, false );
+			$interests    = mailchimp_sf_get_interest_categories( $list['id'], false, false );
+			if ( ! empty( $merge_fields ) ) {
+				update_option( 'mailchimp_sf_merge_fields_' . $list['id'], $merge_fields );
+			}
+			if ( ! empty( $interests ) ) {
+				update_option( 'mailchimp_sf_interest_groups_' . $list['id'], $interests );
+			}
 		}
 
 		$orig_list = get_option( 'mc_list_id' );
@@ -647,6 +656,9 @@ function mailchimp_sf_change_list_if_necessary() {
 
 			mailchimp_sf_global_msg( $msg );
 		}
+
+		// Update the lists option.
+		update_option( 'mailchimp_sf_lists', $lists );
 	}
 }
 
@@ -655,9 +667,10 @@ function mailchimp_sf_change_list_if_necessary() {
  *
  * @param string $list_id List ID
  * @param bool   $new_list Whether this is a new list
+ * @param bool   $update_option Whether to update the option
  * @return array
  */
-function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
+function mailchimp_sf_get_merge_vars( $list_id, $new_list, $update_option = true ) {
 	$api = mailchimp_sf_get_api();
 	$mv  = $api->get( 'lists/' . $list_id . '/merge-fields', 80 );
 
@@ -667,7 +680,10 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 	}
 
 	$mv['merge_fields'] = mailchimp_sf_add_email_field( $mv['merge_fields'] );
-	update_option( 'mc_merge_vars', $mv['merge_fields'] );
+	if ( $update_option ) {
+		update_option( 'mc_merge_vars', $mv['merge_fields'] );
+	}
+
 	foreach ( $mv['merge_fields'] as $mv_var ) {
 		$opt = 'mc_mv_' . $mv_var['tag'];
 		// turn them all on by default
@@ -703,9 +719,10 @@ function mailchimp_sf_add_email_field( $merge ) {
  *
  * @param string $list_id List ID
  * @param bool   $new_list Whether this is a new list
+ * @param bool   $update_option Whether to update the option
  * @return array
  */
-function mailchimp_sf_get_interest_categories( $list_id, $new_list ) {
+function mailchimp_sf_get_interest_categories( $list_id, $new_list, $update_option = true ) {
 	$api = mailchimp_sf_get_api();
 	$igs = $api->get( 'lists/' . $list_id . '/interest-categories', 60 );
 
@@ -728,7 +745,11 @@ function mailchimp_sf_get_interest_categories( $list_id, $new_list ) {
 			++$key;
 		}
 	}
-	update_option( 'mc_interest_groups', $igs['categories'] );
+
+	if ( $update_option ) {
+		update_option( 'mc_interest_groups', $igs['categories'] );
+	}
+
 	return $igs['categories'];
 }
 

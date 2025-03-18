@@ -13,10 +13,22 @@
 		return;
 	}
 
-	$block_instance = $block->parsed_block;
+	// Make sure we have a list ID and it's valid.
+	$lists    = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
+	$list_ids = array_map(
+		function ( $single_list ) {
+			return $single_list['id'];
+		},
+		$lists
+	);
+
+	if ( ! in_array( $attributes['list_id'], $list_ids, true ) ) {
+		return;
+	}
 
 	// Backwards compatibility for old block.
-	$inner_blocks = $block_instance['innerBlocks'] ?? [];
+	$block_instance = $block->parsed_block;
+	$inner_blocks   = $block_instance['innerBlocks'] ?? [];
 	if ( empty( $inner_blocks ) ) {
 		mailchimp_sf_signup_form();
 		?>
@@ -36,7 +48,7 @@
 	$unsubscribe_link_text       = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
 	$double_opt_in               = ( $attributes['double_opt_in'] ?? get_option( 'mc_double_optin' ) === 'on' ) ? 'yes' : 'no';
-	$show_required_indicator	 = $attributes['show_required_indicator'] ?? true;
+	$show_required_indicator     = $attributes['show_required_indicator'] ?? true;
 	$hash                        = wp_hash(
 		serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			array(
