@@ -5,7 +5,44 @@
 	"title": "Mailchimp List Subscribe Form",
 	"category": "widgets",
 	"description": "Mailchimp List Subscribe Form",
-	"attributes": {},
+	"attributes": {
+    "list_id": {
+      "type": "string"
+    },
+    "header": {
+      "type": "string"
+    },
+    "sub_header": {
+      "type": "string"
+    },
+    "submit_text": {
+      "type": "string",
+      "default": "Subscribe"
+    },
+    "interest_groups_visibility": {
+      "type": "object"
+    },
+    "double_opt_in": {
+      "type": "boolean",
+      "default": true
+    },
+    "update_existing_subscribers": {
+      "type": "boolean",
+      "default": true
+    },
+    "show_unsubscribe_link": {
+      "type": "boolean",
+      "default": false
+    },
+    "unsubscribe_link_text": {
+      "type": "string",
+      "default": "unsubscribe from list"
+    },
+    "show_required_indicator": {
+      "type": "boolean",
+      "default": true
+    }
+  },
 	"supports": {
 		"html": false,
 		"multiple": false,

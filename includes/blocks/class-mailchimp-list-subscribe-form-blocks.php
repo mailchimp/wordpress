@@ -55,70 +55,23 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			}
 		}
 
-		$attributes = array(
-			'header'                      => array(
-				'type'    => 'string',
-				'default' => get_option( 'mc_header_content', '' ),
-			),
-			'sub_header'                  => array(
-				'type'    => 'string',
-				'default' => get_option( 'mc_subheader_content', '' ),
-			),
-			'list_id'                     => array(
-				'type' => 'string',
-			),
-			'submit_text'                 => array(
-				'type'    => 'string',
-				'default' => esc_html__( 'Subscribe', 'mailchimp' ),
-			),
-			'interest_groups_visibility'  => array(
-				'type' => 'object',
-			),
-			'double_opt_in'               => array(
-				'type'    => 'boolean',
-				'default' => true,
-			),
-			'update_existing_subscribers' => array(
-				'type'    => 'boolean',
-				'default' => true,
-			),
-			'show_unsubscribe_link'       => array(
-				'type'    => 'boolean',
-				'default' => false,
-			),
-			'unsubscribe_link_text'       => array(
-				'type'    => 'string',
-				'default' => esc_html__( 'unsubscribe from list', 'mailchimp' ),
-			),
-			'show_required_indicator'     => array(
-				'type'    => 'boolean',
-				'default' => true,
-			),
-		);
+		// Register the Mailchimp List Subscribe Form blocks.
+		$blocks_dist_path = MCSF_DIR . 'dist/blocks/';
 
-		// Register the Mailchimp List Subscribe Form block.
-		$block_json_file = MCSF_DIR . 'dist/blocks/mailchimp/block.json';
-		if ( file_exists( $block_json_file ) ) {
-			$block_folder = dirname( $block_json_file );
-			register_block_type(
-				$block_folder,
-				array(
-					'attributes' => $attributes,
-				)
-			);
-		}
-
-		// Register the Mailchimp form field block.
-		$form_field_block_json_file = MCSF_DIR . 'dist/blocks/mailchimp-form-field/block.json';
-		if ( file_exists( $form_field_block_json_file ) ) {
-			$form_field_block_folder = dirname( $form_field_block_json_file );
-			register_block_type( $form_field_block_folder );
+		if ( file_exists( $blocks_dist_path ) ) {
+			$block_json_files = glob( $blocks_dist_path . '*/block.json' );
+			foreach ( $block_json_files as $filename ) {
+				$block_folder = dirname( $filename );
+				register_block_type( $block_folder );
+			}
 		}
 
 		$data = array(
 			'admin_settings_url'      => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
 			'lists'                   => $this->get_lists(),
 			'list_id'                 => get_option( 'mc_list_id', '' ),
+			'header_text'             => get_option( 'mc_header_content', '' ),
+			'sub_header_text'         => get_option( 'mc_subheader_content', '' ),
 			'merge_fields_visibility' => $merge_fields_visibility,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
