@@ -5,10 +5,12 @@
  * @package Mailchimp
  */
 
-$list_id    = $block->context['mailchimp/list_id'] ?? '';
-$field_tag  = $attributes['tag'] ?? '';
-$label      = $attributes['label'] ?? '';
-$is_visible = $attributes['visible'] ?? false;
+$list_id                 = $block->context['mailchimp/list_id'] ?? '';
+$show_required_indicator = $block->context['mailchimp/show_required_indicator'] ?? true;
+$field_tag               = $attributes['tag'] ?? '';
+$label                   = $attributes['label'] ?? '';
+$is_visible              = $attributes['visible'] ?? false;
+$num_fields              = $show_required_indicator ? 2 : 1;
 
 // Bail if we don't have a list ID or field tag.
 if ( ! $list_id || ! $field_tag ) {
@@ -16,9 +18,6 @@ if ( ! $list_id || ! $field_tag ) {
 }
 
 $merge_fields = get_option( 'mailchimp_sf_merge_fields_' . $list_id, array() );
-
-// TODO: Update this to correct it;
-$num_fields = count( $merge_fields );
 
 $merge_fields = array_filter(
 	$merge_fields,

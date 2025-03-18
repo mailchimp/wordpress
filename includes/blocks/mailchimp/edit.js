@@ -46,6 +46,7 @@ export const BlockEdit = (props) => {
 		show_unsubscribe_link,
 		unsubscribe_link_text,
 		interest_groups_visibility,
+		show_required_indicator = true,
 	} = attributes;
 	const blockProps = useBlockProps();
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
@@ -81,6 +82,7 @@ export const BlockEdit = (props) => {
 		[clientId],
 	);
 	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag);
+	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
 
 	const updateList = (listId, replaceBlocks = false) => {
 		setError('');
@@ -150,6 +152,15 @@ export const BlockEdit = (props) => {
 			});
 	};
 
+	// Update the show_required_indicator attribute based on the number of visible fields.
+	useEffect(() => {
+		if (visibleFieldsCount > 1) {
+			setAttributes({ show_required_indicator: true });
+		} else {
+			setAttributes({ show_required_indicator: false });
+		}
+	}, [setAttributes, visibleFieldsCount]);
+
 	// Update the innerBlocks on initial render if needed.
 	useEffect(() => {
 		const listIds = lists?.map((list) => list.id) || [];
@@ -201,14 +212,14 @@ export const BlockEdit = (props) => {
 				{list_id && (
 					<>
 						<RichText
-							className="wp-block-example-block__header"
+							className="mailchimp-block__header"
 							tagName="h2"
 							placeholder={__('Please enter a header text.', 'mailchimp')}
 							value={header}
 							onChange={(header) => setAttributes({ header })}
 						/>
 						<RichText
-							className="wp-block-example-block__sub-header"
+							className="mailchimp-block__sub-header"
 							tagName="h3"
 							placeholder={__('Please enter a sub header text.', 'mailchimp')}
 							value={sub_header}
@@ -231,9 +242,11 @@ export const BlockEdit = (props) => {
 									template={template}
 									templateLock="insert"
 								/>
-								<div id="mc-indicates-required">
-									{__('* = required field', 'mailchimp')}
-								</div>
+								{show_required_indicator && (
+									<div id="mc-indicates-required">
+										{__('* = required field', 'mailchimp')}
+									</div>
+								)}
 								<Disabled>
 									<InterestGroups
 										listData={listData}
@@ -305,7 +318,7 @@ export const BlockEdit = (props) => {
 						</div>
 					)}
 				</PanelBody>
-				<PanelBody title={__('Advanced Settings', 'mailchimp')} initialOpen={false}>
+				<PanelBody title={__('Form Settings', 'mailchimp')} initialOpen={false}>
 					<ToggleControl
 						label={__('Double Opt-In', 'mailchimp')}
 						checked={double_opt_in}

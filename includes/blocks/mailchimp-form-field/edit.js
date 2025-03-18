@@ -19,7 +19,10 @@ export const MailchimpFormField = (props) => {
 	const {
 		attributes,
 		setAttributes,
-		context: { 'mailchimp/list_id': listId },
+		context: {
+			'mailchimp/list_id': listId,
+			'mailchimp/show_required_indicator': showRequiredIndicator,
+		},
 	} = props;
 	const { tag, label, visible, type } = attributes;
 	const { mailchimpListData } = window;
@@ -292,7 +295,7 @@ export const MailchimpFormField = (props) => {
 					onChange={(label) => setAttributes({ label })}
 					placeholder={__('Enter a label', 'mailchimp-form-field')}
 				/>
-				{required && <span className="mc_required">*</span>}
+				{required && showRequiredIndicator && <span className="mc_required">*</span>}
 			</label>
 			{!!visible && (
 				<Disabled>

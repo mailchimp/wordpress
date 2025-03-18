@@ -8,7 +8,7 @@
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php
-	// Check if we should display the form.
+	// Check if we should display the form. TODO: Add a list ID check.
 	if ( ! mailchimp_sf_should_display_form() ) {
 		return;
 	}
@@ -36,6 +36,7 @@
 	$unsubscribe_link_text       = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
 	$double_opt_in               = ( $attributes['double_opt_in'] ?? get_option( 'mc_double_optin' ) === 'on' ) ? 'yes' : 'no';
+	$show_required_indicator	 = $attributes['show_required_indicator'] ?? true;
 	$hash                        = wp_hash(
 		serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			array(
@@ -67,6 +68,7 @@
 		<?php
 		return;
 	}
+	// TODO: Move this to a separate CSS file.
 	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
 		?>
 		<style>
@@ -199,15 +201,8 @@
 					 */
 					echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-					$visible_inner_blocks = array_filter(
-						$inner_blocks,
-						function ( $inner_block ) {
-							return $inner_block['attrs']['visible'] ?? false;
-						}
-					);
-
 					// Show an explanation of the * if there's more than one field
-					if ( count( $visible_inner_blocks ) > 1 ) {
+					if ( $show_required_indicator ) {
 						?>
 						<div id="mc-indicates-required">
 							* = <?php esc_html_e( 'required field', 'mailchimp' ); ?>

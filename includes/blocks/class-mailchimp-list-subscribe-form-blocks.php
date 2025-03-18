@@ -92,6 +92,10 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 				'type'    => 'string',
 				'default' => esc_html__( 'unsubscribe from list', 'mailchimp' ),
 			),
+			'show_required_indicator'     => array(
+				'type'    => 'boolean',
+				'default' => true,
+			),
 		);
 
 		// Register the Mailchimp List Subscribe Form block.

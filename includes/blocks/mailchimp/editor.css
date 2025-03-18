@@ -21,6 +21,7 @@
 	display: block;
 	opacity: 0.2;
 	border: 1px dashed grey;
+	margin: 8px 0px;
 }
 
 #mc_signup_form .mailchimp_merge_field_hidden .mc_var_label {
