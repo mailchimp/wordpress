@@ -104,6 +104,17 @@ export const BlockEdit = (props) => {
 						}),
 					);
 					replaceInnerBlocks(clientId, [...listInnerBlocks], false);
+
+					// Reset groups visibility settings on list change.
+					if (data?.interest_groups?.length > 0) {
+						const newVisibility = data?.interest_groups?.reduce((acc, field) => {
+							acc[field.id] = 'off';
+							return acc;
+						}, {});
+						setAttributes({ interest_groups_visibility: newVisibility });
+					} else {
+						setAttributes({ interest_groups_visibility: {} });
+					}
 				} else if (exisingTags && exisingTags.length > 0) {
 					// Update existing innerBlocks with if new fields are added to the list or removed from the list.
 					const newFormFields = data?.merge_fields?.filter(
