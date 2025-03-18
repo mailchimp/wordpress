@@ -164,67 +164,76 @@ $is_list_selected = false;
 				</table>
 				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 
+				<?php
+				if ( get_option( 'mc_nuke_all_styles' ) === '1' ) {
+					?>
+					<table class="widefat mc-widefat mc-nuke-styling">
+						<tr><th colspan="2"><?php esc_html_e( 'Remove Mailchimp CSS', 'mailchimp' ); ?></th></tr>
+						<tr><th><label for="mc_nuke_all_styles"><?php esc_html_e( 'Remove CSS' ); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked( get_option( 'mc_nuke_all_styles' ), true ); ?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.' ); ?></td></tr>
+					</table>
+					<?php
+				}
 
-				<table class="widefat mc-widefat mc-nuke-styling">
-					<tr><th colspan="2"><?php esc_html_e( 'Remove Mailchimp CSS', 'mailchimp' ); ?></th></tr>
-					<tr><th><label for="mc_nuke_all_styles"><?php esc_html_e( 'Remove CSS' ); ?></label></th><td><span class="mc-pre-input"></span><input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" <?php checked( get_option( 'mc_nuke_all_styles' ), true ); ?> onclick="showMe('mc-custom-styling')"/><?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.' ); ?></td></tr>
-				</table>
-
-				<table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling" style="<?php echo esc_attr( ( get_option( 'mc_nuke_all_styles' ) === '1' ? 'display:none;' : '' ) ); ?>">
-					<tr>
-						<th colspan="2"><?php esc_html_e( 'Custom Styling', 'mailchimp' ); ?></th>
-					</tr>
-					<tr>
-						<th>
-							<label for="mc_custom_style"><?php esc_html_e( 'Enabled?', 'mailchimp' ); ?></label>
-						</th>
-						<td>
-							<span class="mc-pre-input"></span>
-							<input type="checkbox" name="mc_custom_style" id="mc_custom_style"<?php checked( get_option( 'mc_custom_style' ), 'on' ); ?> />
-							<em><?php esc_html_e( 'Edit the default Mailchimp CSS style.' ); ?></em>
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="mc_form_border_width"><?php esc_html_e( 'Border Width (px)', 'mailchimp' ); ?></label>
-						</th>
-						<td>
-							<input type="text" id="mc_form_border_width" name="mc_form_border_width" size="3" maxlength="3" value="<?php echo esc_attr( get_option( 'mc_form_border_width' ) ); ?>"/>
-							<em><?php esc_html_e( 'Set to 0 for no border, do not enter', 'mailchimp' ); ?> px</em>
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="mc_form_border_color"><?php esc_html_e( 'Border Color', 'mailchimp' ); ?></label>
-						</th>
-						<td>
-							<span class="mc-pre-input">#</span>
-							<input type="text" id="mc_form_border_color" name="mc_form_border_color" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>"/>
-							<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
-						</td>
-					</tr>
-					<tr>
-						<th>
-							<label for="mc_form_text_color"><?php esc_html_e( 'Text Color', 'mailchimp' ); ?></label>
-						</th>
-						<td>
-							<span class="mc-pre-input">#</span>
-							<input type="text" id="mc_form_text_color" name="mc_form_text_color" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>"/>
-							<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
-						</td>
-					</tr>
-					<tr class="last-row">
-						<th>
-							<label for="mc_form_background"><?php esc_html_e( 'Background Color', 'mailchimp' ); ?></label>
-						</th>
-						<td>
-							<span class="mc-pre-input">#</span>
-							<input type="text" id="mc_form_background" name="mc_form_background" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>"/>
-							<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
-						</td>
-					</tr>
-				</table>
-				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
+				if ( 'on' === get_option( 'mc_custom_style' ) ) {
+					?>
+					<table class="widefat mc-widefat mc-custom-styling" id="mc-custom-styling" style="<?php echo esc_attr( ( get_option( 'mc_nuke_all_styles' ) === '1' ? 'display:none;' : '' ) ); ?>">
+						<tr>
+							<th colspan="2"><?php esc_html_e( 'Custom Styling', 'mailchimp' ); ?></th>
+						</tr>
+						<tr>
+							<th>
+								<label for="mc_custom_style"><?php esc_html_e( 'Enabled?', 'mailchimp' ); ?></label>
+							</th>
+							<td>
+								<span class="mc-pre-input"></span>
+								<input type="checkbox" name="mc_custom_style" id="mc_custom_style"<?php checked( get_option( 'mc_custom_style' ), 'on' ); ?> />
+								<em><?php esc_html_e( 'Edit the default Mailchimp CSS style.' ); ?></em>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="mc_form_border_width"><?php esc_html_e( 'Border Width (px)', 'mailchimp' ); ?></label>
+							</th>
+							<td>
+								<input type="text" id="mc_form_border_width" name="mc_form_border_width" size="3" maxlength="3" value="<?php echo esc_attr( get_option( 'mc_form_border_width' ) ); ?>"/>
+								<em><?php esc_html_e( 'Set to 0 for no border, do not enter', 'mailchimp' ); ?> px</em>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="mc_form_border_color"><?php esc_html_e( 'Border Color', 'mailchimp' ); ?></label>
+							</th>
+							<td>
+								<span class="mc-pre-input">#</span>
+								<input type="text" id="mc_form_border_color" name="mc_form_border_color" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>"/>
+								<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
+							</td>
+						</tr>
+						<tr>
+							<th>
+								<label for="mc_form_text_color"><?php esc_html_e( 'Text Color', 'mailchimp' ); ?></label>
+							</th>
+							<td>
+								<span class="mc-pre-input">#</span>
+								<input type="text" id="mc_form_text_color" name="mc_form_text_color" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>"/>
+								<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
+							</td>
+						</tr>
+						<tr class="last-row">
+							<th>
+								<label for="mc_form_background"><?php esc_html_e( 'Background Color', 'mailchimp' ); ?></label>
+							</th>
+							<td>
+								<span class="mc-pre-input">#</span>
+								<input type="text" id="mc_form_background" name="mc_form_background" size="7" maxlength="6" value="<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>"/>
+								<em><?php esc_html_e( 'Do not enter initial', 'mailchimp' ); ?> <strong>#</strong></em>
+							</td>
+						</tr>
+					</table>
+					<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
+					<?php
+				}
+				?>
 
 				<table class="widefat mc-widefat">
 					<tr><th colspan="2"><?php esc_html_e( 'List Options', 'mailchimp' ); ?></th></tr>
