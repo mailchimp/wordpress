@@ -33,18 +33,6 @@ if ( get_option( 'mc_custom_style' ) === 'on' ) {
 		color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
 		background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
 	}
-
-
-	.mc_custom_border_hdr {
-		border-width: <?php echo absint( get_option( 'mc_header_border_width' ) ); ?>px;
-		border-style: <?php echo ( get_option( 'mc_header_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
-		border-color: #<?php echo esc_attr( get_option( 'mc_header_border_color' ) ); ?>;
-		color: #<?php echo esc_attr( get_option( 'mc_header_text_color' ) ); ?>;
-		background-color: #<?php echo esc_attr( get_option( 'mc_header_background' ) ); ?>;
-		<!--    font-size: 1.2em;-->
-		padding:5px 10px;
-		width: 100%;
-	}
 	<?php
 }
 ?>

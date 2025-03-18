@@ -449,10 +449,6 @@ function mailchimp_sf_set_form_defaults( $list_name = '' ) {
 	update_option( 'mc_custom_style', 'off' );
 	update_option( 'mc_double_optin', true );
 	update_option( 'mc_use_unsub_link', 'off' );
-	update_option( 'mc_header_border_width', '1' );
-	update_option( 'mc_header_border_color', 'E3E3E3' );
-	update_option( 'mc_header_background', 'FFFFFF' );
-	update_option( 'mc_header_text_color', 'CC6600' );
 
 	update_option( 'mc_form_border_width', '1' );
 	update_option( 'mc_form_border_color', 'E0E0E0' );
