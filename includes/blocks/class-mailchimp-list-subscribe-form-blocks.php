@@ -65,14 +65,14 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 				'default' => get_option( 'mc_subheader_content', '' ),
 			),
 			'list_id'                     => array(
-				'type'    => 'string',
+				'type' => 'string',
 			),
 			'submit_text'                 => array(
 				'type'    => 'string',
 				'default' => esc_html__( 'Subscribe', 'mailchimp' ),
 			),
 			'interest_groups_visibility'  => array(
-				'type'    => 'object',
+				'type' => 'object',
 			),
 			'double_opt_in'               => array(
 				'type'    => 'boolean',
