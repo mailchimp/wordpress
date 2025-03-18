@@ -243,68 +243,74 @@ export const BlockEdit = (props) => {
 				{list_id && (
 					<>
 						<RichText
-							className="mailchimp-block__header"
+							className="mailchimp-block__header mc_custom_border_hdr"
 							tagName="h2"
-							placeholder={__('Please enter a header text.', 'mailchimp')}
+							placeholder={__('Enter a header.', 'mailchimp')}
 							value={header}
 							onChange={(header) => setAttributes({ header })}
 						/>
-						<RichText
-							className="mailchimp-block__sub-header"
-							tagName="h3"
-							placeholder={__('Please enter a sub header text.', 'mailchimp')}
-							value={sub_header}
-							onChange={(sub_header) => setAttributes({ sub_header })}
-						/>
-						{error && (
-							<Placeholder>
-								{sprintf(
-									// translators: %s: error message describing the problem
-									__('Error fetching list data: %s'),
-									error,
-								)}
-							</Placeholder>
-						)}
-						<div id="mc_signup_form">
-							<div className="mc_form_inside">
-								<InnerBlocks
-									allowedBlocks={['mailchimp/mailchimp-form-field']}
-									orientation="vertical"
-									template={template}
-									templateLock="insert"
-								/>
-								{show_required_indicator && (
-									<div id="mc-indicates-required">
-										{__('* = required field', 'mailchimp')}
-									</div>
-								)}
-								<Disabled>
-									<InterestGroups
-										listData={listData}
-										visibility={interest_groups_visibility}
-									/>
-								</Disabled>
-								<div className="mc_signup_submit">
+						<div id="mc_signup">
+							<div id="mc_signup_form">
+								<div id="mc_subheader">
 									<RichText
-										id="mc_signup_submit"
-										className="button"
-										tagName="button"
-										placeholder={__('Enter button text.', 'mailchimp')}
-										value={submit_text}
-										onChange={(submit_text) => setAttributes({ submit_text })}
+										className="mailchimp-block__sub-header"
+										tagName="h3"
+										placeholder={__('Enter a sub header.', 'mailchimp')}
+										value={sub_header}
+										onChange={(sub_header) => setAttributes({ sub_header })}
 									/>
 								</div>
-								{!!show_unsubscribe_link && (
-									<div id="mc_unsub_link">
+								{error && (
+									<Placeholder>
+										{sprintf(
+											// translators: %s: error message describing the problem
+											__('Error fetching list data: %s'),
+											error,
+										)}
+									</Placeholder>
+								)}
+								<div className="mc_form_inside">
+									<InnerBlocks
+										allowedBlocks={['mailchimp/mailchimp-form-field']}
+										orientation="vertical"
+										template={template}
+										templateLock="insert"
+									/>
+									{show_required_indicator && (
+										<div id="mc-indicates-required">
+											{__('* = required field', 'mailchimp')}
+										</div>
+									)}
+									<Disabled>
+										<InterestGroups
+											listData={listData}
+											visibility={interest_groups_visibility}
+										/>
+									</Disabled>
+									<div className="mc_signup_submit">
 										<RichText
-											tagName="a"
-											value={unsubscribe_link_text}
-											onChange={(unsubscribe_link_text) =>
-												setAttributes({ unsubscribe_link_text })
+											id="mc_signup_submit"
+											className="button"
+											tagName="button"
+											placeholder={__('Enter a button text.', 'mailchimp')}
+											value={submit_text}
+											onChange={(submit_text) =>
+												setAttributes({ submit_text })
 											}
 										/>
 									</div>
-								)}
+									{!!show_unsubscribe_link && (
+										<div id="mc_unsub_link">
+											<RichText
+												tagName="a"
+												value={unsubscribe_link_text}
+												onChange={(unsubscribe_link_text) =>
+													setAttributes({ unsubscribe_link_text })
+												}
+											/>
+										</div>
+									)}
+								</div>
 							</div>
 						</div>
 					</>

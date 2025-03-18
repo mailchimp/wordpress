@@ -170,24 +170,13 @@
 		// See if we have custom header content
 		if ( ! empty( $header ) ) {
 			?>
-			<h2>
+			<h2 class="mc_custom_border_hdr">
 				<?php echo wp_kses_post( $header ); ?>
 			</h2>
 			<?php
 		}
 		?>
 		<div id="mc_signup">
-			<?php
-			if ( $sub_heading ) {
-				?>
-				<div id="mc_subheader">
-					<h3>
-						<?php echo wp_kses_post( $sub_heading ); ?>
-					</h3>
-				</div><!-- /mc_subheader -->
-				<?php
-			}
-			?>
 			<form method="post" action="#mc_signup" id="mc_signup_form">
 				<input type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" />
 				<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
@@ -195,7 +184,18 @@
 				<input type="hidden" name="mailchimp_sf_update_existing_subscribers" value="<?php echo esc_attr( $update_existing_subscribers ); ?>" />
 				<input type="hidden" name="mailchimp_sf_double_opt_in" value="<?php echo esc_attr( $double_opt_in ); ?>" />
 				<input type="hidden" name="mailchimp_sf_hash" value="<?php echo esc_attr( $hash ); ?>" />
-				<?php wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false ); ?>
+				<?php
+				wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false );
+				if ( $sub_heading ) {
+					?>
+					<div id="mc_subheader">
+						<h3>
+							<?php echo wp_kses_post( $sub_heading ); ?>
+						</h3>
+					</div><!-- /mc_subheader -->
+					<?php
+				}
+				?>
 				<div class="mc_form_inside">
 					<div id="mc_message">
 						<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>

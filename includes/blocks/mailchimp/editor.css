@@ -23,6 +23,18 @@
 	margin: 8px 0px;
 }
 
+h2.mailchimp-block__header:has(span:empty),
+div#mc_subheader:has(h3 span:empty) {
+	display: none;
+}
+
+.is-selected div#mc_subheader:has(h3 span:empty),
+.has-child-selected div#mc_subheader:has(h3 span:empty),
+.is-selected h2.mailchimp-block__header:has(span:empty),
+.has-child-selected h2.mailchimp-block__header:has(span:empty) {
+    display: block;
+}
+
 #mc_signup_form .mailchimp_merge_field_hidden .mc_var_label {
 	padding: 0.25em 0.5em;
 	margin: 0px;
