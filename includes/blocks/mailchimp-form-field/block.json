@@ -22,11 +22,7 @@
 		"html": false,
 		"reusable": true,
     "lock": false,
-		"spacing": {
-			"padding": true,
-			"margin": true
-		},
-    "typography": {
+		"typography": {
       "fontSize": true,
       "lineHeight": true
     }

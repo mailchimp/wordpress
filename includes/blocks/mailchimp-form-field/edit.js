@@ -320,7 +320,7 @@ export const BlockEdit = (props) => {
 	const isRequired = mailchimpListData?.[listId]?.[tag]?.required || false;
 
 	return (
-		<div {...blockProps}>
+		<div {...blockProps} style={{ color: 'inherit' }}>
 			<MailchimpFormField {...props} />
 			{isPublic && !isRequired && (
 				<BlockControls>

@@ -286,7 +286,7 @@ class Mailchimp_Block_Form_Submission {
 	protected function set_all_groups_to_false( $interest_groups ) {
 		$groups = new StdClass();
 
-		foreach ( $interest_groups as $$interest_group ) {
+		foreach ( $interest_groups as $interest_group ) {
 			if ( 'hidden' !== $interest_group['type'] ) {
 				foreach ( $interest_group['groups'] as $group ) {
 					$id          = $group['id'];
