@@ -36,10 +36,13 @@ const SelectListPlaceholder = () => {
 
 export const BlockEdit = (props) => {
 	const { clientId, attributes, setAttributes } = props;
+	const { mailchimp_sf_block_data } = window;
+	const { lists, merge_fields_visibility, list_id: listId } = mailchimp_sf_block_data;
+
 	const {
 		header,
 		sub_header,
-		list_id,
+		list_id = listId,
 		submit_text,
 		double_opt_in,
 		update_existing_subscribers,
@@ -48,11 +51,9 @@ export const BlockEdit = (props) => {
 		interest_groups_visibility,
 		show_required_indicator = true,
 	} = attributes;
+
 	const blockProps = useBlockProps();
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
-
-	const { mailchimp_sf_block_data } = window;
-	const { lists, merge_fields_visibility } = mailchimp_sf_block_data;
 
 	const listOptions = [];
 	// Check if selected list is not in the list of available lists.
@@ -184,6 +185,11 @@ export const BlockEdit = (props) => {
 		setIsLoading(true);
 
 		updateList(list_id, false);
+
+		// Set list_id attribute initially, if it's already not set.
+		if (attributes.list_id === undefined) {
+			setAttributes({ list_id: listId });
+		}
 	}, []); // eslint-disable-line react-hooks/exhaustive-deps -- Only run on initial render.
 
 	if (isLoading) {

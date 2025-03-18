@@ -13,19 +13,6 @@
 		return;
 	}
 
-	// Make sure we have a list ID and it's valid.
-	$lists    = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
-	$list_ids = array_map(
-		function ( $single_list ) {
-			return $single_list['id'];
-		},
-		$lists
-	);
-
-	if ( ! in_array( $attributes['list_id'], $list_ids, true ) ) {
-		return;
-	}
-
 	// Backwards compatibility for old block.
 	$block_instance = $block->parsed_block;
 	$inner_blocks   = $block_instance['innerBlocks'] ?? [];
@@ -37,7 +24,20 @@
 		return;
 	}
 
-	$list_id                     = $attributes['list_id'] ?? '';
+	// Make sure we have a list ID and it's valid.
+	$list_id  = $attributes['list_id'] ?? '';
+	$lists    = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
+	$list_ids = array_map(
+		function ( $single_list ) {
+			return $single_list['id'];
+		},
+		$lists
+	);
+
+	if ( ! in_array( $list_id, $list_ids, true ) ) {
+		return;
+	}
+
 	$header                      = $attributes['header'] ?? '';
 	$sub_heading                 = $attributes['sub_header'] ?? '';
 	$submit_text                 = $attributes['submit_text'] ?? __( 'Subscribe', 'mailchimp' );
