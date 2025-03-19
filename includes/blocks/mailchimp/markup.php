@@ -8,12 +8,12 @@
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php
-	// Check if we should display the form. TODO: Add a list ID check.
+	// Check if we should display the form.
 	if ( ! mailchimp_sf_should_display_form() ) {
 		return;
 	}
 
-	// Backwards compatibility for old block.
+	// Backwards compatibility for old block, which didn't have innerBlocks.
 	$block_instance = $block->parsed_block;
 	$inner_blocks   = $block_instance['innerBlocks'] ?? [];
 	if ( empty( $inner_blocks ) ) {

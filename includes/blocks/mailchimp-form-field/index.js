@@ -108,7 +108,6 @@ variations.forEach((variation, index) => {
 });
 
 registerBlockType(metadata, {
-	icon: 'feedback',
 	edit: BlockEdit,
 	save: () => null,
 	variations,

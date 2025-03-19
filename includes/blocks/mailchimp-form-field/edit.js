@@ -316,7 +316,7 @@ export const BlockEdit = (props) => {
 	} = props;
 	const { visible, tag } = attributes;
 	const { mailchimpListData } = window;
-	const isPublic = mailchimpListData?.[listId]?.[tag]?.public || true;
+	const isPublic = mailchimpListData?.[listId]?.[tag]?.public;
 	const isRequired = mailchimpListData?.[listId]?.[tag]?.required || false;
 
 	return (

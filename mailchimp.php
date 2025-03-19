@@ -157,9 +157,7 @@ function mailchimp_sf_load_resources() {
 				'ajax_url' => trailingslashit( home_url() ),
 			)
 		);
-	}
 
-	if ( ! is_admin() ) {
 		// Datepicker theme
 		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 

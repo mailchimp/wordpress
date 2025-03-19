@@ -58,8 +58,19 @@ export const BlockEdit = (props) => {
 		show_required_indicator = true,
 	} = attributes;
 
+	const [listData, setListData] = useState({});
+	const [isLoading, setIsLoading] = useState(true);
+	const [error, setError] = useState('');
 	const blockProps = useBlockProps();
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
+
+	// Select current innerBlocks
+	const innerBlocks = useSelect(
+		(select) => select(blockEditorStore).getBlocksByClientId(clientId)?.[0]?.innerBlocks || [],
+		[clientId],
+	);
+	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag);
+	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
 
 	const listOptions = [];
 	// Check if selected list is not in the list of available lists.
@@ -79,18 +90,7 @@ export const BlockEdit = (props) => {
 		})) || []),
 	);
 
-	const [listData, setListData] = useState({});
-	const [isLoading, setIsLoading] = useState(true);
-	const [error, setError] = useState('');
-
-	// Select current innerBlocks
-	const innerBlocks = useSelect(
-		(select) => select(blockEditorStore).getBlocksByClientId(clientId)?.[0]?.innerBlocks || [],
-		[clientId],
-	);
-	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag);
-	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
-
+	// Fetch list data and update innerBlocks if needed.
 	const updateList = (listId, replaceBlocks = false) => {
 		setError('');
 		setIsLoading(true);
@@ -291,7 +291,7 @@ export const BlockEdit = (props) => {
 										<RichText
 											id="mc_signup_submit"
 											className="button"
-											tagName="button"
+											tagName="a"
 											placeholder={__('Enter a button text.', 'mailchimp')}
 											value={submit_text}
 											onChange={(submit_text) =>
