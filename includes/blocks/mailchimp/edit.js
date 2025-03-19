@@ -291,7 +291,7 @@ export const BlockEdit = (props) => {
 										<RichText
 											id="mc_signup_submit"
 											className="button"
-											tagName="a"
+											tagName="button"
 											placeholder={__('Enter a button text.', 'mailchimp')}
 											value={submit_text}
 											onChange={(submit_text) =>

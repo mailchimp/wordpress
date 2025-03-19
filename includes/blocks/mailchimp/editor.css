@@ -79,6 +79,7 @@ div#mc_subheader:has(h3 span:empty) {
 select.mc_select {
 	max-width: 100%;
 	width: 100%;
+	padding: 10px 8px;
 }
 .mc_address_label {
 	margin-top: 1.0em;
@@ -87,6 +88,7 @@ select.mc_select {
 }
 .mc_address_label ~ select {
 	max-width: 100%;
+	padding: 10px 8px;
 	width: 100%;
 }
 .mc_list li {

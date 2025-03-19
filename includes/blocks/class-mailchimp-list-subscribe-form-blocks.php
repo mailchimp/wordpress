@@ -45,16 +45,6 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			}
 		}
 
-		// Get the default visibility of interest groups.
-		$interest_groups_visibility = array();
-		$interest_groups            = get_option( 'mc_interest_groups', array() );
-		if ( ! empty( $interest_groups ) ) {
-			foreach ( $interest_groups as $group ) {
-				$visible                                    = 'on' === get_option( 'mc_show_interest_groups_' . $group['id'], 'on' ) && 'hidden' !== $group['type'];
-				$interest_groups_visibility[ $group['id'] ] = $visible ? 'on' : 'off';
-			}
-		}
-
 		// Register the Mailchimp List Subscribe Form blocks.
 		$blocks_dist_path = MCSF_DIR . 'dist/blocks/';
 
