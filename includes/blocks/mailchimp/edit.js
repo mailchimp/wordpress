@@ -322,6 +322,7 @@ export const BlockEdit = (props) => {
 						label={__('Select a list', 'mailchimp')}
 						value={list_id}
 						options={listOptions}
+						className="mailchimp-list-select"
 						onChange={(list_id) => {
 							setIsLoading(true);
 							setAttributes({ list_id });
@@ -340,6 +341,7 @@ export const BlockEdit = (props) => {
 								<ToggleControl
 									key={group.id}
 									label={group.title}
+									className="mailchimp-interest-groups"
 									checked={interest_groups_visibility?.[group.id] === 'on'}
 									onChange={(checked) => {
 										setAttributes({
@@ -359,6 +361,7 @@ export const BlockEdit = (props) => {
 					<ToggleControl
 						label={__('Double Opt-In', 'mailchimp')}
 						checked={double_opt_in}
+						className="mailchimp-double-opt-in"
 						onChange={() => setAttributes({ double_opt_in: !double_opt_in })}
 						help={__(
 							"Before new your subscribers are added via the plugin, they'll need to confirm their email address.",
@@ -369,6 +372,7 @@ export const BlockEdit = (props) => {
 					<ToggleControl
 						label={__('Update existing subscribers', 'mailchimp')}
 						checked={update_existing_subscribers}
+						className="mailchimp-update-existing-subscribers"
 						onChange={() =>
 							setAttributes({
 								update_existing_subscribers: !update_existing_subscribers,
@@ -383,6 +387,7 @@ export const BlockEdit = (props) => {
 					<ToggleControl
 						label={__('Include Unsubscribe link', 'mailchimp')}
 						checked={show_unsubscribe_link}
+						className="mailchimp-unsubscribe-link"
 						onChange={() =>
 							setAttributes({ show_unsubscribe_link: !show_unsubscribe_link })
 						}
