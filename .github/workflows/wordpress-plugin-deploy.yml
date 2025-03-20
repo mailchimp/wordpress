@@ -44,7 +44,5 @@ jobs:
       uses: softprops/action-gh-release@v2
       with:
         files: ${{ steps.deploy.outputs.zip-path }}
-        body: |
-          This release contains the latest updates for the WordPress plugin.
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
