@@ -13,7 +13,7 @@
 		$('#mc_message').html(data);
 
 		// See if we're successful, if so, wipe the fields
-		const reg = /class="|'mc_success_msg"|'/i;
+		const reg = /class=(["'])mc_success_msg\1/i;
 
 		if (reg.test(data)) {
 			$('#mc_signup_form').each(function () {
