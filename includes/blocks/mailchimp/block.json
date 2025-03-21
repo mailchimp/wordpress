@@ -41,6 +41,10 @@
     "show_required_indicator": {
       "type": "boolean",
       "default": true
+    },
+    "required_indicator_text": {
+      "type": "string",
+      "default": "* = required field"
     }
   },
   "supports": {

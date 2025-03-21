@@ -50,6 +50,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
 	$double_opt_in               = ( $attributes['double_opt_in'] ?? get_option( 'mc_double_optin' ) === 'on' ) ? 'yes' : 'no';
 	$show_required_indicator     = $attributes['show_required_indicator'] ?? true;
+	$required_indicator_text     = $attributes['required_indicator_text'] ?? __( '* = required field', 'mailchimp' );
 	$hash                        = wp_hash(
 		serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			array(
@@ -251,7 +252,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					if ( $show_required_indicator ) {
 						?>
 						<div id="mc-indicates-required">
-							<?php esc_html_e( '* = required field', 'mailchimp' ); ?>
+							<?php echo esc_html( $required_indicator_text ); ?>
 						</div><!-- /mc-indicates-required -->
 						<?php
 					}

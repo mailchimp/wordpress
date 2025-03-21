@@ -56,6 +56,7 @@ export const BlockEdit = (props) => {
 		unsubscribe_link_text,
 		interest_groups_visibility,
 		show_required_indicator = true,
+		required_indicator_text,
 	} = attributes;
 
 	const [listData, setListData] = useState({});
@@ -287,7 +288,14 @@ export const BlockEdit = (props) => {
 									</Disabled>
 									{show_required_indicator && (
 										<div id="mc-indicates-required">
-											{__('* = required field', 'mailchimp')}
+											<RichText
+												tagName="span"
+												value={required_indicator_text}
+												placeholder={__('* = required field', 'mailchimp')}
+												onChange={(required_indicator_text) =>
+													setAttributes({ required_indicator_text })
+												}
+											/>
 										</div>
 									)}
 									<div className="mc_signup_submit">
