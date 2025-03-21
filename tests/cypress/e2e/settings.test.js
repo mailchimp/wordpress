@@ -194,6 +194,29 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
+	it('Form data should persist if validation fails', () => {
+		// Remove mailchimp CSS.
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_use_javascript').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			const firstName = 'John';
+			const lastName = 'Doe';
+			cy.visit(url);
+			cy.get('#mc_mv_EMAIL').should('exist');
+			cy.get('#mc_mv_FNAME').clear().type(firstName);
+			cy.get('#mc_mv_LNAME').clear().type(lastName);
+			cy.get('#mc_signup_submit').should('exist');
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+			cy.get('#mc_mv_FNAME').should('have.value', firstName);
+			cy.get('#mc_mv_LNAME').should('have.value', lastName);
+		});
+	});
+
 	it('Admin can logout', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
