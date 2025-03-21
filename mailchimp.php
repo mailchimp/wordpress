@@ -1224,13 +1224,16 @@ function mailchimp_sf_update_profile_url( $email ) {
 /**
  * Get signup form URL.
  *
+ * @param string $list_id List ID
  * @return string
  */
-function mailchimp_sf_signup_form_url() {
-	$dc      = get_option( 'mc_datacenter' );
-	$user    = get_option( 'mc_user' );
-	$list_id = get_option( 'mc_list_id' );
-	$url     = 'http://' . $dc . '.list-manage.com/subscribe?u=' . $user['account_id'] . '&id=' . $list_id;
+function mailchimp_sf_signup_form_url( $list_id = '' ) {
+	$dc   = get_option( 'mc_datacenter' );
+	$user = get_option( 'mc_user' );
+	if ( empty( $list_id ) ) {
+		$list_id = get_option( 'mc_list_id' );
+	}
+	$url = 'http://' . $dc . '.list-manage.com/subscribe?u=' . $user['account_id'] . '&id=' . $list_id;
 	return $url;
 }
 
