@@ -1,6 +1,6 @@
 <?php
 /**
- * Class responsible for admin side functionalities.
+ * Class responsible for handling the form submission for the Mailchimp block.
  *
  * @package Mailchimp
  */

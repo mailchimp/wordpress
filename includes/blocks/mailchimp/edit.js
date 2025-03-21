@@ -255,7 +255,10 @@ export const BlockEdit = (props) => {
 									<RichText
 										className="mailchimp-block__sub-header"
 										tagName="h3"
-										placeholder={__('Enter a sub header (optional)', 'mailchimp')}
+										placeholder={__(
+											'Enter a sub header (optional)',
+											'mailchimp',
+										)}
 										value={sub_header}
 										onChange={(sub_header) => setAttributes({ sub_header })}
 									/>
@@ -276,17 +279,17 @@ export const BlockEdit = (props) => {
 										template={template}
 										templateLock="insert"
 									/>
-									{show_required_indicator && (
-										<div id="mc-indicates-required">
-											{__('* = required field', 'mailchimp')}
-										</div>
-									)}
 									<Disabled>
 										<InterestGroups
 											listData={listData}
 											visibility={interest_groups_visibility}
 										/>
 									</Disabled>
+									{show_required_indicator && (
+										<div id="mc-indicates-required">
+											{__('* = required field', 'mailchimp')}
+										</div>
+									)}
 									<div className="mc_signup_submit">
 										<RichText
 											id="mc_signup_submit"

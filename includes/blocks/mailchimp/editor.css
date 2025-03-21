@@ -20,7 +20,6 @@
 	display: block;
 	opacity: 0.2;
 	border: 1px dashed grey;
-	margin: 8px 0px;
 }
 
 h2.mailchimp-block__header:has(span:empty),
@@ -58,9 +57,10 @@ div#mc_subheader:has(h3 span:empty) {
 	text-align: center;
 }
 
-.mc_merge_var {
-	margin-bottom: 1.0em;
+.wp-block-mailchimp-mailchimp-form-field .mc_merge_var {
+	margin-bottom: 1em;
 }
+
 .mc_var_label,
 .mc_interest_label {
 	display: block;
@@ -126,4 +126,8 @@ select.mc_select {
 }
 .mc_email_type {
 	padding-left: 4px;
+}
+#mc-indicates-required {
+	width:100%;
+	margin-top: 1em;
 }

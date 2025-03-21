@@ -162,6 +162,10 @@ if ( ! mailchimp_sf_should_display_form() ) {
 		.mc_email_type {
 			padding-left: 4px;
 		}
+		#mc-indicates-required {
+			width:100%;
+			margin-top: 1em;
+		}
 		</style>
 		<?php
 	}
@@ -214,15 +218,6 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					 */
 					echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-					// Show an explanation of the * if there's more than one field
-					if ( $show_required_indicator ) {
-						?>
-						<div id="mc-indicates-required">
-							* = <?php esc_html_e( 'required field', 'mailchimp' ); ?>
-						</div><!-- /mc-indicates-required -->
-						<?php
-					}
-
 					// Show our Interest groups fields if we have them, and they're set to on
 					if ( is_array( $igs ) && ! empty( $igs ) ) {
 						foreach ( $igs as $ig ) {
@@ -252,6 +247,14 @@ if ( ! mailchimp_sf_should_display_form() ) {
 						}
 					}
 
+					// Show an explanation of the * if there's more than one field
+					if ( $show_required_indicator ) {
+						?>
+						<div id="mc-indicates-required">
+							<?php esc_html_e( '* = required field', 'mailchimp' ); ?>
+						</div><!-- /mc-indicates-required -->
+						<?php
+					}
 					?>
 					<div class="mc_signup_submit">
 						<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
