@@ -859,9 +859,6 @@ function mailchimp_sf_signup_submit() {
 		return false;
 	}
 
-	// TODO: If get_option( 'mc_update_existing' ) && 'unsubscribed' === $status then
-	// make an API request to fetch Mailchimp hosted sign up form and display to user
-
 	$body   = mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, get_option( 'mc_double_optin' ) );
 	$retval = $api->post( $url, $body, 'PUT' );
 
