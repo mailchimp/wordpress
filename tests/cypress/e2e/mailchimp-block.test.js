@@ -39,7 +39,7 @@ describe('Block Tests', () => {
 			.find('h3[aria-label="Enter a sub header (optional)"]')
 			.clear()
 			.type(subHeader);
-		cy.getBlockEditor().find('button[aria-label="Enter a button text."]').clear().type(button);
+		cy.getBlockEditor().find('button[aria-label="Enter button text."]').clear().type(button);
 		cy.get('button.editor-post-publish-button').click();
 
 		// Verify
