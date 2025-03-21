@@ -11,9 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Mailchimp_Admin
+ * Class Mailchimp_List_Subscribe_Form_Blocks
  *
- * @since 1.6.0
+ * @since x.x.x
  */
 class Mailchimp_List_Subscribe_Form_Blocks {
 

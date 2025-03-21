@@ -27,7 +27,7 @@ const SelectListPlaceholder = () => {
 			icon={Icon}
 			label={__('Mailchimp Block', 'mailchimp')}
 			instructions={__(
-				'Please select the Mailchimp list in block settings sidebar.',
+				'Please select the Mailchimp list in the block settings sidebar.',
 				'mailchimp',
 			)}
 		/>
@@ -95,7 +95,7 @@ export const BlockEdit = (props) => {
 		setError('');
 		setIsLoading(true);
 
-		// Fetch data from your API
+		// Fetch data from API.
 		apiFetch({ path: `/mailchimp/v1/list-data/${listId}` })
 			.then((data) => {
 				if (replaceBlocks) {
@@ -245,7 +245,7 @@ export const BlockEdit = (props) => {
 						<RichText
 							className="mailchimp-block__header mc_custom_border_hdr"
 							tagName="h2"
-							placeholder={__('Enter a header.', 'mailchimp')}
+							placeholder={__('Enter a header (optional)', 'mailchimp')}
 							value={header}
 							onChange={(header) => setAttributes({ header })}
 						/>
@@ -255,7 +255,7 @@ export const BlockEdit = (props) => {
 									<RichText
 										className="mailchimp-block__sub-header"
 										tagName="h3"
-										placeholder={__('Enter a sub header.', 'mailchimp')}
+										placeholder={__('Enter a sub header (optional)', 'mailchimp')}
 										value={sub_header}
 										onChange={(sub_header) => setAttributes({ sub_header })}
 									/>
@@ -292,7 +292,7 @@ export const BlockEdit = (props) => {
 											id="mc_signup_submit"
 											className="button"
 											tagName="button"
-											placeholder={__('Enter a button text.', 'mailchimp')}
+											placeholder={__('Enter button text.', 'mailchimp')}
 											value={submit_text}
 											onChange={(submit_text) =>
 												setAttributes({ submit_text })
@@ -359,12 +359,12 @@ export const BlockEdit = (props) => {
 				</PanelBody>
 				<PanelBody title={__('Form Settings', 'mailchimp')} initialOpen={false}>
 					<ToggleControl
-						label={__('Double Opt-In', 'mailchimp')}
+						label={__('Double opt-in', 'mailchimp')}
 						checked={double_opt_in}
 						className="mailchimp-double-opt-in"
 						onChange={() => setAttributes({ double_opt_in: !double_opt_in })}
 						help={__(
-							"Before new your subscribers are added via the plugin, they'll need to confirm their email address.",
+							"Before new subscribers are added to your list, they'll need to confirm their email address.",
 							'mailchimp',
 						)}
 						__nextHasNoMarginBottom
@@ -379,20 +379,20 @@ export const BlockEdit = (props) => {
 							})
 						}
 						help={__(
-							"If an existing subscriber fills out this form, we will update their information with what's provided.",
+							"If an existing subscriber submits the form, their information will be updated with what's provided.",
 							'mailchimp',
 						)}
 						__nextHasNoMarginBottom
 					/>
 					<ToggleControl
-						label={__('Include Unsubscribe link', 'mailchimp')}
+						label={__('Include unsubscribe link', 'mailchimp')}
 						checked={show_unsubscribe_link}
 						className="mailchimp-unsubscribe-link"
 						onChange={() =>
 							setAttributes({ show_unsubscribe_link: !show_unsubscribe_link })
 						}
 						help={__(
-							"We'll automatically add a link to your list's unsubscribe form.",
+							"Automatically add a link to your list's unsubscribe form.",
 							'mailchimp',
 						)}
 						__nextHasNoMarginBottom

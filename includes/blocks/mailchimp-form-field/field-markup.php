@@ -1,6 +1,6 @@
 <?php
 /**
- * Displays a signup form.
+ * Displays a form field.
  *
  * @package Mailchimp
  */
