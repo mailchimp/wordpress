@@ -34,8 +34,11 @@ describe('Block Tests', () => {
 		const subHeader =
 			'[BLOCK] Join our mailing list to receive the latest news and updates from our team.';
 		const button = 'Subscribe Now';
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').clear().type(header);
-		cy.getBlockEditor().find('h3[aria-label="Enter a sub header."]').clear().type(subHeader);
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').clear().type(header);
+		cy.getBlockEditor()
+			.find('h3[aria-label="Enter a sub header (optional)"]')
+			.clear()
+			.type(subHeader);
 		cy.getBlockEditor().find('button[aria-label="Enter a button text."]').clear().type(button);
 		cy.get('button.editor-post-publish-button').click();
 
@@ -116,7 +119,7 @@ describe('Block Tests', () => {
 	it('Admin can show/hide groups from block settings', () => {
 		// Show groups
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
 		cy.get('.mailchimp-interest-groups input.components-form-toggle__input').first().check();
 
@@ -130,7 +133,7 @@ describe('Block Tests', () => {
 
 		// Hide groups
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
 		cy.get('.mailchimp-interest-groups input.components-form-toggle__input').first().uncheck();
 
@@ -161,7 +164,7 @@ describe('Block Tests', () => {
 	it('Admin can show/hide unsubscribe link from block settings', () => {
 		// display unsubscribe link.
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
@@ -173,7 +176,7 @@ describe('Block Tests', () => {
 
 		// Reset
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().uncheck();
 		cy.get('button.editor-post-publish-button').click();
@@ -187,7 +190,7 @@ describe('Block Tests', () => {
 	it('Admin can change audience list from block settings', () => {
 		// display unsubscribe link.
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
 		cy.get('.mailchimp-list-select select').select('Alternate 10up Audience');
 		cy.wait(2000);
@@ -205,7 +208,7 @@ describe('Block Tests', () => {
 
 		// Reset
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header."]').click();
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
 		cy.get('.mailchimp-list-select select').select('10up');
 		cy.wait(2000);
@@ -226,7 +229,10 @@ describe('Block Tests', () => {
 
 			cy.visit(`/wp-admin/post.php?post=${oldBlockPostId}&action=edit`);
 			const header = '[NEW BLOCK] Subscribe to our newsletter';
-			cy.getBlockEditor().find('h2[aria-label="Enter a header."]').clear().type(header);
+			cy.getBlockEditor()
+				.find('h2[aria-label="Enter a header (optional)"]')
+				.clear()
+				.type(header);
 			cy.get('button.editor-post-publish-button').click();
 			cy.wait(500);
 
