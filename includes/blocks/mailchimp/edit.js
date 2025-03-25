@@ -12,14 +12,12 @@ import {
 	SelectControl,
 	Spinner,
 	Placeholder,
-	Disabled,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import Icon from './icon';
-import { InterestGroups } from './interest-groups';
 
 const SelectListPlaceholder = () => {
 	return (
@@ -40,6 +38,7 @@ export const BlockEdit = (props) => {
 	const {
 		lists,
 		merge_fields_visibility,
+		interest_groups_visibility,
 		list_id: listId,
 		header_text,
 		sub_header_text,
@@ -54,7 +53,6 @@ export const BlockEdit = (props) => {
 		update_existing_subscribers,
 		show_unsubscribe_link,
 		unsubscribe_link_text,
-		interest_groups_visibility,
 		show_required_indicator = true,
 		required_indicator_text,
 	} = attributes;
@@ -70,7 +68,8 @@ export const BlockEdit = (props) => {
 		(select) => select(blockEditorStore).getBlocksByClientId(clientId)?.[0]?.innerBlocks || [],
 		[clientId],
 	);
-	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag);
+	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag).filter(Boolean);
+	const exisingGroups = innerBlocks.map((block) => block?.attributes?.id).filter(Boolean);
 	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
 
 	const listOptions = [];
@@ -99,43 +98,60 @@ export const BlockEdit = (props) => {
 		// Fetch data from API.
 		apiFetch({ path: `/mailchimp/v1/list-data/${listId}` })
 			.then((data) => {
+				if (!data) {
+					setError(__('Error fetching list data.', 'mailchimp'));
+					setIsLoading(false);
+					return;
+				}
+
 				if (replaceBlocks) {
 					// Replace all innerBlocks with new ones on list change.
-					const listInnerBlocks = data?.merge_fields?.map((field) =>
-						createBlock('mailchimp/mailchimp-form-field', {
-							tag: field.tag,
-							label: field.name,
-							type: field.type,
-							visible:
-								(field.required || merge_fields_visibility?.[field.tag] === 'on') &&
-								field.public,
-						}),
-					);
-					replaceInnerBlocks(clientId, [...listInnerBlocks], false);
-
-					// Reset groups visibility settings on list change.
-					if (data?.interest_groups?.length > 0) {
-						const newVisibility = data?.interest_groups?.reduce((acc, field) => {
-							acc[field.id] = 'off';
-							return acc;
-						}, {});
-						setAttributes({ interest_groups_visibility: newVisibility });
-					} else {
-						setAttributes({ interest_groups_visibility: {} });
-					}
+					const listFieldsBlocks =
+						data?.merge_fields?.map((field) =>
+							createBlock('mailchimp/mailchimp-form-field', {
+								tag: field.tag,
+								label: field.name,
+								type: field.type,
+								visible:
+									(field.required ||
+										merge_fields_visibility?.[field.tag] === 'on') &&
+									field.public,
+							}),
+						) || [];
+					const listGroupsBlocks =
+						data?.interest_groups?.map((group) =>
+							createBlock('mailchimp/mailchimp-audience-group', {
+								id: group.id,
+								label: group.title,
+								visible:
+									interest_groups_visibility?.[group.id] === 'on' &&
+									group.type !== 'hidden',
+							}),
+						) || [];
+					replaceInnerBlocks(clientId, [...listFieldsBlocks, ...listGroupsBlocks], false);
 				} else if (exisingTags && exisingTags.length > 0) {
 					// Update existing innerBlocks with if new fields are added to the list or removed from the list.
-					const newFormFields = data?.merge_fields?.filter(
-						(field) => !exisingTags.includes(field.tag),
-					);
+					const newFormFields =
+						data?.merge_fields?.filter((field) => !exisingTags.includes(field.tag)) ||
+						[];
+					const newFormGroups =
+						data?.interest_groups?.filter(
+							(group) => !exisingGroups.includes(group.id),
+						) || [];
 					const updatedInnerBlocks = innerBlocks.filter((block) => {
-						const { tag } = block.attributes;
-						return data?.merge_fields?.find((field) => field.tag === tag);
+						const { tag, id } = block.attributes;
+						if (tag) {
+							return data?.merge_fields?.find((field) => field.tag === tag);
+						}
+						return data?.interest_groups?.find((group) => group.id === id);
 					});
+
 					if (
 						newFormFields.length > 0 ||
+						newFormGroups.length > 0 ||
 						updatedInnerBlocks.length !== innerBlocks.length
 					) {
+						// Create new blocks for newly added fields and groups.
 						const newBlocks = newFormFields.map((field) =>
 							createBlock('mailchimp/mailchimp-form-field', {
 								tag: field.tag,
@@ -147,7 +163,22 @@ export const BlockEdit = (props) => {
 									field.public,
 							}),
 						);
-						replaceInnerBlocks(clientId, [...updatedInnerBlocks, ...newBlocks], false);
+						const newGroupBlocks = newFormGroups.map((group) =>
+							createBlock('mailchimp/mailchimp-audience-group', {
+								id: group.id,
+								label: group.title,
+								visible:
+									interest_groups_visibility?.[group.id] === 'on' &&
+									group.type !== 'hidden',
+							}),
+						);
+
+						// Replace innerBlocks with updated ones.
+						replaceInnerBlocks(
+							clientId,
+							[...updatedInnerBlocks, ...newBlocks, ...newGroupBlocks],
+							false,
+						);
 					}
 				}
 
@@ -157,10 +188,17 @@ export const BlockEdit = (props) => {
 				if (!window.mailchimpListData) {
 					window.mailchimpListData = {};
 				}
-				window.mailchimpListData[listId] = data?.merge_fields?.reduce((acc, field) => {
-					acc[field.tag] = field;
-					return acc;
-				}, {});
+				const mergeFields =
+					data?.merge_fields?.reduce((acc, field) => {
+						acc[field.tag] = field;
+						return acc;
+					}, {}) || {};
+				const interestGroups =
+					data?.interest_groups?.reduce((acc, group) => {
+						acc[group.id] = group;
+						return acc;
+					}, {}) || {};
+				window.mailchimpListData[listId] = { mergeFields, interestGroups };
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -226,16 +264,28 @@ export const BlockEdit = (props) => {
 	}
 
 	// Create a template for innerBlocks based on list data and visibility settings.
-	const template = listData?.merge_fields?.map((field) => [
-		'mailchimp/mailchimp-form-field',
-		{
-			tag: field.tag,
-			label: field.name,
-			type: field.type,
-			visible:
-				(field.required || merge_fields_visibility?.[field.tag] === 'on') && field.public,
-		},
-	]);
+	const templateFields =
+		listData?.merge_fields?.map((field) => [
+			'mailchimp/mailchimp-form-field',
+			{
+				tag: field.tag,
+				label: field.name,
+				type: field.type,
+				visible:
+					(field.required || merge_fields_visibility?.[field.tag] === 'on') &&
+					field.public,
+			},
+		]) || [];
+	const templateGroups =
+		listData?.interest_groups?.map((group) => [
+			'mailchimp/mailchimp-audience-group',
+			{
+				id: group.id,
+				label: group.title,
+				visible: interest_groups_visibility?.[group.id] === 'on' && group.type !== 'hidden',
+			},
+		]) || [];
+	const template = [...templateFields, ...templateGroups];
 
 	return (
 		<>
@@ -280,12 +330,6 @@ export const BlockEdit = (props) => {
 										template={template}
 										templateLock="insert"
 									/>
-									<Disabled>
-										<InterestGroups
-											listData={listData}
-											visibility={interest_groups_visibility}
-										/>
-									</Disabled>
 									{show_required_indicator && (
 										<div id="mc-indicates-required">
 											<RichText
@@ -345,28 +389,6 @@ export const BlockEdit = (props) => {
 						)}
 						__nextHasNoMarginBottom
 					/>
-					{listData?.interest_groups?.length > 0 && (
-						<div style={{ marginTop: '20px' }}>
-							<h3>{__('Groups Settings', 'mailchimp')}</h3>
-							{listData?.interest_groups?.map((group) => (
-								<ToggleControl
-									key={group.id}
-									label={group.title}
-									className="mailchimp-interest-groups"
-									checked={interest_groups_visibility?.[group.id] === 'on'}
-									onChange={(checked) => {
-										setAttributes({
-											interest_groups_visibility: {
-												...interest_groups_visibility,
-												[group.id]: checked ? 'on' : 'off',
-											},
-										});
-									}}
-									__nextHasNoMarginBottom
-								/>
-							))}
-						</div>
-					)}
 				</PanelBody>
 				<PanelBody title={__('Form Settings', 'mailchimp')} initialOpen={false}>
 					<ToggleControl

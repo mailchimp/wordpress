@@ -92,7 +92,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		line-height: 1.25em;
 		margin-bottom: 18px;
 	}
-	.mc_merge_var {
+	.mc_merge_var,
+	.mc_interest {
 		margin-bottom: 1.0em;
 	}
 	.mc_var_label,

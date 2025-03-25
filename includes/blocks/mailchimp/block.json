@@ -19,9 +19,6 @@
       "type": "string",
       "default": "Subscribe"
     },
-    "interest_groups_visibility": {
-      "type": "object"
-    },
     "double_opt_in": {
       "type": "boolean",
       "default": true

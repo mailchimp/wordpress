@@ -26,7 +26,7 @@ export const MailchimpFormField = (props) => {
 	} = props;
 	const { tag, label, visible, type } = attributes;
 	const { mailchimpListData } = window;
-	const field = mailchimpListData?.[listId]?.[tag] || {};
+	const field = mailchimpListData?.[listId]?.mergeFields?.[tag] || {};
 
 	if (!field) {
 		return (
@@ -293,7 +293,7 @@ export const MailchimpFormField = (props) => {
 					tagName="label"
 					value={label}
 					onChange={(label) => setAttributes({ label })}
-					placeholder={__('Enter a label', 'mailchimp-form-field')}
+					placeholder={__('Enter a label', 'mailchimp')}
 				/>
 				{required && showRequiredIndicator && <span className="mc_required">*</span>}
 			</label>
@@ -316,8 +316,8 @@ export const BlockEdit = (props) => {
 	} = props;
 	const { visible, tag } = attributes;
 	const { mailchimpListData } = window;
-	const isPublic = mailchimpListData?.[listId]?.[tag]?.public;
-	const isRequired = mailchimpListData?.[listId]?.[tag]?.required || false;
+	const isPublic = mailchimpListData?.[listId]?.mergeFields?.[tag]?.public;
+	const isRequired = mailchimpListData?.[listId]?.mergeFields?.[tag]?.required || false;
 
 	return (
 		<div {...blockProps} style={{ color: 'inherit' }}>

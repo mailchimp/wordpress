@@ -1,7 +1,7 @@
 {
   "$schema": "https://schemas.wp.org/trunk/block.json",
   "apiVersion": 3,
-  "name": "mailchimp/mailchimp-form-group",
+  "name": "mailchimp/mailchimp-audience-group",
   "title": "Mailchimp Audience Group",
   "category": "widgets",
   "attributes": {

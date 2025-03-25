@@ -35,6 +35,16 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 	 * Register the block.
 	 */
 	public function register_blocks() {
+		// Get the default visibility of interest groups.
+		$interest_groups_visibility = array();
+		$interest_groups            = get_option( 'mc_interest_groups', array() );
+		if ( ! empty( $interest_groups ) ) {
+			foreach ( $interest_groups as $group ) {
+				$visible                                    = 'on' === get_option( 'mc_show_interest_groups_' . $group['id'], 'on' ) && 'hidden' !== $group['type'];
+				$interest_groups_visibility[ $group['id'] ] = $visible ? 'on' : 'off';
+			}
+		}
+
 		// Get the default visibility of merge fields.
 		$merge_fields_visibility = array();
 		$merge_fields            = get_option( 'mc_merge_vars', array() );
@@ -57,12 +67,13 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		}
 
 		$data = array(
-			'admin_settings_url'      => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
-			'lists'                   => $this->get_lists(),
-			'list_id'                 => get_option( 'mc_list_id', '' ),
-			'header_text'             => get_option( 'mc_header_content', '' ),
-			'sub_header_text'         => get_option( 'mc_subheader_content', '' ),
-			'merge_fields_visibility' => $merge_fields_visibility,
+			'admin_settings_url'         => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'lists'                      => $this->get_lists(),
+			'list_id'                    => get_option( 'mc_list_id', '' ),
+			'header_text'                => get_option( 'mc_header_content', '' ),
+			'sub_header_text'            => get_option( 'mc_subheader_content', '' ),
+			'merge_fields_visibility'    => $merge_fields_visibility,
+			'interest_groups_visibility' => $interest_groups_visibility,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
