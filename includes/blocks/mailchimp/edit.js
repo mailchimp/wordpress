@@ -42,16 +42,20 @@ export const BlockEdit = (props) => {
 		list_id: listId,
 		header_text,
 		sub_header_text,
+		submit_text: submitText,
+		show_unsubscribe_link: showUnsubscribeLink,
+		update_existing_subscribers: updateExistingSubscribers,
+		double_opt_in: doubleOptIn,
 	} = mailchimp_sf_block_data;
 
 	const {
 		header = header_text,
 		sub_header = sub_header_text,
 		list_id = listId,
-		submit_text,
-		double_opt_in,
-		update_existing_subscribers,
-		show_unsubscribe_link,
+		submit_text = submitText,
+		double_opt_in = doubleOptIn,
+		update_existing_subscribers = updateExistingSubscribers,
+		show_unsubscribe_link = showUnsubscribeLink,
 		unsubscribe_link_text,
 		show_required_indicator = true,
 		required_indicator_text,
@@ -231,7 +235,7 @@ export const BlockEdit = (props) => {
 
 		updateList(list_id, false);
 
-		// Set the attributes initially, if it's already not set.
+		// Set the attributes from global settings initially, if it's already not set.
 		if (attributes.list_id === undefined) {
 			const attributeUpdates = { list_id: listId };
 			if (attributes.header === undefined) {
@@ -239,6 +243,18 @@ export const BlockEdit = (props) => {
 			}
 			if (attributes.sub_header === undefined) {
 				attributeUpdates.sub_header = sub_header_text;
+			}
+			if (attributes.submit_text === undefined) {
+				attributeUpdates.submit_text = submitText;
+			}
+			if (attributes.double_opt_in === undefined) {
+				attributeUpdates.double_opt_in = doubleOptIn;
+			}
+			if (attributes.update_existing_subscribers === undefined) {
+				attributeUpdates.update_existing_subscribers = updateExistingSubscribers;
+			}
+			if (attributes.show_unsubscribe_link === undefined) {
+				attributeUpdates.show_unsubscribe_link = showUnsubscribeLink;
 			}
 
 			setAttributes(attributeUpdates);

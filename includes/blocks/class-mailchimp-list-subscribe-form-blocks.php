@@ -67,13 +67,17 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		}
 
 		$data = array(
-			'admin_settings_url'         => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
-			'lists'                      => $this->get_lists(),
-			'list_id'                    => get_option( 'mc_list_id', '' ),
-			'header_text'                => get_option( 'mc_header_content', '' ),
-			'sub_header_text'            => get_option( 'mc_subheader_content', '' ),
-			'merge_fields_visibility'    => $merge_fields_visibility,
-			'interest_groups_visibility' => $interest_groups_visibility,
+			'admin_settings_url'          => esc_url_raw( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'lists'                       => $this->get_lists(),
+			'list_id'                     => get_option( 'mc_list_id', '' ),
+			'header_text'                 => get_option( 'mc_header_content', '' ),
+			'sub_header_text'             => get_option( 'mc_subheader_content', '' ),
+			'submit_text'                 => get_option( 'mc_submit_text', __( 'Subscribe', 'mailchimp' ) ),
+			'show_unsubscribe_link'       => get_option( 'mc_use_unsub_link', 'off' ) === 'on',
+			'update_existing_subscribers' => (bool) get_option( 'mc_update_existing', true ),
+			'double_opt_in'               => (bool) get_option( 'mc_double_optin', true ),
+			'merge_fields_visibility'     => $merge_fields_visibility,
+			'interest_groups_visibility'  => $interest_groups_visibility,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
