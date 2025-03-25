@@ -166,8 +166,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	?>
 
 <div id="mc_signup">
-	<form method="post" action="#mc_signup" id="mc_signup_form">
-		<input type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" />
+	<form method="post" action="#mc_signup" id="mc_signup_form" class="mc_signup_form">
+		<input type="hidden" id="mc_submit_type" class="mc_submit_type" name="mc_submit_type" value="html" />
 		<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 		<?php wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false ); ?>
 
@@ -183,7 +183,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 	<div class="mc_form_inside">
 
-		<div class="updated" id="mc_message">
+		<div class="update mc_message_wrapper" id="mc_message">
 			<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
 		</div><!-- /mc_message -->
 
@@ -270,7 +270,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		?>
 
 		<div class="mc_signup_submit">
-			<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
+			<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
 		</div><!-- /mc_signup_submit -->
 
 		<?php
