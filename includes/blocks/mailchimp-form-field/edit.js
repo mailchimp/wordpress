@@ -286,7 +286,7 @@ export const MailchimpFormField = (props) => {
 
 	return (
 		<div
-			className={`mc_merge_var ${visible && field?.public ? 'mailchimp_merge_field_visible' : 'mailchimp_merge_field_hidden'}`}
+			className={`mc_merge_var ${visible ? 'mailchimp_merge_field_visible' : 'mailchimp_merge_field_hidden'}`}
 		>
 			<label htmlFor={tag} className={`mc_var_label mc_header mc_header_${type}`}>
 				<RichText
@@ -297,7 +297,7 @@ export const MailchimpFormField = (props) => {
 				/>
 				{required && showRequiredIndicator && <span className="mc_required">*</span>}
 			</label>
-			{!!visible && field?.public && (
+			{!!visible && (
 				<Disabled>
 					{renderInputField()}
 					{help_text && <span className="mc_help">{help_text}</span>}
@@ -316,13 +316,12 @@ export const BlockEdit = (props) => {
 	} = props;
 	const { visible, tag } = attributes;
 	const { mailchimpListData } = window;
-	const isPublic = mailchimpListData?.[listId]?.mergeFields?.[tag]?.public;
 	const isRequired = mailchimpListData?.[listId]?.mergeFields?.[tag]?.required || false;
 
 	return (
 		<div {...blockProps} style={{ color: 'inherit' }}>
 			<MailchimpFormField {...props} />
-			{isPublic && !isRequired && (
+			{!isRequired && (
 				<BlockControls>
 					<ToolbarVisibilityGroup
 						visible={visible}
