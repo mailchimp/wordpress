@@ -184,7 +184,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	<div class="mc_form_inside">
 
 		<div class="update mc_message_wrapper" id="mc_message">
-			<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
+			<?php echo wp_kses_post( mailchimp_sf_frontend_msg() ); ?>
 		</div><!-- /mc_message -->
 
 		<?php
