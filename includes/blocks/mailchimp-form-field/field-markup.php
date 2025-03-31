@@ -35,8 +35,6 @@ if ( empty( $merge_field ) ) {
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php
-	if ( $merge_field['public'] ) {
-		echo mailchimp_form_field( $merge_field, $num_fields, $is_visible, $label ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-	}
+	echo mailchimp_form_field( $merge_field, $num_fields, $is_visible, $label ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 	?>
 </div>

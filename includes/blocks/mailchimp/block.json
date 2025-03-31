@@ -16,23 +16,16 @@
       "type": "string"
     },
     "submit_text": {
-      "type": "string",
-      "default": "Subscribe"
-    },
-    "interest_groups_visibility": {
-      "type": "object"
+      "type": "string"
     },
     "double_opt_in": {
-      "type": "boolean",
-      "default": true
+      "type": "boolean"
     },
     "update_existing_subscribers": {
-      "type": "boolean",
-      "default": true
+      "type": "boolean"
     },
     "show_unsubscribe_link": {
-      "type": "boolean",
-      "default": false
+      "type": "boolean"
     },
     "unsubscribe_link_text": {
       "type": "string",

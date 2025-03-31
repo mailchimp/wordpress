@@ -11,12 +11,15 @@
 	opacity: 0.5;
 }
 
-.mailchimp_merge_field_hidden {
+.mailchimp_merge_field_hidden,
+.mailchimp_interest_group_hidden {
 	display: none;
 }
 
-.is-selected .mailchimp_merge_field_hidden,
-.has-child-selected .mailchimp_merge_field_hidden {
+.wp-block-mailchimp-mailchimp.is-selected .mailchimp_merge_field_hidden,
+.wp-block-mailchimp-mailchimp.has-child-selected .mailchimp_merge_field_hidden,
+.wp-block-mailchimp-mailchimp.is-selected .mailchimp_interest_group_hidden,
+.wp-block-mailchimp-mailchimp.has-child-selected .mailchimp_interest_group_hidden {
 	display: block;
 	opacity: 0.2;
 	border: 1px dashed grey;
@@ -27,14 +30,15 @@ div#mc_subheader:has(h3 span:empty) {
 	display: none;
 }
 
-.is-selected div#mc_subheader:has(h3 span:empty),
-.has-child-selected div#mc_subheader:has(h3 span:empty),
-.is-selected h2.mailchimp-block__header:has(span:empty),
-.has-child-selected h2.mailchimp-block__header:has(span:empty) {
+.wp-block-mailchimp-mailchimp.is-selected div#mc_subheader:has(h3 span:empty),
+.wp-block-mailchimp-mailchimp.has-child-selected div#mc_subheader:has(h3 span:empty),
+.wp-block-mailchimp-mailchimp.is-selected h2.mailchimp-block__header:has(span:empty),
+.wp-block-mailchimp-mailchimp.has-child-selected h2.mailchimp-block__header:has(span:empty) {
     display: block;
 }
 
-#mc_signup_form .mailchimp_merge_field_hidden .mc_var_label {
+#mc_signup_form .mailchimp_merge_field_hidden .mc_var_label,
+#mc_signup_form .mailchimp_interest_group_hidden .mc_interests_header {
 	padding: 0.25em 0.5em;
 	margin: 0px;
 }
