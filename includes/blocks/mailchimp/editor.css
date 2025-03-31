@@ -2,3 +2,136 @@
 #mc_message {
 	display: none;
 }
+
+.mailchimp-merge-field-checkbox .components-base-control__field {
+	margin-bottom: 8px;
+}
+
+.mailchimp-merge-field-checkbox input[type="checkbox"]:disabled {
+	opacity: 0.5;
+}
+
+.mailchimp_merge_field_hidden,
+.mailchimp_interest_group_hidden {
+	display: none;
+}
+
+.wp-block-mailchimp-mailchimp.is-selected .mailchimp_merge_field_hidden,
+.wp-block-mailchimp-mailchimp.has-child-selected .mailchimp_merge_field_hidden,
+.wp-block-mailchimp-mailchimp.is-selected .mailchimp_interest_group_hidden,
+.wp-block-mailchimp-mailchimp.has-child-selected .mailchimp_interest_group_hidden {
+	display: block;
+	opacity: 0.2;
+	border: 1px dashed grey;
+}
+
+h2.mailchimp-block__header:has(span:empty),
+div#mc_subheader:has(h3 span:empty) {
+	display: none;
+}
+
+.wp-block-mailchimp-mailchimp.is-selected div#mc_subheader:has(h3 span:empty),
+.wp-block-mailchimp-mailchimp.has-child-selected div#mc_subheader:has(h3 span:empty),
+.wp-block-mailchimp-mailchimp.is-selected h2.mailchimp-block__header:has(span:empty),
+.wp-block-mailchimp-mailchimp.has-child-selected h2.mailchimp-block__header:has(span:empty) {
+    display: block;
+}
+
+#mc_signup_form .mailchimp_merge_field_hidden .mc_var_label,
+#mc_signup_form .mailchimp_interest_group_hidden .mc_interests_header {
+	padding: 0.25em 0.5em;
+	margin: 0px;
+}
+
+#mc_subheader {
+	line-height: 1.25em;
+	margin-bottom: 18px;
+}
+
+#mc_signup_submit {
+	margin-top: 1.5em;
+	padding: 10px 8px;
+	width: 80%;
+}
+#mc_unsub_link a {
+	font-size: 0.75em;
+}
+#mc_unsub_link {
+	margin-top: 1.0em;
+	text-align: center;
+}
+
+.wp-block-mailchimp-mailchimp-form-field .mc_merge_var {
+	margin-bottom: 1em;
+}
+
+.mc_var_label,
+.mc_interest_label {
+	display: block;
+	margin-bottom: 0.5em;
+}
+.mc_input {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_input.mc_phone {
+	width: auto;
+}
+select.mc_select {
+	max-width: 100%;
+	width: 100%;
+	padding: 10px 8px;
+}
+.mc_address_label {
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+	display: block;
+}
+.mc_address_label ~ select {
+	max-width: 100%;
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_list li {
+	list-style: none;
+	background: none !important;
+}
+.mc_interests_header {
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_interest label,
+.mc_interest input {
+	margin-bottom: 0.4em;
+}
+#mc_signup_submit {
+	margin-top: 1.5em;
+	padding: 10px 8px;
+	width: 80%;
+}
+#mc_unsub_link a {
+	font-size: 0.75em;
+}
+#mc_unsub_link {
+	margin-top: 1.0em;
+}
+.mc_header_address,
+.mc_email_format {
+	display: block;
+	font-weight: bold;
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_email_options {
+	margin-top: 0.5em;
+}
+.mc_email_type {
+	padding-left: 4px;
+}
+#mc-indicates-required {
+	width:100%;
+	margin-top: 1em;
+}

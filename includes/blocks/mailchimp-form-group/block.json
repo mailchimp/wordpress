@@ -1,0 +1,33 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "mailchimp/mailchimp-audience-group",
+  "title": "Mailchimp Audience Group",
+  "category": "widgets",
+  "attributes": {
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "visible": {
+      "type": "boolean"
+    }
+  },
+  "supports": {
+    "html": false,
+    "reusable": true,
+    "lock": false,
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true
+    }
+  },
+  "parent": [
+    "mailchimp/mailchimp"
+  ],
+  "usesContext": ["mailchimp/list_id"],
+  "editorScript": "file:./index.js",
+  "render": "file:./markup.php"
+}
