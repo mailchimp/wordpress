@@ -683,9 +683,15 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 	update_option( 'mc_merge_vars', $mv['merge_fields'] );
 	foreach ( $mv['merge_fields'] as $mv_var ) {
 		$opt = 'mc_mv_' . $mv_var['tag'];
-		// turn them all on by default
 		if ( $new_list ) {
-			update_option( $opt, 'on' );
+			$public = isset( $mv_var['public'] ) ? $mv_var['public'] : false;
+			if ( ! $public ) {
+				// This is a hidden field, so we don't want to include it.
+				update_option( $opt, 'off' );
+			} else {
+				// We need to set the option to 'on' so that it shows up in the form.
+				update_option( $opt, 'on' );
+			}
 		}
 	}
 	return $mv['merge_fields'];
