@@ -684,7 +684,7 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list ) {
 	foreach ( $mv['merge_fields'] as $mv_var ) {
 		$opt = 'mc_mv_' . $mv_var['tag'];
 		if ( $new_list ) {
-			$public = isset( $mv_var['public'] ) ? $mv_var['public'] : false;
+			$public = $mv_var['public'] ?? false;
 			if ( ! $public ) {
 				// This is a hidden field, so we don't want to include it.
 				update_option( $opt, 'off' );
