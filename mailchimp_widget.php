@@ -205,11 +205,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 		// Loop over our vars, and output the ones that are set to display
 		foreach ( $mv as $mv_var ) {
-			if ( ! $mv_var['public'] ) {
-				echo '<div style="display:none;">' . mailchimp_form_field( $mv_var, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-			} else {
-				echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-			}
+			echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 		}
 
 		// Show an explanation of the * if there's more than one field

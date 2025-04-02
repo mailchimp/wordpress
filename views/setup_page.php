@@ -281,7 +281,7 @@ $is_list_selected = false;
 								<td><?php echo esc_html( ( 1 === intval( $mv_var['required'] ) ) ? 'Y' : 'N' ); ?></td>
 								<td>
 									<?php
-									if ( ! $mv_var['required'] && $mv_var['public'] ) {
+									if ( ! $mv_var['required'] ) {
 										$opt = 'mc_mv_' . $mv_var['tag'];
 										?>
 										<label class="screen-reader-text" for="<?php echo esc_attr( $opt ); ?>">
