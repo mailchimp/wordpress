@@ -82,6 +82,16 @@ class Mailchimp_Form_Submission {
 	 * @return string|WP_Error Success message or error.
 	 */
 	public function handle_form_submission() {
+		$is_valid = $this->validate_form_submission();
+		if ( is_wp_error( $is_valid ) || ! $is_valid ) {
+			if ( is_wp_error( $is_valid ) ) {
+				return $is_valid;
+			}
+
+			// If the form submission is invalid, return an error.
+			return new WP_Error( 'mailchimp-invalid-form', esc_html__( 'Invalid form submission.', 'mailchimp' ) );
+		}
+
 		$list_id         = get_option( 'mc_list_id' );
 		$update_existing = get_option( 'mc_update_existing' );
 		$double_opt_in   = get_option( 'mc_double_optin' );
@@ -465,5 +475,38 @@ class Mailchimp_Form_Submission {
 		}
 
 		return $merge;
+	}
+
+	/**
+	 * Validate the form submission.
+	 * Basic checks for the prevention of spam.
+	 *
+	 * @return bool|WP_Error True if valid, WP_Error if invalid.
+	 */
+	protected function validate_form_submission() {
+		$spam_message = esc_html__( "We couldn't process your submission as it was flagged as potential spam. Please try again.", 'mailchimp' );
+		// Make sure the honeypot field is set, but not filled (if it is, then it's a spam).
+		if ( ! isset( $_POST['mailchimp_sf_alt_email'] ) || ! empty( $_POST['mailchimp_sf_alt_email'] ) ) {
+			return new WP_Error( 'spam', $spam_message );
+		}
+
+		// Make sure that no-js field is not present (if it is, then it's a spam).
+		if ( isset( $_POST['mailchimp_sf_no_js'] ) ) {
+			return new WP_Error( 'spam', $spam_message );
+		}
+
+		// Make sure that user-agent is set and it has reasonable length.
+		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
+		if ( strlen( $user_agent ) < 2 ) {
+			return new WP_Error( 'spam', $spam_message );
+		}
+
+		/**
+		 * Filter to allow for custom validation of the form submission.
+		 *
+		 * @since x.x.x
+		 * @param bool $is_valid True if valid, false if invalid, return WP_Error to provide error message.
+		 */
+		return apply_filters( 'mailchimp_sf_form_submission_validation', true );
 	}
 }
