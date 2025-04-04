@@ -153,4 +153,27 @@ describe('Admin can update plugin settings', () => {
 			cy.get('#mc_unsub_link').should('not.exist');
 		});
 	});
+
+	it('Spam protection should work as expected', () => {
+		// Show error message to spam bots.
+		cy.visit(shortcodePostURL);
+		cy.get('#mc_signup').should('exist');
+		cy.get('input[name="mailchimp_sf_alt_email"]').then((el) => {
+			el.val('123');
+		});
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains(
+			"We couldn't process your submission as it was flagged as potential spam",
+		);
+
+		// Normal user should not see the error message.
+		cy.visit(shortcodePostURL);
+		cy.get('#mc_signup').should('exist');
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+	});
 });
