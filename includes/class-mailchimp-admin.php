@@ -1,7 +1,7 @@
 <?php
 /**
  * Class responsible for admin side functionalities.
- * 
+ *
  * The long term plan is to break up admin functionality into smaller, more focused
  * files to improve maintainability. This could also include:
  * - Moving OAuth related code to oauth.php
