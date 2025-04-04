@@ -434,6 +434,18 @@ function mailchimp_sf_frontend_msg( $msg = null ) {
 }
 
 /**
+ * Gets or sets a frontend message based on parameter passed to it
+ *
+ * TODO: Deprecate this function in favor of mailchimp_sf_frontend_msg()
+ *
+ * @param mixed $msg Message
+ * @return string/bool depending on get/set
+ */
+function mailchimp_sf_global_msg( $msg = null ) {
+	return mailchimp_sf_frontend_msg( $msg );
+}
+
+/**
  * Sets the default options for the option form
  *
  * @param string $list_name The Mailchimp list name.
