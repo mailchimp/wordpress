@@ -36,97 +36,6 @@ describe('Admin can update plugin settings', () => {
 		});
 	});
 
-	it('Admin can remove mailchimp CSS', () => {
-		// Remove mailchimp CSS.
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_nuke_all_styles').check();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Verify
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			cy.visit(url);
-			cy.get('#mc_subheader').should('not.have.css', 'margin-bottom', '18px');
-		});
-
-		// Enable mailchimp CSS.
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_nuke_all_styles').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Verify
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			cy.visit(url);
-			cy.get('#mc_subheader').should('have.css', 'margin-bottom', '18px');
-		});
-	});
-
-	it('Admin can set custom styling on signup form', () => {
-		// Enable custom styling and set values.
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_custom_style').check();
-		cy.get('#mc_form_border_width').clear().type('10');
-		cy.get('#mc_form_border_color').clear().type('000000');
-		cy.get('#mc_form_text_color').clear().type('FF0000');
-		cy.get('#mc_form_background').clear().type('00FF00');
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Verify
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			cy.visit(url);
-			cy.get('#mc_signup form').should('have.css', 'border-width', '10px');
-			cy.get('#mc_signup form').should('have.css', 'border-color', 'rgb(0, 0, 0)');
-			cy.get('#mc_signup form').should('have.css', 'color', 'rgb(255, 0, 0)');
-			cy.get('#mc_signup form').should('have.css', 'background-color', 'rgb(0, 255, 0)');
-
-			// Form is able to be submitted with custom styles
-			cy.get('#mc_signup_submit')
-				.scrollIntoView({ offset: { top: -100, left: 0 } })
-				.should('be.visible') // Check if the button is visible
-				.and('not.be.disabled'); // Ensure the button is not disabled
-
-			// Ensure that custom CSS does not cover submit button
-			cy.get('#mc_signup_submit').then(($el) => {
-				const rect = $el[0].getBoundingClientRect();
-
-				// Check that the element is within the viewport
-				cy.window().then((win) => {
-					const windowHeight = win.innerHeight;
-					const windowWidth = win.innerWidth;
-
-					expect(rect.top).to.be.greaterThan(0);
-					expect(rect.left).to.be.greaterThan(0);
-					expect(windowHeight).to.be.greaterThan(0);
-					expect(windowWidth).to.be.greaterThan(0);
-					expect(rect.bottom).to.be.lessThan(windowHeight);
-					expect(rect.right).to.be.lessThan(windowWidth);
-				});
-
-				// Check if the center of the element is not covered by another element
-				const centerX = rect.x + $el[0].offsetWidth / 2;
-				const centerY = rect.y + $el[0].offsetHeight / 2;
-
-				cy.document().then((doc) => {
-					const topElement = doc.elementFromPoint(centerX, centerY);
-					expect(topElement).to.equal($el[0]);
-				});
-			});
-		});
-
-		// Reset
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_custom_style').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Verify base styles
-		[shortcodePostURL, blockPostPostURL].forEach((url) => {
-			cy.visit(url);
-			cy.get('#mc_signup form').should('not.have.css', 'border-width', '10px');
-			cy.get('#mc_signup form').should('not.have.css', 'border-color', 'rgb(0, 0, 0)');
-			cy.get('#mc_signup form').should('not.have.css', 'color', 'rgb(255, 0, 0)');
-			cy.get('#mc_signup form').should('not.have.css', 'background-color', 'rgb(0, 255, 0)');
-		});
-	});
-
 	it('Admin can set Merge Fields Included settings', () => {
 		// Ensure that all current merge tags are up to date and saved
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
@@ -140,7 +49,6 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc_mv_ADDRESS').uncheck();
 		cy.get('#mc_mv_BIRTHDAY').uncheck();
 		cy.get('#mc_mv_COMPANY').uncheck();
-		cy.get('#mc_mv_PHONE').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
@@ -151,7 +59,6 @@ describe('Admin can update plugin settings', () => {
 			cy.get('#mc_mv_ADDRESS-addr1').should('not.exist'); // The address field has several inputs
 			cy.get('#mc_mv_BIRTHDAY').should('not.exist');
 			cy.get('#mc_mv_COMPANY').should('not.exist');
-			cy.get('#mc_mv_PHONE').should('not.exist');
 		});
 
 		// Reset and recheck all merge fields
@@ -161,7 +68,6 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc_mv_ADDRESS').check();
 		cy.get('#mc_mv_BIRTHDAY').check();
 		cy.get('#mc_mv_COMPANY').check();
-		cy.get('#mc_mv_PHONE').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
@@ -172,7 +78,30 @@ describe('Admin can update plugin settings', () => {
 			cy.get('#mc_mv_ADDRESS-addr1').should('exist'); // The address field has several inputs
 			cy.get('#mc_mv_BIRTHDAY').should('exist');
 			cy.get('#mc_mv_COMPANY').should('exist');
-			cy.get('#mc_mv_PHONE').should('exist');
+		});
+	});
+
+	it('Admin can update groups settings', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('input[id^="mc_show_interest_groups_"]').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
+			cy.get('.mc_interests_header').should('exist');
+			cy.get('.mc_interest').should('exist');
+		});
+
+		// Reset
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
+			cy.get('.mc_interests_header').should('not.exist');
+			cy.get('.mc_interest').should('not.exist');
 		});
 	});
 
@@ -183,35 +112,67 @@ describe('Admin can update plugin settings', () => {
 	it('Admin can set list options settings', () => {
 		// Remove mailchimp JavaScript support.
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').uncheck();
-		cy.get('#mc_use_datepicker').uncheck();
 		cy.get('#mc_use_unsub_link').check();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_submit_type').should('have.value', 'html');
-			cy.get('#mc_mv_BIRTHDAY').should('not.have.class', 'hasDatepicker');
-			cy.get('#mc_mv_BIRTHDAY').click();
-			cy.get('#ui-datepicker-div').should('not.exist');
 			cy.get('#mc_unsub_link').should('exist');
 		});
 
 		// Reset
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-		cy.get('#mc_use_javascript').check();
-		cy.get('#mc_use_datepicker').check();
 		cy.get('#mc_use_unsub_link').uncheck();
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_submit_type').should('have.value', 'js');
-			cy.get('#mc_mv_BIRTHDAY').should('have.class', 'hasDatepicker');
-			cy.get('#mc_mv_BIRTHDAY').click();
-			cy.get('#ui-datepicker-div').should('exist');
 			cy.get('#mc_unsub_link').should('not.exist');
+		});
+	});
+
+	it('Proper error message should display if unsubscribed user try to subscribe', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_double_optin').uncheck();
+		cy.get('#mc_update_existing').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
+			cy.get('#mc_mv_EMAIL').should('exist');
+			cy.get('#mc_mv_EMAIL').clear().type('unsubscribed_user@gmail.com');
+			cy.get('#mc_signup_submit').should('exist');
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').contains(
+				'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please sign up here.',
+			);
+		});
+
+		// Reset
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_double_optin').check();
+		cy.get('#mc_update_existing').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	});
+
+	it('Form data should persist if validation fails', () => {
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			const firstName = 'John';
+			const lastName = 'Doe';
+			cy.visit(url);
+			cy.get('#mc_mv_EMAIL').should('exist');
+			cy.get('#mc_mv_FNAME').clear().type(firstName);
+			cy.get('#mc_mv_LNAME').clear().type(lastName);
+			cy.get('#mc_signup_submit').should('exist');
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+			cy.get('#mc_mv_FNAME').should('have.value', firstName);
+			cy.get('#mc_mv_LNAME').should('have.value', lastName);
 		});
 	});
 
@@ -227,9 +188,9 @@ describe('Admin can update plugin settings', () => {
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 
 		// Verify the custom header is saved
-		cy.get('#mc-message .success_msg').contains(
-			'Successfully Updated your List Subscribe Form Settings!',
-		);
+		cy.get('.notice.notice-success.is-dismissible')
+			.last()
+			.contains('Successfully Updated your List Subscribe Form Settings!');
 		cy.get('#mc_header_content').should('have.value', customHeader);
 
 		// Step 3: Log out of the Mailchimp account
@@ -287,12 +248,6 @@ describe('Admin can update plugin settings', () => {
 					cy.get('#mc_header_content').should('have.value', 'Sign up for 10up');
 					cy.get('#mc_subheader_content').should('have.value', '');
 					cy.get('#mc_submit_text').should('have.value', 'Subscribe');
-					cy.get('#mc_nuke_all_styles').should('not.be.checked');
-					cy.get('#mc_custom_style').should('not.be.checked');
-					cy.get('#mc_form_border_width').should('have.value', '1');
-					cy.get('#mc_form_border_color').should('have.value', 'E0E0E0');
-					cy.get('#mc_form_background').should('have.value', 'FFFFFF');
-					cy.get('#mc_form_text_color').should('have.value', '3F3F3f');
 					cy.get('#mc_update_existing').should('not.be.checked');
 					cy.get('#mc_double_optin').should('be.checked');
 					cy.get('#mc_use_unsub_link').should('not.be.checked');

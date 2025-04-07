@@ -16,9 +16,9 @@ Cypress.Commands.add('mailchimpLogout', () => {
  * Not sure we should put this much logic into one command, but we need
  * the Mailchimp login functionality to test settings.test.js independently
  */
-Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
-	username = username ?? Cypress.env('MAILCHIMP_USERNAME');
-	password = password ?? Cypress.env('MAILCHIMP_PASSWORD');
+Cypress.Commands.add('mailchimpLogin', (user = null, pass = null) => {
+	const username = user ?? Cypress.env('MAILCHIMP_USERNAME');
+	const password = pass ?? Cypress.env('MAILCHIMP_PASSWORD');
 
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
@@ -39,21 +39,18 @@ Cypress.Commands.add('mailchimpLogin', (username = null, password = null) => {
 		const acceptButtonSelector = '#onetrust-accept-btn-handler';
 
 		// Check if the accept button is visible and click it
-		if ($popup.find(acceptButtonSelector).length > 0 && $popup.find(acceptButtonSelector).is(':visible')) {
+		if (
+			$popup.find(acceptButtonSelector).length > 0 &&
+			$popup.find(acceptButtonSelector).is(':visible')
+		) {
 			$popup.find(acceptButtonSelector).click();
 		} else {
 			cy.log('Cookie consent popup not found or not visible.');
 		}
 	});
 
-	cy.popup()
-		.find('input#username')
-		.clear()
-		.type(username, { force: true });
-	cy.popup()
-		.find('input#password')
-		.clear()
-		.type(password, { force: true });
+	cy.popup().find('input#username').clear().type(username, { force: true });
+	cy.popup().find('input#password').clear().type(password, { force: true });
 	cy.popup().find('button[type="submit"]').click({ force: true });
 	cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
 

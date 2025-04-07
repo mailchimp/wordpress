@@ -8,8 +8,7 @@ describe('Unsubscribe form', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ shortcodePostURL, blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP
@@ -40,7 +39,7 @@ describe('Unsubscribe form', () => {
 			// Assert unsubscribe link exists
 			cy.get('a[href*="/unsubscribe"]').should('exist');
 		});
-	})
+	});
 
 	it('unsubscribes valid emails that were previously subscribed to a list', () => {
 		const email = generateRandomEmail('previously-subscribed-email');
@@ -58,8 +57,7 @@ describe('Unsubscribe form', () => {
 			// Extract the base URL
 			const urlObject = new URL(url);
 			baseUrl = `${urlObject.protocol}//${urlObject.host}`;
-			});
-
+		});
 
 		// Assert unsubscribe link exists
 		cy.get('a[href*="/unsubscribe"]').should('exist');
@@ -75,8 +73,7 @@ describe('Unsubscribe form', () => {
 		cy.get('body').should('contain', 'Unsubscribe Successful');
 
 		// Navigate back to the website button exists
-		cy.contains('a', 'return to our website')
-			.should('exist');
+		cy.contains('a', 'return to our website').should('exist');
 
 		// Verify contact exists in Mailchimp with status 'unsubscribed'
 		cy.verifyContactInMailchimp(email, '10up', 'unsubscribed').then((contact) => {
@@ -85,7 +82,7 @@ describe('Unsubscribe form', () => {
 			// Delete contact to clean up
 			cy.deleteContactFromList(email);
 		});
-		
+
 		// Navigate to back website
 		// NOTE: The website URL is site in Mailchimp and it won't accept localhost or our test URL
 		// TODO: Assert that we're back on our website (we currently have no way to set this)
@@ -132,6 +129,6 @@ describe('Unsubscribe form', () => {
 	});
 
 	// NOTE: We can not set the "return to website" URL from the Mailchimp plugin or through the API.
-	// Alternative proposals on issue #91 and #92 to add a user tutorial 
+	// Alternative proposals on issue #91 and #92 to add a user tutorial
 	// it.skip('redirects the user back to the website when the user is finished unsubscribing and clicks the back link', () => {});
 });

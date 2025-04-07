@@ -7,16 +7,13 @@ describe('JavaScript submission', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			blockPostPostURL = urls.blockPostPostURL;
+			({ blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		cy.selectList('10up'); // Ensure list is selected, refreshes Mailchimp data with WP
-
-		// Set JS support to enabled
-		cy.setJavaScriptOption(true);
 
 		// Disable double opt-in
 		cy.setDoubleOptInOption(false);
@@ -25,12 +22,7 @@ describe('JavaScript submission', () => {
 		cy.toggleMergeFields('uncheck');
 	});
 
-	beforeEach(() => {
-		cy.visit(blockPostPostURL);
-		setUpForm();
-	});
-
-	function setUpForm() {	
+	function setUpForm() {
 		// Step 1: Assert form contains setup elements
 		// Email
 		cy.get('#mc_signup').should('exist');
@@ -48,6 +40,11 @@ describe('JavaScript submission', () => {
 		// Step 4: Submit the form
 		cy.get('#mc_signup_submit').click();
 	}
+
+	beforeEach(() => {
+		cy.visit(blockPostPostURL);
+		setUpForm();
+	});
 
 	it('Disables the submit button before attempting submission', () => {
 		submitEmail('invalidemail@--'); // Submit blank email
@@ -98,8 +95,7 @@ describe('JavaScript submission', () => {
 		cy.get('.mc_success_msg').should('exist').contains('success', { matchCase: false });
 
 		// Step 6: Verify that the contact was added to the Mailchimp account via the Mailchimp API
-		cy.wait(5000)
-			.verifyContactInMailchimp(email);
+		cy.wait(5000).verifyContactInMailchimp(email);
 
 		// Step 7: Cleanup and delete contact
 		cy.deleteContactFromList(email);
