@@ -35,6 +35,7 @@ function admin_notice_success( string $msg ) {
 				),
 				'strong' => array(),
 				'em'     => array(),
+				'br'     => array(),
 			)
 		);
 		?>
