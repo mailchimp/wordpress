@@ -20,7 +20,6 @@
 		// See if we're successful, if so, wipe the fields
 		const reg = /class=(["'])mc_success_msg\1/i;
 
-		// TODO: Bug: The form data is always cleared regardless of JS or no JS support
 		if (reg.test(data)) {
 			$(form).each(function () {
 				this.reset();
