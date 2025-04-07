@@ -1,42 +1,85 @@
 {
-	"$schema": "https://schemas.wp.org/trunk/block.json",
-	"apiVersion": 2,
-	"name": "mailchimp/mailchimp",
-	"title": "Mailchimp List Subscribe Form",
-	"category": "text",
-	"description": "Mailchimp List Subscribe Form",
-	"attributes": {
-		"json": {
-			"type": "string"
-		}
-	},
-	"supports": {
-		"html": false,
-		"multiple": false,
-		"reusable": true,
-		"align": [ "wide", "full" ],
-		"__experimentalBorder": {
-			"color": true,
-			"radius": true,
-			"style": true,
-			"width": true,
-			"__experimentalDefaultControls": {
-				"radius": true,
-				"style": true,
-				"width": true
-			}
-		},
-		"spacing": {
-			"margin": true,
-			"padding": true
-		},
-		"color": {
-			"background": true,
-			"text": true
-		}
-	},
-	"textdomain": "mailchimp",
-	"editorScript": "file:./index.js",
-	"render": "file:./markup.php",
-	"editorStyle": "file:./editor.css"
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "mailchimp/mailchimp",
+  "title": "Mailchimp List Subscribe Form",
+  "category": "widgets",
+  "description": "Mailchimp List Subscribe Form",
+  "attributes": {
+    "list_id": {
+      "type": "string"
+    },
+    "header": {
+      "type": "string"
+    },
+    "sub_header": {
+      "type": "string"
+    },
+    "submit_text": {
+      "type": "string"
+    },
+    "double_opt_in": {
+      "type": "boolean"
+    },
+    "update_existing_subscribers": {
+      "type": "boolean"
+    },
+    "show_unsubscribe_link": {
+      "type": "boolean"
+    },
+    "unsubscribe_link_text": {
+      "type": "string",
+      "default": "unsubscribe from list"
+    },
+    "show_required_indicator": {
+      "type": "boolean",
+      "default": true
+    },
+    "required_indicator_text": {
+      "type": "string",
+      "default": "* = required field"
+    }
+  },
+  "supports": {
+    "html": false,
+    "multiple": false,
+    "reusable": true,
+    "align": [ "wide", "full" ],
+    "__experimentalBorder": {
+      "color": true,
+      "radius": true,
+      "style": true,
+      "width": true,
+      "__experimentalDefaultControls": {
+        "radius": true,
+        "style": true,
+        "width": true
+      }
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    },
+    "color": {
+      "background": true,
+      "text": true,
+      "border": true
+    },
+    "typography": {
+      "fontSize": true,
+      "lineHeight": true,
+      "textAlign": true
+    }
+  },
+  "allowedBlocks": [
+    "mailchimp/mailchimp-form-field"
+  ],
+  "providesContext": {
+    "mailchimp/list_id": "list_id",
+    "mailchimp/show_required_indicator": "show_required_indicator"
+  },
+  "textdomain": "mailchimp",
+  "editorScript": "file:./index.js",
+  "render": "file:./markup.php",
+  "editorStyle": "file:./editor.css"
 }
