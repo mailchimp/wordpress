@@ -246,6 +246,22 @@ describe('Block Tests', () => {
 		});
 	});
 
+	it('Form data should persist if validation fails', () => {
+		// Verify
+		const firstName = 'John';
+		const lastName = 'Doe';
+		cy.visit(`/?p=${postId}`);
+		cy.get('#mc_mv_EMAIL').should('exist');
+		cy.get('#mc_mv_FNAME').clear().type(firstName);
+		cy.get('#mc_mv_LNAME').clear().type(lastName);
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('#mc_mv_FNAME').should('have.value', firstName);
+		cy.get('#mc_mv_LNAME').should('have.value', lastName);
+	});
+
 	// TODO: Add tests for the Double Opt-in and Update existing subscribers settings.
 	// TODO: Add tests for the block styles settings.
 	// TODO: Add tests for the form submission.
