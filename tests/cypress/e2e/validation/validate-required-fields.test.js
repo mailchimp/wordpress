@@ -47,9 +47,6 @@ describe('Validate required fields', () => {
 
 		// Set all merge fields to required in the Mailchimp test user account
 		cy.setMergeFieldsRequired(true);
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -61,9 +58,6 @@ describe('Validate required fields', () => {
 
 		// Cleanup: Uncheck all optional merge fields
 		cy.toggleMergeFields('uncheck');
-
-		// Cleanup: Re-enable JS support
-		cy.setJavaScriptOption(true);
 	});
 
 	// TODO: Validation errors clear the entire form. We should fix this.

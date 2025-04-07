@@ -6,8 +6,7 @@ describe('Mailchimp lists ', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ shortcodePostURL, blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP
@@ -40,7 +39,7 @@ describe('Mailchimp lists ', () => {
 		// Verify that list can be saved
 		cy.get('.mc-h2').contains('Your Lists');
 		cy.selectList('10up');
-		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('.notice.notice-success.is-dismissible').first().contains('Success!');
 
 		// Verify that the settings are visible if a list is saved
 		cy.get('input[value="Update Subscribe Form Settings"]').should('exist');

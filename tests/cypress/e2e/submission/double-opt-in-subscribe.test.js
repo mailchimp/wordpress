@@ -7,8 +7,7 @@ describe.skip('Double Opt-in Subscriptions', () => {
 	before(() => {
 		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			shortcodePostURL = urls.shortcodePostURL;
-			blockPostPostURL = urls.blockPostPostURL;
+			({ shortcodePostURL, blockPostPostURL } = urls);
 		});
 
 		cy.login(); // WP

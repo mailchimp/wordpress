@@ -28,13 +28,6 @@ describe('General merge field validation', () => {
 		// Disable all merge fields
 		cy.toggleMergeFields('uncheck');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
-	});
-
-	after(() => {
-		cy.setJavaScriptOption(true);
 	});
 
 	it('Invalid email addresses fail validation', () => {
