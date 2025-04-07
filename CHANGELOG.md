@@ -4,6 +4,28 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [1.6.3] - 2025-01-30
+### Added
+- Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).
+
+### Removed
+- Deprecated Sopresto code (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#98](https://github.com/mailchimp/wordpress/pull/98)).
+
+### Fixed
+- Fatal PHP error that would occur when the phone merge field was set to US format, but the merge field was not included in the Mailchimp plugin (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#108](https://github.com/mailchimp/wordpress/pull/108)).
+- Bug causing merge fields on the Mailchimp WP admin page to incorrectly display as not required when they were, in fact, required (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#109](https://github.com/mailchimp/wordpress/pull/109)).
+- Fix an issue that allows a user to select merge fields that were not selected as visible in the Mailchimp account (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#110](https://github.com/mailchimp/wordpress/pull/110)).
+- Bug causing all new subscribers to receive a double opt-in email (props Nathan Tetzlaff, [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+- Bug causing contacts with any Mailchimp status (subscribed, unsubscribed, pending, etc.) to be able to submit the sign-up form even if "Update Existing Subscriber?" was disabled (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+- Pending contacts will now still be required to confirm their original confirmation email if they try to update their contact while "Update Existing Subscribers?" and "Double Opt-in" are both enabled (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#115](https://github.com/mailchimp/wordpress/pull/115)).
+
+### Security
+- Bump `nanoid` from 3.3.7 to 3.3.8 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#111](https://github.com/mailchimp/wordpress/pull/111)).
+
+### Developer
+- Add autoloading using composer (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#95](https://github.com/mailchimp/wordpress/pull/95)).
+- Updated GitHub Action step for generating the release assets (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter) via [#97](https://github.com/mailchimp/wordpress/pull/97)).
+
 ## [1.6.2] - 2024-11-12
 **Note that this release bumps the WordPress minimum version from 6.1 to 6.3.**
 
@@ -192,6 +214,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[1.6.3]: https://github.com/mailchimp/wordpress/compare/1.6.2...1.6.3
 [1.6.2]: https://github.com/mailchimp/wordpress/compare/1.6.1...1.6.2
 [1.6.1]: https://github.com/mailchimp/wordpress/compare/1.6.0...1.6.1
 [1.6.0]: https://github.com/mailchimp/wordpress/tree/1.6.0

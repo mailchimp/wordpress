@@ -119,10 +119,13 @@ describe('Block Tests', () => {
 	it('Admin can show/hide groups from block settings', () => {
 		// Show groups
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
-		cy.openDocumentSettingsPanel('Settings', 'Block');
-		cy.get('.mailchimp-interest-groups input.components-form-toggle__input').first().check();
+		cy.getBlockEditor().find('div[data-title="Email Field"]').click();
+		cy.getBlockEditor().find('.mc_interests_header label').first().click();
+		cy.get('.block-editor-block-toolbar__slot').should('be.visible');
 
+		cy.get('.block-editor-block-toolbar__slot')
+			.find('button[aria-label="Visibility"].is-pressed')
+			.click();
 		cy.get('button.editor-post-publish-button').click();
 		cy.wait(500);
 
@@ -133,10 +136,11 @@ describe('Block Tests', () => {
 
 		// Hide groups
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
-		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
-		cy.openDocumentSettingsPanel('Settings', 'Block');
-		cy.get('.mailchimp-interest-groups input.components-form-toggle__input').first().uncheck();
+		cy.getBlockEditor().find('div[data-title="Email Field"]').click();
+		cy.getBlockEditor().find('.mc_interests_header label').first().click();
+		cy.get('.block-editor-block-toolbar__slot').should('be.visible');
 
+		cy.get('.block-editor-block-toolbar__slot').find('button[aria-label="Visibility"]').click();
 		cy.get('button.editor-post-publish-button').click();
 		cy.wait(500);
 
@@ -271,6 +275,22 @@ describe('Block Tests', () => {
 		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
 		cy.wait(500);
+	});
+
+	it('Form data should persist if validation fails', () => {
+		// Verify
+		const firstName = 'John';
+		const lastName = 'Doe';
+		cy.visit(`/?p=${postId}`);
+		cy.get('#mc_mv_EMAIL').should('exist');
+		cy.get('#mc_mv_FNAME').clear().type(firstName);
+		cy.get('#mc_mv_LNAME').clear().type(lastName);
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('#mc_mv_FNAME').should('have.value', firstName);
+		cy.get('#mc_mv_LNAME').should('have.value', lastName);
 	});
 
 	// TODO: Add tests for the Double Opt-in and Update existing subscribers settings.

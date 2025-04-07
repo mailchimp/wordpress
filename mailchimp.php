@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.6.2
+ * Version:           1.6.3
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -65,7 +65,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 }
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.6.2' );
+define( 'MCSF_VER', '1.6.3' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -680,9 +680,15 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list, $update_option = true
 
 	foreach ( $mv['merge_fields'] as $mv_var ) {
 		$opt = 'mc_mv_' . $mv_var['tag'];
-		// turn them all on by default
 		if ( $new_list ) {
-			update_option( $opt, 'on' );
+			$public = $mv_var['public'] ?? false;
+			if ( ! $public ) {
+				// This is a hidden field, so we don't want to include it.
+				update_option( $opt, 'off' );
+			} else {
+				// We need to set the option to 'on' so that it shows up in the form.
+				update_option( $opt, 'on' );
+			}
 		}
 	}
 	return $mv['merge_fields'];

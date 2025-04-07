@@ -43,8 +43,6 @@ if ( ! mailchimp_sf_should_display_form() ) {
 	$sub_heading                 = $attributes['sub_header'] ?? '';
 	$submit_text                 = $attributes['submit_text'] ?? __( 'Subscribe', 'mailchimp' );
 	$merge_fields                = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
-	$igs                         = get_option( 'mailchimp_sf_interest_groups_' . $list_id );
-	$interest_groups_visibility  = $attributes['interest_groups_visibility'] ?? array();
 	$show_unsubscribe_link       = $attributes['show_unsubscribe_link'] ?? get_option( 'mc_use_unsub_link' ) === 'on';
 	$unsubscribe_link_text       = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
@@ -192,8 +190,8 @@ if ( ! mailchimp_sf_should_display_form() ) {
 		}
 		?>
 		<div id="mc_signup">
-			<form method="post" action="#mc_signup" id="mc_signup_form">
-				<input type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" />
+			<form method="post" action="#mc_signup" id="mc_signup_form" class="mc_signup_form">
+				<input type="hidden" id="mc_submit_type" class="mc_submit_type" name="mc_submit_type" value="html" />
 				<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 				<input type="hidden" name="mailchimp_sf_list_id" value="<?php echo esc_attr( $list_id ); ?>" />
 				<input type="hidden" name="mailchimp_sf_update_existing_subscribers" value="<?php echo esc_attr( $update_existing_subscribers ); ?>" />
@@ -203,7 +201,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 				wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false );
 				?>
 				<div class="mc_form_inside">
-					<div id="mc_message">
+					<div class="mc_message_wrapper" id="mc_message">
 						<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
 					</div>
 
@@ -219,35 +217,6 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					 */
 					echo $content; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 
-					// Show our Interest groups fields if we have them, and they're set to on
-					if ( is_array( $igs ) && ! empty( $igs ) ) {
-						foreach ( $igs as $ig ) {
-							if ( is_array( $ig ) && isset( $ig['id'] ) ) {
-								if ( ( $igs && isset( $interest_groups_visibility[ $ig['id'] ] ) && 'on' === $interest_groups_visibility[ $ig['id'] ] ) ) {
-									if ( 'hidden' !== $ig['type'] ) {
-										?>
-										<div class="mc_interests_header">
-											<?php echo esc_html( $ig['title'] ); ?>
-										</div><!-- /mc_interests_header -->
-										<div class="mc_interest">
-										<?php
-									} else {
-										?>
-										<div class="mc_interest" style="display: none;">
-										<?php
-									}
-									?>
-
-									<?php
-									mailchimp_interest_group_field( $ig );
-									?>
-									</div><!-- /mc_interest -->
-									<?php
-								}
-							}
-						}
-					}
-
 					// Show an explanation of the * if there's more than one field
 					if ( $show_required_indicator ) {
 						?>
@@ -258,7 +227,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					}
 					?>
 					<div class="mc_signup_submit">
-						<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
+						<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
 					</div><!-- /mc_signup_submit -->
 
 					<?php
