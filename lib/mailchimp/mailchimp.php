@@ -190,6 +190,28 @@ class MailChimp_API {
 				$merges = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
 			}
 
+			// Check if the email address is in compliance state.
+			if ( ! isset( $body['errors'] ) && isset( $body['status'] ) && isset( $body['title'] ) && 400 === $body['status'] && 'Member In Compliance State' === $body['title'] ) {
+				$url     = mailchimp_sf_signup_form_url( $list_id );
+				$message = wp_kses(
+					sprintf(
+						/* translators: %s: Hosted form Url */
+						__(
+							'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please <a href="%s" target="_blank">sign up here.</a>',
+							'mailchimp'
+						),
+						esc_url( $url )
+					),
+					[
+						'a' => [
+							'href'   => [],
+							'target' => [],
+						],
+					]
+				);
+				return new WP_Error( 'mc-subscribe-error-compliance', $message );
+			}
+
 			$field_name = '';
 			foreach ( $merges as $merge ) {
 				if ( empty( $body['errors'] ) ) {

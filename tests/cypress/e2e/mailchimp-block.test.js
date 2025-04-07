@@ -246,6 +246,37 @@ describe('Block Tests', () => {
 		});
 	});
 
+	it('Proper error message should display if unsubscribed user try to subscribe', () => {
+		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
+		cy.openDocumentSettingsPanel('Form Settings', 'Block');
+		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().uncheck();
+		cy.get('.mailchimp-update-existing-subscribers input.components-form-toggle__input')
+			.first()
+			.check();
+		cy.get('button.editor-post-publish-button').click();
+		cy.wait(500);
+
+		// Verify
+		cy.visit(`/?p=${postId}`);
+		cy.get('#mc_mv_EMAIL').should('exist');
+		cy.get('#mc_mv_EMAIL').clear().type('unsubscribed_user@gmail.com');
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains(
+			'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please sign up here.',
+		);
+
+		// Reset
+		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
+		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
+		cy.openDocumentSettingsPanel('Form Settings', 'Block');
+		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().check();
+		cy.get('button.editor-post-publish-button').click();
+		cy.wait(500);
+	});
+
 	it('Form data should persist if validation fails', () => {
 		// Verify
 		const firstName = 'John';

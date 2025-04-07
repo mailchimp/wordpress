@@ -6,7 +6,7 @@
  */
 
 ?>
-.mc_error_msg {
+.mc_error_msg, .mc_error_msg a {
 	color: red;
 	margin-bottom: 1.0em;
 }
