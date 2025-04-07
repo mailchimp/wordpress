@@ -2,6 +2,14 @@
 /**
  * Class responsible for admin side functionalities.
  *
+ * The long term plan is to break up admin functionality into smaller, more focused
+ * files to improve maintainability. This could also include:
+ * - Moving OAuth related code to oauth.php
+ * - Moving account creation code to account.php
+ * - Moving settings page code to settings.php
+ * - Moving notices code to notices.php (already done)
+ * This will help avoid having too much code in a single file and make the codebase more modular.
+ *
  * @package Mailchimp
  */
 
@@ -309,7 +317,7 @@ class Mailchimp_Admin {
 			update_option( 'mc_user', $this->sanitize_data( $user ) );
 
 			// Clear Mailchimp List ID if saved list is not available.
-			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id' ) );
+			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 			if ( ! is_wp_error( $lists ) ) {
 				$lists         = $lists['lists'] ?? array();
 				$saved_list_id = get_option( 'mc_list_id' );
@@ -321,6 +329,11 @@ class Mailchimp_Admin {
 				);
 				if ( ! in_array( $saved_list_id, $list_ids, true ) ) {
 					delete_option( 'mc_list_id' );
+				}
+
+				// Update lists option.
+				if ( ! empty( $lists ) ) {
+					update_option( 'mailchimp_sf_lists', $lists );
 				}
 			}
 			return true;

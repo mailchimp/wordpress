@@ -23,7 +23,13 @@ module.exports = defineConfig( {
 			config = dotenvPlugin(config, { path: '../../.env.test' }); // Load .env variables into Cypress
 			return setBaseUrl( on, config );
 		},
-		specPattern: 'tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}',
+		specPattern: [
+			'tests/cypress/e2e/admin.test.js',
+			'tests/cypress/e2e/connect.test.js',
+			'tests/cypress/e2e/settings.test.js',
+			'tests/cypress/e2e/mailchimp-block.test.js',
+			'tests/cypress/e2e/logout.test.js',
+		],
 		supportFile: 'tests/cypress/support/index.js',
 		defaultCommandTimeout: 20000,
 		experimentalRunAllSpecs: true,
