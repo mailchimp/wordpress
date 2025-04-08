@@ -81,7 +81,7 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
-= 1.7.0 - 2025-04-07 =
+= 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
 * **Changed:** Plugin settings page success and error messages will now use WP admin notices (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh) via [#85](https://github.com/mailchimp/wordpress/pull/85)).
 * **Changed:** Renamed `mailchimp_sf_global_msg` function to `mailchimp_sf_frontend_msg` to differentiate functionality from WP admin notices that are used exclusively in the WP Admin (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh) via [#85](https://github.com/mailchimp/wordpress/pull/85)).
