@@ -13,7 +13,7 @@ describe('Admin can update plugin settings', () => {
 		cy.get('.mc-h2').contains('Your Lists');
 		cy.get('#mc_list_id').select('10up');
 		cy.get('input[value="Update List"]').click();
-		cy.get('#mc-message .success_msg b').contains('Success!');
+		cy.get('#mailchimp-sf-settings-page .notice.notice-success p').contains('Success!');
 	});
 
 	it('Admin can create a Signup form using the shortcode', () => {
@@ -175,5 +175,49 @@ describe('Admin can update plugin settings', () => {
 		cy.get('#mc_signup_submit').click();
 		cy.get('.mc_error_msg').should('exist');
 		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+	});
+
+	it('Proper error message should display if unsubscribed user try to subscribe', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_double_optin').uncheck();
+		cy.get('#mc_update_existing').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			cy.visit(url);
+			cy.get('#mc_mv_EMAIL').should('exist');
+			cy.get('#mc_mv_EMAIL').clear().type('unsubscribed_user@gmail.com');
+			cy.get('#mc_signup_submit').should('exist');
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').contains(
+				'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please sign up here.',
+			);
+		});
+
+		// Reset
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_double_optin').check();
+		cy.get('#mc_update_existing').check();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	});
+
+	it('Form data should persist if validation fails', () => {
+		// Verify
+		[shortcodePostURL, blockPostPostURL].forEach((url) => {
+			const firstName = 'John';
+			const lastName = 'Doe';
+			cy.visit(url);
+			cy.get('#mc_mv_EMAIL').should('exist');
+			cy.get('#mc_mv_FNAME').clear().type(firstName);
+			cy.get('#mc_mv_LNAME').clear().type(lastName);
+			cy.get('#mc_signup_submit').should('exist');
+			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_error_msg').should('exist');
+			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+			cy.get('#mc_mv_FNAME').should('have.value', firstName);
+			cy.get('#mc_mv_LNAME').should('have.value', lastName);
+		});
 	});
 });

@@ -5,6 +5,8 @@
  * @package Mailchimp
  */
 
+use function Mailchimp\WordPress\Includes\Admin\admin_notice_error;
+
 $user = get_option( 'mc_user' );
 
 // If we have an API Key, see if we need to change the lists and its options
@@ -14,14 +16,6 @@ $is_list_selected = false;
 ?>
 <div class="wrap">
 	<hr class="wp-header-end" />
-	<?php
-	// Display our success/error message(s) if have them
-	if ( mailchimp_sf_global_msg() !== '' ) {
-		?>
-		<div id="mc-message" class=""><?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?></div>
-		<?php
-	}
-	?>
 	<table class="mc-user" cellspacing="0">
 		<tr>
 			<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
@@ -53,29 +47,19 @@ $is_list_selected = false;
 			// we *could* support paging, but few users have that many lists (and shouldn't)
 			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 			if ( is_wp_error( $lists ) ) {
-				?>
-				<div class="error_msg">
-					<?php
-					printf(
-						/* translators: %s: error message */
-						esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
-						esc_html( $lists->get_error_message() )
-					);
-					?>
-				</div>
-				<?php
+				$msg = sprintf(
+					/* translators: %s: error message */
+					esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
+					esc_html( $lists->get_error_message() )
+				);
+				admin_notice_error( $msg );
 			} elseif ( isset( $lists['lists'] ) && count( $lists['lists'] ) === 0 ) {
-				?>
-				<div class="error_msg">
-					<?php
-					printf(
-						/* translators: %s: link to Mailchimp */
-						esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
-						"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
-					);
-					?>
-				</div>
-				<?php
+				$msg = sprintf(
+					/* translators: %s: link to Mailchimp */
+					esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
+					"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
+				);
+				admin_notice_error( $msg );
 			} else {
 				$lists            = $lists['lists'];
 				$option           = get_option( 'mc_list_id' );
@@ -297,7 +281,7 @@ $is_list_selected = false;
 								<td><?php echo esc_html( ( 1 === intval( $mv_var['required'] ) ) ? 'Y' : 'N' ); ?></td>
 								<td>
 									<?php
-									if ( ! $mv_var['required'] && $mv_var['public'] ) {
+									if ( ! $mv_var['required'] ) {
 										$opt = 'mc_mv_' . $mv_var['tag'];
 										?>
 										<label class="screen-reader-text" for="<?php echo esc_attr( $opt ); ?>">

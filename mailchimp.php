@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.6.2
+ * Version:           1.6.3
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -64,8 +64,10 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 	return;
 }
 
+use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
+
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.6.2' );
+define( 'MCSF_VER', '1.6.3' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -386,12 +388,17 @@ function mailchimp_sf_delete_setup() {
 }
 
 /**
- * Gets or sets a global message based on parameter passed to it
+ * Gets or sets a frontend message based on parameter passed to it
+ *
+ * Used to convey error messages to the user outside of the WP Admin
+ *
+ * On the plugin settings page, WP admin notices are used exclusively
+ * instead of the frontend message.
  *
  * @param mixed $msg Message
  * @return string/bool depending on get/set
  */
-function mailchimp_sf_global_msg( $msg = null ) {
+function mailchimp_sf_frontend_msg( $msg = null ) {
 	global $mcsf_msgs;
 
 	// Make sure we're formed properly
@@ -407,6 +414,18 @@ function mailchimp_sf_global_msg( $msg = null ) {
 	// Must be setting
 	$mcsf_msgs[] = $msg;
 	return true;
+}
+
+/**
+ * Gets or sets a frontend message based on parameter passed to it
+ *
+ * TODO: Deprecate this function in favor of mailchimp_sf_frontend_msg()
+ *
+ * @param mixed $msg Message
+ * @return string/bool depending on get/set
+ */
+function mailchimp_sf_global_msg( $msg = null ) {
+	return mailchimp_sf_frontend_msg( $msg );
 }
 
 /**
@@ -439,44 +458,44 @@ function mailchimp_sf_save_general_form_settings() {
 	/*Enable double optin toggle*/
 	if ( isset( $_POST['mc_double_optin'] ) ) {
 		update_option( 'mc_double_optin', true );
-		$msg = '<p class="success_msg">' . esc_html__( 'Double opt-in turned On!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Double opt-in turned On!', 'mailchimp' );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_double_optin' ) !== false ) {
 		update_option( 'mc_double_optin', false );
-		$msg = '<p class="success_msg">' . esc_html__( 'Double opt-in turned Off!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Double opt-in turned Off!', 'mailchimp' );
+		admin_notice_success( $msg );
 	}
 
 	/* NUKE the CSS! */
 	if ( isset( $_POST['mc_nuke_all_styles'] ) ) {
 		update_option( 'mc_nuke_all_styles', true );
-		$msg = '<p class="success_msg">' . esc_html__( 'Mailchimp CSS turned Off!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Mailchimp CSS turned Off!', 'mailchimp' );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_nuke_all_styles' ) !== false ) {
 		update_option( 'mc_nuke_all_styles', false );
-		$msg = '<p class="success_msg">' . esc_html__( 'Mailchimp CSS turned On!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Mailchimp CSS turned On!', 'mailchimp' );
+		admin_notice_success( $msg );
 	}
 
 	/* Update existing */
 	if ( isset( $_POST['mc_update_existing'] ) ) {
 		update_option( 'mc_update_existing', true );
-		$msg = '<p class="success_msg">' . esc_html__( 'Update existing subscribers turned On!' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Update existing subscribers turned On!' );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_update_existing' ) !== false ) {
 		update_option( 'mc_update_existing', false );
-		$msg = '<p class="success_msg">' . esc_html__( 'Update existing subscribers turned Off!' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Update existing subscribers turned Off!' );
+		admin_notice_success( $msg );
 	}
 
 	if ( isset( $_POST['mc_use_unsub_link'] ) ) {
 		update_option( 'mc_use_unsub_link', 'on' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Unsubscribe link turned On!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Unsubscribe link turned On!', 'mailchimp' );
+		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_use_unsub_link' ) !== 'off' ) {
 		update_option( 'mc_use_unsub_link', 'off' );
-		$msg = '<p class="success_msg">' . esc_html__( 'Unsubscribe link turned Off!', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Unsubscribe link turned Off!', 'mailchimp' );
+		admin_notice_success( $msg );
 	}
 
 	$content = isset( $_POST['mc_header_content'] ) ? wp_kses_post( wp_unslash( $_POST['mc_header_content'] ) ) : '';
@@ -533,8 +552,8 @@ function mailchimp_sf_save_general_form_settings() {
 		}
 	}
 
-	$msg = '<p class="success_msg">' . esc_html__( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' ) . '</p>';
-	mailchimp_sf_global_msg( $msg );
+	$msg = esc_html__( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' );
+	admin_notice_success( $msg );
 }
 
 /**
@@ -546,8 +565,8 @@ function mailchimp_sf_change_list_if_necessary() {
 	}
 
 	if ( empty( $_POST['mc_list_id'] ) ) {
-		$msg = '<p class="error_msg">' . esc_html__( 'Please choose a valid list', 'mailchimp' ) . '</p>';
-		mailchimp_sf_global_msg( $msg );
+		$msg = esc_html__( 'Please choose a valid list', 'mailchimp' );
+		admin_notice_error( $msg );
 		return;
 	}
 
@@ -614,16 +633,15 @@ function mailchimp_sf_change_list_if_necessary() {
 				$igs_text .= sprintf( esc_html__( 'and %s Sets of Interest Groups', 'mailchimp' ), count( $igs ) );
 			}
 
-			$msg = '<p class="success_msg">' .
-				sprintf(
-					/* translators: %s: count (number) */
-					__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
-					count( $mv )
-				) . ' ' .
-				esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
-				esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' ) . '</p>';
+			$msg = sprintf(
+				/* translators: %s: count (number) */
+				__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
+				count( $mv )
+			) . ' ' .
+			esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
+			esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' );
 
-			mailchimp_sf_global_msg( $msg );
+			admin_notice_success( $msg );
 		}
 
 		// Update the lists option.
@@ -655,9 +673,15 @@ function mailchimp_sf_get_merge_vars( $list_id, $new_list, $update_option = true
 
 	foreach ( $mv['merge_fields'] as $mv_var ) {
 		$opt = 'mc_mv_' . $mv_var['tag'];
-		// turn them all on by default
 		if ( $new_list ) {
-			update_option( $opt, 'on' );
+			$public = $mv_var['public'] ?? false;
+			if ( ! $public ) {
+				// This is a hidden field, so we don't want to include it.
+				update_option( $opt, 'off' );
+			} else {
+				// We need to set the option to 'on' so that it shows up in the form.
+				update_option( $opt, 'on' );
+			}
 		}
 	}
 	return $mv['merge_fields'];
