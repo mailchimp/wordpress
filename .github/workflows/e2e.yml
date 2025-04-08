@@ -23,6 +23,7 @@ jobs:
       CYPRESS_MAILCHIMP_API_KEY: ${{ secrets.MAILCHIMP_API_KEY }}
       CYPRESS_MAILCHIMP_API_SERVER_PREFIX: ${{ secrets.MAILCHIMP_API_SERVER_PREFIX }}
     strategy:
+      max-parallel: 1
       matrix:
         core:
           - {name: 'WP latest', version: 'latest'}
