@@ -20,9 +20,6 @@ describe('Validate unrequired fields', () => {
 		// Enable all merge fields
 		cy.toggleMergeFields('check');
 		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -32,8 +29,6 @@ describe('Validate unrequired fields', () => {
 		// Cleanup
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.toggleMergeFields('uncheck'); // TODO: Do I need to uncheck all merge fields?
-
-		cy.setJavaScriptOption(true);
 	});
 
 	it('Unrequired fields can be submitted while blank', () => {
@@ -55,7 +50,6 @@ describe('Validate unrequired fields', () => {
 			cy.get('#mc_mv_ADDRESS-country').should('exist'); // Country
 			cy.get('#mc_mv_BIRTHDAY').should('exist');
 			cy.get('#mc_mv_COMPANY').should('exist');
-			cy.get('#mc_mv_PHONE').should('exist');
 
 			// Validation assertions
 

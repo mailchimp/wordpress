@@ -148,10 +148,15 @@ function getContactFromList(email, listName = '10up') {
  * @returns {Promise} - A promise that resolves when all merge fields are updated
  */
 Cypress.Commands.add('updateMergeFieldsByList', updateMergeFieldsByList);
-async function updateMergeFieldsByList(listId, data) {
+async function updateMergeFieldsByList(listId, data, fields = []) {
   const mergeFields = await getMergeFields(listId);
   const updatedMergeFields = mergeFields.map((field) => {
-    return updateMergeField(listId, field.merge_id, field.name, data);
+		// If fields are provided, check if the field is in the list
+		if (fields.length > 0 && !fields.includes(field.tag)) {
+			return Promise.resolve(); // Skip this field
+		} else {
+			return updateMergeField(listId, field.merge_id, field.name, data);
+		}
   });
 
   return await Promise.all(updatedMergeFields);

@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.6.3
+ * Version:           1.7.0
  * Requires at least: 6.3
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -67,7 +67,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.6.3' );
+define( 'MCSF_VER', '1.7.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -987,7 +987,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 			 */
 			case 'phone':
 				if (
-					'on' === get_option( $opt )
+					( 'on' === get_option( $opt ) || $mv_var['required'] )
 					&& isset( $mv_var['options']['phone_format'] )
 					&& 'US' === $mv_var['options']['phone_format']
 				) {
@@ -1006,7 +1006,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 			 * - Merge field is an array (address contains multiple <input> elements)
 			 */
 			case 'address':
-				if ( 'on' === get_option( $opt ) && is_array( $opt_val ) ) {
+				if ( ( 'on' === get_option( $opt ) || $mv_var['required'] ) && is_array( $opt_val ) ) {
 					$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
 					if ( is_wp_error( $validate ) ) {
 						return $validate;

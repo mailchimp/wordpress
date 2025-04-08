@@ -37,28 +37,25 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			({ blockPostPostURL } = urls);
 		});
 
-		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'PHONE', {
-				required: true,
-				options: { phone_format: 'US' },
-			}).then(() => {
-				cy.selectList('10up');
-			});
-		});
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
+		// cy.getListId('10up').then((listId) => {
+		// 	cy.updateMergeFieldByTag(listId, 'PHONE', {
+		// 		required: true,
+		// 		options: { phone_format: 'US' },
+		// 	}).then(() => {
+		// 		cy.selectList('10up');
+		// 	});
+		// });
 	});
 
 	after(() => {
-		cy.getListId('10up').then((listId) => {
-			cy.updateMergeFieldByTag(listId, 'PHONE', {
-				required: false,
-				options: { phone_format: 'none' },
-			});
-		});
-		cy.selectList('10up');
-		cy.setJavaScriptOption(true);
+		// cy.getListId('10up').then((listId) => {
+		// 	cy.updateMergeFieldByTag(listId, 'PHONE', {
+		// 		required: false,
+		// 		options: { phone_format: 'none' },
+		// 	}).then(() => {
+		// 		cy.selectList('10up');
+		// 	});
+		// });
 	});
 
 	function fillPhoneInputs(phone) {

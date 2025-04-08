@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.7
-Stable tag:   1.6.3
+Stable tag:   1.7.0
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -80,6 +80,20 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.7.0 - 2025-04-08 =
+* **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Changed:** Plugin settings page success and error messages will now use WP admin notices (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh) via [#85](https://github.com/mailchimp/wordpress/pull/85)).
+* **Changed:** Renamed `mailchimp_sf_global_msg` function to `mailchimp_sf_frontend_msg` to differentiate functionality from WP admin notices that are used exclusively in the WP Admin (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh) via [#85](https://github.com/mailchimp/wordpress/pull/85)).
+* **Changed:** Make the form field visibility dependent on the WordPress "Include?" settings instead of the Mailchimp settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@MaxwellGarceau](https://github.com/MaxwellGarceau) via [#137](https://github.com/mailchimp/wordpress/pull/137)).
+* **Fixed:** Ensure that form data persists when validation fails (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@MaxwellGarceau](https://github.com/MaxwellGarceau) via [#130](https://github.com/mailchimp/wordpress/pull/130)).
+* **Fixed:** Display an error message informing users that they must subscribe through the hosted form if they were previously unsubscribed (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@MaxwellGarceau](https://github.com/MaxwellGarceau) via [#131](https://github.com/mailchimp/wordpress/pull/131), [#140](https://github.com/mailchimp/wordpress/pull/140)).
+* **Removed:** The "CSS Cheat Sheet" section from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Removed:** The "Use JavaScript Support?" option from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Removed:** The "Use JavaScript Datepicker?" option from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Removed:** The "Custom Styling" settings from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Removed:** The "Remove Mailchimp CSS" settings from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
+* **Security:** Bump `express` from 4.21.0 to 4.21.2 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter) via [#125](https://github.com/mailchimp/wordpress/pull/125)).
 
 = 1.6.3 - 2025-01-30 =
 * **Added:** Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).

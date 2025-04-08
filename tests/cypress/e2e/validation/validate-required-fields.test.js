@@ -46,10 +46,20 @@ describe('Validate required fields', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 
 		// Set all merge fields to required in the Mailchimp test user account
-		cy.setMergeFieldsRequired(true);
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
+		cy.setMergeFieldsRequired(true, '10up', [
+			'FNAME',
+			'LNAME',
+			'ADDRESS',
+			'BIRTHDAY',
+			'COMPANY',
+			'MMERGE8',
+			'MMERGE9',
+			'MMERGE10',
+			'MMERGE11',
+			'MMERGE7',
+			'MMERGE6',
+			'PHONE',
+		]);
 	});
 
 	after(() => {
@@ -57,13 +67,23 @@ describe('Validate required fields', () => {
 		cy.login(); // WordPress login
 
 		// Cleanup: Set all merge fields to not required in the Mailchimp test user account
-		cy.setMergeFieldsRequired(false);
+		cy.setMergeFieldsRequired(false, '10up', [
+			'FNAME',
+			'LNAME',
+			'ADDRESS',
+			'BIRTHDAY',
+			'COMPANY',
+			'MMERGE8',
+			'MMERGE9',
+			'MMERGE10',
+			'MMERGE11',
+			'MMERGE7',
+			'MMERGE6',
+			'PHONE',
+		]);
 
 		// Cleanup: Uncheck all optional merge fields
 		cy.toggleMergeFields('uncheck');
-
-		// Cleanup: Re-enable JS support
-		cy.setJavaScriptOption(true);
 	});
 
 	// TODO: Validation errors clear the entire form. We should fix this.
@@ -72,7 +92,14 @@ describe('Validate required fields', () => {
 		cy.get('#mc_mv_EMAIL').clear().type(email); // Email is always required
 
 		requiredFields.forEach((field) => {
-			cy.get(field.selector).clear().type(field.input);
+			if (field.selector === '#mc_mv_PHONE') {
+				const phone = field.input.split('-');
+				cy.get('#mc_mv_PHONE-area').clear().type(phone[0]);
+				cy.get('#mc_mv_PHONE-detail1').clear().type(phone[1]);
+				cy.get('#mc_mv_PHONE-detail2').clear().type(phone[2]);
+			} else {
+				cy.get(field.selector).clear().type(field.input);
+			}
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 
@@ -94,13 +121,19 @@ describe('Validate required fields', () => {
 		// Ensure the form exists
 		cy.get('#mc_signup').should('exist');
 
+		// Fill out entire form everytime so we can narrow tests to one input at a time
+		fillOutAllFields();
+
 		// Test validation for each required field
 		requiredFields.forEach((field) => {
-			// Fill out entire form everytime so we can narrow tests to one input at a time
-			fillOutAllFields();
-
 			// Submit the form without input to trigger validation
-			cy.get(field.selector).clear(); // Ensure field is empty
+			if (field.selector === '#mc_mv_PHONE') {
+				cy.get('#mc_mv_PHONE-area').clear();
+				cy.get('#mc_mv_PHONE-detail1').clear();
+				cy.get('#mc_mv_PHONE-detail2').clear();
+			} else {
+				cy.get(field.selector).clear(); // Ensure field is empty
+			}
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 			cy.get('#mc_signup_submit').click();
 
@@ -109,7 +142,15 @@ describe('Validate required fields', () => {
 			cy.get('.mc_error_msg').should('include.text', field.errorMessage);
 
 			// Fill in the field
-			cy.get(field.selector).type(field.input);
+			if (field.selector === '#mc_mv_PHONE') {
+				const phone = field.input.split('-');
+				cy.get('#mc_mv_PHONE-area').clear().type(phone[0]);
+				cy.get('#mc_mv_PHONE-detail1').clear().type(phone[1]);
+				cy.get('#mc_mv_PHONE-detail2').clear().type(phone[2]);
+			} else {
+				cy.get(field.selector).type(field.input);
+			}
+			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 	});
 });

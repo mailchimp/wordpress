@@ -33,7 +33,6 @@ before(() => {
 	cy.selectList('10up');
 
 	cy.setDoubleOptInOption(false);
-	cy.setJavaScriptOption(true);
 	cy.setSettingsOption('#mc_update_existing', false);
 
 	// Merge fields
@@ -43,8 +42,8 @@ before(() => {
 	cy.log('Default testing options set!');
 });
 
-beforeEach( () => {
-	cy.session( 'login', cy.login, {
+beforeEach(() => {
+	cy.session('login', cy.login, {
 		cacheAcrossSpecs: true,
-	} );
-} );
+	});
+});
