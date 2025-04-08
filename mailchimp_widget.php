@@ -92,7 +92,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		line-height: 1.25em;
 		margin-bottom: 18px;
 	}
-	.mc_merge_var {
+	.mc_merge_var,
+	.mc_interest {
 		margin-bottom: 1.0em;
 	}
 	.mc_var_label,
@@ -166,8 +167,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	?>
 
 <div id="mc_signup">
-	<form method="post" action="#mc_signup" id="mc_signup_form">
-		<input type="hidden" id="mc_submit_type" name="mc_submit_type" value="html" />
+	<form method="post" action="#mc_signup" id="mc_signup_form" class="mc_signup_form">
+		<input type="hidden" id="mc_submit_type" class="mc_submit_type" name="mc_submit_type" value="html" />
 		<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 		<?php wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false ); ?>
 
@@ -183,8 +184,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 	<div class="mc_form_inside">
 
-		<div class="updated" id="mc_message">
-			<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
+		<div class="mc_message_wrapper" id="mc_message">
+			<?php echo wp_kses_post( mailchimp_sf_frontend_msg() ); ?>
 		</div><!-- /mc_message -->
 
 		<?php
@@ -204,11 +205,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 		// Loop over our vars, and output the ones that are set to display
 		foreach ( $mv as $mv_var ) {
-			if ( ! $mv_var['public'] ) {
-				echo '<div style="display:none;">' . mailchimp_form_field( $mv_var, $num_fields ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-			} else {
-				echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
-			}
+			echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 		}
 
 		// Show an explanation of the * if there's more than one field
@@ -270,7 +267,7 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		?>
 
 		<div class="mc_signup_submit">
-			<input type="submit" name="mc_signup_submit" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
+			<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
 		</div><!-- /mc_signup_submit -->
 
 		<?php
@@ -366,16 +363,24 @@ function mailchimp_interest_group_field( $ig ) {
 /**
  * Generate and display markup for form fields
  *
- * @param array $data Array containing informaoin about the field
- * @param int   $num_fields The number of fields total we'll be generating markup for. Used in calculating required text logic
+ * @param array  $data           Array containing informaoin about the field.
+ * @param int    $num_fields     The number of fields total we'll be generating markup for. Used in calculating required text logic.
+ * @param bool   $should_display Whether or not the field should be displayed.
+ * @param string $label          The label for the field.
  * @return string
  */
-function mailchimp_form_field( $data, $num_fields ) {
-	$opt  = 'mc_mv_' . $data['tag'];
+function mailchimp_form_field( $data, $num_fields, $should_display = null, $label = '' ) {
 	$html = '';
+	$opt  = 'mc_mv_' . $data['tag'];
+	if ( is_null( $should_display ) ) {
+		$should_display = 'on' === get_option( $opt );
+	}
+
+	$label = ( ! empty( $label ) ) ? $label : $data['name'];
+
 	// See if that var is set as required, or turned on (for display)
-	if ( $data['required'] || get_option( $opt ) === 'on' ) {
-		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . esc_html( $data['name'] );
+	if ( $data['required'] || $should_display ) {
+		$label = '<label for="' . esc_attr( $opt ) . '" class="mc_var_label mc_header mc_header_' . esc_attr( $data['type'] ) . '">' . wp_kses_post( $label );
 		if ( $data['required'] && $num_fields > 1 ) {
 			$label .= '<span class="mc_required">*</span>';
 		}

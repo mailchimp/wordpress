@@ -132,7 +132,7 @@ class MailChimp_API {
 			}
 
 			$error = json_decode( $request['body'], true );
-			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] );
+			$error = new WP_Error( 'mailchimp-get-error', $error['detail'] ?? esc_html__( 'Something went wrong, Please try again later.', 'mailchimp' ) );
 			return $error;
 		} else {
 			return false;
@@ -145,9 +145,10 @@ class MailChimp_API {
 	 * @param string $endpoint The endpoint to send the request.
 	 * @param string $body The body of the request
 	 * @param string $method The request method.
+	 * @param string $list_id The list id.
 	 * @return mixed
 	 */
-	public function post( $endpoint, $body, $method = 'POST' ) {
+	public function post( $endpoint, $body, $method = 'POST', $list_id = '' ) {
 		$url = $this->api_url . $endpoint;
 
 		$headers = array();
@@ -182,8 +183,35 @@ class MailChimp_API {
 				update_option( 'mailchimp_sf_auth_error', true );
 			}
 
-			$body       = json_decode( $request['body'], true );
-			$merges     = get_option( 'mc_merge_vars' );
+			$body   = json_decode( $request['body'], true );
+			$merges = get_option( 'mc_merge_vars' );
+			// Get merge fields for the list if we have a list id.
+			if ( ! empty( $list_id ) ) {
+				$merges = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
+			}
+
+			// Check if the email address is in compliance state.
+			if ( ! isset( $body['errors'] ) && isset( $body['status'] ) && isset( $body['title'] ) && 400 === $body['status'] && 'Member In Compliance State' === $body['title'] ) {
+				$url     = mailchimp_sf_signup_form_url( $list_id );
+				$message = wp_kses(
+					sprintf(
+						/* translators: %s: Hosted form Url */
+						__(
+							'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please <a href="%s" target="_blank">sign up here.</a>',
+							'mailchimp'
+						),
+						esc_url( $url )
+					),
+					[
+						'a' => [
+							'href'   => [],
+							'target' => [],
+						],
+					]
+				);
+				return new WP_Error( 'mc-subscribe-error-compliance', $message );
+			}
+
 			$field_name = '';
 			foreach ( $merges as $merge ) {
 				if ( empty( $body['errors'] ) ) {
