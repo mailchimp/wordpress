@@ -509,7 +509,7 @@ class Mailchimp_Admin {
 	/**
 	 * Add the create account page.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 */
 	public function add_create_account_page() {
 		add_submenu_page(
@@ -525,7 +525,7 @@ class Mailchimp_Admin {
 	/**
 	 * Create account page.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @return void
 	 */
@@ -544,7 +544,7 @@ class Mailchimp_Admin {
 	/**
 	 * Get a list of timezones.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @return array
 	 */
@@ -555,7 +555,7 @@ class Mailchimp_Admin {
 	/**
 	 * Get a list of countries.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @return array
 	 */
@@ -816,7 +816,7 @@ class Mailchimp_Admin {
 	/**
 	 * Display the Mailchimp footer text on the Mailchimp admin pages.
 	 *
-	 * @since x.x.x
+	 * @since 1.6.0
 	 *
 	 * @param string $text The current footer text.
 	 * @return string The modified footer text.

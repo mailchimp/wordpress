@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_Block_Form_Submission
  *
- * @since x.x.x
+ * @since 1.7.0
  */
 class Mailchimp_Block_Form_Submission {
 
