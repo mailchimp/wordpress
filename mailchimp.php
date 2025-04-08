@@ -987,7 +987,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 			 */
 			case 'phone':
 				if (
-					'on' === get_option( $opt )
+					( 'on' === get_option( $opt ) || $mv_var['required'] )
 					&& isset( $mv_var['options']['phone_format'] )
 					&& 'US' === $mv_var['options']['phone_format']
 				) {
@@ -1006,7 +1006,7 @@ function mailchimp_sf_merge_submit( $mv ) {
 			 * - Merge field is an array (address contains multiple <input> elements)
 			 */
 			case 'address':
-				if ( 'on' === get_option( $opt ) && is_array( $opt_val ) ) {
+				if ( ( 'on' === get_option( $opt ) || $mv_var['required'] ) && is_array( $opt_val ) ) {
 					$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
 					if ( is_wp_error( $validate ) ) {
 						return $validate;
