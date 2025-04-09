@@ -251,7 +251,7 @@ $is_list_selected = false;
 								esc_url( 'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/' )
 							),
 							[
-								'a' => [
+								'a'      => [
 									'href'   => [],
 									'target' => [],
 								],
