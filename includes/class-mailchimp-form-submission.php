@@ -505,8 +505,9 @@ class Mailchimp_Form_Submission {
 		 * Filter to allow for custom validation of the form submission.
 		 *
 		 * @since x.x.x
-		 * @param bool $is_valid True if valid, false if invalid, return WP_Error to provide error message.
+		 * @param bool  $is_valid  True if valid, false if invalid, return WP_Error to provide error message.
+		 * @param array $post_data The $_POST data.
 		 */
-		return apply_filters( 'mailchimp_sf_form_submission_validation', true );
+		return apply_filters( 'mailchimp_sf_form_submission_validation', true, $_POST );
 	}
 }
