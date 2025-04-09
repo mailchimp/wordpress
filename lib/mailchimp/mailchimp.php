@@ -188,6 +188,11 @@ class MailChimp_API {
 			// Get merge fields for the list if we have a list id.
 			if ( ! empty( $list_id ) ) {
 				$merges = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
+
+				// If we don't have merge fields for the list, get the default merge fields.
+				if ( empty( $merges ) ) {
+					$merges = get_option( 'mc_merge_vars' );
+				}
 			}
 
 			// Check if the email address is in compliance state.

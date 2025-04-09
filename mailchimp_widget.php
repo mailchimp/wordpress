@@ -262,8 +262,10 @@ function mailchimp_sf_signup_form( $args = array() ) {
 			<?php
 		}
 
-		$submit_text = get_option( 'mc_submit_text' );
+		// Add a honeypot field.
+		mailchimp_sf_honeypot_field();
 
+		$submit_text = get_option( 'mc_submit_text' );
 		?>
 
 		<div class="mc_signup_submit">
@@ -294,6 +296,21 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	if ( empty( $before_widget ) ) {
 		echo '</div>';
 	}
+}
+
+/**
+ * Add a hidden honeypot field
+ *
+ * @return void
+ */
+function mailchimp_sf_honeypot_field() {
+	?>
+	<div style="display: none; !important">
+		<label for="mailchimp_sf_alt_email"><?php esc_html_e( 'Alternative Email:', 'mailchimp' ); ?></label>
+		<input type="text" name="mailchimp_sf_alt_email" autocomplete="off"/>
+	</div>
+	<input type="hidden" class="mailchimp_sf_no_js" name="mailchimp_sf_no_js" value="1" />
+	<?php
 }
 
 /**
