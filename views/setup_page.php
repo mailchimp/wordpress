@@ -241,6 +241,26 @@ $is_list_selected = false;
 							<em><label for="mc_use_unsub_link"><?php esc_html_e( 'We\'ll automatically  add a link to your list\'s unsubscribe form.', 'mailchimp' ); ?></label></em>
 						</td>
 					</tr>
+					<tr valign="top">
+						<td colspan="2">
+						<?php
+						echo wp_kses(
+							sprintf(
+								/* translators: %s: link to Mailchimp */
+								__( '<strong>Note:</strong> If you haven\'t already, please <a href="%s" target="_blank">update</a> your website URL in the Mailchimp Audience settings to let users to return to your site.', 'mailchimp' ),
+								esc_url( 'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/' )
+							),
+							[
+								'a' => [
+									'href'   => [],
+									'target' => [],
+								],
+								'strong' => [],
+							]
+						)
+						?>
+						</td>
+					</tr>
 				</table>
 				<input type="submit" value="<?php esc_attr_e( 'Update Subscribe Form Settings', 'mailchimp' ); ?>" class="button mailchimp-sf-button small mc-submit" /><br/>
 			</div>
