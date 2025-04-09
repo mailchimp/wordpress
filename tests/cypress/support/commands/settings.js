@@ -13,38 +13,9 @@
  */
 Cypress.Commands.add('selectList', (listName) => {
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	cy.get('#mc_list_id').select(listName, {force: true});
+	cy.get('#mc_list_id').select(listName, { force: true });
 	cy.get('input[value="Update List"]').click();
 });
-
-/**
- * Custom Cypress command to enable or disable the JavaScript option in Mailchimp WordPress admin settings.
- *
- * This command visits the Mailchimp plugin settings page in the WordPress admin, 
- * toggles the "Use JavaScript" option based on the specified parameter, and 
- * updates the settings by submitting the form. It is helpful for testing scenarios 
- * that depend on JavaScript behavior in the plugin.
- *
- * @param {boolean} enabled - A flag to enable (`true`) or disable (`false`) the JavaScript option.
- *
- * @example
- * // Enable the JavaScript option
- * cy.setJavaScriptOption(true);
- *
- * @example
- * // Disable the JavaScript option
- * cy.setJavaScriptOption(false);
- */
-Cypress.Commands.add('setJavaScriptOption', setJavaScriptOption);
-function setJavaScriptOption(enabled) {
-	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	if (enabled) {
-		cy.get('#mc_use_javascript').check();
-	} else {
-		cy.get('#mc_use_javascript').uncheck();
-	}
-	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
-}
 
 /**
  * Custom Cypress command to enable or disable the Double Opt-In option in Mailchimp WordPress admin settings.
@@ -143,11 +114,11 @@ function toggleMergeFields(action) {
  * // Set merge fields for a specific list
  * cy.setMergeFieldsRequired(true, 'Custom List');
  */
-Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up') => {
+Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up', fields = []) => {
 	// Set all merge fields to required in the Mailchimp test user account
 	cy.getListId(listName).then((listId) => {
-		cy.updateMergeFieldsByList(listId, { required: required }).then(() => {
+		cy.updateMergeFieldsByList(listId, { required }, fields).then(() => {
 			cy.selectList(listName); // Ensure list is selected, refreshes Mailchimp data with WP
 		});
 	});
-})
+});

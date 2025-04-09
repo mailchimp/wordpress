@@ -23,9 +23,9 @@ describe('Address Field Validation', () => {
 		cy.login(); // Log into WordPress
 		cy.mailchimpLoginIfNotAlreadyLoggedIn(); // Log into Mailchimp
 
-		// Load post URLs for shortcode and block post tests
+		// Load the post URLs from the JSON file
 		cy.fixture('postUrls').then((urls) => {
-			blockPostPostURL = urls.blockPostPostURL;
+			({ blockPostPostURL } = urls);
 		});
 
 		// Set address fields (Addr 1 and City) as required
@@ -34,9 +34,6 @@ describe('Address Field Validation', () => {
 				cy.selectList('10up'); // Refresh list in WordPress
 			});
 		});
-
-		// Test validation without JS to ensure error handling mechanism for all scenarios
-		cy.setJavaScriptOption(false);
 	});
 
 	after(() => {
@@ -46,7 +43,6 @@ describe('Address Field Validation', () => {
 				cy.selectList('10up'); // Refresh list in WordPress
 			});
 		});
-		cy.setJavaScriptOption(true);
 	});
 
 	it('Valid addresses submit', () => {
