@@ -277,7 +277,7 @@ class Mailchimp_Form_Submission {
 	public function prepare_groups_body( $interest_groups ) {
 		// Bail if we don't have any interest groups
 		if ( empty( $interest_groups ) ) {
-			return new StdClass();
+			return new stdClass();
 		}
 
 		$groups = $this->set_all_groups_to_false( $interest_groups );
@@ -323,7 +323,7 @@ class Mailchimp_Form_Submission {
 	 * @return stdClass
 	 */
 	public function set_all_groups_to_false( $interest_groups ) {
-		$groups = new StdClass();
+		$groups = new stdClass();
 
 		foreach ( $interest_groups as $interest_group ) {
 			if ( 'hidden' !== $interest_group['type'] ) {
