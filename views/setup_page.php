@@ -248,7 +248,7 @@ $is_list_selected = false;
 							sprintf(
 								/* translators: %s: link to Mailchimp */
 								__( '<strong>Note:</strong> If you haven\'t already, please <a href="%s" target="_blank" rel="noopener noreferrer">add</a> your website URL to your Mailchimp Audience account settings so users can properly return to your site after subscribing.', 'mailchimp' ),
-								esc_url( 'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/' )
+								'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/'
 							),
 							[
 								'a'      => [
