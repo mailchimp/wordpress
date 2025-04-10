@@ -1,7 +1,7 @@
 === Mailchimp List Subscribe Form ===
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
-Tested up to: 6.7
+Tested up to: 6.8
 Stable tag:   1.7.0
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
