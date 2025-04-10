@@ -247,13 +247,14 @@ $is_list_selected = false;
 						echo wp_kses(
 							sprintf(
 								/* translators: %s: link to Mailchimp */
-								__( '<strong>Note:</strong> If you haven\'t already, please <a href="%s" target="_blank">update</a> your website URL in the Mailchimp Audience settings to let users to return to your site.', 'mailchimp' ),
+								__( '<strong>Note:</strong> If you haven\'t already, please <a href="%s" target="_blank" rel="noopener noreferrer">add</a> your website URL to your Mailchimp Audience account settings so users can properly return to your site after subscribing.', 'mailchimp' ),
 								esc_url( 'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/' )
 							),
 							[
 								'a'      => [
 									'href'   => [],
 									'target' => [],
+									'rel'    => [],
 								],
 								'strong' => [],
 							]
