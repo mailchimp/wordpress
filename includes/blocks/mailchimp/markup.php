@@ -225,6 +225,9 @@ if ( ! mailchimp_sf_should_display_form() ) {
 						</div><!-- /mc-indicates-required -->
 						<?php
 					}
+
+					// Add a honeypot field.
+					mailchimp_sf_honeypot_field();
 					?>
 					<div class="mc_signup_submit">
 						<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
