@@ -4,6 +4,13 @@ describe('Block Tests', () => {
 
 	before(() => {
 		cy.login();
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
+		cy.toggleMergeFields('check');
+
+		// Hide all interest groups
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
+		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
 	});
 
 	it('Admin can create a Signup form using Mailchimp block', () => {
@@ -275,6 +282,22 @@ describe('Block Tests', () => {
 		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
 		cy.wait(500);
+	});
+
+	it('Form data should persist if validation fails', () => {
+		// Verify
+		const firstName = 'John';
+		const lastName = 'Doe';
+		cy.visit(`/?p=${postId}`);
+		cy.get('#mc_mv_EMAIL').should('exist');
+		cy.get('#mc_mv_FNAME').clear().type(firstName);
+		cy.get('#mc_mv_LNAME').clear().type(lastName);
+		cy.get('#mc_signup_submit').should('exist');
+		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_error_msg').should('exist');
+		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('#mc_mv_FNAME').should('have.value', firstName);
+		cy.get('#mc_mv_LNAME').should('have.value', lastName);
 	});
 
 	// TODO: Add tests for the Double Opt-in and Update existing subscribers settings.
