@@ -414,3 +414,25 @@
 		});
 	});
 })(jQuery); // eslint-disable-line no-undef
+
+// User Sync Settings.
+(function ($) {
+	const userSyncSettingsPage = $('.mailchimp-sf-user-sync-page');
+	if (userSyncSettingsPage.length > 0) {
+		const syncExistingContactsOnly = $(
+			'tr.mailchimp-user-sync-existing-contacts-only input[type="checkbox"]',
+		);
+		if (syncExistingContactsOnly) {
+			syncExistingContactsOnly.change(function () {
+				if (this.checked) {
+					$('tr.mailchimp-user-sync-subscriber-status').hide();
+				} else {
+					$('tr.mailchimp-user-sync-subscriber-status').show();
+				}
+			});
+
+			// Trigger change event to hide/show subscriber status.
+			syncExistingContactsOnly.trigger('change');
+		}
+	}
+})(jQuery); // eslint-disable-line no-undef
