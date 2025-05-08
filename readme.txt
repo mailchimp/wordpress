@@ -81,6 +81,15 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 1.8.0 - 2025-05-08 =
+**Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
+
+* **Added:** Honeypot and no-JS fields to help prevent spam (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#139](https://github.com/mailchimp/wordpress/pull/139)).
+* **Added:** Confirmation prompt before logging out the user (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#149](https://github.com/mailchimp/wordpress/pull/149)).
+* **Added:** A note advising users to set the website URL in the Mailchimp Audience settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#145](https://github.com/mailchimp/wordpress/pull/145)).
+* **Changed:** Bump WordPress "tested up to" version 6.8 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+* **Changed:** Bump WordPress minimum supported version from 6.3 to 6.4 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+
 = 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
 * **Changed:** Plugin settings page success and error messages will now use WP admin notices (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh) via [#85](https://github.com/mailchimp/wordpress/pull/85)).
@@ -160,6 +169,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+This release bumps the WordPress minimum version from 6.3 to 6.4.
 
 = 1.6.2 =
 This release bumps the WordPress minimum version from 6.1 to 6.3.
