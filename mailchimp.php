@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.7.0
+ * Version:           1.8.0
  * Requires at least: 6.4
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -67,7 +67,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.7.0' );
+define( 'MCSF_VER', '1.8.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
