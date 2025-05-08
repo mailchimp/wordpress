@@ -38,6 +38,9 @@
 		// Change our submit type from HTML (default) to JS
 		$('.mc_submit_type').val('js');
 
+		// Remove the no JS field.
+		$('.mailchimp_sf_no_js').remove();
+
 		// Attach our form submitter action
 		$('.mc_signup_form').ajaxForm({
 			url: window.mailchimpSF.ajax_url,
