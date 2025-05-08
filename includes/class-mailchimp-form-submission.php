@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_Form_Submission
  *
- * @since x.x.x
+ * @since 1.8.0
  */
 class Mailchimp_Form_Submission {
 
@@ -504,7 +504,7 @@ class Mailchimp_Form_Submission {
 		/**
 		 * Filter to allow for custom validation of the form submission.
 		 *
-		 * @since x.x.x
+		 * @since 1.8.0
 		 * @param bool  $is_valid  True if valid, false if invalid, return WP_Error to provide error message.
 		 * @param array $post_data The $_POST data.
 		 */
