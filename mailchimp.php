@@ -4,8 +4,8 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.7.0
- * Requires at least: 6.3
+ * Version:           1.8.0
+ * Requires at least: 6.4
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
  * Author:            Mailchimp
@@ -67,7 +67,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.7.0' );
+define( 'MCSF_VER', '1.8.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -103,8 +103,13 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/blocks/class-mailchimp-list
 $block = new Mailchimp_List_Subscribe_Form_Blocks();
 $block->init();
 
-// Block form submission handler class.
-require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-block-form-submission.php';
+// Form submission handler class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submission.php';
+$form_submission = new Mailchimp_Form_Submission();
+$form_submission->init();
+
+// Deprecated functions.
+require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
 
 /**
  * Do the following plugin setup steps here
@@ -266,36 +271,6 @@ function mailchimp_sf_request_handler() {
 				// Update the form settings
 				mailchimp_sf_save_general_form_settings();
 				break;
-			case 'mc_submit_signup_form':
-				// Validate nonce
-				if (
-					! isset( $_POST['_mc_submit_signup_form_nonce'] ) ||
-					! wp_verify_nonce( sanitize_key( $_POST['_mc_submit_signup_form_nonce'] ), 'mc_submit_signup_form' )
-				) {
-					wp_die( 'Cheatin&rsquo; huh?' );
-				}
-
-				// Check if request from latest block.
-				if ( isset( $_POST['mailchimp_sf_list_id'] ) ) {
-					$block_form_submission = new Mailchimp_Block_Form_Submission();
-					$block_form_submission->handle_form_submission();
-				} else {
-					// Attempt the signup
-					mailchimp_sf_signup_submit();
-				}
-
-				// Do a different action for html vs. js
-				switch ( isset( $_POST['mc_submit_type'] ) ? $_POST['mc_submit_type'] : '' ) {
-					case 'html':
-						/* This gets set elsewhere! */
-						break;
-					case 'js':
-						if ( ! headers_sent() ) { // just in case...
-							header( 'Last-Modified: ' . gmdate( 'D, d M Y H:i:s' ) . ' GMT', true, 200 );
-						}
-						echo wp_kses_post( mailchimp_sf_frontend_msg() );
-						exit;
-				}
 		}
 	}
 }
@@ -805,109 +780,6 @@ function mailchimp_sf_shortcode() {
 add_shortcode( 'mailchimpsf_form', 'mailchimp_sf_shortcode' );
 
 /**
- * Attempts to signup a user, per the $_POST args.
- *
- * This sets a global message, that is then used in the widget
- * output to retrieve and display that message.
- *
- * @return bool
- */
-function mailchimp_sf_signup_submit() {
-	$mv          = get_option( 'mc_merge_vars', array() );
-	$mv_tag_keys = array();
-
-	$igs = get_option( 'mc_interest_groups', array() );
-
-	$list_id = get_option( 'mc_list_id' );
-	$email   = isset( $_POST['mc_mv_EMAIL'] ) ? wp_strip_all_tags( wp_unslash( $_POST['mc_mv_EMAIL'] ) ) : '';
-
-	$merge = mailchimp_sf_merge_submit( $mv );
-
-	// Catch errors and fail early.
-	if ( is_wp_error( $merge ) ) {
-		$msg = '<strong class="mc_error_msg">' . $merge->get_error_message() . '</strong>';
-		mailchimp_sf_frontend_msg( $msg );
-
-		return false;
-	}
-
-	// Head back to the beginning of the merge vars array
-	reset( $mv );
-	// Ensure we have an array
-	$igs = ! is_array( $igs ) ? array() : $igs;
-	$igs = mailchimp_sf_groups_submit( $igs );
-
-	// Clear out empty merge vars
-	$merge = mailchimp_sf_merge_remove_empty( $merge );
-	if ( isset( $_POST['email_type'] ) && in_array( $_POST['email_type'], array( 'text', 'html', 'mobile' ), true ) ) {
-		$email_type = sanitize_text_field( wp_unslash( $_POST['email_type'] ) );
-	} else {
-		$email_type = 'html';
-	}
-
-	$api = mailchimp_sf_get_api();
-	if ( ! $api ) {
-		$url   = mailchimp_sf_signup_form_url();
-		$error = sprintf(
-			'<strong class="mc_error_msg">%s</strong>',
-			wp_kses(
-				sprintf(
-					/* translators: 1: email address 2: url */
-					__(
-						'We encountered a problem adding %1$s to the list. Please <a href="%2$s">sign up here.</a>',
-						'mailchimp'
-					),
-					esc_html( $email ),
-					esc_url( $url )
-				),
-				[
-					'a' => [
-						'href' => [],
-					],
-				]
-			)
-		);
-		mailchimp_sf_frontend_msg( $error );
-		return false;
-	}
-
-	$url    = 'lists/' . $list_id . '/members/' . md5( strtolower( $email ) );
-	$status = mailchimp_sf_check_status( $url );
-
-	// If update existing is turned off and the subscriber is not new, error out.
-	$is_new_subscriber = false === $status;
-	if ( ! get_option( 'mc_update_existing' ) && ! $is_new_subscriber ) {
-		$msg   = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
-		$error = new WP_Error( 'mailchimp-update-existing', $msg );
-		mailchimp_sf_frontend_msg( '<strong class="mc_error_msg">' . $msg . '</strong>' );
-		return false;
-	}
-
-	$body   = mailchimp_sf_subscribe_body( $merge, $igs, $email_type, $email, $status, get_option( 'mc_double_optin' ) );
-	$retval = $api->post( $url, $body, 'PUT' );
-
-	// If we have errors, then show them
-	if ( is_wp_error( $retval ) ) {
-		$msg = '<strong class="mc_error_msg">' . $retval->get_error_message() . '</strong>';
-		mailchimp_sf_frontend_msg( $msg );
-		return false;
-	}
-
-	if ( 'subscribed' === $retval['status'] ) {
-		$esc = esc_html__( 'Success, you\'ve been signed up.', 'mailchimp' );
-		$msg = "<strong class='mc_success_msg'>{$esc}</strong>";
-	} else {
-		$esc = esc_html__( 'Success, you\'ve been signed up! Please look for our confirmation email.', 'mailchimp' );
-		$msg = "<strong class='mc_success_msg'>{$esc}</strong>";
-	}
-
-	// Set our front end success message
-	mailchimp_sf_frontend_msg( $msg );
-
-	return true;
-}
-
-/**
  * Cleans up merge fields and interests to make them
  * API 3.0-friendly.
  *
@@ -956,102 +828,6 @@ function mailchimp_sf_check_status( $endpoint ) {
 		return false;
 	}
 	return $subscriber['status'];
-}
-
-/**
- * Merge submit
- *
- * @param array $mv Merge Vars
- * @return mixed
- */
-function mailchimp_sf_merge_submit( $mv ) {
-	// Loop through our Merge Vars, and if they're empty, but required, then print an error, and mark as failed
-	$merge = new stdClass();
-	foreach ( $mv as $mv_var ) {
-		// We also want to create an array where the keys are the tags for easier validation later
-		$tag                 = $mv_var['tag'];
-		$mv_tag_keys[ $tag ] = $mv_var;
-
-		$opt = 'mc_mv_' . $tag;
-
-		$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
-
-		switch ( $mv_var['type'] ) {
-			/**
-			 * US Phone validation
-			 *
-			 * - Merge field is phone
-			 * - Merge field is "included" in the Mailchimp admin options
-			 * - Phone format is set in Mailchimp account
-			 * - Phone format is US in Mailchimp account
-			 */
-			case 'phone':
-				if (
-					( 'on' === get_option( $opt ) || $mv_var['required'] )
-					&& isset( $mv_var['options']['phone_format'] )
-					&& 'US' === $mv_var['options']['phone_format']
-				) {
-					$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $mv_var );
-					if ( is_wp_error( $opt_val ) ) {
-						return $opt_val;
-					}
-				}
-				break;
-
-			/**
-			 * Address validation
-			 *
-			 * - Merge field is address
-			 * - Merge field is "included" in the Mailchimp admin options
-			 * - Merge field is an array (address contains multiple <input> elements)
-			 */
-			case 'address':
-				if ( ( 'on' === get_option( $opt ) || $mv_var['required'] ) && is_array( $opt_val ) ) {
-					$validate = mailchimp_sf_merge_validate_address( $opt_val, $mv_var );
-					if ( is_wp_error( $validate ) ) {
-						return $validate;
-					}
-
-					if ( $validate ) {
-						$merge->$tag = $validate;
-					}
-				}
-				break;
-
-			/**
-			 * Handle generic array values
-			 *
-			 * Not sure what this does or is for
-			 *
-			 * - Merge field is an array, not specifically phone or address
-			 */
-			default:
-				if ( is_array( $opt_val ) ) {
-					$keys = array_keys( $opt_val );
-					$val  = new stdClass();
-					foreach ( $keys as $key ) {
-						$val->$key = $opt_val[ $key ];
-					}
-					$opt_val = $val;
-				}
-				break;
-		}
-
-		/**
-		 * Required fields
-		 *
-		 * If the field is required and empty, return an error
-		 */
-		if ( 'Y' === $mv_var['required'] && trim( $opt_val ) === '' ) {
-			/* translators: %s: field name */
-			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $mv_var['name'] ) );
-			$error   = new WP_Error( 'missing_required_field', $message );
-			return $error;
-		} elseif ( 'EMAIL' !== $tag ) {
-			$merge->$tag = $opt_val;
-		}
-	}
-	return $merge;
 }
 
 /**
@@ -1114,94 +890,6 @@ function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
 }
 
 /**
- * Merge remove empty
- *
- * @param stdObj $merge Merge
- * @return stdObj
- */
-function mailchimp_sf_merge_remove_empty( $merge ) {
-	foreach ( $merge as $k => $v ) {
-		if ( is_object( $v ) && empty( $v ) ) {
-			unset( $merge->$k );
-		} elseif ( ( is_string( $v ) && trim( $v ) === '' ) || is_null( $v ) ) {
-			unset( $merge->$k );
-		}
-	}
-
-	return $merge;
-}
-
-/**
- * Groups submit
- *
- * @param array $igs Interest groups
- * @return stdClass
- */
-function mailchimp_sf_groups_submit( $igs ) {
-	$groups = mailchimp_sf_set_all_groups_to_false();
-
-	if ( empty( $igs ) ) {
-		return new StdClass();
-	}
-
-	// get groups and ids
-	// set all to false
-
-	foreach ( $igs as $ig ) {
-		$ig_id = $ig['id'];
-		if ( get_option( 'mc_show_interest_groups_' . $ig_id ) === 'on' && 'hidden' !== $ig['type'] ) {
-			switch ( $ig['type'] ) {
-				case 'dropdown':
-				case 'radio':
-					// there can only be one value submitted for radio/dropdowns, so use that at the group id.
-					if ( isset( $_POST['group'][ $ig_id ] ) && ! empty( $_POST['group'][ $ig_id ] ) ) {
-						$value          = sanitize_text_field( wp_unslash( $_POST['group'][ $ig_id ] ) );
-						$groups->$value = true;
-					}
-					break;
-				case 'checkboxes':
-					if ( isset( $_POST['group'][ $ig_id ] ) ) {
-						$ig_ids = array_map(
-							'sanitize_text_field',
-							array_keys(
-								stripslashes_deep( $_POST['group'][ $ig_id ] ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- ignoring becuase this is sanitized through array_map above
-							)
-						);
-						foreach ( $ig_ids as $id ) {
-							$groups->$id = true;
-						}
-					}
-					break;
-				default:
-					// Nothing
-					break;
-			}
-		}
-	}
-	return $groups;
-}
-
-/**
- * Set all groups to false
- *
- * @return StdClass
- */
-function mailchimp_sf_set_all_groups_to_false() {
-	$toreturn = new StdClass();
-
-	foreach ( get_option( 'mc_interest_groups' ) as $grouping ) {
-		if ( 'hidden' !== $grouping['type'] ) {
-			foreach ( $grouping['groups'] as $group ) {
-				$id            = $group['id'];
-				$toreturn->$id = false;
-			}
-		}
-	}
-
-	return $toreturn;
-}
-
-/**
  * Verify key
  *
  * @param MailChimp_API $api API instance
@@ -1239,22 +927,6 @@ function mailchimp_sf_update_profile_url( $email ) {
 	$user    = get_option( 'mc_user' );
 	$list_id = get_option( 'mc_list_id' );
 	$url     = 'http://' . $dc . '.list-manage.com/subscribe/send-email?u=' . $user['account_id'] . '&id=' . $list_id . '&e=' . $eid;
-	return $url;
-}
-
-/**
- * Get signup form URL.
- *
- * @param string $list_id List ID
- * @return string
- */
-function mailchimp_sf_signup_form_url( $list_id = '' ) {
-	$dc   = get_option( 'mc_datacenter' );
-	$user = get_option( 'mc_user' );
-	if ( empty( $list_id ) ) {
-		$list_id = get_option( 'mc_list_id' );
-	}
-	$url = 'http://' . $dc . '.list-manage.com/subscribe?u=' . $user['account_id'] . '&id=' . $list_id;
 	return $url;
 }
 

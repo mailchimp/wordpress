@@ -21,7 +21,7 @@ $is_list_selected = false;
 			<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
 			</td>
 			<td>
-				<form method="post" action="">
+				<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( 'Are you sure you want to log out?', 'mailchimp' ) ); ?>');">
 					<input type="hidden" name="mcsf_action" value="logout"/>
 					<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary mailchimp-sf-button small" />
 					<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
@@ -239,6 +239,27 @@ $is_list_selected = false;
 						<th scope="row"><?php esc_html_e( 'Include Unsubscribe link?', 'mailchimp' ); ?></th>
 						<td><input name="mc_use_unsub_link" type="checkbox"<?php checked( get_option( 'mc_use_unsub_link' ), 'on' ); ?> id="mc_use_unsub_link" class="code" />
 							<em><label for="mc_use_unsub_link"><?php esc_html_e( 'We\'ll automatically  add a link to your list\'s unsubscribe form.', 'mailchimp' ); ?></label></em>
+						</td>
+					</tr>
+					<tr valign="top">
+						<td colspan="2">
+						<?php
+						echo wp_kses(
+							sprintf(
+								/* translators: %s: link to Mailchimp */
+								__( '<strong>Note:</strong> If you haven\'t already, please <a href="%s" target="_blank" rel="noopener noreferrer">add</a> your website URL to your Mailchimp Audience account settings so users can properly return to your site after subscribing.', 'mailchimp' ),
+								'https://mailchimp.com/help/change-or-update-the-return-to-our-website-button/'
+							),
+							[
+								'a'      => [
+									'href'   => [],
+									'target' => [],
+									'rel'    => [],
+								],
+								'strong' => [],
+							]
+						)
+						?>
 						</td>
 					</tr>
 				</table>
