@@ -12,7 +12,8 @@
   ],
   "prefer-stable": true,
   "require": {
-    "php": ">=7.0"
+    "php": ">=7.0",
+    "woocommerce/action-scheduler": "3.8.2"
   },
   "require-dev": {
     "10up/phpcs-composer": "^3.0",
