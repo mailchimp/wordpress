@@ -345,7 +345,7 @@ class Mailchimp_User_Sync {
 			</label>
 			<p class="description_small">
 				<?php esc_html_e( 'This status indicates that you\'ve gotten permission to market to your users.', 'mailchimp' ); ?>
-				<a href="https://mailchimp.com/help/the-importance-of-permission/" target="_blank"><?php esc_html_e( 'Learn more about the importance of permission.', 'mailchimp' ); ?></a>
+				<a href="https://mailchimp.com/help/the-importance-of-permission/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more about the importance of permission.', 'mailchimp' ); ?></a>
 			</p>
 		</div>
 		<div>
@@ -363,11 +363,34 @@ class Mailchimp_User_Sync {
 				<?php esc_html_e( 'Sync as non-subscribed', 'mailchimp' ); ?>
 			</label>
 			<p class="description_small">
-				<?php esc_html_e( 'This status indicates you haven\'t gotten permission to market to these users. However, you can use Mailchimp to send ', 'mailchimp' ); ?><a href="https://mailchimp.com/help/about-non-subscribed-contacts/" target="_blank"><?php esc_html_e( 'non-subscribed contacts', 'mailchimp' ); ?></a> <?php esc_html_e( 'transactional emails and postcards and target them with ads.', 'mailchimp' ); ?>
+				<?php esc_html_e( 'This status indicates you haven\'t gotten permission to market to these users. However, you can use Mailchimp to send ', 'mailchimp' ); ?><a href="https://mailchimp.com/help/about-non-subscribed-contacts/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'non-subscribed contacts', 'mailchimp' ); ?></a> <?php esc_html_e( 'transactional emails and postcards and target them with ads.', 'mailchimp' ); ?>
 			</p>
 		</div>
 		<p class="description_small">
-			<?php esc_html_e( 'You will need', 'mailchimp' ); ?> <a href="https://mailchimp.com/help/about-mailchimp-pricing-plans/" target="_blank"><?php esc_html_e( 'a Mailchimp plan', 'mailchimp' ); ?></a> <?php esc_html_e( 'that includes 1 contacts. If your plan does not include enough contacts, you will incur additional monthly charges.', 'mailchimp' ); ?> <a href="https://mailchimp.com/help/about-additional-charges/" target="_blank"><?php esc_html_e( 'Learn about additional charges.', 'mailchimp' ); ?></a>
+			<?php
+			$users_count = $this->get_users_count();
+			echo wp_kses(
+				sprintf(
+					_n(
+						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contact.',
+						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contacts.',
+						absint( $users_count )
+					),
+					'<a href="https://mailchimp.com/help/about-mailchimp-pricing-plans/" target="_blank" rel="noopener noreferrer">',
+					'</a>',
+					absint( $users_count ),
+				),
+				array(
+					'a' => array(
+						'href' => array(),
+						'target' => array(),
+						'rel' => array(),
+					),
+				)
+			)
+			?>
+			<?php esc_html_e( 'If your plan does not include enough contacts, you will incur additional monthly charges.', 'mailchimp' ); ?>
+			<a href="https://mailchimp.com/help/about-additional-charges/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn about additional charges.', 'mailchimp' ); ?></a>
 		</p>
 		<?php
 	}
