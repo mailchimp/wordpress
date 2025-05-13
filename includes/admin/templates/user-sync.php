@@ -7,6 +7,12 @@
 
 ?>
 <div class="mailchimp-sf-user-sync-page">
+	<?php
+	/**
+	 * Render the user sync status.
+	 */
+	do_action( 'mailchimp_sf_user_sync_status' );
+	?>
 	<form action="options.php" method="post">
 		<?php
 		settings_fields( 'mailchimp_sf_user_sync_settings' );

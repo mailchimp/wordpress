@@ -436,3 +436,43 @@
 		}
 	}
 })(jQuery); // eslint-disable-line no-undef
+
+// Update the user sync status.
+(function ($) {
+	const statusWrapper = $('.mailchimp-sf-user-sync-status');
+	const processRunning = statusWrapper.length;
+	if (!processRunning) {
+		return;
+	}
+
+	const params = window.mailchimp_sf_admin_params || {};
+	const ajaxUrl = params?.ajax_url;
+	const ajaxNonce = params?.user_sync_status_nonce;
+
+	const intervalId = setInterval(function () {
+		$.ajax({
+			url: ajaxUrl,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_get_user_sync_status',
+				nonce: ajaxNonce,
+			},
+			success(response) {
+				if (response.success && response.data) {
+					if (response.data.is_running && response.data.status) {
+						// Update the sync status on the page
+						statusWrapper.html(response.data.status);
+					} else {
+						// Clear interval and reload the page.
+						clearInterval(intervalId);
+						window.location.reload();
+					}
+				}
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+			},
+		});
+	}, 30000); // 30000 milliseconds = 30 seconds
+})(jQuery); // eslint-disable-line no-undef

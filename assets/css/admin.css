@@ -805,3 +805,23 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	font-size: 0.9em;
 	margin-bottom: 10px;
 }
+
+.mailchimp-sf-user-sync-status {
+	margin: 15px 0;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+}
+.mailchimp-sf-user-sync-status .mailchimp-sf-sync-progress {
+	display: flex;
+	align-items: center;
+}
+.mailchimp-sf-user-sync-status .sync-status-text {
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.button.mailchimp-cancel-user-sync-button {
+	margin-left: auto;
+}

@@ -489,6 +489,7 @@ class Mailchimp_Admin {
 			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
 			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
 			'admin_settings_url'     => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'user_sync_status_nonce' => wp_create_nonce( 'mailchimp_sf_user_sync_status' ),
 		);
 
 		// Create account page specific data.

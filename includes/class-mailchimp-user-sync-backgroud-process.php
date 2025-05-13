@@ -39,11 +39,22 @@ class Mailchimp_User_Sync_Background_Process {
 	private $api;
 
 	/**
+	 * The user sync object.
+	 *
+	 * @var Mailchimp_User_Sync
+	 */
+	private $user_sync;
+
+	public function __construct() {
+		require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
+
+		$this->user_sync = new Mailchimp_User_Sync();
+	}
+
+	/**
 	 * Initialize the class.
 	 */
 	public function init() {
-		require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
-
 		add_action( $this->job_name, [ $this, 'run' ] );
 	}
 
@@ -63,21 +74,28 @@ class Mailchimp_User_Sync_Background_Process {
 		$api     = $this->get_api();
 
 		if ( ! $list_id || ! $api ) {
-			error_log( 'List ID or API not found' );
+			$this->log( 'User sync process failed due to connection issues or list not selected.' );
+			$this->user_sync->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues or list not selected.', 'mailchimp' ), 'error' );
 			return;
 		}
 
-		error_log( 'Running user sync job' );
-		$limit = $this->get_limit();
-		$offset = $item['offset'] ? absint( $item['offset'] ) : 0;
+		// Start the user sync job.
+		$this->log( 'Started user sync job.' );
+
+		$limit              = $this->get_limit();
+		$processed          = $item['processed'] ? absint( $item['processed'] ) : 0;
+		$offset             = $item['offset'] ? absint( $item['offset'] ) : 0;
 		$user_sync_settings = $this->get_user_sync_settings();
-		$user_roles = $user_sync_settings['user_roles'] ?? array();
+		$user_roles         = $user_sync_settings['user_roles'] ?? array();
 
+		// If no user roles to sync, add a notice and return.
 		if ( empty( $user_roles ) ) {
-			error_log( 'No user roles to sync' );
+			$this->log( 'No user roles to sync, please select at least one user role.' );
+			$this->user_sync->add_notice( __( 'No user roles to sync, please select at least one user role.', 'mailchimp' ), 'warning' );
 			return;
 		}
 
+		// Get users to sync.
 		$users = get_users( array(
 			'role__in' => $user_roles,
 			'number'   => $limit,
@@ -85,26 +103,48 @@ class Mailchimp_User_Sync_Background_Process {
 			'fields'   => 'ID',
 		) );
 
+		// If no users to sync, add a notice and return.
 		if ( empty( $users ) ) {
-			error_log( 'No users to sync' );
+			$this->log( 'No users to sync.' );
+			if ( $processed === 0 ) {
+				$this->user_sync->add_notice( __( 'No users to sync.', 'mailchimp' ), 'warning' );
+			} else {
+				$this->user_sync->add_notice(
+					sprintf(
+						_n( 'User sync process completed. %d user processed.', 'User sync process completed. %d users processed.', $processed, 'mailchimp' ),
+						$processed
+					),
+					'success'
+				);
+			}
 			return;
 		}
 
+		// Sync users.
 		foreach ( $users as $user ) {
 			try{
 				$this->sync_user( $user );
 			} catch ( Exception $e ) {
-				error_log( 'Error getting user: ' . $e->getMessage() );
+				$this->log( 'Error getting user: ' . $e->getMessage() );
 				continue;
 			}
 		}
 
+		// If no more users to sync, add a notice and return.
 		$found_users = count( $users );
 		if ( $found_users < $limit ) {
-			error_log( 'No more users to sync' );
+			$this->log( 'No more users to sync, User sync process completed.' );
+			$this->user_sync->add_notice(
+				sprintf(
+					_n( 'User sync process completed. %d user processed.', 'User sync process completed. %d users processed.', $processed, 'mailchimp' ),
+					$processed
+				),
+				'success'
+			);
 			return;
 		}
 
+		// Schedule the next job batch.
 		$item['processed'] += $found_users;
 		$item['offset']     = $offset + $limit;
 		$this->schedule( array( $item ) );
@@ -126,11 +166,11 @@ class Mailchimp_User_Sync_Background_Process {
 		$user = get_user_by( 'id', $user_id );
 
 		if ( ! $user ) {
-			error_log( 'User not found' );
+			$this->log( 'User not found' );
 			return;
 		}
 
-		error_log( 'Syncing user: ' . $user->ID );
+		$this->log( 'Syncing user: ' . $user->ID );
 		$user_email = strtolower( trim( $user->user_email ) );
 		$user_first_name = $user->first_name;
 		$user_last_name = $user->last_name;
@@ -145,7 +185,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$current_status = $this->get_mailchimp_user_status( $user_email );
 
 		if ( $existing_contacts_only && ! $current_status ) {
-			error_log( 'User not exists on Mailchimp, skipping' );
+			$this->log( 'User not exists on Mailchimp, skipping' );
 			return;
 		}
 
@@ -168,11 +208,11 @@ class Mailchimp_User_Sync_Background_Process {
 		$response = $api->post( $endpoint, $request_body, 'PUT', $list_id );
 
 		if ( is_wp_error( $response ) ) {
-			error_log( 'Error syncing user: ' . $response->get_error_message() );
+			$this->log( 'Error syncing user: ' . $response->get_error_message() );
 			return;
 		}
 
-		error_log( 'User synced: ' . $user_email );
+		$this->log( 'User synced: ' . $user_email );
 	}
 
 	/**
@@ -341,5 +381,14 @@ class Mailchimp_User_Sync_Background_Process {
 			return false;
 		}
 		return $subscriber['status'];
+	}
+
+	/**
+	 * Log a message.
+	 *
+	 * @param string $message The message to log.
+	 */
+	public function log( $message ) {
+		error_log( 'Mailchimp User Sync: ' . $message );
 	}
 }

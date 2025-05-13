@@ -47,14 +47,26 @@ class Mailchimp_User_Sync {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', [ $this, 'setup_fields_sections' ] );
 		add_action( 'admin_post_mailchimp_sf_start_user_sync', [ $this, 'start_user_sync' ] );
+		add_action( 'admin_post_mailchimp_sf_cancel_user_sync', [ $this, 'cancel_user_sync' ] );
 
 		$this->background_process = new Mailchimp_User_Sync_Background_Process();
 		$this->background_process->init();
 
 		// Admin notices
 		add_action( 'admin_notices', [ $this, 'render_notices' ] );
+
+		// Ajax action handler
+		add_action( 'wp_ajax_mailchimp_sf_get_user_sync_status', [ $this, 'get_user_sync_status' ] );
+
+		// Render the user sync status.
+		add_action( 'mailchimp_sf_user_sync_status', [ $this, 'render_user_sync_status' ] );
 	}
 
+	/**
+	 * Start the user sync.
+	 *
+	 * @since x.x.x
+	 */
 	public function start_user_sync() {
 		if (
 			empty( $_GET['mailchimp_sf_start_user_sync_nonce'] ) ||
@@ -64,6 +76,32 @@ class Mailchimp_User_Sync {
 			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
 		}
 
+		$return_url = add_query_arg( array( 'page' => 'mailchimp_sf_options', 'tab' => 'user_sync' ), admin_url( 'admin.php' ) );
+
+		// Check if the user is connected to Mailchimp.
+		$api = mailchimp_sf_get_api();
+		if ( ! $api ) {
+			$this->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues, Please try again after reconnecting your Mailchimp account.', 'mailchimp' ), 'error' );
+			wp_safe_redirect( esc_url_raw( $return_url ) );
+			exit;
+		}
+
+		// Check if the user has selected a list.
+		$list_id = get_option( 'mc_list_id' );
+		if ( ! $list_id ) {
+			$this->add_notice( __( 'Please select a list to sync users.', 'mailchimp' ), 'error' );
+			wp_safe_redirect( esc_url_raw( $return_url ) );
+			exit;
+		}
+
+		// Check if the user sync is already running.
+		if ( $this->background_process->in_progress() ) {
+			$this->add_notice( __( 'User sync process is already running.', 'mailchimp' ), 'warning' );
+			wp_safe_redirect( esc_url_raw( $return_url ) );
+			exit;
+		}
+
+		// Job arguments.
 		$args = array(
 			array(
 				'job_id'    => str_replace( '-', '', wp_generate_uuid4() ),
@@ -71,10 +109,36 @@ class Mailchimp_User_Sync {
 				'offset'    => 0,
 			)
 		);
+
+		// Schedule the user sync job.
 		$this->background_process->schedule( $args );
 
 		// Add notice that the user sync has started.
 		$this->add_notice( __( 'User sync process has started.', 'mailchimp' ) );
+
+		// Redirect to the user sync settings page.
+		wp_safe_redirect( esc_url_raw( $return_url ) );
+		exit;
+	}
+
+	/**
+	 * Cancel the user sync.
+	 *
+	 * @since x.x.x
+	 */
+	public function cancel_user_sync() {
+		if (
+			empty( $_GET['mailchimp_sf_cancel_user_sync_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['mailchimp_sf_cancel_user_sync_nonce'] ) ), 'mailchimp_sf_cancel_user_sync' ) ||
+			! current_user_can( 'manage_options' )
+		) {
+			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
+		}
+
+		$unschedule = $this->background_process->unschedule();
+		if ( $unschedule ) {
+			$this->add_notice( __( 'User sync process will be cancelled soon.', 'mailchimp' ) );
+		}
 
 		// Redirect to the user sync settings page.
 		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'page' => 'mailchimp_sf_options', 'tab' => 'user_sync' ), admin_url( 'admin.php' ) ) ) );
@@ -380,5 +444,115 @@ class Mailchimp_User_Sync {
 			}
 			delete_transient( $this->notices_transient_key );
 		}
+	}
+
+	/**
+	 * Get the total users.
+	 *
+	 * @since x.x.x
+	 * @return int The total users.
+	 */
+	public function get_users_count() {
+		$settings    = $this->get_user_sync_settings();
+		$user_roles  = $settings['user_roles'] ?? array();
+		$total_users = 0;
+		$total_counts = count_users();
+		if ( ! empty( $total_counts['avail_roles'] ) && is_array( $total_counts['avail_roles'] ) ) {
+			foreach ( $total_counts['avail_roles'] as $role_name => $role_count ) {
+				if ( in_array( $role_name, $user_roles, true ) ) {
+					$total_users += $role_count;
+				}
+			}
+		}
+
+		return $total_users;
+	}
+
+	/**
+	 * Get the user sync status.
+	 *
+	 * @since x.x.x
+	 */
+	public function render_user_sync_status() {
+		$is_syncing   = $this->background_process->in_progress();
+
+		if ( ! $is_syncing ) {
+			return;
+		}
+
+		?>
+		<div class="mailchimp-sf-user-sync-status">
+			<?php
+			$this->render_user_sync_progress();
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Get the user sync progress.
+	 *
+	 * @since x.x.x
+	 */
+	public function render_user_sync_progress() {
+		$is_syncing   = $this->background_process->in_progress();
+
+		if ( ! $is_syncing ) {
+			return;
+		}
+
+		// Get the current progress from the background process
+		$total_users = $this->get_users_count();
+		$progress    = $this->background_process->get_args();
+		$processed   = $progress['processed'] ?? 0;
+		$cancel_url  = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => 'mailchimp_sf_cancel_user_sync',
+				),
+				admin_url('admin-post.php')
+			),
+			'mailchimp_sf_cancel_user_sync',
+			'mailchimp_sf_cancel_user_sync_nonce'
+		);
+		?>
+		<div class="mailchimp-sf-sync-progress">
+			<span class="spinner is-active" style="float: none; margin: 0 10px 0 0;"></span>
+			<span class="sync-status-text">
+				<?php
+				printf(
+					esc_html__('Syncing users: %1$d out of %2$d users processed', 'mailchimp'),
+					$processed,
+					$total_users
+				);
+				?>
+			</span>
+			<a href="<?php echo esc_url( $cancel_url ); ?>" class="button mailchimp-cancel-user-sync-button">
+				<?php esc_html_e('Cancel Sync', 'mailchimp'); ?>
+			</a>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Ajax handler for refresh user sync status.
+	 */
+	public function get_user_sync_status() {
+		// Check the nonce for security
+		check_ajax_referer( 'mailchimp_sf_user_sync_status', 'nonce' );
+
+		$data     = array(
+			'is_running' => false,
+			'status'     => '',
+		);
+
+		if ( $this->background_process->in_progress() ) {
+			$data['is_running'] = true;
+			ob_start();
+			$this->render_user_sync_progress();
+			$data['status'] = ob_get_clean();
+		}
+
+		wp_send_json_success( $data );
 	}
 }
