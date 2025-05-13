@@ -11,11 +11,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Class Mailchimp_User_Sync_Settings
+ * Class Mailchimp_User_Sync
  *
  * @since x.x.x
  */
-class Mailchimp_User_Sync_Settings {
+class Mailchimp_User_Sync {
 
 	/**
 	 * The option name.
@@ -26,11 +26,59 @@ class Mailchimp_User_Sync_Settings {
 	protected $option_name = 'mailchimp_sf_user_sync_settings';
 
 	/**
+	 * The background process.
+	 *
+	 * @since x.x.x
+	 * @var Mailchimp_User_Sync_Background_Process
+	 */
+	protected $background_process;
+
+	/**
+	 * Transient key for notices.
+	 *
+	 * @var string
+	 */
+	private $notices_transient_key = 'mailchimp_sf_user_sync_notices';
+
+	/**
 	 * Initialize the class
 	 */
 	public function init() {
 		add_action( 'admin_init', array( $this, 'register_settings' ) );
 		add_action( 'admin_init', [ $this, 'setup_fields_sections' ] );
+		add_action( 'admin_post_mailchimp_sf_start_user_sync', [ $this, 'start_user_sync' ] );
+
+		$this->background_process = new Mailchimp_User_Sync_Background_Process();
+		$this->background_process->init();
+
+		// Admin notices
+		add_action( 'admin_notices', [ $this, 'render_notices' ] );
+	}
+
+	public function start_user_sync() {
+		if (
+			empty( $_GET['mailchimp_sf_start_user_sync_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['mailchimp_sf_start_user_sync_nonce'] ) ), 'mailchimp_sf_start_user_sync' ) ||
+			! current_user_can( 'manage_options' )
+		) {
+			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
+		}
+
+		$args = array(
+			array(
+				'job_id'    => str_replace( '-', '', wp_generate_uuid4() ),
+				'processed' => 0,
+				'offset'    => 0,
+			)
+		);
+		$this->background_process->schedule( $args );
+
+		// Add notice that the user sync has started.
+		$this->add_notice( __( 'User sync process has started.', 'mailchimp' ) );
+
+		// Redirect to the user sync settings page.
+		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'page' => 'mailchimp_sf_options', 'tab' => 'user_sync' ), admin_url( 'admin.php' ) ) ) );
+		exit;
 	}
 
 	/**
@@ -246,8 +294,8 @@ class Mailchimp_User_Sync_Settings {
 			</p>
 		</div>
 		<div>
-			<label for="subscriber_status_non_subscribed" class="subscribe_status_label">
-				<input type="radio" id="subscriber_status_non_subscribed" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="non_subscribed" <?php checked( $settings, 'non_subscribed' ); ?> />
+			<label for="subscriber_status_transactional" class="subscribe_status_label">
+				<input type="radio" id="subscriber_status_transactional" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="transactional" <?php checked( $settings, 'transactional' ); ?> />
 				<?php esc_html_e( 'Sync as non-subscribed', 'mailchimp' ); ?>
 			</label>
 			<p class="description_small">
@@ -282,13 +330,55 @@ class Mailchimp_User_Sync_Settings {
 	 * @since x.x.x
 	 */
 	public function sync_all_users_button() {
+		$start_sync_url = wp_nonce_url( add_query_arg( 'action', 'mailchimp_sf_start_user_sync', admin_url( 'admin-post.php' ) ), 'mailchimp_sf_start_user_sync', 'mailchimp_sf_start_user_sync_nonce' );
 		?>
-		<button class="button button-secondary" id="sync_all_users">
+		<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button button-secondary">
 			<?php esc_html_e( 'Sync all users', 'mailchimp' ); ?>
-		</button>
+		</a>
 		<p class="description">
-			<?php esc_html_e( 'Sync all users to Mailchimp.', 'mailchimp' ); ?>
+			<?php esc_html_e( 'This will sync all users to Mailchimp.', 'mailchimp' ); ?>
 		</p>
 		<?php
+	}
+
+	/**
+	 * Add a notice to be displayed.
+	 *
+	 * @param string $message Message to display.
+	 * @param string $type    Type of notice.
+	 */
+	public function add_notice( $message, $type = 'success' ) {
+		$notices = get_transient( $this->notices_transient_key );
+
+		if ( ! is_array( $notices ) ) {
+			$notices = [];
+		}
+
+		$notices[] = array(
+			'message' => $message,
+			'type'    => $type,
+		);
+
+		set_transient( $this->notices_transient_key, $notices, 300 );
+	}
+
+	/**
+	 * Render notices in the admin.
+	 */
+	public function render_notices() {
+		$notices = get_transient( $this->notices_transient_key );
+
+		if ( ! empty( $notices ) ) {
+			foreach ( $notices as $notice ) {
+				?>
+				<div class="notice notice-<?php echo esc_attr( $notice['type'] ); ?> is-dismissible">
+					<p>
+						<?php echo wp_kses_post( $notice['message'] ); ?>
+					</p>
+				</div>
+				<?php
+			}
+			delete_transient( $this->notices_transient_key );
+		}
 	}
 }

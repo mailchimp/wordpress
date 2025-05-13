@@ -47,8 +47,8 @@ class Mailchimp_Admin {
 		add_action( 'admin_menu', array( $this, 'add_admin_menu_pages' ) );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ) );
 
-		$user_sync_settings = new Mailchimp_User_Sync_Settings();
-		$user_sync_settings->init();
+		$user_sync = new Mailchimp_User_Sync();
+		$user_sync->init();
 	}
 
 	/**
