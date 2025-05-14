@@ -35,7 +35,7 @@ $is_list_selected = false;
 					<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
 					</td>
 					<td>
-						<form method="post" action="">
+						<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( 'Are you sure you want to log out?', 'mailchimp' ) ); ?>');">
 							<input type="hidden" name="mcsf_action" value="logout"/>
 							<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary mailchimp-sf-button small" />
 							<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
