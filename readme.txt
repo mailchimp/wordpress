@@ -1,8 +1,8 @@
 === Mailchimp List Subscribe Form ===
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
-Tested up to: 6.7
-Stable tag:   1.7.0
+Tested up to: 6.8
+Stable tag:   1.8.0
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -80,6 +80,15 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.8.0 - 2025-05-08 =
+**Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
+
+* **Added:** Honeypot and no-JS fields to help prevent spam (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#139](https://github.com/mailchimp/wordpress/pull/139)).
+* **Added:** Confirmation prompt before logging out the user (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#149](https://github.com/mailchimp/wordpress/pull/149)).
+* **Added:** A note advising users to set the website URL in the Mailchimp Audience settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#145](https://github.com/mailchimp/wordpress/pull/145)).
+* **Changed:** Bump WordPress "tested up to" version 6.8 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+* **Changed:** Bump WordPress minimum supported version from 6.3 to 6.4 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
 
 = 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
@@ -160,6 +169,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+This release bumps the WordPress minimum version from 6.3 to 6.4.
 
 = 1.6.2 =
 This release bumps the WordPress minimum version from 6.1 to 6.3.
