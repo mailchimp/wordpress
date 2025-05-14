@@ -476,7 +476,7 @@ class Mailchimp_Admin {
 
 		wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'assets/css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
 		wp_enqueue_script( 'showMe', MCSF_URL . 'assets/js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog', 'jquery-blockui' ), MCSF_VER, true );
+		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
 
 		$data = array(
 			'ajax_url'                     => esc_url( admin_url( 'admin-ajax.php' ) ),

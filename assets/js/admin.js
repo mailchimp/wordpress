@@ -490,13 +490,8 @@
 		'<tr><td colspan="3"><em>' + params.no_errors_found + '</em></td></tr>';
 	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
 		e.preventDefault();
-
-		$(tableSelector).block({
-			message: null,
-			overlayCSS: {
-				opacity: 0.2,
-			},
-		});
+		$(this).prop('disabled', true);
+		$('.mailchimp-sf-user-sync-errors-header-actions .spinner').addClass('is-active');
 
 		$.ajax({
 			url: params.ajax_url,
@@ -509,11 +504,12 @@
 			success(response) {
 				if (response && response.success) {
 					$(tableSelector + ' tbody').html(noErrorsFoundRow);
-					$('#mailchimp-sf-clear-user-sync-errors').prop('disabled', true);
+					$('.mailchimp-sf-user-sync-errors-header-actions .spinner').removeClass(
+						'is-active',
+					);
 				} else {
 					window.location.reload();
 				}
-				$(tableSelector).unblock();
 			},
 			error(jqXHR, textStatus, errorThrown) {
 				// eslint-disable-next-line no-console
@@ -526,14 +522,10 @@
 	$(tableSelector).on('click', '.mailchimp-sf-user-sync-error-delete', function (e) {
 		e.preventDefault();
 
-		$(tableSelector).block({
-			message: null,
-			overlayCSS: {
-				opacity: 0.2,
-			},
-		});
-
 		const errorId = $(this).data('id');
+		const rowId = '#row-' + errorId;
+		$(rowId).find('.mailchimp-sf-user-sync-error-action .spinner').addClass('is-active');
+		$(this).prop('disabled', true);
 		$.ajax({
 			url: params.ajax_url,
 			type: 'POST',
@@ -544,7 +536,6 @@
 			},
 			success(response) {
 				if (response && response.success) {
-					const rowId = '#row-' + errorId;
 					$(rowId).remove();
 
 					if (!$(tableSelector + ' tbody tr').length) {
@@ -554,7 +545,6 @@
 				} else {
 					window.location.reload();
 				}
-				$(tableSelector).unblock();
 			},
 			error(jqXHR, textStatus, errorThrown) {
 				// eslint-disable-next-line no-console

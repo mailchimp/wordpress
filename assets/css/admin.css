@@ -836,3 +836,8 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	align-items: center;
 }
 
+.mailchimp-sf-user-sync-error-action {
+	min-width: 120px;
+	text-align: right;
+}
+

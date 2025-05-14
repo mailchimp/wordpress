@@ -720,7 +720,10 @@ class Mailchimp_User_Sync {
 		<div class="mailchimp-sf-user-sync-errors">
 			<div class="mailchimp-sf-user-sync-errors-header">
 				<h2><?php esc_html_e( 'User Sync Errors', 'mailchimp' ); ?></h2>
-				<button id="mailchimp-sf-clear-user-sync-errors" class="button button-secondary"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
+				<div class="mailchimp-sf-user-sync-errors-header-actions">
+					<span class="spinner" style="float: none;"></span>
+					<button id="mailchimp-sf-clear-user-sync-errors" class="button button-secondary"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
+				</div>
 			</div>
 			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
 				<thead>
@@ -738,7 +741,10 @@ class Mailchimp_User_Sync {
 							<td class="email"><strong><?php echo esc_html( $error['email'] ?? '-' ); ?></strong></td>
 							<td class="error"><?php echo esc_html( $error['error'] ?? '-' ); ?></td>
 							<td class="actions">
-								<button class="button button-secondary mailchimp-sf-user-sync-error-delete" data-id="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Delete', 'mailchimp' ); ?></button>
+								<div class="mailchimp-sf-user-sync-error-action">
+									<span class="spinner" style="float: none; "></span>
+									<button class="button button-secondary mailchimp-sf-user-sync-error-delete" data-id="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Delete', 'mailchimp' ); ?></button>
+								</div>
 							</td>
 						</tr>
 						<?php
