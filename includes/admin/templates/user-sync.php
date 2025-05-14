@@ -17,7 +17,7 @@
 		<?php
 		settings_fields( 'mailchimp_sf_user_sync_settings' );
 		do_settings_sections( 'mailchimp_sf_user_sync_settings' );
-		submit_button( __('Save User Sync Settings', 'mailchimp' ), 'mailchimp-sf-button mc-submit user-sync-settings-submit', 'mailchimp_sf_user_sync_settings_submit' );
+		submit_button( __( 'Save User Sync Settings', 'mailchimp' ), 'mailchimp-sf-button mc-submit user-sync-settings-submit', 'mailchimp_sf_user_sync_settings_submit' );
 		?>
 	</form>
 

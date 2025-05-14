@@ -121,10 +121,10 @@ $is_list_selected = false;
 					return;
 				}
 
-				$current_tab = empty( $_GET['tab'] ) ? 'settings' : sanitize_title( wp_unslash( $_GET['tab'] ) );
+				$current_tab = empty( $_GET['tab'] ) ? 'settings' : sanitize_title( wp_unslash( $_GET['tab'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 				$tabs        = array(
-					'settings'   => __( 'Settings', 'mailchimp' ),
-					'user_sync'  => __( 'User Sync', 'mailchimp' ),
+					'settings'  => __( 'Settings', 'mailchimp' ),
+					'user_sync' => __( 'User Sync', 'mailchimp' ),
 				)
 				?>
 				<nav class="mailchimp-sf-nav-tab-wrapper nav-tab-wrapper wp-clearfix">

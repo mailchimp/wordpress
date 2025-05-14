@@ -45,6 +45,9 @@ class Mailchimp_User_Sync_Background_Process {
 	 */
 	private $user_sync;
 
+	/**
+	 * Constructor.
+	 */
 	public function __construct() {
 		require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
 
@@ -97,21 +100,24 @@ class Mailchimp_User_Sync_Background_Process {
 		}
 
 		// Get users to sync.
-		$users = get_users( array(
-			'role__in' => $user_roles,
-			'number'   => $limit,
-			'offset'   => $offset,
-			'fields'   => 'ID',
-		) );
+		$users = get_users(
+			array(
+				'role__in' => $user_roles,
+				'number'   => $limit,
+				'offset'   => $offset,
+				'fields'   => 'ID',
+			)
+		);
 
 		// If no users to sync, add a notice and return.
 		if ( empty( $users ) ) {
 			$this->log( 'No users to sync.' );
-			if ( $processed === 0 ) {
+			if ( 0 === $processed ) {
 				$this->user_sync->add_notice( __( 'No users to sync.', 'mailchimp' ), 'warning' );
 			} else {
 				$this->user_sync->add_notice(
 					sprintf(
+						/* translators: %d: number of processed users. */
 						_n( 'User sync process completed. %d user processed.', 'User sync process completed. %d users processed.', $processed, 'mailchimp' ),
 						$processed
 					),
@@ -123,7 +129,7 @@ class Mailchimp_User_Sync_Background_Process {
 
 		// Sync users.
 		foreach ( $users as $user_id ) {
-			try{
+			try {
 				$user = get_user_by( 'id', $user_id );
 				if ( ! $user ) {
 					$this->log( 'User not found' );
@@ -133,8 +139,8 @@ class Mailchimp_User_Sync_Background_Process {
 
 				$synced = $this->sync_user( $user );
 				if ( is_wp_error( $synced ) ) {
-					$item['failed'] += 1;
-					$errors[ uniqid('mailchimp_sf_error_') ]        = array(
+					$item['failed']                           += 1;
+					$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
 						'time'  => time(),
 						'email' => $user->user_email,
 						'error' => $synced->get_error_message(),
@@ -146,8 +152,8 @@ class Mailchimp_User_Sync_Background_Process {
 				}
 			} catch ( Exception $e ) {
 				$this->log( 'Error getting user: ' . $e->getMessage() );
-				$item['failed'] += 1;
-				$errors[ uniqid('mailchimp_sf_error_') ]        = array(
+				$item['failed']                           += 1;
+				$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
 					'time'  => time(),
 					'email' => $user->user_email,
 					'error' => $e->getMessage(),
@@ -166,7 +172,8 @@ class Mailchimp_User_Sync_Background_Process {
 			$this->log( 'No more users to sync, User sync process completed. ' . absint( $processed ) . ' users processed.' );
 			$this->user_sync->add_notice(
 				sprintf(
-					_n( 'User sync process completed. %d user processed (Synced: %d, Failed: %d, Skipped: %d).', 'User sync process completed. %d users processed (Synced: %d, Failed: %d, Skipped: %d).', absint( $processed ), 'mailchimp' ),
+					/* translators: %1$d: number of processed users, %2$d: number of synced users, %3$d: number of failed users, %4$d: number of skipped users. */
+					_n( 'User sync process completed. %1$d user processed (Synced: %2$d, Failed: %3$d, Skipped: %4$d).', 'User sync process completed. %1$d users processed (Synced: %2$d, Failed: %3$d, Skipped: %4$d).', absint( $processed ), 'mailchimp' ),
 					absint( $processed ),
 					absint( $item['success'] ),
 					absint( $item['failed'] ),
@@ -181,7 +188,6 @@ class Mailchimp_User_Sync_Background_Process {
 		$item['processed'] += $found_users;
 		$item['offset']     = $offset + $limit;
 		$this->schedule( array( $item ) );
-		return;
 	}
 
 	/**
@@ -194,7 +200,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$list_id                = $this->get_list_id();
 		$api                    = $this->get_api();
 		$settings               = $this->get_user_sync_settings();
-		$existing_contacts_only = (bool) ($settings['existing_contacts_only'] ?? false);
+		$existing_contacts_only = (bool) ( $settings['existing_contacts_only'] ?? false );
 		$subscribe_status       = $settings['subscriber_status'] ?? 'pending';
 
 		$this->log( 'Syncing user: ' . $user->user_email . ' (ID: ' . $user->ID . ')' );
@@ -211,7 +217,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$request_body = array(
 			'email_address' => $user_email,
 			'merge_fields'  => $this->get_user_merge_fields( $user ),
-			'status'        => $this->get_subscribe_status( $subscribe_status, $current_status, $user )
+			'status'        => $this->get_subscribe_status( $subscribe_status, $current_status, $user ),
 		);
 
 		$endpoint = 'lists/' . $list_id . '/members/' . md5( $user_email ) . '?skip_merge_validation=true';
@@ -229,8 +235,8 @@ class Mailchimp_User_Sync_Background_Process {
 	/**
 	 * Get the subscribe status.
 	 *
-	 * @param string $subscribe_status The subscribe status.
-	 * @param string $current_status The current status.
+	 * @param string  $subscribe_status The subscribe status.
+	 * @param string  $current_status The current status.
 	 * @param WP_User $user The user.
 	 * @return string
 	 */
@@ -268,7 +274,7 @@ class Mailchimp_User_Sync_Background_Process {
 		return apply_filters( 'mailchimp_sf_user_sync_subscribe_status', $subscribe_status, $current_status, $user );
 	}
 
-	 /**
+	/**
 	 * Get the user merge fields.
 	 *
 	 * @param WP_User $user The user to get the merge fields for.
@@ -277,11 +283,11 @@ class Mailchimp_User_Sync_Background_Process {
 	public function get_user_merge_fields( $user ) {
 		$merge_fields = array();
 
-		if ( !empty( $user->first_name ) ) {
+		if ( ! empty( $user->first_name ) ) {
 			$merge_fields['FNAME'] = $user->first_name;
 		}
 
-		if ( !empty( $user->last_name ) ) {
+		if ( ! empty( $user->last_name ) ) {
 			$merge_fields['LNAME'] = $user->last_name;
 		}
 
@@ -454,7 +460,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$user_email = strtolower( trim( $user_email ) );
 		$api        = $this->get_api();
 
-		$endpoint   = 'lists/' . $list_id . '/members/' . md5( $user_email ) . '?fields=status';
+		$endpoint = 'lists/' . $list_id . '/members/' . md5( $user_email ) . '?fields=status';
 
 		$subscriber = $api->get( $endpoint, null );
 		if ( is_wp_error( $subscriber ) ) {
@@ -469,6 +475,6 @@ class Mailchimp_User_Sync_Background_Process {
 	 * @param string $message The message to log.
 	 */
 	public function log( $message ) {
-		error_log( 'Mailchimp User Sync: ' . $message );
+		error_log( 'Mailchimp User Sync: ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 	}
 }

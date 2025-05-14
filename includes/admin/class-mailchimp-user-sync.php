@@ -85,7 +85,13 @@ class Mailchimp_User_Sync {
 			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
 		}
 
-		$return_url = add_query_arg( array( 'page' => 'mailchimp_sf_options', 'tab' => 'user_sync' ), admin_url( 'admin.php' ) );
+		$return_url = add_query_arg(
+			array(
+				'page' => 'mailchimp_sf_options',
+				'tab'  => 'user_sync',
+			),
+			admin_url( 'admin.php' )
+		);
 
 		// Check if the user is connected to Mailchimp.
 		$api = mailchimp_sf_get_api();
@@ -119,7 +125,7 @@ class Mailchimp_User_Sync {
 				'success'   => 0,
 				'skipped'   => 0,
 				'offset'    => 0,
-			)
+			),
 		);
 
 		// Schedule the user sync job.
@@ -153,7 +159,17 @@ class Mailchimp_User_Sync {
 		}
 
 		// Redirect to the user sync settings page.
-		wp_safe_redirect( esc_url_raw( add_query_arg( array( 'page' => 'mailchimp_sf_options', 'tab' => 'user_sync' ), admin_url( 'admin.php' ) ) ) );
+		wp_safe_redirect(
+			esc_url_raw(
+				add_query_arg(
+					array(
+						'page' => 'mailchimp_sf_options',
+						'tab'  => 'user_sync',
+					),
+					admin_url( 'admin.php' )
+				)
+			)
+		);
 		exit;
 	}
 
@@ -249,16 +265,17 @@ class Mailchimp_User_Sync {
 	 * Get the user sync settings.
 	 *
 	 * @since x.x.x
-	 * @return array The user sync settings.
+	 * @param string|null $key The key to get.
+	 * @return array|null The user sync settings.
 	 */
 	public function get_user_sync_settings( $key = null ) {
 		$default_settings = array(
-			'enable_user_sync' => 0,
-			'user_roles'       => array(
-				'subscriber' => 'subscriber'
+			'enable_user_sync'       => 0,
+			'user_roles'             => array(
+				'subscriber' => 'subscriber',
 			),
 			'existing_contacts_only' => 0,
-			'subscriber_status' => 'pending'
+			'subscriber_status'      => 'pending',
 		);
 
 		$settings = get_option( $this->option_name, array() );
@@ -275,7 +292,7 @@ class Mailchimp_User_Sync {
 	 * Sanitize the user sync settings.
 	 *
 	 * @since x.x.x
-	 * @param array $settings The settings to sanitize.
+	 * @param array $new_settings The settings to sanitize.
 	 * @return array The sanitized settings.
 	 */
 	public function sanitize_user_sync_settings( $new_settings ) {
@@ -326,7 +343,7 @@ class Mailchimp_User_Sync {
 	 *
 	 * @since x.x.x
 	 */
-	public function enable_user_sync_field( $args ) {
+	public function enable_user_sync_field() {
 		$value = $this->get_user_sync_settings( 'enable_user_sync' );
 		?>
 		<input
@@ -383,6 +400,7 @@ class Mailchimp_User_Sync {
 			$users_count = $this->get_users_count();
 			echo wp_kses(
 				sprintf(
+					/* translators: %1$s: opening anchor tag, %2$s: closing anchor tag, %3$d: number of contacts. */
 					_n(
 						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contact.',
 						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contacts.',
@@ -394,9 +412,9 @@ class Mailchimp_User_Sync {
 				),
 				array(
 					'a' => array(
-						'href' => array(),
+						'href'   => array(),
 						'target' => array(),
-						'rel' => array(),
+						'rel'    => array(),
 					),
 				)
 			)
@@ -413,7 +431,7 @@ class Mailchimp_User_Sync {
 	 * @since x.x.x
 	 */
 	public function existing_contacts_only_field() {
-		$settings = $this->get_user_sync_settings();
+		$settings               = $this->get_user_sync_settings();
 		$existing_contacts_only = isset( $settings['existing_contacts_only'] ) ? $settings['existing_contacts_only'] : 0;
 		?>
 		<input type="checkbox" name="<?php echo esc_attr( $this->option_name . '[existing_contacts_only]' ); ?>" value="1" <?php checked( $existing_contacts_only, 1, true ); ?> />
@@ -488,9 +506,9 @@ class Mailchimp_User_Sync {
 	 * @return int The total users.
 	 */
 	public function get_users_count() {
-		$settings    = $this->get_user_sync_settings();
-		$user_roles  = $settings['user_roles'] ?? array();
-		$total_users = 0;
+		$settings     = $this->get_user_sync_settings();
+		$user_roles   = $settings['user_roles'] ?? array();
+		$total_users  = 0;
 		$total_counts = count_users();
 		if ( ! empty( $total_counts['avail_roles'] ) && is_array( $total_counts['avail_roles'] ) ) {
 			foreach ( $total_counts['avail_roles'] as $role_name => $role_count ) {
@@ -509,7 +527,7 @@ class Mailchimp_User_Sync {
 	 * @since x.x.x
 	 */
 	public function render_user_sync_status() {
-		$is_syncing   = $this->background_process->in_progress();
+		$is_syncing = $this->background_process->in_progress();
 
 		if ( ! $is_syncing ) {
 			return;
@@ -530,7 +548,7 @@ class Mailchimp_User_Sync {
 	 * @since x.x.x
 	 */
 	public function render_user_sync_progress() {
-		$is_syncing   = $this->background_process->in_progress();
+		$is_syncing = $this->background_process->in_progress();
 
 		if ( ! $is_syncing ) {
 			return;
@@ -549,7 +567,7 @@ class Mailchimp_User_Sync {
 				array(
 					'action' => 'mailchimp_sf_cancel_user_sync',
 				),
-				admin_url('admin-post.php')
+				admin_url( 'admin-post.php' )
 			),
 			'mailchimp_sf_cancel_user_sync',
 			'mailchimp_sf_cancel_user_sync_nonce'
@@ -560,17 +578,18 @@ class Mailchimp_User_Sync {
 			<span class="sync-status-text">
 				<?php
 				printf(
-					esc_html__('Syncing users: %1$d out of %2$d users processed (Synced: %3$d, Failed: %4$d, Skipped: %5$d).', 'mailchimp'),
-					$processed,
-					$total_users,
-					$success,
-					$failed,
-					$skipped
+					/* translators: %1$d: number of processed users, %2$d: total number of users, %3$d: number of synced users, %4$d: number of failed users, %5$d: number of skipped users. */
+					esc_html__( 'Syncing users: %1$d out of %2$d users processed (Synced: %3$d, Failed: %4$d, Skipped: %5$d).', 'mailchimp' ),
+					absint( $processed ),
+					absint( $total_users ),
+					absint( $success ),
+					absint( $failed ),
+					absint( $skipped )
 				);
 				?>
 			</span>
 			<a href="<?php echo esc_url( $cancel_url ); ?>" class="button mailchimp-cancel-user-sync-button">
-				<?php esc_html_e('Cancel Sync', 'mailchimp'); ?>
+				<?php esc_html_e( 'Cancel Sync', 'mailchimp' ); ?>
 			</a>
 		</div>
 		<?php
@@ -583,7 +602,7 @@ class Mailchimp_User_Sync {
 		// Check the nonce for security
 		check_ajax_referer( 'mailchimp_sf_user_sync_status', 'nonce' );
 
-		$data     = array(
+		$data = array(
 			'is_running' => false,
 			'status'     => '',
 		);
@@ -620,7 +639,7 @@ class Mailchimp_User_Sync {
 		}
 
 		$current_errors = $this->get_user_sync_errors();
-		$errors = array_merge( $current_errors, $errors );
+		$errors         = array_merge( $current_errors, $errors );
 		update_option( $this->errors_option_name, $errors );
 	}
 
@@ -628,6 +647,8 @@ class Mailchimp_User_Sync {
 	 * Delete the user sync error.
 	 *
 	 * @since x.x.x
+	 *
+	 * @param string $id The id of the user sync error.
 	 */
 	public function delete_user_sync_errors( $id ) {
 		if ( 'all' === $id ) {
@@ -674,7 +695,8 @@ class Mailchimp_User_Sync {
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ( $errors as $id => $error ) {
+					<?php
+					foreach ( $errors as $id => $error ) {
 						?>
 						<tr id="row-<?php echo esc_attr( $id ); ?>">
 							<td class="email"><strong><?php echo esc_html( $error['email'] ?? '-' ); ?></strong></td>
