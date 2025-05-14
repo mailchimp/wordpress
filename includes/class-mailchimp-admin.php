@@ -476,20 +476,22 @@ class Mailchimp_Admin {
 
 		wp_enqueue_style( 'mailchimp_sf_admin_css', MCSF_URL . 'assets/css/admin.css', array( 'wp-jquery-ui-dialog' ), true );
 		wp_enqueue_script( 'showMe', MCSF_URL . 'assets/js/hidecss.js', array( 'jquery' ), MCSF_VER, true );
-		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
+		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog', 'jquery-blockui' ), MCSF_VER, true );
 
 		$data = array(
-			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
-			'oauth_url'              => esc_url( $this->oauth_url ),
-			'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
-			'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
-			'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
-			'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
-			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
-			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
-			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
-			'admin_settings_url'     => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
-			'user_sync_status_nonce' => wp_create_nonce( 'mailchimp_sf_user_sync_status' ),
+			'ajax_url'                     => esc_url( admin_url( 'admin-ajax.php' ) ),
+			'oauth_url'                    => esc_url( $this->oauth_url ),
+			'oauth_start_nonce'            => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+			'oauth_finish_nonce'           => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+			'oauth_window_name'            => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+			'generic_error'                => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
+			'modal_title'                  => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
+			'modal_button_try_again'       => esc_html__( 'Try again', 'mailchimp' ),
+			'modal_button_cancel'          => esc_html__( 'No, cancel!', 'mailchimp' ),
+			'admin_settings_url'           => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'user_sync_status_nonce'       => wp_create_nonce( 'mailchimp_sf_user_sync_status' ),
+			'delete_user_sync_error_nonce' => wp_create_nonce( 'mailchimp_sf_delete_user_sync_error' ),
+			'no_errors_found'              => esc_html__( 'No errors found', 'mailchimp' ),
 		);
 
 		// Create account page specific data.

@@ -825,3 +825,14 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 .button.mailchimp-cancel-user-sync-button {
 	margin-left: auto;
 }
+
+.mailchimp-sf-user-sync-errors {
+	margin-top: 2rem;
+}
+
+.mailchimp-sf-user-sync-errors-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+

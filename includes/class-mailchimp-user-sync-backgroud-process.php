@@ -87,6 +87,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$offset             = $item['offset'] ? absint( $item['offset'] ) : 0;
 		$user_sync_settings = $this->get_user_sync_settings();
 		$user_roles         = $user_sync_settings['user_roles'] ?? array();
+		$errors             = array();
 
 		// If no user roles to sync, add a notice and return.
 		if ( empty( $user_roles ) ) {
@@ -121,23 +122,55 @@ class Mailchimp_User_Sync_Background_Process {
 		}
 
 		// Sync users.
-		foreach ( $users as $user ) {
+		foreach ( $users as $user_id ) {
 			try{
-				$this->sync_user( $user );
+				$user = get_user_by( 'id', $user_id );
+				if ( ! $user ) {
+					$this->log( 'User not found' );
+					$item['skipped'] += 1;
+					continue;
+				}
+
+				$synced = $this->sync_user( $user );
+				if ( is_wp_error( $synced ) ) {
+					$item['failed'] += 1;
+					$errors[ uniqid('mailchimp_sf_error_') ]        = array(
+						'time'  => time(),
+						'email' => $user->user_email,
+						'error' => $synced->get_error_message(),
+					);
+				} elseif ( $synced ) {
+					$item['success'] += 1;
+				} else {
+					$item['skipped'] += 1;
+				}
 			} catch ( Exception $e ) {
 				$this->log( 'Error getting user: ' . $e->getMessage() );
+				$item['failed'] += 1;
+				$errors[ uniqid('mailchimp_sf_error_') ]        = array(
+					'time'  => time(),
+					'email' => $user->user_email,
+					'error' => $e->getMessage(),
+				);
 				continue;
 			}
 		}
 
+		// Save errors.
+		$this->user_sync->set_user_sync_errors( $errors );
+
 		// If no more users to sync, add a notice and return.
 		$found_users = count( $users );
 		if ( $found_users < $limit ) {
-			$this->log( 'No more users to sync, User sync process completed.' );
+			$processed += $found_users;
+			$this->log( 'No more users to sync, User sync process completed. ' . absint( $processed ) . ' users processed.' );
 			$this->user_sync->add_notice(
 				sprintf(
-					_n( 'User sync process completed. %d user processed.', 'User sync process completed. %d users processed.', $processed, 'mailchimp' ),
-					$processed
+					_n( 'User sync process completed. %d user processed (Synced: %d, Failed: %d, Skipped: %d).', 'User sync process completed. %d users processed (Synced: %d, Failed: %d, Skipped: %d).', absint( $processed ), 'mailchimp' ),
+					absint( $processed ),
+					absint( $item['success'] ),
+					absint( $item['failed'] ),
+					absint( $item['skipped'] )
 				),
 				'success'
 			);
@@ -154,65 +187,112 @@ class Mailchimp_User_Sync_Background_Process {
 	/**
 	 * Sync the user.
 	 *
-	 * @param WP_User $user The user to sync.
+	 * @param WP_User $user The user.
+	 * @return bool|WP_Error True if the user is synced, WP_Error if there is an error and false if the user is not found or not synced.
 	 */
-	public function sync_user( $user_id ) {
-		$list_id = $this->get_list_id();
-		$api     = $this->get_api();
-		$settings = $this->get_user_sync_settings();
+	public function sync_user( $user ) {
+		$list_id                = $this->get_list_id();
+		$api                    = $this->get_api();
+		$settings               = $this->get_user_sync_settings();
 		$existing_contacts_only = (bool) ($settings['existing_contacts_only'] ?? false);
-		$subscribe_status       = $settings['subscriber_status'] ?? 'subscribed';
+		$subscribe_status       = $settings['subscriber_status'] ?? 'pending';
 
-		$user = get_user_by( 'id', $user_id );
-
-		if ( ! $user ) {
-			$this->log( 'User not found' );
-			return;
-		}
-
-		$this->log( 'Syncing user: ' . $user->ID );
+		$this->log( 'Syncing user: ' . $user->user_email . ' (ID: ' . $user->ID . ')' );
 		$user_email = strtolower( trim( $user->user_email ) );
-		$user_first_name = $user->first_name;
-		$user_last_name = $user->last_name;
 
-		$merge_fields = array(
-			'FNAME' => $user_first_name,
-			'LNAME' => $user_last_name,
-		);
-
-		$merge_fields = apply_filters( 'mailchimp_sf_user_sync_merge_fields', $merge_fields, $user );
-
+		// Check if user exists on Mailchimp.
 		$current_status = $this->get_mailchimp_user_status( $user_email );
 
 		if ( $existing_contacts_only && ! $current_status ) {
 			$this->log( 'User not exists on Mailchimp, skipping' );
-			return;
+			return false;
 		}
 
 		$request_body = array(
 			'email_address' => $user_email,
-			'merge_fields' => $merge_fields
+			'merge_fields'  => $this->get_user_merge_fields( $user ),
+			'status'        => $this->get_subscribe_status( $subscribe_status, $current_status, $user )
 		);
 
-		if ( $current_status ) {
-			if ( $current_status === 'archived' ) {
-				$request_body['status'] = $subscribe_status;
-			} elseif ( $current_status === 'cleaned' ) {
-				$request_body['status'] = 'pending';
-			}
-		} else {
-			$request_body['status_if_new'] = $subscribe_status;
-		}
-
 		$endpoint = 'lists/' . $list_id . '/members/' . md5( $user_email ) . '?skip_merge_validation=true';
-		$response = $api->post( $endpoint, $request_body, 'PUT', $list_id );
+		$response = $api->post( $endpoint, $request_body, 'PUT', $list_id, true );
 
 		if ( is_wp_error( $response ) ) {
 			$this->log( 'Error syncing user: ' . $response->get_error_message() );
-			return;
+			return $response;
 		}
 
-		$this->log( 'User synced: ' . $user_email );
+		$this->log( 'User synced: ' . $user_email . ' Response: ' . wp_json_encode( $response ) );
+		return true;
+	}
+
+	/**
+	 * Get the subscribe status.
+	 *
+	 * @param string $subscribe_status The subscribe status.
+	 * @param string $current_status The current status.
+	 * @param WP_User $user The user.
+	 * @return string
+	 */
+	public function get_subscribe_status( $subscribe_status, $current_status, $user ) {
+		if ( $current_status ) {
+			switch ( $current_status ) {
+				// If user is already subscribed, unsubscribed or transactional, don't change the status.
+				case 'subscribed':
+				case 'unsubscribed':
+				case 'transactional':
+					$subscribe_status = $current_status;
+					break;
+
+				// If user is cleaned, set the status as pending.
+				case 'cleaned':
+					$subscribe_status = 'pending';
+					break;
+
+				// If user is archived, pending or anything else, set the status as per the subscribe status in settings.
+				case 'archived':
+				case 'pending':
+				default:
+					break;
+			}
+		}
+
+		/**
+		 * Filter the subscribe status.
+		 *
+		 * @param string $subscribe_status The subscribe status set in settings.
+		 * @param string $current_status The current subscribe status of the user on Mailchimp.
+		 * @param WP_User $user The user.
+		 * @return string
+		 */
+		return apply_filters( 'mailchimp_sf_user_sync_subscribe_status', $subscribe_status, $current_status, $user );
+	}
+
+	 /**
+	 * Get the user merge fields.
+	 *
+	 * @param WP_User $user The user to get the merge fields for.
+	 * @return array
+	 */
+	public function get_user_merge_fields( $user ) {
+		$merge_fields = array();
+
+		if ( !empty( $user->first_name ) ) {
+			$merge_fields['FNAME'] = $user->first_name;
+		}
+
+		if ( !empty( $user->last_name ) ) {
+			$merge_fields['LNAME'] = $user->last_name;
+		}
+
+		/**
+		 * Filter the user merge fields.
+		 *
+		 * @param array $merge_fields The merge fields.
+		 * @param WP_User $user The user.
+		 * @return array
+		 */
+		return apply_filters( 'mailchimp_sf_user_sync_merge_fields', $merge_fields, $user );
 	}
 
 	/**

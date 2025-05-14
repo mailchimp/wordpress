@@ -26,6 +26,14 @@ class Mailchimp_User_Sync {
 	protected $option_name = 'mailchimp_sf_user_sync_settings';
 
 	/**
+	 * The errors option name.
+	 *
+	 * @since x.x.x
+	 * @var string
+	 */
+	protected $errors_option_name = 'mailchimp_sf_user_sync_errors';
+
+	/**
 	 * The background process.
 	 *
 	 * @since x.x.x
@@ -57,9 +65,10 @@ class Mailchimp_User_Sync {
 
 		// Ajax action handler
 		add_action( 'wp_ajax_mailchimp_sf_get_user_sync_status', [ $this, 'get_user_sync_status' ] );
-
-		// Render the user sync status.
-		add_action( 'mailchimp_sf_user_sync_status', [ $this, 'render_user_sync_status' ] );
+		add_action( 'wp_ajax_mailchimp_sf_delete_user_sync_error', [ $this, 'delete_user_sync_error' ] );
+		// Render the user sync status and errors.
+		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_status' ] );
+		add_action( 'mailchimp_sf_user_sync_after_form', [ $this, 'render_user_sync_errors' ] );
 	}
 
 	/**
@@ -106,6 +115,9 @@ class Mailchimp_User_Sync {
 			array(
 				'job_id'    => str_replace( '-', '', wp_generate_uuid4() ),
 				'processed' => 0,
+				'failed'    => 0,
+				'success'   => 0,
+				'skipped'   => 0,
 				'offset'    => 0,
 			)
 		);
@@ -406,7 +418,7 @@ class Mailchimp_User_Sync {
 		?>
 		<input type="checkbox" name="<?php echo esc_attr( $this->option_name . '[existing_contacts_only]' ); ?>" value="1" <?php checked( $existing_contacts_only, 1, true ); ?> />
 		<p class="description">
-			<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync. You won’t be able to send your other users postcards or target them with ads.', 'mailchimp' ); ?>
+			<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync. You won\'t be able to send your other users postcards or target them with ads.', 'mailchimp' ); ?>
 		</p>
 		<?php
 	}
@@ -527,7 +539,11 @@ class Mailchimp_User_Sync {
 		// Get the current progress from the background process
 		$total_users = $this->get_users_count();
 		$progress    = $this->background_process->get_args();
+		$progress    = current( $progress ) ?? array();
 		$processed   = $progress['processed'] ?? 0;
+		$success     = $progress['success'] ?? 0;
+		$failed      = $progress['failed'] ?? 0;
+		$skipped     = $progress['skipped'] ?? 0;
 		$cancel_url  = wp_nonce_url(
 			add_query_arg(
 				array(
@@ -544,9 +560,12 @@ class Mailchimp_User_Sync {
 			<span class="sync-status-text">
 				<?php
 				printf(
-					esc_html__('Syncing users: %1$d out of %2$d users processed', 'mailchimp'),
+					esc_html__('Syncing users: %1$d out of %2$d users processed (Synced: %3$d, Failed: %4$d, Skipped: %5$d).', 'mailchimp'),
 					$processed,
-					$total_users
+					$total_users,
+					$success,
+					$failed,
+					$skipped
 				);
 				?>
 			</span>
@@ -577,5 +596,123 @@ class Mailchimp_User_Sync {
 		}
 
 		wp_send_json_success( $data );
+	}
+
+	/**
+	 * Get the user sync errors.
+	 *
+	 * @since x.x.x
+	 * @return array The user sync errors.
+	 */
+	public function get_user_sync_errors() {
+		return get_option( $this->errors_option_name, array() );
+	}
+
+	/**
+	 * Set the user sync errors.
+	 *
+	 * @since x.x.x
+	 * @param array $errors The user sync errors.
+	 */
+	public function set_user_sync_errors( $errors ) {
+		if ( ! is_array( $errors ) || empty( $errors ) ) {
+			return;
+		}
+
+		$current_errors = $this->get_user_sync_errors();
+		$errors = array_merge( $current_errors, $errors );
+		update_option( $this->errors_option_name, $errors );
+	}
+
+	/**
+	 * Delete the user sync error.
+	 *
+	 * @since x.x.x
+	 */
+	public function delete_user_sync_errors( $id ) {
+		if ( 'all' === $id ) {
+			delete_option( $this->errors_option_name );
+			return;
+		}
+
+		$errors = $this->get_user_sync_errors();
+		if ( ! isset( $errors[ $id ] ) ) {
+			return;
+		}
+
+		unset( $errors[ $id ] );
+		update_option( $this->errors_option_name, $errors );
+	}
+
+	/**
+	 * Render the user sync errors.
+	 *
+	 * @since x.x.x
+	 */
+	public function render_user_sync_errors() {
+		$errors = $this->get_user_sync_errors();
+
+		if ( empty( $errors ) ) {
+			return;
+		}
+
+		// Get last 100 records
+		$errors = array_slice( $errors, -100 );
+
+		?>
+		<div class="mailchimp-sf-user-sync-errors">
+			<div class="mailchimp-sf-user-sync-errors-header">
+				<h2><?php esc_html_e( 'User Sync Errors', 'mailchimp' ); ?></h2>
+				<button id="mailchimp-sf-clear-user-sync-errors" class="button button-secondary"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
+			</div>
+			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
+				<thead>
+					<tr>
+						<th><?php esc_html_e( 'Email', 'mailchimp' ); ?></th>
+						<th><?php esc_html_e( 'Error', 'mailchimp' ); ?></th>
+						<th><?php esc_html_e( 'Actions', 'mailchimp' ); ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $errors as $id => $error ) {
+						?>
+						<tr id="row-<?php echo esc_attr( $id ); ?>">
+							<td class="email"><strong><?php echo esc_html( $error['email'] ?? '-' ); ?></strong></td>
+							<td class="error"><?php echo esc_html( $error['error'] ?? '-' ); ?></td>
+							<td class="actions">
+								<button class="button button-secondary mailchimp-sf-user-sync-error-delete" data-id="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Delete', 'mailchimp' ); ?></button>
+							</td>
+						</tr>
+						<?php
+					}
+					?>
+				</tbody>
+				<tfoot>
+					<tr>
+						<th><?php esc_html_e( 'Email', 'mailchimp' ); ?></th>
+						<th><?php esc_html_e( 'Error', 'mailchimp' ); ?></th>
+						<th><?php esc_html_e( 'Actions', 'mailchimp' ); ?></th>
+					</tr>
+				</tfoot>
+			</table>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Ajax handler for deleting the user sync error.
+	 */
+	public function delete_user_sync_error() {
+		// Check the nonce for security
+		check_ajax_referer( 'mailchimp_sf_delete_user_sync_error', 'nonce' );
+
+		// Get the id from the request
+		$id = isset( $_POST['id'] ) ? sanitize_text_field( wp_unslash( $_POST['id'] ) ) : '';
+
+		// Delete the user sync error
+		$this->delete_user_sync_errors( $id );
+
+		// Send the success response
+		wp_send_json_success();
 	}
 }

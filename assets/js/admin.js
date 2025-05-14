@@ -446,8 +446,8 @@
 	}
 
 	const params = window.mailchimp_sf_admin_params || {};
-	const ajaxUrl = params?.ajax_url;
-	const ajaxNonce = params?.user_sync_status_nonce;
+	const ajaxUrl = params.ajax_url;
+	const ajaxNonce = params.user_sync_status_nonce;
 
 	const intervalId = setInterval(function () {
 		$.ajax({
@@ -475,4 +475,92 @@
 			},
 		});
 	}, 30000); // 30000 milliseconds = 30 seconds
+})(jQuery); // eslint-disable-line no-undef
+
+// User Sync Error logs.
+(function ($) {
+	const userSyncErrors = $('.mailchimp-sf-user-sync-errors');
+	if (!userSyncErrors) {
+		return;
+	}
+
+	const params = window.mailchimp_sf_admin_params || {};
+	const tableSelector = 'table.mailchimp-sf-user-sync-errors-table';
+	const noErrorsFoundRow =
+		'<tr><td colspan="3"><em>' + params.no_errors_found + '</em></td></tr>';
+	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
+		e.preventDefault();
+
+		$(tableSelector).block({
+			message: null,
+			overlayCSS: {
+				opacity: 0.2,
+			},
+		});
+
+		$.ajax({
+			url: params.ajax_url,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_delete_user_sync_error',
+				id: 'all',
+				nonce: params.delete_user_sync_error_nonce,
+			},
+			success(response) {
+				if (response && response.success) {
+					$(tableSelector + ' tbody').html(noErrorsFoundRow);
+					$('#mailchimp-sf-clear-user-sync-errors').prop('disabled', true);
+				} else {
+					window.location.reload();
+				}
+				$(tableSelector).unblock();
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+				window.location.reload();
+			},
+		});
+	});
+
+	$(tableSelector).on('click', '.mailchimp-sf-user-sync-error-delete', function (e) {
+		e.preventDefault();
+
+		$(tableSelector).block({
+			message: null,
+			overlayCSS: {
+				opacity: 0.2,
+			},
+		});
+
+		const errorId = $(this).data('id');
+		$.ajax({
+			url: params.ajax_url,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_delete_user_sync_error',
+				nonce: params.delete_user_sync_error_nonce,
+				id: errorId,
+			},
+			success(response) {
+				if (response && response.success) {
+					const rowId = '#row-' + errorId;
+					$(rowId).remove();
+
+					if (!$(tableSelector + ' tbody tr').length) {
+						$(tableSelector + ' tbody').html(noErrorsFoundRow);
+						$('#mailchimp-sf-clear-user-sync-errors').prop('disabled', true);
+					}
+				} else {
+					window.location.reload();
+				}
+				$(tableSelector).unblock();
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+				window.location.reload();
+			},
+		});
+	});
 })(jQuery); // eslint-disable-line no-undef
