@@ -59,6 +59,7 @@ class Mailchimp_User_Sync_Background_Process {
 	 */
 	public function init() {
 		add_action( $this->job_name, [ $this, 'run' ] );
+		add_action( 'mailchimp_sf_handle_user_update', [ $this, 'handle_user_update' ] );
 	}
 
 	/**
@@ -191,6 +192,30 @@ class Mailchimp_User_Sync_Background_Process {
 	}
 
 	/**
+	 * Handle the user update.
+	 *
+	 * @param int $user_id The user ID.
+	 */
+	public function handle_user_update( $user_id ) {
+		$user = get_user_by( 'id', $user_id );
+		if ( ! $user ) {
+			$this->log( 'User not found' );
+			return;
+		}
+
+		$errors = array();
+		$synced = $this->sync_user( $user );
+		if ( is_wp_error( $synced ) ) {
+			$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
+				'time'  => time(),
+				'email' => $user->user_email,
+				'error' => $synced->get_error_message(),
+			);
+			$this->user_sync->set_user_sync_errors( $errors );
+		}
+	}
+
+	/**
 	 * Sync the user.
 	 *
 	 * @param WP_User $user The user.
@@ -216,9 +241,14 @@ class Mailchimp_User_Sync_Background_Process {
 
 		$request_body = array(
 			'email_address' => $user_email,
-			'merge_fields'  => $this->get_user_merge_fields( $user ),
 			'status'        => $this->get_subscribe_status( $subscribe_status, $current_status, $user ),
 		);
+		$merge_fields = $this->get_user_merge_fields( $user );
+		if ( ! empty( $merge_fields ) ) {
+			$request_body['merge_fields'] = $merge_fields;
+		}
+
+		$this->log( 'Request body: ' . wp_json_encode( $request_body ) );
 
 		$endpoint = 'lists/' . $list_id . '/members/' . md5( $user_email ) . '?skip_merge_validation=true';
 		$response = $api->post( $endpoint, $request_body, 'PUT', $list_id, true );
@@ -228,7 +258,7 @@ class Mailchimp_User_Sync_Background_Process {
 			return $response;
 		}
 
-		$this->log( 'User synced: ' . $user_email . ' Response: ' . wp_json_encode( $response ) );
+		$this->log( 'User synced: ' . $user_email );
 		return true;
 	}
 
