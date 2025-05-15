@@ -9,7 +9,7 @@
 <div class="mailchimp-sf-user-sync-page">
 	<?php
 	/**
-	 * Render the user sync status.
+	 * Render the user sync status, start cta etc...
 	 */
 	do_action( 'mailchimp_sf_user_sync_before_form' );
 	?>

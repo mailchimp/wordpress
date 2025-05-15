@@ -56,6 +56,7 @@ class Mailchimp_User_Sync {
 		add_action( 'admin_init', [ $this, 'setup_fields_sections' ] );
 		add_action( 'admin_post_mailchimp_sf_start_user_sync', [ $this, 'start_user_sync' ] );
 		add_action( 'admin_post_mailchimp_sf_cancel_user_sync', [ $this, 'cancel_user_sync' ] );
+		add_action( 'admin_post_mailchimp_sf_skip_user_sync_cta', [ $this, 'skip_user_sync_cta' ] );
 
 		$this->background_process = new Mailchimp_User_Sync_Background_Process();
 		$this->background_process->init();
@@ -68,6 +69,7 @@ class Mailchimp_User_Sync {
 		add_action( 'wp_ajax_mailchimp_sf_delete_user_sync_error', [ $this, 'delete_user_sync_error' ] );
 		// Render the user sync status and errors.
 		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_status' ] );
+		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_start_cta' ] );
 		add_action( 'mailchimp_sf_user_sync_after_form', [ $this, 'render_user_sync_errors' ] );
 
 		$settings = $this->get_user_sync_settings();
@@ -377,6 +379,9 @@ class Mailchimp_User_Sync {
 			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
 		}
 
+		// Mark the cta as shown.
+		update_option( 'mailchimp_sf_user_sync_start_cta_shown', value: true );
+
 		$return_url = add_query_arg(
 			array(
 				'page' => 'mailchimp_sf_options',
@@ -449,6 +454,37 @@ class Mailchimp_User_Sync {
 		if ( $unschedule ) {
 			$this->add_notice( __( 'User sync process will be cancelled soon.', 'mailchimp' ) );
 		}
+
+		// Redirect to the user sync settings page.
+		wp_safe_redirect(
+			esc_url_raw(
+				add_query_arg(
+					array(
+						'page' => 'mailchimp_sf_options',
+						'tab'  => 'user_sync',
+					),
+					admin_url( 'admin.php' )
+				)
+			)
+		);
+		exit;
+	}
+
+	/**
+	 * Skip the user sync cta.
+	 *
+	 * @since x.x.x
+	 */
+	public function skip_user_sync_cta() {
+		if (
+			empty( $_GET['mailchimp_sf_skip_user_sync_cta_nonce'] ) ||
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['mailchimp_sf_skip_user_sync_cta_nonce'] ) ), 'mailchimp_sf_skip_user_sync_cta' ) ||
+			! current_user_can( 'manage_options' )
+		) {
+			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
+		}
+
+		update_option( 'mailchimp_sf_user_sync_start_cta_shown', value: 'skipped' );
 
 		// Redirect to the user sync settings page.
 		wp_safe_redirect(
@@ -573,6 +609,64 @@ class Mailchimp_User_Sync {
 			<?php
 			$this->render_user_sync_progress();
 			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the user sync start cta.
+	 *
+	 * @since x.x.x
+	 */
+	public function render_user_sync_start_cta() {
+		// Check if the cta is already shown.
+		$cta_shown = get_option( 'mailchimp_sf_user_sync_start_cta_shown', false );
+		if ( $cta_shown ) {
+			return;
+		}
+
+		// Check if the user sync is already running.
+		$is_syncing = $this->background_process->in_progress();
+		if ( $is_syncing ) {
+			return;
+		}
+
+		// Get the start sync URL
+		$start_sync_url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => 'mailchimp_sf_start_user_sync',
+				),
+				admin_url( 'admin-post.php' )
+			),
+			'mailchimp_sf_start_user_sync',
+			'mailchimp_sf_start_user_sync_nonce'
+		);
+
+		$skip_url = wp_nonce_url(
+			add_query_arg(
+				array(
+					'action' => 'mailchimp_sf_skip_user_sync_cta',
+				),
+				admin_url( 'admin-post.php' )
+			),
+			'mailchimp_sf_skip_user_sync_cta',
+			'mailchimp_sf_skip_user_sync_cta_nonce'
+		);
+		?>
+		<div class="mailchimp-sf-start-user-sync-wrapper">
+			<div class="mailchimp-sf-start-user-sync-box">
+				<div class="text-wordings">
+					<h2><?php esc_html_e( 'Sync WordPress Users to Mailchimp', 'mailchimp' ); ?></h2>
+					<p><?php esc_html_e( 'Start syncing your WordPress users to Mailchimp to build your audience and grow your business.', 'mailchimp' ); ?></p>
+					<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button mailchimp-sf-button small" style="float: none;">
+						<?php esc_html_e( 'Start User Sync', 'mailchimp' ); ?>
+					</a>
+					<a href="<?php echo esc_url( $skip_url ); ?>">
+						<?php esc_html_e( 'Skip for now', 'mailchimp' ); ?>
+					</a>
+				</div>
+			</div>
 		</div>
 		<?php
 	}

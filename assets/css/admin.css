@@ -432,6 +432,11 @@ body.toplevel_page_mailchimp_sf_options a {
 	color: var(--mailchimp-color-link);
 }
 
+body.admin_page_mailchimp_sf_create_account a:hover,
+body.toplevel_page_mailchimp_sf_options a:hover {
+	color: #006570;
+}
+
 body.admin_page_mailchimp_sf_create_account #footer-upgrade,
 body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	display: none;
@@ -816,6 +821,7 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 .mailchimp-sf-user-sync-status .mailchimp-sf-sync-progress {
 	display: flex;
 	align-items: center;
+	flex-direction: row;
 }
 .mailchimp-sf-user-sync-status .sync-status-text {
 	font-size: 14px;
@@ -824,6 +830,18 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 
 .button.mailchimp-cancel-user-sync-button {
 	margin-left: auto;
+}
+
+@media screen and (max-width: 480px) {
+	.mailchimp-sf-user-sync-status .mailchimp-sf-sync-progress {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.button.mailchimp-cancel-user-sync-button {
+		margin-left: 0px;
+		margin-top: 10px;
+	}
 }
 
 .mailchimp-sf-user-sync-errors {
@@ -839,5 +857,37 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 .mailchimp-sf-user-sync-error-action {
 	min-width: 120px;
 	text-align: right;
+}
+
+.mailchimp-sf-start-user-sync-wrapper {
+	width: 100%;
+	margin-top: 2em;
+	background-color: #ffffff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+}
+
+.mailchimp-sf-start-user-sync-box {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem;
+}
+
+.mailchimp-sf-start-user-sync-box h2 {
+	margin: 0;
+}
+
+.mailchimp-sf-start-user-sync-box p {
+	margin-top: 0.5rem;
+}
+
+.mailchimp-sf-start-user-sync-box .mailchimp-sf-button {
+	float: none;
+	margin-right: 8px;
+}
+
+.mailchimp-sf-start-user-sync-box a {
+	text-decoration: none;
 }
 
