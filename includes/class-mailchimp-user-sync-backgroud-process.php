@@ -29,7 +29,7 @@ class Mailchimp_User_Sync_Background_Process {
 	 *
 	 * @var int
 	 */
-	private $limit = 10;
+	private $limit = 20;
 
 	/**
 	 * The API instance.
@@ -142,9 +142,10 @@ class Mailchimp_User_Sync_Background_Process {
 				if ( is_wp_error( $synced ) ) {
 					$item['failed']                           += 1;
 					$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
-						'time'  => time(),
-						'email' => $user->user_email,
-						'error' => $synced->get_error_message(),
+						'time'    => time(),
+						'user_id' => $user->ID,
+						'email'   => $user->user_email,
+						'error'   => $synced->get_error_message(),
 					);
 				} elseif ( $synced ) {
 					$item['success'] += 1;
@@ -155,9 +156,10 @@ class Mailchimp_User_Sync_Background_Process {
 				$this->log( 'Error getting user: ' . $e->getMessage() );
 				$item['failed']                           += 1;
 				$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
-					'time'  => time(),
-					'email' => $user->user_email,
-					'error' => $e->getMessage(),
+					'time'    => time(),
+					'user_id' => $user->ID,
+					'email'   => $user->user_email,
+					'error'   => $e->getMessage(),
 				);
 				continue;
 			}
@@ -207,9 +209,10 @@ class Mailchimp_User_Sync_Background_Process {
 		$synced = $this->sync_user( $user );
 		if ( is_wp_error( $synced ) ) {
 			$errors[ uniqid( 'mailchimp_sf_error_' ) ] = array(
-				'time'  => time(),
-				'email' => $user->user_email,
-				'error' => $synced->get_error_message(),
+				'time'    => time(),
+				'user_id' => $user->ID,
+				'email'   => $user->user_email,
+				'error'   => $synced->get_error_message(),
 			);
 			$this->user_sync->set_user_sync_errors( $errors );
 		}

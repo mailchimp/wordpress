@@ -355,10 +355,10 @@ class Mailchimp_User_Sync {
 		$start_sync_url = wp_nonce_url( add_query_arg( 'action', 'mailchimp_sf_start_user_sync', admin_url( 'admin-post.php' ) ), 'mailchimp_sf_start_user_sync', 'mailchimp_sf_start_user_sync_nonce' );
 		?>
 		<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button button-secondary">
-			<?php esc_html_e( 'Sync all users', 'mailchimp' ); ?>
+			<?php esc_html_e( 'Synchronize all users', 'mailchimp' ); ?>
 		</a>
 		<p class="description">
-			<?php esc_html_e( 'This will sync all users to Mailchimp.', 'mailchimp' ); ?>
+			<?php esc_html_e( 'This will synchronize all WordPress users matching the selected roles to Mailchimp.', 'mailchimp' ); ?>
 		</p>
 		<?php
 	}
@@ -728,6 +728,7 @@ class Mailchimp_User_Sync {
 			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
 				<thead>
 					<tr>
+						<th><?php esc_html_e( 'ID', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Email', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Error', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Actions', 'mailchimp' ); ?></th>
@@ -738,6 +739,10 @@ class Mailchimp_User_Sync {
 					foreach ( $errors as $id => $error ) {
 						?>
 						<tr id="row-<?php echo esc_attr( $id ); ?>">
+							<td class="user-id">
+								<a href="<?php echo esc_url( get_edit_user_link( $error['user_id'] ) ); ?>">
+									<?php echo esc_html( $error['user_id'] ?? '-' ); ?></td>
+								</a>
 							<td class="email"><strong><?php echo esc_html( $error['email'] ?? '-' ); ?></strong></td>
 							<td class="error"><?php echo esc_html( $error['error'] ?? '-' ); ?></td>
 							<td class="actions">
@@ -753,6 +758,7 @@ class Mailchimp_User_Sync {
 				</tbody>
 				<tfoot>
 					<tr>
+						<th><?php esc_html_e( 'ID', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Email', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Error', 'mailchimp' ); ?></th>
 						<th><?php esc_html_e( 'Actions', 'mailchimp' ); ?></th>
