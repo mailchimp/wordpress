@@ -12,6 +12,7 @@
     "afterStart": "bash ./tests/bin/initialize.sh"
   },
   "config": {
-		"ALTERNATE_WP_CRON": true
+		"ALTERNATE_WP_CRON": true,
+    "WP_AUTO_UPDATE_CORE": false
 	}
 }
