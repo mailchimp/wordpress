@@ -296,6 +296,11 @@ class Mailchimp_User_Sync_Background_Process {
 			}
 		}
 
+		// If the subscribe status is not set (sync existing contacts only), set it to the current status.
+		if ( ! $subscribe_status && $current_status ) {
+			$subscribe_status = $current_status;
+		}
+
 		/**
 		 * Filter the subscribe status.
 		 *
@@ -508,6 +513,9 @@ class Mailchimp_User_Sync_Background_Process {
 	 * @param string $message The message to log.
 	 */
 	public function log( $message ) {
-		error_log( 'Mailchimp User Sync: ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		$should_log = apply_filters( 'mailchimp_sf_user_sync_log', false );
+		if ( $should_log ) {
+			error_log( 'Mailchimp User Sync: ' . $message ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
+		}
 	}
 }
