@@ -122,3 +122,12 @@ Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up', fie
 		});
 	});
 });
+
+Cypress.Commands.add('deleteWPSubscriberUser', () => {
+	// Set all merge fields to required in the Mailchimp test user account
+	cy.wpCli('wp user list --role=subscriber --field=ID').then((response) => {
+		if (response.stdout) {
+			cy.wpCli(`wp user delete ${response.stdout?.replace(/\n/g, ' ')} --reassign=1`);
+		}
+	});
+});
