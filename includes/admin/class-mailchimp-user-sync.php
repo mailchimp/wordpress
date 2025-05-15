@@ -417,6 +417,7 @@ class Mailchimp_User_Sync {
 		$args = array(
 			array(
 				'job_id'    => str_replace( '-', '', wp_generate_uuid4() ),
+				'list_id'   => $list_id,
 				'processed' => 0,
 				'failed'    => 0,
 				'success'   => 0,
@@ -662,7 +663,7 @@ class Mailchimp_User_Sync {
 					<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button mailchimp-sf-button small" style="float: none;">
 						<?php esc_html_e( 'Start User Sync', 'mailchimp' ); ?>
 					</a>
-					<a href="<?php echo esc_url( $skip_url ); ?>">
+					<a href="<?php echo esc_url( $skip_url ); ?>" class="skip-user-sync-cta">
 						<?php esc_html_e( 'Skip for now', 'mailchimp' ); ?>
 					</a>
 				</div>

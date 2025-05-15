@@ -77,7 +77,7 @@ class Mailchimp_User_Sync_Background_Process {
 		$list_id = $this->get_list_id();
 		$api     = $this->get_api();
 
-		if ( ! $list_id || ! $api ) {
+		if ( ! $list_id || ! $api || ! $item['list_id'] || $item['list_id'] !== $list_id ) {
 			$this->log( 'User sync process failed due to connection issues or list not selected.' );
 			$this->user_sync->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues or list not selected.', 'mailchimp' ), 'error' );
 			return;
