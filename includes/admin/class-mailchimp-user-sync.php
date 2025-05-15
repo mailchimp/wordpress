@@ -313,7 +313,7 @@ class Mailchimp_User_Sync {
 					),
 					'<a href="https://mailchimp.com/help/about-mailchimp-pricing-plans/" target="_blank" rel="noopener noreferrer">',
 					'</a>',
-					absint( $users_count ),
+					absint( $users_count )
 				),
 				array(
 					'a' => array(
@@ -623,7 +623,7 @@ class Mailchimp_User_Sync {
 				);
 				?>
 			</span>
-			<a href="<?php echo esc_url( $cancel_url ); ?>" class="button mailchimp-cancel-user-sync-button">
+			<a href="<?php echo esc_url( $cancel_url ); ?>" class="button mailchimp-cancel-user-sync-button button-secondary">
 				<?php esc_html_e( 'Cancel Sync', 'mailchimp' ); ?>
 			</a>
 		</div>

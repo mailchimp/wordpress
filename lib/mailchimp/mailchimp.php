@@ -142,10 +142,10 @@ class MailChimp_API {
 	/**
 	 * Sends request to Mailchimp endpoint.
 	 *
-	 * @param string $endpoint The endpoint to send the request.
-	 * @param string $body The body of the request
-	 * @param string $method The request method.
-	 * @param string $list_id The list id.
+	 * @param string  $endpoint The endpoint to send the request.
+	 * @param string  $body The body of the request
+	 * @param string  $method The request method.
+	 * @param string  $list_id The list id.
 	 * @param boolean $is_sync Whether the request is for user sync.
 	 * @return mixed
 	 */
