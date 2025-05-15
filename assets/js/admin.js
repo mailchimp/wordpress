@@ -487,7 +487,7 @@
 	const params = window.mailchimp_sf_admin_params || {};
 	const tableSelector = 'table.mailchimp-sf-user-sync-errors-table';
 	const noErrorsFoundRow =
-		'<tr><td colspan="3"><em>' + params.no_errors_found + '</em></td></tr>';
+		'<tr><td colspan="4"><em>' + params.no_errors_found + '</em></td></tr>';
 	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
 		e.preventDefault();
 		$(this).prop('disabled', true);
