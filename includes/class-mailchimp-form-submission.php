@@ -174,6 +174,76 @@ class Mailchimp_Form_Submission {
 	}
 
 	/**
+	 * Validate phone
+	 *
+	 * @param array $opt_val Option value.
+	 * @param array $data    Data.
+	 * @return string|WP_Error Option value or error.
+	 */
+	public function validate_phone( $opt_val, $data ) {
+		// This filters out all 'falsy' elements
+		$opt_val = array_filter( $opt_val );
+		// If they weren't all empty
+		if ( empty( $opt_val ) ) {
+			return '';
+		}
+
+		// Trim the phone number
+		$opt_val = array_map(
+			function ( $ele ) {
+				return preg_replace( '/\s+/', '', trim( $ele ) );
+			},
+			$opt_val
+		);
+
+		$opt_val = implode( '-', $opt_val );
+		if ( strlen( $opt_val ) < 12 ) {
+			// translators: %s: field name
+			$message = sprintf( esc_html__( '%s should be 10 digits long.', 'mailchimp' ), esc_html( $data['name'] ) );
+			$error   = new WP_Error( 'mc_phone_validation', $message );
+			return $error;
+		}
+
+		if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
+			/* translators: %s: field name */
+			$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
+			$error   = new WP_Error( 'mc_phone_validation', $message );
+			return $error;
+		}
+
+		return $opt_val;
+	}
+
+	/**
+	 * Validate address
+	 *
+	 * @param array $opt_val Option value
+	 * @param array $data Data
+	 * @return mixed
+	 */
+	public function validate_address( $opt_val, $data ) {
+		if ( true === (bool) $data['required'] ) {
+			if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
+				/* translators: %s: field name */
+				$message = sprintf( esc_html__( '%s: Please enter a complete address.', 'mailchimp' ), esc_html( $data['name'] ) );
+				$error   = new WP_Error( 'invalid_address_merge', $message );
+				return $error;
+			}
+		} elseif ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
+			return false;
+		}
+
+		$merge          = new stdClass();
+		$merge->addr1   = $opt_val['addr1'];
+		$merge->addr2   = $opt_val['addr2'];
+		$merge->city    = $opt_val['city'];
+		$merge->state   = $opt_val['state'];
+		$merge->zip     = $opt_val['zip'];
+		$merge->country = $opt_val['country'];
+		return $merge;
+	}
+
+	/**
 	 * Prepare the merge fields body for the API request.
 	 *
 	 * @param array $merge_fields Merge fields.
@@ -187,7 +257,7 @@ class Mailchimp_Form_Submission {
 			$opt = 'mc_mv_' . $tag;
 
 			// Skip if the field is not required and not submitted.
-			if ( 'Y' !== $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) {
+			if ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) {
 				continue;
 			}
 
@@ -206,7 +276,7 @@ class Mailchimp_Form_Submission {
 						isset( $merge_field['options']['phone_format'] )
 						&& 'US' === $merge_field['options']['phone_format']
 					) {
-						$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $merge_field );
+						$opt_val = $this->validate_phone( $opt_val, $merge_field );
 						if ( is_wp_error( $opt_val ) ) {
 							return $opt_val;
 						}
@@ -221,7 +291,7 @@ class Mailchimp_Form_Submission {
 				 */
 				case 'address':
 					if ( is_array( $opt_val ) ) {
-						$validate = mailchimp_sf_merge_validate_address( $opt_val, $merge_field );
+						$validate = $this->validate_address( $opt_val, $merge_field );
 						if ( is_wp_error( $validate ) ) {
 							return $validate;
 						}
@@ -254,9 +324,9 @@ class Mailchimp_Form_Submission {
 			/**
 			 * Required fields
 			 *
-			 * If the field is required and empty, return an error
+			 * If the field is required and empty, +return an error
 			 */
-			if ( 'Y' === $merge_field['required'] && trim( $opt_val ) === '' ) {
+			if ( true === (bool) $merge_field['required'] && empty( $opt_val ) ) {
 				/* translators: %s: field name */
 				$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $merge_field['name'] ) );
 				$error   = new WP_Error( 'missing_required_field', $message );
