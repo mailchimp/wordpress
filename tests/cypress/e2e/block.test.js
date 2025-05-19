@@ -28,7 +28,7 @@ describe('Block Tests', () => {
 				cy.get('#mc_signup_submit').should('exist');
 				cy.get('#mc_signup_submit').click();
 				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+				cy.get('.mc_error_msg').contains('Please enter your email address.');
 			}
 		});
 	});
@@ -48,6 +48,7 @@ describe('Block Tests', () => {
 			.type(subHeader);
 		cy.getBlockEditor().find('button[aria-label="Enter button text."]').clear().type(button);
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -67,6 +68,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Move down"]')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify order of fields
 		cy.visit(`/?p=${postId}`);
@@ -83,6 +85,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Move up"]')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify order of fields
 		cy.visit(`/?p=${postId}`);
@@ -100,7 +103,7 @@ describe('Block Tests', () => {
 
 		cy.get('.block-editor-block-toolbar__slot').find('button[aria-label="Visibility"]').click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -116,7 +119,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Visibility"].is-pressed')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -134,7 +137,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Visibility"].is-pressed')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -149,7 +152,7 @@ describe('Block Tests', () => {
 
 		cy.get('.block-editor-block-toolbar__slot').find('button[aria-label="Visibility"]').click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -164,7 +167,7 @@ describe('Block Tests', () => {
 		cy.getBlockEditor().find('label[for="EMAIL"] label').clear().type(emailLabel);
 
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -179,7 +182,7 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -191,7 +194,7 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().uncheck();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -203,13 +206,13 @@ describe('Block Tests', () => {
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
 		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
-		cy.get('.mailchimp-list-select select').select('Alternate 10up Audience');
+		cy.get('.mailchimp-list-select select').select('Project Lotus');
 		cy.wait(2000);
 		cy.getBlockEditor().find('label[for="EMAIL"] label').contains('Email Address');
 		cy.getBlockEditor().find('label[for="MMERGE9"]').should('not.exist');
 
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -225,7 +228,7 @@ describe('Block Tests', () => {
 		cy.wait(2000);
 		cy.getBlockEditor().find('label[for="MMERGE9"]').should('exist');
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 	});
 
 	it('[Backward Compatibility] Admin can see settings for the existing old block', () => {
@@ -245,7 +248,7 @@ describe('Block Tests', () => {
 				.clear()
 				.type(header);
 			cy.get('button.editor-post-publish-button').click();
-			cy.wait(500);
+			cy.wait(1000);
 
 			// Verify
 			cy.visit(`/?p=${oldBlockPostId}`);
@@ -262,7 +265,7 @@ describe('Block Tests', () => {
 			.first()
 			.check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -281,7 +284,7 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 	});
 
 	it('Form data should persist if validation fails', () => {
@@ -295,7 +298,7 @@ describe('Block Tests', () => {
 		cy.get('#mc_signup_submit').should('exist');
 		cy.get('#mc_signup_submit').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 		cy.get('#mc_mv_FNAME').should('have.value', firstName);
 		cy.get('#mc_mv_LNAME').should('have.value', lastName);
 	});
@@ -320,7 +323,7 @@ describe('Block Tests', () => {
 		cy.get('#mc_signup_submit').should('exist');
 		cy.get('#mc_signup_submit').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 	});
 
 	// TODO: Add tests for the Double Opt-in and Update existing subscribers settings.

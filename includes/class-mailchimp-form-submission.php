@@ -197,7 +197,7 @@ class Mailchimp_Form_Submission {
 		);
 
 		$opt_val = implode( '-', $opt_val );
-		if ( strlen( $opt_val ) < 12 ) {
+		if ( strlen( $opt_val ) !== 12 ) {
 			// translators: %s: field name
 			$message = sprintf( esc_html__( '%s should be 10 digits long.', 'mailchimp' ), esc_html( $data['name'] ) );
 			$error   = new WP_Error( 'mc_phone_validation', $message );
