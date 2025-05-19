@@ -571,6 +571,16 @@ class Mailchimp_Form_Submission {
 			return new WP_Error( 'spam', $spam_message );
 		}
 
+		// Early return if the email is not set
+		if ( empty( $_POST['mc_mv_EMAIL'] ) ) {
+			return new WP_Error( 'email_required', esc_html__( 'Please enter your email address.', 'mailchimp' ) );
+		}
+
+		// Check if the email is valid
+		if ( ! is_email( sanitize_email( wp_unslash( $_POST['mc_mv_EMAIL'] ) ) ) ) {
+			return new WP_Error( 'invalid_email', esc_html__( 'Please enter a valid email address.', 'mailchimp' ) );
+		}
+
 		/**
 		 * Filter to allow for custom validation of the form submission.
 		 *
