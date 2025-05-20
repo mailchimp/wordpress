@@ -181,6 +181,11 @@ function mailchimp_sf_load_resources() {
 	}
 }
 
+/**
+ * Custom styles CSS
+ *
+ * @return string
+ */
 function mailchimp_sf_custom_style_css() {
 	ob_start();
 	?>
