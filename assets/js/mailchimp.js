@@ -64,6 +64,7 @@
 				constrainInput: false,
 				changeMonth: true,
 				changeYear: true,
+				// eslint-disable-next-line no-unused-vars
 				beforeShow(input, inst) {
 					$('#ui-datepicker-div').addClass('show');
 				},
@@ -84,6 +85,7 @@
 				changeYear: false,
 				minDate: new Date(d.getFullYear(), 1 - 1, 1),
 				maxDate: new Date(d.getFullYear(), 12 - 1, 31),
+				// eslint-disable-next-line no-unused-vars
 				beforeShow(input, inst) {
 					$('#ui-datepicker-div').removeClass('show');
 				},
