@@ -10,7 +10,7 @@ describe('User Sync Tests', () => {
 	it('Admin can see User Sync settings page', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
 		cy.get('.mailchimp-sf-user-sync-page').should('be.visible');
-		cy.get('.form-table th').first().should('contain', 'User Sync settings');
+		cy.get('.form-table th').first().should('contain', 'User sync settings');
 	});
 
 	it('Admin can save User Sync settings', () => {
