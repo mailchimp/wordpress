@@ -109,7 +109,7 @@ class Mailchimp_User_Sync {
 
 		add_settings_field(
 			'user_sync_title',
-			__( 'User Sync settings', 'mailchimp' ),
+			__( 'User sync settings', 'mailchimp' ),
 			'__return_empty_string',
 			$this->option_name,
 			$section_id
@@ -117,7 +117,7 @@ class Mailchimp_User_Sync {
 
 		add_settings_field(
 			'enable_user_sync',
-			__( 'Enable Auto User Sync', 'mailchimp' ),
+			__( 'Enable auto user sync', 'mailchimp' ),
 			array( $this, 'enable_user_sync_field' ),
 			$this->option_name,
 			$section_id,
@@ -139,7 +139,7 @@ class Mailchimp_User_Sync {
 
 		add_settings_field(
 			'subscriber_status',
-			__( 'Subscriber Status', 'mailchimp' ),
+			__( 'Subscriber status', 'mailchimp' ),
 			array( $this, 'subscriber_status_field' ),
 			$this->option_name,
 			$section_id,
@@ -380,7 +380,7 @@ class Mailchimp_User_Sync {
 		}
 
 		// Mark the cta as shown.
-		update_option( 'mailchimp_sf_user_sync_start_cta_shown', value: true );
+		update_option( 'mailchimp_sf_user_sync_start_cta_shown', true );
 
 		$return_url = add_query_arg(
 			array(
@@ -393,7 +393,7 @@ class Mailchimp_User_Sync {
 		// Check if the user is connected to Mailchimp.
 		$api = mailchimp_sf_get_api();
 		if ( ! $api ) {
-			$this->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues, Please try again after reconnecting your Mailchimp account.', 'mailchimp' ), 'error' );
+			$this->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues. Please try again after reconnecting your Mailchimp account.', 'mailchimp' ), 'error' );
 			wp_safe_redirect( esc_url_raw( $return_url ) );
 			exit;
 		}
@@ -485,7 +485,7 @@ class Mailchimp_User_Sync {
 			wp_die( esc_html__( 'You don\'t have permission to perform this operation.', 'mailchimp' ) );
 		}
 
-		update_option( 'mailchimp_sf_user_sync_start_cta_shown', value: 'skipped' );
+		update_option( 'mailchimp_sf_user_sync_start_cta_shown', 'skipped' );
 
 		// Redirect to the user sync settings page.
 		wp_safe_redirect(
