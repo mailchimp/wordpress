@@ -175,21 +175,25 @@ function mailchimp_sf_load_resources() {
 
 		// Backwards compatibility. TODO: Remove this in a future version.
 		if ( get_option( 'mc_custom_style' ) === 'on' ) {
-			ob_start();
-			?>
-			#mc_signup_form {
-				padding:5px;
-				border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
-				border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
-				border-color: #<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>;
-				color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
-				background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
-			}
-			<?php
-			$custom_css = ob_get_clean();
+			$custom_css = mailchimp_sf_custom_style_css();
 			wp_add_inline_style( 'mailchimp_sf_main_css', $custom_css );
 		}
 	}
+}
+
+function mailchimp_sf_custom_style_css() {
+	ob_start();
+	?>
+	#mc_signup_form {
+		padding:5px;
+		border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
+		border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
+		border-color: #<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>;
+		color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
+		background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
+	}
+	<?php
+	return ob_get_clean();
 }
 
 /**
