@@ -49,9 +49,14 @@ class Mailchimp_User_Sync_Background_Process {
 	 * Constructor.
 	 */
 	public function __construct() {
-		require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
-
 		$this->user_sync = new Mailchimp_User_Sync();
+		$manual_sync     = get_option( 'mailchimp_sf_user_sync_running', false );
+		$settings        = $this->user_sync->get_user_sync_settings();
+
+		// Load the Action Scheduler library, if auto user sync is enabled or manual sync is running.
+		if ( $manual_sync || ( isset( $settings['enable_user_sync'] ) && 1 === absint( $settings['enable_user_sync'] ) ) ) {
+			require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
+		}
 	}
 
 	/**
@@ -71,6 +76,7 @@ class Mailchimp_User_Sync_Background_Process {
 		// Check if cancel request is made.
 		if ( isset( $item['job_id'] ) && get_transient( 'mailchimp_sf_cancel_user_sync_process' ) === $item['job_id'] ) {
 			delete_transient( 'mailchimp_sf_cancel_user_sync_process' );
+			$this->clear_running_sync();
 			return;
 		}
 
@@ -80,6 +86,7 @@ class Mailchimp_User_Sync_Background_Process {
 		if ( ! $list_id || ! $api || ! $item['list_id'] || $item['list_id'] !== $list_id ) {
 			$this->log( 'User sync process failed due to connection issues or list not selected.' );
 			$this->user_sync->add_notice( __( 'We encountered a problem starting the user sync process due to connection issues or list not selected.', 'mailchimp' ), 'error' );
+			$this->clear_running_sync();
 			return;
 		}
 
@@ -97,6 +104,7 @@ class Mailchimp_User_Sync_Background_Process {
 		if ( empty( $user_roles ) ) {
 			$this->log( 'No user roles to sync, please select at least one user role.' );
 			$this->user_sync->add_notice( __( 'No user roles to sync, please select at least one user role.', 'mailchimp' ), 'warning' );
+			$this->clear_running_sync();
 			return;
 		}
 
@@ -125,6 +133,7 @@ class Mailchimp_User_Sync_Background_Process {
 					'success'
 				);
 			}
+			$this->clear_running_sync();
 			return;
 		}
 
@@ -184,6 +193,7 @@ class Mailchimp_User_Sync_Background_Process {
 				),
 				'success'
 			);
+			$this->clear_running_sync();
 			return;
 		}
 
@@ -347,7 +357,22 @@ class Mailchimp_User_Sync_Background_Process {
 	public function schedule( array $args = [] ) {
 		if ( function_exists( 'as_enqueue_async_action' ) ) {
 			as_enqueue_async_action( $this->job_name, $args );
+			$this->mark_sync_running();
 		}
+	}
+
+	/**
+	 * Mark the sync as running.
+	 */
+	public function mark_sync_running() {
+		update_option( 'mailchimp_sf_user_sync_running', true );
+	}
+
+	/**
+	 * Clear the running sync option.
+	 */
+	public function clear_running_sync() {
+		delete_option( 'mailchimp_sf_user_sync_running' );
 	}
 
 	/**

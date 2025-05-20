@@ -406,6 +406,11 @@ class Mailchimp_User_Sync {
 			exit;
 		}
 
+		// Include the Action Scheduler library, if not already included.
+		if ( ! class_exists( 'ActionScheduler' ) ) {
+			require_once MCSF_DIR . '/vendor/woocommerce/action-scheduler/action-scheduler.php';
+		}
+
 		// Check if the user sync is already running.
 		if ( $this->background_process->in_progress() ) {
 			$this->add_notice( __( 'User sync process is already running.', 'mailchimp' ), 'warning' );
