@@ -203,7 +203,7 @@ describe('Block Tests', () => {
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
 		cy.getBlockEditor().find('h2[aria-label="Enter a header (optional)"]').click();
 		cy.openDocumentSettingsPanel('Settings', 'Block');
-		cy.get('.mailchimp-list-select select').select('Project Lotus');
+		cy.get('.mailchimp-list-select select').select('Alternate 10up Audience');
 		cy.wait(2000);
 		cy.getBlockEditor().find('label[for="EMAIL"] label').contains('Email Address');
 		cy.getBlockEditor().find('label[for="MMERGE9"]').should('not.exist');
