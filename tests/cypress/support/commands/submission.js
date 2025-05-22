@@ -39,12 +39,28 @@ Cypress.Commands.add('verifyContactInMailchimp', (email, listName = '10up', stat
 	});
 });
 
+Cypress.Commands.add('getContactInMailchimp', (email, listName = '10up', status = null) => {
+	// Step 1: Get the list ID for the specified list name
+	cy.getListId(listName).then((listId) => {
+		// Step 2: Retrieve the contacts from the specified list
+		cy.getContactsFromAList(listId, status).then((contacts) => {
+			// Step 3: Verify that the contact with the provided email exists in the list
+			const contact = contacts.find((c) => c.email_address === email);
+			if (contact) {
+				cy.wrap(contact); // Wrap the contact to allow further chaining
+			} else {
+				cy.wrap(false);
+			}
+		});
+	});
+});
+
 /**
  * Custom command to verify that a contact's status matches the expected status.
  *
  * @param {Object} contact - The contact object to verify.
  * @param {string} status - The expected status to compare against.
- * 
+ *
  * @example
  * cy.verifyContactStatus(contact, 'subscribed');
  */

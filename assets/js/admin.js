@@ -414,3 +414,143 @@
 		});
 	});
 })(jQuery); // eslint-disable-line no-undef
+
+// User Sync Settings.
+(function ($) {
+	const userSyncSettingsPage = $('.mailchimp-sf-user-sync-page');
+	if (userSyncSettingsPage.length > 0) {
+		const syncExistingContactsOnly = $(
+			'tr.mailchimp-user-sync-existing-contacts-only input[type="checkbox"]',
+		);
+		if (syncExistingContactsOnly) {
+			syncExistingContactsOnly.change(function () {
+				if (this.checked) {
+					$('tr.mailchimp-user-sync-subscriber-status').hide();
+				} else {
+					$('tr.mailchimp-user-sync-subscriber-status').show();
+				}
+			});
+
+			// Trigger change event to hide/show subscriber status.
+			syncExistingContactsOnly.trigger('change');
+		}
+	}
+})(jQuery); // eslint-disable-line no-undef
+
+// Update the user sync status.
+(function ($) {
+	const statusWrapper = $('.mailchimp-sf-user-sync-status');
+	const processRunning = statusWrapper.length;
+	if (!processRunning) {
+		return;
+	}
+
+	const params = window.mailchimp_sf_admin_params || {};
+	const ajaxUrl = params.ajax_url;
+	const ajaxNonce = params.user_sync_status_nonce;
+
+	const intervalId = setInterval(function () {
+		$.ajax({
+			url: ajaxUrl,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_get_user_sync_status',
+				nonce: ajaxNonce,
+			},
+			success(response) {
+				if (response.success && response.data) {
+					if (response.data.is_running && response.data.status) {
+						// Update the sync status on the page
+						statusWrapper.html(response.data.status);
+					} else {
+						// Clear interval and reload the page.
+						clearInterval(intervalId);
+						window.location.reload();
+					}
+				}
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+			},
+		});
+	}, 30000); // 30000 milliseconds = 30 seconds
+})(jQuery); // eslint-disable-line no-undef
+
+// User Sync Error logs.
+(function ($) {
+	const userSyncErrors = $('.mailchimp-sf-user-sync-errors');
+	if (!userSyncErrors) {
+		return;
+	}
+
+	const params = window.mailchimp_sf_admin_params || {};
+	const tableSelector = 'table.mailchimp-sf-user-sync-errors-table';
+	const noErrorsFoundRow =
+		'<tr><td colspan="4"><em>' + params.no_errors_found + '</em></td></tr>';
+	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
+		e.preventDefault();
+		$(this).prop('disabled', true);
+		$('.mailchimp-sf-user-sync-errors-header-actions .spinner').addClass('is-active');
+
+		$.ajax({
+			url: params.ajax_url,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_delete_user_sync_error',
+				id: 'all',
+				nonce: params.delete_user_sync_error_nonce,
+			},
+			success(response) {
+				if (response && response.success) {
+					$(tableSelector + ' tbody').html(noErrorsFoundRow);
+					$('.mailchimp-sf-user-sync-errors-header-actions .spinner').removeClass(
+						'is-active',
+					);
+				} else {
+					window.location.reload();
+				}
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+				window.location.reload();
+			},
+		});
+	});
+
+	$(tableSelector).on('click', '.mailchimp-sf-user-sync-error-delete', function (e) {
+		e.preventDefault();
+
+		const errorId = $(this).data('id');
+		const rowId = '#row-' + errorId;
+		$(rowId).find('.mailchimp-sf-user-sync-error-action .spinner').addClass('is-active');
+		$(this).prop('disabled', true);
+		$.ajax({
+			url: params.ajax_url,
+			type: 'POST',
+			data: {
+				action: 'mailchimp_sf_delete_user_sync_error',
+				nonce: params.delete_user_sync_error_nonce,
+				id: errorId,
+			},
+			success(response) {
+				if (response && response.success) {
+					$(rowId).remove();
+
+					if (!$(tableSelector + ' tbody tr').length) {
+						$(tableSelector + ' tbody').html(noErrorsFoundRow);
+						$('#mailchimp-sf-clear-user-sync-errors').prop('disabled', true);
+					}
+				} else {
+					window.location.reload();
+				}
+			},
+			error(jqXHR, textStatus, errorThrown) {
+				// eslint-disable-next-line no-console
+				console.error('Error: ', textStatus, ', Details: ', errorThrown);
+				window.location.reload();
+			},
+		});
+	});
+})(jQuery); // eslint-disable-line no-undef
