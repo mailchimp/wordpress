@@ -47,7 +47,7 @@ describe('JavaScript submission', () => {
 	});
 
 	it('Disables the submit button before attempting submission', () => {
-		submitEmail('invalidemail@--'); // Submit blank email
+		submitEmail('invalidemail@test.com'); // Submit blank email
 
 		// Step 4: Assert that the submit button is disabled after submitting the form
 		cy.get('#mc_signup_submit').should('be.disabled');
@@ -81,13 +81,7 @@ describe('JavaScript submission', () => {
 		cy.deleteContactFromList(email);
 	});
 
-	// TODO: This is a bug and is currently broken
-	it.skip('Persist form data on Mailchimp API validation failure', () => {
-		// Write test...
-	});
-
-	// TODO: BUG: Single opt-in is currently broken, but a fix is scheduled for 1.7.0
-	it.skip('Success submission with JS support adds email to Mailchimp account as contact', () => {
+	it('Success submission with JS support adds email to Mailchimp account as contact', () => {
 		const email = generateRandomEmail('javascript-submission-verify-submission');
 		submitEmail(email);
 
