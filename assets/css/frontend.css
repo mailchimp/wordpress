@@ -1,0 +1,116 @@
+.mc_error_msg, .mc_error_msg a {
+	color: red;
+	margin-bottom: 1.0em;
+}
+.mc_success_msg {
+	color: green;
+	margin-bottom: 1.0em;
+}
+div.mc_interest{
+	width:100%;
+}
+#mc_signup_form label.mc_interest_label {
+	display:inline;
+}
+.mc_signup_submit {
+	text-align:center;
+}
+ul.mc_list {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+ul.mc_list li {
+	font-size: 14px;
+}
+#ui-datepicker-div .ui-datepicker-year {
+	display: none;
+}
+#ui-datepicker-div.show .ui-datepicker-year {
+	display: inline;
+	padding-left: 3px
+}
+.widget_mailchimpsf_widget .widget-title {
+	line-height: 1.4em;
+	margin-bottom: 0.75em;
+}
+.mc_custom_border_hdr,
+#mc_subheader {
+	line-height: 1.25em;
+	margin-bottom: 18px;
+}
+.mc_merge_var {
+	padding:0;
+	margin:0;
+	margin-bottom: 1.0em;
+}
+.mc_var_label,
+.mc_interest_label {
+	display: block;
+	margin-bottom: 0.5em;
+}
+.mc_input {
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_input.mc_phone {
+	width: auto;
+}
+select.mc_select {
+	margin-top: 0.5em;
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_address_label {
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+	display: block;
+}
+.mc_address_label ~ select {
+	padding: 10px 8px;
+	width: 100%;
+}
+.mc_list li {
+	list-style: none;
+	background: none !important;
+}
+.mc_interests_header {
+	font-weight:bold;
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_interest label,
+.mc_interest input {
+	margin-bottom: 0.4em;
+}
+#mc_signup_submit {
+	margin-top: 1.5em;
+	padding: 10px 8px;
+	width: 80%;
+}
+#mc_unsub_link a {
+	font-size: 0.75em;
+}
+#mc_unsub_link {
+	margin-top: 1.0em;
+}
+.mc_header_address,
+.mc_email_format {
+	display: block;
+	font-weight: bold;
+	margin-top: 1.0em;
+	margin-bottom: 0.5em;
+}
+.mc_email_options {
+	margin-top: 0.5em;
+}
+.mc_email_type {
+	padding-left: 4px;
+}
+#mc-indicates-required {
+	width:100%;
+	margin-top: 1em;
+}

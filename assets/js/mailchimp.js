@@ -51,3 +51,46 @@
 		});
 	});
 })(window.jQuery);
+
+/* Datepicker functions for the Mailchimp Widget */
+(function ($) {
+	if ($('.date-pick').length > 0) {
+		// Datepicker for the date-pick class
+		$('.date-pick').each(function () {
+			let format = $(this).data('format') || 'mm/dd/yyyy';
+			format = format.replace(/yyyy/i, 'yy');
+			$(this).datepicker({
+				autoFocusNextInput: true,
+				constrainInput: false,
+				changeMonth: true,
+				changeYear: true,
+				// eslint-disable-next-line no-unused-vars
+				beforeShow(input, inst) {
+					$('#ui-datepicker-div').addClass('show');
+				},
+				dateFormat: format.toLowerCase(),
+			});
+		});
+	}
+
+	if ($('.birthdate-pick').length > 0) {
+		const d = new Date();
+		$('.birthdate-pick').each(function () {
+			let format = $(this).data('format') || 'mm/dd';
+			format = format.replace(/yyyy/i, 'yy');
+			$(this).datepicker({
+				autoFocusNextInput: true,
+				constrainInput: false,
+				changeMonth: true,
+				changeYear: false,
+				minDate: new Date(d.getFullYear(), 1 - 1, 1),
+				maxDate: new Date(d.getFullYear(), 12 - 1, 31),
+				// eslint-disable-next-line no-unused-vars
+				beforeShow(input, inst) {
+					$('#ui-datepicker-div').removeClass('show');
+				},
+				dateFormat: format.toLowerCase(),
+			});
+		});
+	}
+})(window.jQuery);

@@ -1,4 +1,22 @@
 /* Leave this file - wp_add_inline_style relies on this file existing */
+div.mc_interest{
+	width:100%;
+}
+#mc_signup_form label.mc_interest_label {
+	display:inline;
+}
+.mc_signup_submit {
+	text-align:center;
+}
+ul.mc_list {
+	list-style-type: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+ul.mc_list li {
+	font-size: 14px;
+}
+
 #mc_message {
 	display: none;
 }
@@ -65,8 +83,7 @@ div#mc_subheader:has(h3 span:empty) {
 	margin-bottom: 1em;
 }
 
-.mc_var_label,
-.mc_interest_label {
+.mc_var_label {
 	display: block;
 	margin-bottom: 0.5em;
 }
@@ -103,7 +120,6 @@ select.mc_select {
 	margin-top: 1.0em;
 	margin-bottom: 0.5em;
 }
-.mc_interest label,
 .mc_interest input {
 	margin-bottom: 0.4em;
 }
