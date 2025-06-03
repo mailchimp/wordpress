@@ -81,6 +81,10 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 1.9.0 - 2025-06-04 =
+* **Added:** New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
+* **Changed:** Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
+
 = 1.8.0 - 2025-05-08 =
 **Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
 
