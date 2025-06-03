@@ -560,7 +560,7 @@ class Mailchimp_Admin {
 	/**
 	 * Render the settings page.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 *
 	 * @return void
 	 */
