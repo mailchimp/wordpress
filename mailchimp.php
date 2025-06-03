@@ -126,8 +126,10 @@ function mailchimp_sf_plugin_init() {
 		mailchimp_sf_update_merge_fields();
 	}
 
-	// Bring in our appropriate JS and CSS resources
-	mailchimp_sf_load_resources();
+	if ( mailchimp_sf_should_display_form() ) {
+		// Bring in our appropriate JS and CSS resources
+		add_action( 'wp_enqueue_scripts', 'mailchimp_sf_load_resources' );
+	}
 }
 
 add_action( 'init', 'mailchimp_sf_plugin_init' );
@@ -155,69 +157,50 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'mailchimp_sf_
  */
 function mailchimp_sf_load_resources() {
 	// JS
-	if ( ! is_admin() ) {
-		wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
-		// some javascript to get ajax version submitting to the proper location
-		global $wp_scripts;
-		$wp_scripts->localize(
-			'mailchimp_sf_main_js',
-			'mailchimpSF',
-			array(
-				'ajax_url' => trailingslashit( home_url() ),
-			)
-		);
+	wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form', 'jquery-ui-datepicker' ), MCSF_VER, true );
+	// some javascript to get ajax version submitting to the proper location
+	global $wp_scripts;
+	$wp_scripts->localize(
+		'mailchimp_sf_main_js',
+		'mailchimpSF',
+		array(
+			'ajax_url' => trailingslashit( home_url() ),
+		)
+	);
 
-		// Datepicker theme
-		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
+	// Datepicker theme
+	wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 
-		// Datepicker JS
-		wp_enqueue_script( 'jquery-ui-datepicker' );
-	}
-
+	// CSS
 	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
-		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
-		global $wp_styles;
-		$wp_styles->add_data( 'mailchimp_sf_ie_css', 'conditional', 'IE' );
-	}
-}
+		wp_enqueue_style( 'mailchimp_sf_main_css', MCSF_URL . 'assets/css/frontend.css', array(), MCSF_VER );
 
-/**
- * Loads jQuery Datepicker for the date-pick class
- **/
-function mc_datepicker_load() {
-	require_once MCSF_DIR . '/views/datepicker.php';
-}
-
-if ( ! is_admin() ) {
-	add_action( 'wp_head', 'mc_datepicker_load' );
-}
-
-/**
- * Handles requests that as light-weight a load as possible.
- * typically, JS or CSS
- *
- * @return void
- */
-function mailchimp_sf_early_request_handler() {
-	if ( isset( $_GET['mcsf_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
-		switch ( $_GET['mcsf_action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
-			case 'main_css':
-				header( 'Content-type: text/css' );
-				mailchimp_sf_main_css();
-				exit;
+		// Backwards compatibility. TODO: Remove this in a future version.
+		if ( get_option( 'mc_custom_style' ) === 'on' ) {
+			$custom_css = mailchimp_sf_custom_style_css();
+			wp_add_inline_style( 'mailchimp_sf_main_css', $custom_css );
 		}
 	}
 }
 
-add_action( 'init', 'mailchimp_sf_early_request_handler', 0 );
-
 /**
- * Outputs the front-end CSS.  This checks several options, so it
- * was best to put it in a Request-handled script, as opposed to
- * a static file.
+ * Custom styles CSS
+ *
+ * @return string
  */
-function mailchimp_sf_main_css() {
-	require_once MCSF_DIR . '/views/css/frontend.php';
+function mailchimp_sf_custom_style_css() {
+	ob_start();
+	?>
+	#mc_signup_form {
+		padding:5px;
+		border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
+		border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
+		border-color: #<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>;
+		color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
+		background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
+	}
+	<?php
+	return ob_get_clean();
 }
 
 /**
