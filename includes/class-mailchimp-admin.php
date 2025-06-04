@@ -44,8 +44,11 @@ class Mailchimp_Admin {
 		add_action( 'wp_ajax_mailchimp_sf_check_login_session', array( $this, 'check_login_session' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
-		add_action( 'admin_menu', array( $this, 'add_create_account_page' ) );
+		add_action( 'admin_menu', array( $this, 'add_admin_menu_pages' ) );
 		add_filter( 'admin_footer_text', array( $this, 'admin_footer_text' ) );
+
+		$user_sync = new Mailchimp_User_Sync();
+		$user_sync->init();
 	}
 
 	/**
@@ -476,16 +479,19 @@ class Mailchimp_Admin {
 		wp_enqueue_script( 'mailchimp_sf_admin', MCSF_URL . 'assets/js/admin.js', array( 'jquery', 'jquery-ui-dialog' ), MCSF_VER, true );
 
 		$data = array(
-			'ajax_url'               => esc_url( admin_url( 'admin-ajax.php' ) ),
-			'oauth_url'              => esc_url( $this->oauth_url ),
-			'oauth_start_nonce'      => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
-			'oauth_finish_nonce'     => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
-			'oauth_window_name'      => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
-			'generic_error'          => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
-			'modal_title'            => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
-			'modal_button_try_again' => esc_html__( 'Try again', 'mailchimp' ),
-			'modal_button_cancel'    => esc_html__( 'No, cancel!', 'mailchimp' ),
-			'admin_settings_url'     => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'ajax_url'                     => esc_url( admin_url( 'admin-ajax.php' ) ),
+			'oauth_url'                    => esc_url( $this->oauth_url ),
+			'oauth_start_nonce'            => wp_create_nonce( 'mailchimp_sf_oauth_start_nonce' ),
+			'oauth_finish_nonce'           => wp_create_nonce( 'mailchimp_sf_oauth_finish_nonce' ),
+			'oauth_window_name'            => esc_html__( 'Mailchimp For WordPress OAuth', 'mailchimp' ),
+			'generic_error'                => esc_html__( 'An error occurred. Please try again.', 'mailchimp' ),
+			'modal_title'                  => esc_html__( 'Login Popup is blocked!', 'mailchimp' ),
+			'modal_button_try_again'       => esc_html__( 'Try again', 'mailchimp' ),
+			'modal_button_cancel'          => esc_html__( 'No, cancel!', 'mailchimp' ),
+			'admin_settings_url'           => esc_url( admin_url( 'admin.php?page=mailchimp_sf_options' ) ),
+			'user_sync_status_nonce'       => wp_create_nonce( 'mailchimp_sf_user_sync_status' ),
+			'delete_user_sync_error_nonce' => wp_create_nonce( 'mailchimp_sf_delete_user_sync_error' ),
+			'no_errors_found'              => esc_html__( 'No errors found', 'mailchimp' ),
 		);
 
 		// Create account page specific data.
@@ -507,11 +513,21 @@ class Mailchimp_Admin {
 	}
 
 	/**
-	 * Add the create account page.
+	 * Add the create account page and the settings page to the admin menu.
 	 *
 	 * @since 1.6.0
 	 */
-	public function add_create_account_page() {
+	public function add_admin_menu_pages() {
+		// Add settings page.
+		add_menu_page(
+			esc_html__( 'Mailchimp Setup', 'mailchimp' ),
+			esc_html__( 'Mailchimp', 'mailchimp' ),
+			MCSF_CAP_THRESHOLD,
+			'mailchimp_sf_options',
+			array( $this, 'settings_page' ),
+			'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi4wMyA1NSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5Bc3NldCAxPC90aXRsZT48ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIj48ZyBpZD0iTGF5ZXJfMS0yIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTExLjY0LDI4LjU0YTQuNzUsNC43NSwwLDAsMC0xLjE3LjA4Yy0yLjc5LjU2LTQuMzYsMi45NC00LjA1LDZhNi4yNCw2LjI0LDAsMCwwLDUuNzIsNS4yMSw0LjE3LDQuMTcsMCwwLDAsLjgtLjA2YzIuODMtLjQ4LDMuNTctMy41NSwzLjEtNi41N0MxNS41MSwyOS44MywxMy4yMSwyOC42MywxMS42NCwyOC41NFptMi43Nyw4LjA3YTEuMTcsMS4xNywwLDAsMS0xLjEuNTUsMS41MywxLjUzLDAsMCwxLTEuMzctMS41OEE0LDQsMCwwLDEsMTIuMjMsMzRhMS40NCwxLjQ0LDAsMCwwLS41NS0xLjc0LDEuNDgsMS40OCwwLDAsMC0xLjEyLS4yMSwxLjQ0LDEuNDQsMCwwLDAtLjkyLjY0LDMuMzksMy4zOSwwLDAsMC0uMzQuNzlsMCwuMTFjLS4xMy4zNC0uMzMuNDUtLjQ3LjQzcy0uMTYtLjA1LS4yMS0uMjFhMywzLDAsMCwxLC43OC0yLjU1LDIuNDYsMi40NiwwLDAsMSwyLjExLS43NiwyLjUsMi41LDAsMCwxLDEuOTEsMS4zOSwzLjE5LDMuMTksMCwwLDEtLjIzLDIuODJsLS4wOS4yQTEuMTYsMS4xNiwwLDAsMCwxMywzNmEuNzQuNzQsMCwwLDAsLjYzLjMyLDEuMzgsMS4zOCwwLDAsMCwuMzQsMGMuMTUsMCwuMy0uMDcuMzksMEEuMjQuMjQsMCwwLDEsMTQuNDEsMzYuNjFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTEsMzMuODhhMy44NCwzLjg0LDAsMCwwLTEuMTUtMWwtLjExLS4zNy0uMTQtLjQyYTUuNTcsNS41NywwLDAsMCwuNS0zLjMyLDUuNDMsNS40MywwLDAsMC0xLjU0LTMsMTAuMDksMTAuMDksMCwwLDAtNC4yNC0yLjI2YzAtLjY3LDAtMS40My0uMDYtMS45YTEyLjgzLDEyLjgzLDAsMCwwLS40OS0zLjI1LDEwLjQ2LDEwLjQ2LDAsMCwwLTEuMy0yLjkyYzIuMTQtMi41NiwzLjI5LTUuMjEsMy4yOS03LjU3LDAtMy44My0zLTYuMy03LjU5LTYuM2ExOS4zLDE5LjMsMCwwLDAtNy4yMiwxLjZsLS4zNC4xNEwyOC43LDEuNTJBNi4zMSw2LjMxLDAsMCwwLDI0LjQzLDAsMTQuMDcsMTQuMDcsMCwwLDAsMTcuNiwyLjJhMzYuOTMsMzYuOTMsMCwwLDAtNi43OCw1LjIxYy00LjYsNC4zOC04LjMsOS42My05LjkxLDE0QTEyLjUxLDEyLjUxLDAsMCwwLDAsMjYuNTRhNi4xNiw2LjE2LDAsMCwwLDIuMTMsNC40bC43OC42NkExMC40NCwxMC40NCwwLDAsMCwyLjc0LDM1YTkuMzYsOS4zNiwwLDAsMCwzLjIxLDYsMTAsMTAsMCwwLDAsNS4xMywyLjQzLDIwLjE5LDIwLjE5LDAsMCwwLDcuMzEsOEEyMy4zMywyMy4zMywwLDAsMCwzMC4xNyw1NUgzMWEyMy4yNywyMy4yNywwLDAsMCwxMi0zLjE2LDE5LjEsMTkuMSwwLDAsMCw3LjgyLTkuMDZsMCwwQTE2Ljg5LDE2Ljg5LDAsMCwwLDUyLDM3LjIzLDUuMTcsNS4xNywwLDAsMCw1MSwzMy44OFptLTEuNzgsOC4yMWMtMyw3LjI5LTEwLjMsMTEuMzUtMTksMTEuMDktOC4wNi0uMjQtMTQuOTQtNC41LTE4LTExLjQzYTcuOTQsNy45NCwwLDAsMS01LjEyLTIuMDYsNy41Niw3LjU2LDAsMCwxLTIuNjEtNC44NUE4LjMxLDguMzEsMCwwLDEsNSwzMUwzLjMyLDI5LjU2Qy00LjQyLDIzLDE5Ljc3LTMuODYsMjcuNTEsMi44OWwyLjY0LDIuNTgsMS40NC0uNjFjNi43OS0yLjgxLDEyLjMtMS40NSwxMi4zLDMsMCwyLjMzLTEuNDgsNS4wNS0zLjg2LDcuNTJhNy41NCw3LjU0LDAsMCwxLDIsMy40OCwxMSwxMSwwLDAsMSwuNDIsMi44MmMwLDEsLjA5LDMuMTYuMDksMy4ybDEsLjI3QTguNjQsOC42NCwwLDAsMSw0Ny4yLDI3YTMuNjYsMy42NiwwLDAsMSwxLjA2LDIuMDZBNCw0LDAsMCwxLDQ3LjU1LDMyLDEwLjE1LDEwLjE1LDAsMCwxLDQ4LDMzLjA4Yy4yLjY0LjM1LDEuMTguMzcsMS4yNS43NCwwLDEuODkuODUsMS44OSwyLjg5QTE1LjI5LDE1LjI5LDAsMCwxLDQ5LjE4LDQyLjA5WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ4LDM2YTEuMzYsMS4zNiwwLDAsMC0uODYtLjE2LDExLjc2LDExLjc2LDAsMCwwLS44Mi0yLjc4QTE3Ljg5LDE3Ljg5LDAsMCwxLDQwLjQ1LDM2YTIzLjY0LDIzLjY0LDAsMCwxLTcuODEuODRjLTEuNjktLjE0LTIuODEtLjYzLTMuMjMuNzRhMTguMywxOC4zLDAsMCwwLDgsLjgxLjE0LjE0LDAsMCwxLC4xNi4xMy4xNS4xNSwwLDAsMS0uMDkuMTVzLTMuMTQsMS40Ni04LjE0LS4wOGEyLjU4LDIuNTgsMCwwLDAsMS44MywxLjkxLDguMjQsOC4yNCwwLDAsMCwxLjQ0LjM5YzYuMTksMS4wNiwxMi0yLjQ3LDEzLjI3LTMuMzYuMS0uMDcuMTYsMCwuMDguMTJsLS4xMy4xOGMtMS41OSwyLjA2LTUuODgsNC40NC0xMS40NSw0LjQ0LTIuNDMsMC00Ljg2LS44Ni01Ljc1LTIuMTctMS4zOC0yLS4wNy01LDIuMjQtNC43MWwxLC4xMWEyMS4xMywyMS4xMywwLDAsMCwxMC41LTEuNjhjMy4xNS0xLjQ2LDQuMzQtMy4wNyw0LjE2LTQuMzdBMS44NywxLjg3LDAsMCwwLDQ2LDI4LjM0YTYuOCw2LjgsMCwwLDAtMy0xLjQxYy0uNS0uMTQtLjg0LS4yMy0xLjItLjM1LS42NS0uMjEtMS0uMzktMS0xLjYxLDAtLjUzLS4xMi0yLjQtLjE2LTMuMTYtLjA2LTEuMzUtLjIyLTMuMTktMS4zNi00YTEuOTIsMS45MiwwLDAsMC0xLS4zMSwxLjg2LDEuODYsMCwwLDAtLjU4LjA2LDMuMDcsMy4wNywwLDAsMC0xLjUyLjg2LDUuMjQsNS4yNCwwLDAsMS00LDEuMzJjLS44LDAtMS42NS0uMTYtMi42Mi0uMjJsLS41NywwYTUuMjIsNS4yMiwwLDAsMC01LDQuNTdjLS41NiwzLjgzLDIuMjIsNS44MSwzLDdhMSwxLDAsMCwxLC4yMi41Mi44My44MywwLDAsMS0uMjguNTVoMGE5LjgsOS44LDAsMCwwLTIuMTYsOS4yLDcuNTksNy41OSwwLDAsMCwuNDEsMS4xMmMyLDQuNzMsOC4zLDYuOTMsMTQuNDMsNC45M2ExNS4wNiwxNS4wNiwwLDAsMCwyLjMzLTEsMTIuMjMsMTIuMjMsMCwwLDAsMy41Ny0yLjY3LDEwLjYxLDEwLjYxLDAsMCwwLDMtNS44MkM0OC42LDM2LjcsNDguMzMsMzYuMjMsNDgsMzZabS04LjI1LTcuODJjMCwuNS0uMzEuOTEtLjY4LjlzLS42Ni0uNDItLjY1LS45Mi4zMS0uOTEuNjgtLjlTMzkuNzIsMjcuNjgsMzkuNzEsMjguMThabS0xLjY4LTZjLjcxLS4xMiwxLjA2LjYyLDEuMzIsMS44NWEzLjY0LDMuNjQsMCwwLDEtLjA1LDIsNC4xNCw0LjE0LDAsMCwwLTEuMDYsMCw0LjEzLDQuMTMsMCwwLDEtLjY4LTEuNjRDMzcuMjksMjMuMjMsMzcuMzEsMjIuMzQsMzgsMjIuMjNabS0yLjQsNi41N2EuODIuODIsMCwwLDEsMS4xMS0uMTljLjQ1LjIyLjY5LjY3LjUzLDFhLjgyLjgyLDAsMCwxLTEuMTEuMTlDMzUuNywyOS41OCwzNS40NywyOS4xMywzNS42MywyOC44Wm0tMi44LS4zN2MtLjA3LjExLS4yMy4wOS0uNTcuMDZhNC4yNCw0LjI0LDAsMCwwLTIuMTQuMjIsMiwyLDAsMCwxLS40OS4xNC4xNi4xNiwwLDAsMS0uMTEsMCwuMTUuMTUsMCwwLDEtLjA1LS4xMi44MS44MSwwLDAsMSwuMzItLjUxLDIuNDEsMi40MSwwLDAsMSwxLjI3LS41MywxLjk0LDEuOTQsMCwwLDEsMS43NS41N0EuMTkuMTksMCwwLDEsMzIuODMsMjguNDNabS01LjExLTEuMjZjLS4xMiwwLS4xNy0uMDctLjE5LS4xNHMuMjgtLjU2LjYyLS44MWEzLjYsMy42LDAsMCwxLDMuNTEtLjQyQTMsMywwLDAsMSwzMywyNi44N2MuMTIuMi4xNS4zNS4wNy40NHMtLjQ0LDAtLjk1LS4yNGE0LjE4LDQuMTgsMCwwLDAtMi0uNDNBMjEuODUsMjEuODUsMCwwLDAsMjcuNzEsMjcuMTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzUuNSwxMy4yOWMuMSwwLC4xNi0uMTUuMDctLjJhMTEsMTEsMCwwLDAtNC42OS0xLjIzLjA5LjA5LDAsMCwxLS4wNy0uMTQsNC43OCw0Ljc4LDAsMCwxLC44OC0uODkuMDkuMDksMCwwLDAtLjA2LS4xNiwxMi40NiwxMi40NiwwLDAsMC01LjYxLDIsLjA5LjA5LDAsMCwxLS4xMy0uMDksNi4xNiw2LjE2LDAsMCwxLC41OS0xLjQ1LjA4LjA4LDAsMCwwLS4xMS0uMTFBMjIuNzksMjIuNzksMCwwLDAsMjAsMTYuMjRhLjA5LjA5LDAsMCwwLC4xMi4xM0ExOS41MywxOS41MywwLDAsMSwyNywxMy4zMiwxOS4xLDE5LjEsMCwwLDEsMzUuNSwxMy4yOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yOC4zNCw2LjQyUzI2LjIzLDQsMjUuNiwzLjhDMjEuNjksMi43NCwxMy4yNCw4LjU3LDcuODQsMTYuMjcsNS42NiwxOS4zOSwyLjUzLDI0LjksNCwyNy43NGExMS40MywxMS40MywwLDAsMCwxLjc5LDEuNzJBNi42NSw2LjY1LDAsMCwxLDEwLDI2Ljc4LDM0LjIxLDM0LjIxLDAsMCwxLDIwLjgsMTEuNjIsNTUuMDksNTUuMDksMCwwLDEsMjguMzQsNi40MloiLz48L2c+PC9nPjwvc3ZnPg=='
+		);
+
 		add_submenu_page(
 			'admin.php',
 			esc_html__( 'Create Mailchimp Account', 'mailchimp' ),
@@ -539,6 +555,17 @@ class Mailchimp_Admin {
 			?>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Render the settings page.
+	 *
+	 * @since 1.9.0
+	 *
+	 * @return void
+	 */
+	public function settings_page() {
+		include_once MCSF_DIR . 'includes/admin/templates/settings.php';
 	}
 
 	/**

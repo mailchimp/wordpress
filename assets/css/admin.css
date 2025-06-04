@@ -19,7 +19,8 @@
 table.mc-user,
 .mc-list-row,
 .mc-list-note,
-.mc-section {
+.mc-section,
+.mailchimp-sf-nav-tab-wrapper {
 	max-width: 900px;
 	width: 100%;
 }
@@ -38,17 +39,24 @@ table.mc-user,
 }
 
 /* Sections */
-table.mc-widefat {
+table.mc-widefat, .mailchimp-sf-user-sync-page table.form-table {
 	background: var(--mailchimp-color-white);
 	border: 2px solid var(--mailchimp-color-header-bg) !important;
 	border-radius: 6px;
 	margin: 2.75rem 0 2.25rem;
 }
 
+.mailchimp-sf-user-sync-page table.form-table {
+	border-collapse: separate;
+	border-spacing: 0px;
+}
+
+.mailchimp-sf-user-sync-page table.form-table tr:first-child,
 table.mc-widefat tr:first-child {
 	background: var(--mailchimp-color-header-bg);
 }
 
+.mailchimp-sf-user-sync-page table.form-table tr:first-child th,
 table.mc-widefat tr:first-child th {
 	color: var(--mailchimp-color-text);
 	font-weight: 500;
@@ -181,6 +189,8 @@ table.mc-list-select {
 }
 
 /* Table */
+.mailchimp-sf-user-sync-page table.form-table td,
+.mailchimp-sf-user-sync-page table.form-table th,
 table.mc-widefat td,
 table.mc-widefat th {
 	padding: 18px;
@@ -188,6 +198,8 @@ table.mc-widefat th {
 	text-shadow: none;
 }
 
+.mailchimp-sf-user-sync-page table.form-table .last-row td,
+.mailchimp-sf-user-sync-page table.form-table .last-row th,
 table.mc-widefat .last-row td,
 table.mc-widefat .last-row th {
 	border-bottom: none !important;
@@ -197,6 +209,11 @@ table.mc-widefat th {
 	color: var(--mailchimp-color-text-light) !important;
 	font-weight: 500;
 	width: 130px;
+}
+
+.mailchimp-sf-user-sync-page table.form-table th {
+	color: var(--mailchimp-color-text-light);
+	font-weight: 500;
 }
 
 table.mc-widefat td label {
@@ -213,6 +230,7 @@ table.mc-widefat td {
 	line-height: 1.125 !important;
 }
 
+.mailchimp-sf-user-sync-page table.form-table td input,
 table.mc-widefat td input {
 	display: inline-block;
 	font-style: normal;
@@ -259,6 +277,31 @@ th.mailchimp-connect {
 
 #mc-message {
 	margin-top: 26px;
+}
+
+/**
+ * Navigation
+ */
+.mailchimp-sf-nav-tab-wrapper {
+	margin-top: 1em;
+}
+
+.mailchimp-sf-nav-tab-wrapper a.nav-tab {
+	border: 0px;
+	background: transparent;
+	color: #000;
+	margin-left: 0;
+    font-weight: 500;
+    padding: 5px 12px;
+}
+
+.mailchimp-sf-nav-tab-wrapper a.nav-tab:hover {
+	color: var(--mailchimp-color-link);
+}
+
+.mailchimp-sf-nav-tab-wrapper a.nav-tab.nav-tab-active {
+	border-bottom: 2px solid var(--mailchimp-color-link);
+	color: var(--mailchimp-color-link);
 }
 
 /**
@@ -390,6 +433,11 @@ body.toplevel_page_mailchimp_sf_options a {
 	color: var(--mailchimp-color-link);
 }
 
+body.admin_page_mailchimp_sf_create_account a:hover,
+body.toplevel_page_mailchimp_sf_options a:hover {
+	color: #006570;
+}
+
 body.admin_page_mailchimp_sf_create_account #footer-upgrade,
 body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	display: none;
@@ -516,7 +564,8 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	cursor: not-allowed;
 }
 
-.button.mailchimp-sf-button.small {
+.button.mailchimp-sf-button.small,
+.button.mailchimp-sf-button.user-sync-settings-submit {
 	padding: 8px 16px;
 	line-height: 14px;
 	float: right;
@@ -749,3 +798,97 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 		column-gap: 16px;
 	}
 }
+
+.mailchimp-sf-user-sync-page {
+	max-width: 900px;
+}
+
+.mailchimp-sf-user-sync-page .subscribe_status_label {
+	font-weight: 500;
+}
+
+.mailchimp-sf-user-sync-page p.description_small {
+	font-size: 0.9em;
+	margin-bottom: 10px;
+}
+
+.mailchimp-sf-user-sync-status {
+	margin: 15px 0;
+	padding: 10px;
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+}
+.mailchimp-sf-user-sync-status .mailchimp-sf-sync-progress {
+	display: flex;
+	align-items: center;
+	flex-direction: row;
+}
+.mailchimp-sf-user-sync-status .sync-status-text {
+	font-size: 14px;
+	line-height: 1.4;
+}
+
+.button.mailchimp-cancel-user-sync-button {
+	margin-left: auto;
+}
+
+@media screen and (max-width: 480px) {
+	.mailchimp-sf-user-sync-status .mailchimp-sf-sync-progress {
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.button.mailchimp-cancel-user-sync-button {
+		margin-left: 0px;
+		margin-top: 10px;
+	}
+}
+
+.mailchimp-sf-user-sync-errors {
+	margin-top: 2rem;
+}
+
+.mailchimp-sf-user-sync-errors-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.mailchimp-sf-user-sync-error-action {
+	min-width: 120px;
+	text-align: right;
+}
+
+.mailchimp-sf-start-user-sync-wrapper {
+	width: 100%;
+	margin-top: 2em;
+	background-color: #ffffff;
+	border: 1px solid #ccd0d4;
+	border-radius: 6px;
+}
+
+.mailchimp-sf-start-user-sync-box {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 1rem;
+}
+
+.mailchimp-sf-start-user-sync-box h2 {
+	margin: 0;
+}
+
+.mailchimp-sf-start-user-sync-box p {
+	margin-top: 0.5rem;
+}
+
+.mailchimp-sf-start-user-sync-box .mailchimp-sf-button {
+	float: none;
+	margin-right: 8px;
+}
+
+.mailchimp-sf-start-user-sync-box a {
+	text-decoration: none;
+}
+
