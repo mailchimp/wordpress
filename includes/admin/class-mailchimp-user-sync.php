@@ -13,14 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_User_Sync
  *
- * @since x.x.x
+ * @since 1.9.0
  */
 class Mailchimp_User_Sync {
 
 	/**
 	 * The option name.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @var string
 	 */
 	protected $option_name = 'mailchimp_sf_user_sync_settings';
@@ -28,7 +28,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * The errors option name.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @var string
 	 */
 	protected $errors_option_name = 'mailchimp_sf_user_sync_errors';
@@ -36,7 +36,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * The background process.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @var Mailchimp_User_Sync_Background_Process
 	 */
 	protected $background_process;
@@ -83,7 +83,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Register the user sync settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function register_settings() {
 		$args = array(
@@ -96,7 +96,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Setup the fields and sections.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function setup_fields_sections() {
 		$section_id = $this->option_name . '_section';
@@ -171,7 +171,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Get the user sync settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @param string|null $key The key to get.
 	 * @return array|null The user sync settings.
 	 */
@@ -198,15 +198,15 @@ class Mailchimp_User_Sync {
 	/**
 	 * Sanitize the user sync settings.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @param array $new_settings The settings to sanitize.
 	 * @return array The sanitized settings.
 	 */
 	public function sanitize_user_sync_settings( $new_settings ) {
 		$settings                           = $this->get_user_sync_settings();
-		$settings['enable_user_sync']       = isset( $new_settings['enable_user_sync'] ) ? 1 : 0;
+		$settings['enable_user_sync']       = ( isset( $new_settings['enable_user_sync'] ) && 1 === absint( $new_settings['enable_user_sync'] ) ) ? 1 : 0;
 		$settings['user_roles']             = isset( $new_settings['user_roles'] ) ? array_map( 'sanitize_text_field', $new_settings['user_roles'] ) : array();
-		$settings['existing_contacts_only'] = isset( $new_settings['existing_contacts_only'] ) ? 1 : 0;
+		$settings['existing_contacts_only'] = ( isset( $new_settings['existing_contacts_only'] ) && 1 === absint( $new_settings['existing_contacts_only'] ) ) ? 1 : 0;
 		$settings['subscriber_status']      = isset( $new_settings['subscriber_status'] ) ? sanitize_text_field( $new_settings['subscriber_status'] ) : 'pending';
 
 		return $settings;
@@ -215,7 +215,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the user roles field.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function user_roles_field() {
 		$settings   = $this->get_user_sync_settings( 'user_roles' );
@@ -248,7 +248,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the enable user sync field.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function enable_user_sync_field() {
 		$value = $this->get_user_sync_settings( 'enable_user_sync' );
@@ -269,7 +269,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the subscriber status field.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function subscriber_status_field() {
 		$settings = $this->get_user_sync_settings( 'subscriber_status' );
@@ -335,7 +335,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the existing contacts only field.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function existing_contacts_only_field() {
 		$settings               = $this->get_user_sync_settings();
@@ -351,7 +351,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the sync all users field.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function sync_all_users_button() {
 		$start_sync_url = wp_nonce_url( add_query_arg( 'action', 'mailchimp_sf_start_user_sync', admin_url( 'admin-post.php' ) ), 'mailchimp_sf_start_user_sync', 'mailchimp_sf_start_user_sync_nonce' );
@@ -368,7 +368,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Start the user sync.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function start_user_sync() {
 		if (
@@ -445,7 +445,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Cancel the user sync.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function cancel_user_sync() {
 		if (
@@ -479,7 +479,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Skip the user sync cta.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function skip_user_sync_cta() {
 		if (
@@ -579,7 +579,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Get the total users.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @return int The total users.
 	 */
 	public function get_users_count() {
@@ -601,7 +601,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Get the user sync status.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function render_user_sync_status() {
 		$is_syncing = $this->background_process->in_progress();
@@ -622,7 +622,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Render the user sync start cta.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function render_user_sync_start_cta() {
 		// Check if the cta is already shown.
@@ -680,7 +680,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Get the user sync progress.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function render_user_sync_progress() {
 		$is_syncing = $this->background_process->in_progress();
@@ -755,7 +755,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Get the user sync errors.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @return array The user sync errors.
 	 */
 	public function get_user_sync_errors() {
@@ -765,7 +765,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Set the user sync errors.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 * @param array $errors The user sync errors.
 	 */
 	public function set_user_sync_errors( $errors ) {
@@ -781,7 +781,7 @@ class Mailchimp_User_Sync {
 	/**
 	 * Delete the user sync error.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 *
 	 * @param string $id The id of the user sync error.
 	 */
@@ -804,7 +804,7 @@ class Mailchimp_User_Sync {
 	 * Render the user sync errors.
 	 * Note: This is only renders last 100 records.
 	 *
-	 * @since x.x.x
+	 * @since 1.9.0
 	 */
 	public function render_user_sync_errors() {
 		$errors = $this->get_user_sync_errors();

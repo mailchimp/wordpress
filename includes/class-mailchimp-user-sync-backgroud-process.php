@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_User_Sync_Background_Process
  *
- * @since x.x.x
+ * @since 1.9.0
  */
 class Mailchimp_User_Sync_Background_Process {
 
