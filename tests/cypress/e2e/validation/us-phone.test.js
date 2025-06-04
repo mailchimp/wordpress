@@ -2,14 +2,9 @@
 import { generateRandomEmail } from '../../support/functions/utility';
 
 /**
- * Test Suite for Multi-Input Phone Number Validation
- * Handles both JavaScript-enabled and disabled scenarios for length and format validation.
+ * Test for Phone Number Validation
  */
-// TODO: BUG: Skipping for now because when a US phone number is selected in the Mailchimp account, but
-// not present on the webform there will always be a fatal error. There is a fix pending for 1.7.0.
-// TODO: Skipping for now because the Mailchimp API does not allow changing the format for a phone merge
-// field to the US style
-describe.skip('US Multi-Input Phone Number Validation', () => {
+describe('US Multi-Input Phone Number Validation', () => {
 	let blockPostPostURL;
 
 	const validPhones = [
@@ -22,7 +17,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 	];
 	const tooShortPhones = [
 		{ area: '12', detail1: '456', detail2: '789' },
-		{ area: '', detail1: '45', detail2: '7890' },
+		{ area: '1', detail1: '45', detail2: '7890' },
 	];
 	const tooLongPhones = [
 		{ area: '1234', detail1: '567', detail2: '890' },
@@ -37,25 +32,25 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			({ blockPostPostURL } = urls);
 		});
 
-		// cy.getListId('10up').then((listId) => {
-		// 	cy.updateMergeFieldByTag(listId, 'PHONE', {
-		// 		required: true,
-		// 		options: { phone_format: 'US' },
-		// 	}).then(() => {
-		// 		cy.selectList('10up');
-		// 	});
-		// });
+		cy.getListId('10up').then((listId) => {
+			cy.updateMergeFieldByTag(listId, 'PHONE', {
+				required: true,
+				options: { phone_format: 'US' },
+			}).then(() => {
+				cy.selectList('10up');
+			});
+		});
 	});
 
 	after(() => {
-		// cy.getListId('10up').then((listId) => {
-		// 	cy.updateMergeFieldByTag(listId, 'PHONE', {
-		// 		required: false,
-		// 		options: { phone_format: 'none' },
-		// 	}).then(() => {
-		// 		cy.selectList('10up');
-		// 	});
-		// });
+		cy.getListId('10up').then((listId) => {
+			cy.updateMergeFieldByTag(listId, 'PHONE', {
+				required: false,
+				options: { phone_format: 'none' },
+			}).then(() => {
+				cy.selectList('10up');
+			});
+		});
 	});
 
 	function fillPhoneInputs(phone) {
@@ -98,7 +93,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			cy.get('#mc_mv_EMAIL').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyError();
-			cy.get('.mc_error_msg').contains('Phone number is too short');
+			cy.get('.mc_error_msg').contains('should be 10 digits long');
 		});
 
 		tooLongPhones.forEach((phone) => {
@@ -106,7 +101,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 			cy.get('#mc_mv_EMAIL').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyError();
-			cy.get('.mc_error_msg').contains('Phone number is too long');
+			cy.get('.mc_error_msg').contains('should be 10 digits long');
 		});
 	});
 });

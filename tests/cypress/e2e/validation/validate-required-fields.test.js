@@ -7,21 +7,29 @@ describe('Validate required fields', () => {
 
 	// (almost) the same in the WP admin as on the FE
 	const requiredFields = [
-		{ selector: '#mc_mv_FNAME', errorMessage: 'First Name:', input: 'Test' },
-		{ selector: '#mc_mv_LNAME', errorMessage: 'Last Name:', input: 'User' },
+		{ selector: '#mc_mv_FNAME', errorMessage: 'You must fill in First Name', input: 'Test' },
+		{ selector: '#mc_mv_LNAME', errorMessage: 'You must fill in Last Name', input: 'User' },
 		{ selector: '#mc_mv_ADDRESS-addr1', errorMessage: 'Address:', input: '123 Fake St.' }, // Address has sub fields on the FE form
 		{ selector: '#mc_mv_ADDRESS-city', errorMessage: 'Address:', input: 'Nashville' }, // Address has sub fields on the FE form
 		{ selector: '#mc_mv_ADDRESS-state', errorMessage: 'Address:', input: 'TN' }, // Address has sub fields on the FE form
 		{ selector: '#mc_mv_ADDRESS-zip', errorMessage: 'Address:', input: '12345' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_BIRTHDAY', errorMessage: 'Birthday:', input: '01/10' },
-		{ selector: '#mc_mv_COMPANY', errorMessage: 'Company:', input: '10up' },
-		{ selector: '#mc_mv_PHONE', errorMessage: 'Phone Number:', input: '555-555-5555' },
-		{ selector: '#mc_mv_MMERGE8', errorMessage: 'Date:', input: '01/01/2030' },
-		{ selector: '#mc_mv_MMERGE9', errorMessage: 'Zip Code:', input: '12345' },
-		{ selector: '#mc_mv_MMERGE10', errorMessage: 'Website:', input: 'https://10up.com' },
+		{ selector: '#mc_mv_BIRTHDAY', errorMessage: 'You must fill in Birthday', input: '01/10' },
+		{ selector: '#mc_mv_COMPANY', errorMessage: 'You must fill in Company', input: '10up' },
+		{
+			selector: '#mc_mv_PHONE',
+			errorMessage: 'You must fill in Phone Number.',
+			input: '555-555-5555',
+		},
+		{ selector: '#mc_mv_MMERGE8', errorMessage: 'You must fill in Date.', input: '01/01/2030' },
+		{ selector: '#mc_mv_MMERGE9', errorMessage: 'You must fill in Zip Code.', input: '12345' },
+		{
+			selector: '#mc_mv_MMERGE10',
+			errorMessage: 'You must fill in Website.',
+			input: 'https://10up.com',
+		},
 		{
 			selector: '#mc_mv_MMERGE11',
-			errorMessage: 'Image:',
+			errorMessage: 'You must fill in Image.',
 			input: 'https://10up.com/wp-content/themes/10up-sept2016/assets/img/icon-strategy.png',
 		},
 	];
@@ -86,8 +94,6 @@ describe('Validate required fields', () => {
 		cy.toggleMergeFields('uncheck');
 	});
 
-	// TODO: Validation errors clear the entire form. We should fix this.
-	// We could also significantly reduce the time this test takes by fixing this bug.
 	function fillOutAllFields() {
 		cy.get('#mc_mv_EMAIL').clear().type(email); // Email is always required
 
@@ -114,7 +120,6 @@ describe('Validate required fields', () => {
 		});
 	}
 
-	// TODO: Test just takes too long to run
 	it('ensures that a required field can not be empty', () => {
 		cy.visit(blockPostPostURL);
 
