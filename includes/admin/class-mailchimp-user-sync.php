@@ -204,9 +204,9 @@ class Mailchimp_User_Sync {
 	 */
 	public function sanitize_user_sync_settings( $new_settings ) {
 		$settings                           = $this->get_user_sync_settings();
-		$settings['enable_user_sync']       = isset( $new_settings['enable_user_sync'] ) ? 1 : 0;
+		$settings['enable_user_sync']       = ( isset( $new_settings['enable_user_sync'] ) && 1 === absint( $new_settings['enable_user_sync'] ) ) ? 1 : 0;
 		$settings['user_roles']             = isset( $new_settings['user_roles'] ) ? array_map( 'sanitize_text_field', $new_settings['user_roles'] ) : array();
-		$settings['existing_contacts_only'] = isset( $new_settings['existing_contacts_only'] ) ? 1 : 0;
+		$settings['existing_contacts_only'] = ( isset( $new_settings['existing_contacts_only'] ) && 1 === absint( $new_settings['existing_contacts_only'] ) ) ? 1 : 0;
 		$settings['subscriber_status']      = isset( $new_settings['subscriber_status'] ) ? sanitize_text_field( $new_settings['subscriber_status'] ) : 'pending';
 
 		return $settings;

@@ -47,7 +47,8 @@ table.mc-widefat, .mailchimp-sf-user-sync-page table.form-table {
 }
 
 .mailchimp-sf-user-sync-page table.form-table {
-	display: block;
+	border-collapse: separate;
+	border-spacing: 0px;
 }
 
 .mailchimp-sf-user-sync-page table.form-table tr:first-child,
