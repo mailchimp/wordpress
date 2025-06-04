@@ -296,10 +296,10 @@ class Mailchimp_User_Sync {
 		<div>
 			<label for="subscriber_status_transactional" class="subscribe_status_label">
 				<input type="radio" id="subscriber_status_transactional" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="transactional" <?php checked( $settings, 'transactional' ); ?> />
-				<?php esc_html_e( 'Sync as non-subscribed', 'mailchimp' ); ?>
+				<?php esc_html_e( 'Sync as Non-Subscribed', 'mailchimp' ); ?>
 			</label>
 			<p class="description_small">
-				<?php esc_html_e( 'This status indicates you haven\'t gotten permission to market to these users. However, you can use Mailchimp to send ', 'mailchimp' ); ?><a href="https://mailchimp.com/help/about-non-subscribed-contacts/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'non-subscribed contacts', 'mailchimp' ); ?></a> <?php esc_html_e( 'transactional emails and postcards and target them with ads.', 'mailchimp' ); ?>
+				<?php esc_html_e( 'This status indicates you haven\'t gotten permission to market to these users. However, you can use Mailchimp to message ', 'mailchimp' ); ?><a href="https://mailchimp.com/help/about-non-subscribed-contacts/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'non-subscribed contacts.', 'mailchimp' ); ?></a>
 			</p>
 		</div>
 		<p class="description_small">
@@ -343,7 +343,7 @@ class Mailchimp_User_Sync {
 		?>
 		<input type="checkbox" name="<?php echo esc_attr( $this->option_name . '[existing_contacts_only]' ); ?>" value="1" <?php checked( $existing_contacts_only, 1, true ); ?> />
 		<p class="description">
-			<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync. You won\'t be able to send your other users postcards or target them with ads.', 'mailchimp' ); ?>
+			<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync.', 'mailchimp' ); ?>
 		</p>
 		<?php
 	}
