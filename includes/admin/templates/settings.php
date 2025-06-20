@@ -29,21 +29,8 @@ $is_list_selected = false;
 		?>
 		<div class="wrap">
 			<hr class="wp-header-end" />
-			<?php settings_errors(); ?>
-			<table class="mc-user" cellspacing="0">
-				<tr>
-					<td><h3><?php esc_html_e( 'Logged in as', 'mailchimp' ); ?>: <?php echo esc_html( $user['username'] ); ?></h3>
-					</td>
-					<td>
-						<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( 'Are you sure you want to log out?', 'mailchimp' ) ); ?>');">
-							<input type="hidden" name="mcsf_action" value="logout"/>
-							<input type="submit" name="Submit" value="<?php esc_attr_e( 'Logout', 'mailchimp' ); ?>" class="button button-secondary mailchimp-sf-button small" />
-							<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
-						</form>
-					</td>
-				</tr>
-			</table>
 			<?php
+			settings_errors();
 			// Just get out if nothing else matters...
 			$api = mailchimp_sf_get_api();
 			if ( ! $api ) {
