@@ -36,7 +36,7 @@ $is_logged_in = ! ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_
 			<div class="user-profile-logout">
 				<form method="post" action="" onsubmit="return confirm('<?php echo esc_js( __( 'Are you sure you want to log out?', 'mailchimp' ) ); ?>');">
 					<input type="hidden" name="mcsf_action" value="logout"/>
-					<input type="submit" name="submit" value="<?php esc_attr_e( 'Log out', 'mailchimp' ); ?>" class="mailchimp-sf-button btn-secondary" />
+					<input type="submit" name="submit" value="<?php esc_attr_e( 'Log out', 'mailchimp' ); ?>" class="mailchimp-sf-button btn-secondary btn-small" />
 					<?php wp_nonce_field( 'mc_logout', '_mcsf_nonce_action' ); ?>
 				</form>
 			</div>

@@ -25,84 +25,63 @@ $is_list_selected = false;
 		include_once MCSF_DIR . 'includes/admin/templates/login.php';
 	} else {
 		$user = get_option( 'mc_user' );
+
+		// Settings header.
+		include_once MCSF_DIR . 'includes/admin/templates/settings-header.php';
 		?>
-		<div class="mailchimp-sf-settings-page-hero-wrapper">
-			<div class="mailchimp-sf-settings-page-hero">
-				<div class="mailchimp-sf-settings-page-hero-title-wrapper">
-					<h1 class="mailchimp-sf-settings-page-hero-title">
-						<?php esc_html_e( 'Settings', 'mailchimp' ); ?>
-					</h1>
-					<p class="mailchimp-sf-settings-page-hero-description">
-						<?php esc_html_e( 'You can use this page to configure the default fields, copy, and behavior of the Mailchimp block.', 'mailchimp' ); ?>
-					</p>
-				</div>
-				<div class="mailchimp-sf-settings-page-hero-content-wrapper">
-					<div class="mailchimp-sf-settings-page-hero-content">
-						<h3>
-							<?php esc_html_e( 'How to use your form', 'mailchimp' ); ?>
-						</h3>
-						<p>
-							<?php esc_html_e( 'You can now find your forms in the editor, select the + icon and look for your form under "Mailchimp List Subscribe Form".', 'mailchimp' ); ?>
-						</p>
-					</div>
-					<div class="mailchimp-sf-settings-page-hero-content-image">
-						<img src="<?php echo esc_url( MCSF_URL . 'assets/images/settings-block.png' ); ?>" alt="Settings Hero">
-					</div>
-				</div>
-			</div>
-		</div>
 
 		<div class="wrap">
-			<hr class="wp-header-end" />
 			<?php
-			settings_errors();
 			// Just get out if nothing else matters...
 			$api = mailchimp_sf_get_api();
 			if ( ! $api ) {
 				return;
 			}
 			?>
-
-			<div class="mailchimp-sf-settings-page">
-				<h3 class="mc-h2"><?php esc_html_e( 'Your Lists', 'mailchimp' ); ?></h3>
-				<div>
-					<p class="mc-p"><?php esc_html_e( 'Please select the Mailchimp list you\'d like to connect to your form.', 'mailchimp' ); ?></p>
-					<p class="mc-list-note"><strong><?php esc_html_e( 'Note:', 'mailchimp' ); ?></strong> <?php esc_html_e( 'Updating your list will not remove list settings in this plugin, but changing lists will.', 'mailchimp' ); ?></p>
-
-					<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
-						<?php
-						// we *could* support paging, but few users have that many lists (and shouldn't)
-						$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
-						if ( is_wp_error( $lists ) ) {
-							$msg = sprintf(
-								/* translators: %s: error message */
-								esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
-								esc_html( $lists->get_error_message() )
-							);
-							admin_notice_error( $msg );
-						} elseif ( isset( $lists['lists'] ) && count( $lists['lists'] ) === 0 ) {
-							$msg = sprintf(
-								/* translators: %s: link to Mailchimp */
-								esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
-								"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
-							);
-							admin_notice_error( $msg );
-						} else {
-							$lists            = $lists['lists'];
-							$option           = get_option( 'mc_list_id' );
-							$list_ids         = array_map(
-								function ( $ele ) {
-									return $ele['id'];
-								},
-								$lists
-							);
-							$is_list_selected = in_array( $option, $list_ids, true );
-							?>
-							<table class="mc-list-select" cellspacing="0">
-								<tr class="mc-list-row">
-									<td>
+			<div class="mailchimp-sf-settings-page-wrapper">
+				<div class="mailchimp-sf-settings-page">
+					<hr class="wp-header-end" />
+					<?php settings_errors(); ?>
+					<div class="mailchimp-sf-settings-list-wrapper">
+						<p class="mailchimp-sf-settings-list-note">
+							<?php esc_html_e( 'Please select the Mailchimp list you\'d like to connect to your form.', 'mailchimp' ); ?>
+						</p>
+						<p class="mailchimp-sf-settings-list-description">
+							<strong><?php esc_html_e( 'Note:', 'mailchimp' ); ?></strong> <?php esc_html_e( 'List settings are fetched from Mailchimp, fetching a new list will override your current settings.', 'mailchimp' ); ?>
+						</p>
+						<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
+							<?php
+							// we *could* support paging, but few users have that many lists (and shouldn't)
+							$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name' ) );
+							if ( is_wp_error( $lists ) ) {
+								$msg = sprintf(
+									/* translators: %s: error message */
+									esc_html__( 'Uh-oh, we couldn\'t get your lists from Mailchimp! Error: %s', 'mailchimp' ),
+									esc_html( $lists->get_error_message() )
+								);
+								admin_notice_error( $msg );
+							} elseif ( isset( $lists['lists'] ) && count( $lists['lists'] ) === 0 ) {
+								$msg = sprintf(
+									/* translators: %s: link to Mailchimp */
+									esc_html__( 'Uh-oh, you don\'t have any lists defined! Please visit %s, login, and setup a list before using this tool!', 'mailchimp' ),
+									"<a href='http://www.mailchimp.com/'>Mailchimp</a>"
+								);
+								admin_notice_error( $msg );
+							} else {
+								$lists            = $lists['lists'];
+								$option           = get_option( 'mc_list_id' );
+								$list_ids         = array_map(
+									function ( $ele ) {
+										return $ele['id'];
+									},
+									$lists
+								);
+								$is_list_selected = in_array( $option, $list_ids, true );
+								?>
+								<div class="mailchimp-sf-settings-list-select-wrapper">
+									<div class="mailchimp-sf-settings-list-select">
 										<label class="screen-reader-text" for="mc_list_id"><?php esc_html_e( 'Select a list', 'mailchimp' ); ?></label>
-										<select id="mc_list_id" name="mc_list_id" style="min-width:200px;">
+										<select id="mc_list_id" name="mc_list_id">
 											<option value=""> &mdash; <?php esc_html_e( 'Select A List', 'mailchimp' ); ?> &mdash; </option>
 											<?php
 											foreach ( $lists as $list ) {
@@ -112,18 +91,17 @@ $is_list_selected = false;
 											}
 											?>
 										</select>
-									</td>
-									<td>
+									</div>
+									<div class="mailchimp-sf-settings-list-select-button">
 										<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
-										<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button mailchimp-sf-button small" />
-									</td>
-								</tr>
-							</table>
-							<?php
-						} //end select list
-						?>
-					</form>
-				</div>
+										<input type="submit" name="submit" value="<?php esc_attr_e( 'Fetch list settings', 'mailchimp' ); ?>" class="mailchimp-sf-button btn-secondary" />
+									</div>
+								</div>
+								<?php
+							} //end select list
+							?>
+						</form>
+					</div>
 
 				<br/>
 
