@@ -103,40 +103,21 @@ $is_list_selected = false;
 						</form>
 					</div>
 
-				<br/>
-
-				<?php
-				// Just get out if nothing else matters...
-				if ( ! $is_list_selected ) {
-					return;
-				}
-
-				$current_tab = empty( $_GET['tab'] ) ? 'settings' : sanitize_title( wp_unslash( $_GET['tab'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
-				$tabs        = array(
-					'settings'  => __( 'Settings', 'mailchimp' ),
-					'user_sync' => __( 'User Sync', 'mailchimp' ),
-				)
-				?>
-				<nav class="mailchimp-sf-nav-tab-wrapper nav-tab-wrapper wp-clearfix">
 					<?php
-					foreach ( $tabs as $slug => $label ) {
-						echo '<a href="' . esc_url( admin_url( 'admin.php?page=mailchimp_sf_options&tab=' . esc_attr( $slug ) ) ) . '" class="nav-tab ' . ( $current_tab === $slug ? 'nav-tab-active' : '' ) . '">' . esc_html( $label ) . '</a>';
+					// Just get out if nothing else matters...
+					if ( ! $is_list_selected ) {
+						?>
+						</div></div></div></div>
+						<?php
+						return;
 					}
+					// Load the form settings.
+					include_once MCSF_DIR . 'includes/admin/templates/setup-page.php';
+
+					// Load the user sync settings.
+					include_once MCSF_DIR . 'includes/admin/templates/user-sync.php';
 					?>
-				</nav>
-				<?php
-				// Show the selected tab.
-				switch ( $current_tab ) {
-					case 'settings':
-						include_once MCSF_DIR . 'includes/admin/templates/setup-page.php';
-						break;
-					case 'user_sync':
-						include_once MCSF_DIR . 'includes/admin/templates/user-sync.php';
-						break;
-					default:
-						break;
-				}
-				?>
+				</div>
 			</div>
 		</div>
 		<?php
