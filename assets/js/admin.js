@@ -561,8 +561,8 @@
 	 * Initialize form settings functionality
 	 */
 	function initFormSettings() {
-		const $form = $('#mailchimp-sf-settings-form');
-		const $submitButtons = $('.mailchimp-sf-button-submit');
+		const $form = $('#mailchimp-sf-settings-form, .mailchimp-sf-user-sync-form');
+		const $submitButtons = $('input[type="submit"].mailchimp-sf-button-submit');
 		const initialValues = {};
 
 		// Initially hide all submit buttons

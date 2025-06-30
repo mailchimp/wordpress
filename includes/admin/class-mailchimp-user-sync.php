@@ -108,60 +108,52 @@ class Mailchimp_User_Sync {
 		);
 
 		add_settings_field(
-			'user_sync_title',
-			__( 'User sync settings', 'mailchimp' ),
-			'__return_empty_string',
-			$this->option_name,
-			$section_id
-		);
-
-		add_settings_field(
 			'enable_user_sync',
-			__( 'Enable auto user sync', 'mailchimp' ),
+			__( 'Enable Sync', 'mailchimp' ),
 			array( $this, 'enable_user_sync_field' ),
 			$this->option_name,
 			$section_id,
 			[
-				'class' => 'mailchimp-user-sync-enable-user-sync',
+				'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-enable-user-sync',
 			]
 		);
 
 		add_settings_field(
 			'existing_contacts_only',
-			__( 'Sync existing contacts only', 'mailchimp' ),
+			__( 'Sync Existing Contacts Only', 'mailchimp' ),
 			array( $this, 'existing_contacts_only_field' ),
 			$this->option_name,
 			$section_id,
 			[
-				'class' => 'mailchimp-user-sync-existing-contacts-only',
+				'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-existing-contacts-only',
 			]
 		);
 
 		add_settings_field(
 			'subscriber_status',
-			__( 'Subscriber status', 'mailchimp' ),
+			__( 'Subscriber Status', 'mailchimp' ),
 			array( $this, 'subscriber_status_field' ),
 			$this->option_name,
 			$section_id,
 			[
-				'class' => 'mailchimp-user-sync-subscriber-status',
+				'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-subscriber-status',
 			]
 		);
 
 		add_settings_field(
 			'user_roles',
-			__( 'Roles to sync', 'mailchimp' ),
+			__( 'Roles to Sync', 'mailchimp' ),
 			array( $this, 'user_roles_field' ),
 			$this->option_name,
 			$section_id,
 			[
-				'class' => 'mailchimp-user-sync-user-roles',
+				'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-user-roles',
 			]
 		);
 
 		add_settings_field(
 			'sync_all_users',
-			__( 'Sync users', 'mailchimp' ),
+			'',
 			array( $this, 'sync_all_users_button' ),
 			$this->option_name,
 			$section_id
@@ -221,27 +213,32 @@ class Mailchimp_User_Sync {
 		$settings   = $this->get_user_sync_settings( 'user_roles' );
 		$user_roles = get_editable_roles();
 
-		foreach ( $user_roles as $role_name => $role_details ) {
-			$value = $settings[ $role_name ] ?? '';
-
-			// Render checkbox.
-			printf(
-				'<p>
-					<label for="user_roles_%1$s">
-						<input type="checkbox" id="user_roles_%1$s" name="%1$s" value="%2$s" %3$s />
-						%4$s
-					</label>
-				</p>',
-				esc_attr( $this->option_name . '[user_roles][' . $role_name . ']' ),
-				esc_attr( $role_name ),
-				checked( $value, $role_name, false ),
-				esc_html( $role_details['name'] )
-			);
-		}
 		?>
-		<p class="description">
-			<?php esc_html_e( 'Select the roles that should be synced to Mailchimp.', 'mailchimp' ); ?>
-		</p>
+		<div class="mailchimp-sf-user-sync-user-roles">
+			<?php
+			foreach ( $user_roles as $role_name => $role_details ) {
+				$value = $settings[ $role_name ] ?? '';
+
+				// Render checkbox.
+				printf(
+					'
+					<div class="input-checkbox-wrapper">
+						<div class="input-checkbox-wrapper-inner">
+							<input type="checkbox" id="user_roles_%1$s" name="%1$s" value="%2$s" %3$s class="mailchimp-sf-checkbox" />
+						</div>
+						<label for="user_roles_%1$s">
+							%4$s
+						</label>
+					</div>
+					',
+					esc_attr( $this->option_name . '[user_roles][' . $role_name . ']' ),
+					esc_attr( $role_name ),
+					checked( $value, $role_name, false ),
+					esc_html( $role_details['name'] )
+				);
+			}
+			?>
+		</div>
 		<?php
 	}
 
@@ -253,16 +250,21 @@ class Mailchimp_User_Sync {
 	public function enable_user_sync_field() {
 		$value = $this->get_user_sync_settings( 'enable_user_sync' );
 		?>
-		<input
-			type="checkbox"
-			name="<?php echo esc_attr( $this->option_name . '[enable_user_sync]' ); ?>"
-			id="enable_user_sync"
-			value="1"
-			<?php checked( absint( $value ), 1, true ); ?>
-		>
-		<p class="description">
-			<?php esc_html_e( 'Automatically sync users to Mailchimp when they are created or updated.', 'mailchimp' ); ?>
-		</p>
+		<div class="input-checkbox-wrapper">
+			<label class="mailchimp-sf-toggle-switch">
+				<input
+					type="checkbox"
+					name="<?php echo esc_attr( $this->option_name . '[enable_user_sync]' ); ?>"
+					id="enable_user_sync"
+					value="1"
+					<?php checked( absint( $value ), 1, true ); ?>
+				>
+				<span class="mailchimp-sf-toggle-slider"></span>
+			</label>
+			<label for="enable_user_sync">
+				<?php esc_html_e( 'Automatically sync users to Mailchimp when they are created or updated.', 'mailchimp' ); ?>
+			</label>
+		</div>
 		<?php
 	}
 
@@ -274,35 +276,35 @@ class Mailchimp_User_Sync {
 	public function subscriber_status_field() {
 		$settings = $this->get_user_sync_settings( 'subscriber_status' );
 		?>
-		<div>
+		<div class="radio-wrapper">
 			<label for="subscriber_status_subscribed" class="subscribe_status_label">
-				<input type="radio" id="subscriber_status_subscribed" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="subscribed" <?php checked( $settings, 'subscribed' ); ?> />
+				<input type="radio" id="subscriber_status_subscribed" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="subscribed" <?php checked( $settings, 'subscribed' ); ?> class="mailchimp-sf-radio" />
 				<?php esc_html_e( 'Sync as Subscribed', 'mailchimp' ); ?>
 			</label>
-			<p class="description_small">
-				<?php esc_html_e( 'This status indicates that you\'ve gotten permission to market to your users.', 'mailchimp' ); ?>
+			<p class="radio-description">
+				<?php esc_html_e( 'This status indicates that you\'ve gotten permission to market to your users.', 'mailchimp' ); ?><br />
 				<a href="https://mailchimp.com/help/the-importance-of-permission/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'Learn more about the importance of permission.', 'mailchimp' ); ?></a>
 			</p>
 		</div>
-		<div>
+		<div class="radio-wrapper">
 			<label for="subscriber_status_pending" class="subscribe_status_label">
-				<input type="radio" id="subscriber_status_pending" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="pending" <?php checked( $settings, 'pending' ); ?> />
+				<input type="radio" id="subscriber_status_pending" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="pending" <?php checked( $settings, 'pending' ); ?> class="mailchimp-sf-radio" />
 				<?php esc_html_e( 'Sync as Pending', 'mailchimp' ); ?>
 			</label>
-			<p class="description_small">
+			<p class="radio-description">
 				<?php esc_html_e( 'This status indicates that a double opt-in email will be sent to users to confirm their subscription.', 'mailchimp' ); ?>
 			</p>
 		</div>
-		<div>
+		<div class="radio-wrapper">
 			<label for="subscriber_status_transactional" class="subscribe_status_label">
-				<input type="radio" id="subscriber_status_transactional" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="transactional" <?php checked( $settings, 'transactional' ); ?> />
+				<input type="radio" id="subscriber_status_transactional" name="<?php echo esc_attr( $this->option_name . '[subscriber_status]' ); ?>" value="transactional" <?php checked( $settings, 'transactional' ); ?> class="mailchimp-sf-radio" />
 				<?php esc_html_e( 'Sync as Non-Subscribed', 'mailchimp' ); ?>
 			</label>
-			<p class="description_small">
+			<p class="radio-description">
 				<?php esc_html_e( 'This status indicates you haven\'t gotten permission to market to these users. However, you can use Mailchimp to message ', 'mailchimp' ); ?><a href="https://mailchimp.com/help/about-non-subscribed-contacts/" target="_blank" rel="noopener noreferrer"><?php esc_html_e( 'non-subscribed contacts.', 'mailchimp' ); ?></a>
 			</p>
 		</div>
-		<p class="description_small">
+		<p class="radio-description">
 			<?php
 			$users_count = $this->get_users_count();
 			echo wp_kses(
@@ -341,10 +343,21 @@ class Mailchimp_User_Sync {
 		$settings               = $this->get_user_sync_settings();
 		$existing_contacts_only = isset( $settings['existing_contacts_only'] ) ? $settings['existing_contacts_only'] : 0;
 		?>
-		<input type="checkbox" name="<?php echo esc_attr( $this->option_name . '[existing_contacts_only]' ); ?>" value="1" <?php checked( $existing_contacts_only, 1, true ); ?> />
-		<p class="description">
-			<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync.', 'mailchimp' ); ?>
-		</p>
+		<div class="input-checkbox-wrapper">
+			<div class="input-checkbox-wrapper-inner">
+				<input
+					type="checkbox"
+					name="<?php echo esc_attr( $this->option_name . '[existing_contacts_only]' ); ?>"
+					id="existing_contacts_only"
+					value="1"
+					class="mailchimp-sf-checkbox"
+					<?php checked( absint( $existing_contacts_only ), 1, true ); ?>
+				>
+			</div>
+			<label for="existing_contacts_only">
+				<?php esc_html_e( 'Only WordPress users who are already in your Mailchimp audience will sync.', 'mailchimp' ); ?>
+			</label>
+		</div>
 		<?php
 	}
 
@@ -356,12 +369,27 @@ class Mailchimp_User_Sync {
 	public function sync_all_users_button() {
 		$start_sync_url = wp_nonce_url( add_query_arg( 'action', 'mailchimp_sf_start_user_sync', admin_url( 'admin-post.php' ) ), 'mailchimp_sf_start_user_sync', 'mailchimp_sf_start_user_sync_nonce' );
 		?>
-		<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button button-secondary">
-			<?php esc_html_e( 'Synchronize all users', 'mailchimp' ); ?>
+		<a href="<?php echo esc_url( $start_sync_url ); ?>" class="mailchimp-sf-button mailchimp-sf-button-submit btn-primary">
+			<?php esc_html_e( 'Manual Sync', 'mailchimp' ); ?>
 		</a>
-		<p class="description">
-			<?php esc_html_e( 'This will synchronize all WordPress users matching the selected roles to Mailchimp.', 'mailchimp' ); ?>
-		</p>
+		<?php
+		$last_sync_time = get_option( 'mailchimp_sf_last_sync_time', false );
+		if ( $last_sync_time ) {
+			?>
+			<span class="mailchimp-sf-last-sync-time">
+				<?php
+				echo esc_html(
+					sprintf(
+						/* translators: %s: last sync time. */
+						esc_html__( 'Last sync: %s', 'mailchimp' ),
+						date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $last_sync_time )
+					)
+				);
+				?>
+			</span>
+			<?php
+		}
+		?>
 		<?php
 	}
 
@@ -665,7 +693,7 @@ class Mailchimp_User_Sync {
 				<div class="text-wordings">
 					<h2><?php esc_html_e( 'Sync WordPress Users to Mailchimp', 'mailchimp' ); ?></h2>
 					<p><?php esc_html_e( 'Start syncing your WordPress users to Mailchimp to build your audience and grow your business.', 'mailchimp' ); ?></p>
-					<a href="<?php echo esc_url( $start_sync_url ); ?>" class="button mailchimp-sf-button small" style="float: none;">
+					<a href="<?php echo esc_url( $start_sync_url ); ?>" class="mailchimp-sf-button btn-primary" style="float: none;">
 						<?php esc_html_e( 'Start User Sync', 'mailchimp' ); ?>
 					</a>
 					<a href="<?php echo esc_url( $skip_url ); ?>" class="skip-user-sync-cta">
@@ -723,7 +751,7 @@ class Mailchimp_User_Sync {
 				);
 				?>
 			</span>
-			<a href="<?php echo esc_url( $cancel_url ); ?>" class="button mailchimp-cancel-user-sync-button button-secondary">
+			<a href="<?php echo esc_url( $cancel_url ); ?>" class="mailchimp-sf-button btn-secondary btn-small mailchimp-cancel-user-sync-button">
 				<?php esc_html_e( 'Cancel Sync', 'mailchimp' ); ?>
 			</a>
 		</div>
@@ -822,7 +850,7 @@ class Mailchimp_User_Sync {
 				<h2><?php esc_html_e( 'User Sync Errors', 'mailchimp' ); ?></h2>
 				<div class="mailchimp-sf-user-sync-errors-header-actions">
 					<span class="spinner" style="float: none;"></span>
-					<button id="mailchimp-sf-clear-user-sync-errors" class="button button-secondary"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
+					<button id="mailchimp-sf-clear-user-sync-errors" class="mailchimp-sf-button btn-secondary btn-small"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
 				</div>
 			</div>
 			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
@@ -848,7 +876,7 @@ class Mailchimp_User_Sync {
 							<td class="actions">
 								<div class="mailchimp-sf-user-sync-error-action">
 									<span class="spinner" style="float: none; "></span>
-									<button class="button button-secondary mailchimp-sf-user-sync-error-delete" data-id="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Delete', 'mailchimp' ); ?></button>
+									<button class="mailchimp-sf-button btn-secondary btn-small mailchimp-sf-user-sync-error-delete" data-id="<?php echo esc_attr( $id ); ?>"><?php esc_html_e( 'Delete', 'mailchimp' ); ?></button>
 								</div>
 							</td>
 						</tr>

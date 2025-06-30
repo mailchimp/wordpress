@@ -111,6 +111,12 @@ $is_list_selected = false;
 						<?php
 						return;
 					}
+
+					/**
+					 * Render the user sync status, start cta etc...
+					 */
+					do_action( 'mailchimp_sf_user_sync_before_form' );
+
 					// Load the form settings.
 					include_once MCSF_DIR . 'includes/admin/templates/setup-page.php';
 
