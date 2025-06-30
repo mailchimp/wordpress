@@ -554,3 +554,95 @@
 		});
 	});
 })(jQuery); // eslint-disable-line no-undef
+
+// Form settings.
+(function ($) {
+	/**
+	 * Initialize form settings functionality
+	 */
+	function initFormSettings() {
+		const $form = $('#mailchimp-sf-settings-form');
+		const $submitButtons = $('.mailchimp-sf-button-submit');
+		const initialValues = {};
+
+		// Initially hide all submit buttons
+		$submitButtons.hide();
+
+		/**
+		 * Store initial form state
+		 */
+		function storeInitialState() {
+			$form.find('input, textarea, select').each(function () {
+				const $input = $(this);
+				if ($input.is(':checkbox')) {
+					initialValues[$input.attr('name')] = $input.is(':checked');
+				} else {
+					initialValues[$input.attr('name')] = $input.val();
+				}
+			});
+		}
+
+		/**
+		 * Check if form has changed from initial state
+		 *
+		 * @returns {boolean} True if form has changed
+		 */
+		function hasFormChanged() {
+			let hasChanged = false;
+
+			$form.find('input, textarea, select').each(function () {
+				const $input = $(this);
+				const name = $input.attr('name');
+
+				if (!name) {
+					return;
+				}
+
+				if ($input.is(':checkbox')) {
+					if (initialValues[name] !== $input.is(':checked')) {
+						hasChanged = true;
+						return false; // Break the loop
+					}
+				} else if (initialValues[name] !== $input.val()) {
+					hasChanged = true;
+					return false; // Break the loop
+				}
+			});
+
+			return hasChanged;
+		}
+
+		/**
+		 * Toggle submit buttons visibility based on form state
+		 *
+		 * @param {jQuery} $changedInput - The input that was changed
+		 */
+		function toggleSubmitButtons($changedInput) {
+			if (hasFormChanged()) {
+				$changedInput
+					.closest('.mailchimp-sf-section')
+					.find('.mailchimp-sf-button-submit')
+					.fadeIn();
+				$changedInput
+					.closest('.mailchimp-sf-section')
+					.find('.mailchimp-sf-section-footer')
+					.slideDown();
+			} else {
+				$submitButtons.fadeOut();
+				$('.mailchimp-sf-section-footer').slideUp();
+			}
+		}
+
+		// Store initial state when page loads
+		storeInitialState();
+
+		// Watch for changes on all form elements
+		$form.on('input change', 'input, textarea, select', function () {
+			const $changedInput = $(this);
+			toggleSubmitButtons($changedInput);
+		});
+	}
+
+	// Initialize when document is ready
+	$(document).ready(initFormSettings);
+})(jQuery); // eslint-disable-line no-undef

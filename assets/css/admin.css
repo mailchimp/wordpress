@@ -1119,6 +1119,14 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	height: 36px;
 }
 
+.mailchimp-sf-section-footer {
+	text-align: right;
+}
+
+.mailchimp-sf-section-footer .mailchimp-sf-button {
+	margin: 16px 0px;
+}
+
 /* Settings Page */
 .mailchimp-sf-settings-page {
 	max-width: 1200px;
@@ -1138,6 +1146,22 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	justify-content: space-between;
 }
 
+.mailchimp-sf-main-setings-wrapper {
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+	justify-content: space-between;
+	gap: 16px;
+}
+
+.mailchimp-sf-main-setings-wrapper .mailchimp-sf-main-settings {
+	flex: 3;
+}
+
+.mailchimp-sf-main-setings-wrapper .mailchimp-sf-settings-form-previewer {
+	flex: 1;
+}
+
 .mailchimp-sf-main-settings {
 	max-width: 800px;
 }
@@ -1154,6 +1178,10 @@ table.widefat.mailchimp-sf-settings-table {
 	padding: 24px;
 	border-top-left-radius: 8px;
     border-top-right-radius: 8px;
+}
+
+.mailchimp-sf-settings-form-previewer .mailchimp-sf-settings-table thead tr th {
+	background-color: #EEEEEA;
 }
 
 .mailchimp-sf-settings-table thead tr th h2 {
