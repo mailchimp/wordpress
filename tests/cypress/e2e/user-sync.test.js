@@ -7,17 +7,17 @@ describe('User Sync Tests', () => {
 		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 	});
 
-	it('Admin can see User Sync settings page', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+	it('Admin can see User Sync settings', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('.mailchimp-sf-user-sync-page').should('be.visible');
-		cy.get('.form-table th').first().should('contain', 'User sync settings');
+		cy.get('.mailchimp-sf-user-sync-page h2').first().should('contain', 'User sync settings');
 	});
 
 	it('Admin can save User Sync settings', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Enable auto user sync
-		cy.get('#enable_user_sync').check();
+		cy.get('#enable_user_sync').check({ force: true });
 
 		// Select subscriber role
 		cy.get('input[name="mailchimp_sf_user_sync_settings[user_roles][subscriber]"]').check();
@@ -28,29 +28,18 @@ describe('User Sync Tests', () => {
 		).check();
 
 		// Save settings
+		cy.get('#existing_contacts_only').trigger('change');
 		cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 
 		// Verify success message
 		cy.get('.notice-success').should('be.visible');
 	});
 
-	it('Admin can see Start user sync CTA and skip it', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
-
-		// Verify CTA is visible
-		cy.get('.mailchimp-sf-start-user-sync-box').should('be.visible');
-
-		// Skip CTA
-		cy.get('a.skip-user-sync-cta').click();
-
-		// Verify CTA is hidden
-		cy.get('.mailchimp-sf-start-user-sync-box').should('not.exist');
-	});
-
 	['subscribed', 'pending', 'transactional'].forEach((status) => {
 		it(`[${status}] Admin can start user sync and validate sync results`, () => {
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
-			cy.get('#enable_user_sync').uncheck();
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+			cy.get('#enable_user_sync').uncheck({ force: true });
+			cy.get('#existing_contacts_only').trigger('change');
 			cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 
 			cy.deleteWPSubscriberUser();
@@ -63,7 +52,7 @@ describe('User Sync Tests', () => {
 			);
 
 			// Select subscriber role
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.get(
 				'input[name="mailchimp_sf_user_sync_settings[existing_contacts_only]"]',
 			).uncheck();
@@ -73,10 +62,13 @@ describe('User Sync Tests', () => {
 			).check();
 			cy.get('.mailchimp-user-sync-user-roles input[type="checkbox"]').uncheck();
 			cy.get('input[name="mailchimp_sf_user_sync_settings[user_roles][subscriber]"]').check();
+			cy.get('#existing_contacts_only').trigger('change');
 			cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 
 			// Start sync
-			cy.get('a.button.button-secondary').contains('Synchronize all users').click();
+			cy.get('a.mailchimp-sf-button.mailchimp-sf-button-submit.btn-primary')
+				.contains('Manual Sync')
+				.click();
 
 			// Verify sync started
 			cy.get('.mailchimp-sf-sync-progress').should('be.visible');
@@ -86,7 +78,7 @@ describe('User Sync Tests', () => {
 				if (attempts >= 9) return;
 
 				cy.wait(10000);
-				cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+				cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 				cy.get('body').then(($body) => {
 					if ($body.find('.mailchimp-sf-sync-progress').length === 0) {
 						return;
@@ -112,8 +104,9 @@ describe('User Sync Tests', () => {
 	});
 
 	it('Admin can sync existing contacts only', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
-		cy.get('#enable_user_sync').uncheck();
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#enable_user_sync').uncheck({ force: true });
+		cy.get('#existing_contacts_only').trigger('change');
 		cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 
 		cy.deleteWPSubscriberUser();
@@ -126,14 +119,17 @@ describe('User Sync Tests', () => {
 			`wp user create ${email} ${email} --role=subscriber --first_name=${firstName} --last_name=${lastName}`,
 		);
 
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		// Enable existing contacts only
 		cy.get('input[name="mailchimp_sf_user_sync_settings[existing_contacts_only]"]').check();
+		cy.get('#existing_contacts_only').trigger('change');
 		cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 		cy.get('.notice-success').should('be.visible');
 
 		// Start sync
-		cy.get('a.button.button-secondary').contains('Synchronize all users').click();
+		cy.get('a.mailchimp-sf-button.mailchimp-sf-button-submit.btn-primary')
+			.contains('Manual Sync')
+			.click();
 
 		// Verify sync started
 		cy.get('.mailchimp-sf-sync-progress').should('be.visible');
@@ -143,7 +139,7 @@ describe('User Sync Tests', () => {
 			if (attempts >= 9) return;
 
 			cy.wait(10000);
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.get('body').then(($body) => {
 				if ($body.find('.mailchimp-sf-sync-progress').length === 0) {
 					return;
@@ -164,15 +160,18 @@ describe('User Sync Tests', () => {
 	});
 
 	it('Admin can see error logs of user sync and delete specific error log', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
-		cy.get('#enable_user_sync').uncheck();
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#enable_user_sync').uncheck({ force: true });
+		cy.get('#existing_contacts_only').trigger('change');
 		cy.get('.mailchimp-user-sync-user-roles input[type="checkbox"]').uncheck();
 		cy.get('input[name="mailchimp_sf_user_sync_settings[existing_contacts_only]"]').uncheck();
 		cy.get('input[name="mailchimp_sf_user_sync_settings[user_roles][administrator]"]').check();
 		cy.get('#mailchimp_sf_user_sync_settings_submit').click();
 
 		// Start sync
-		cy.get('a.button.button-secondary').contains('Synchronize all users').click();
+		cy.get('a.mailchimp-sf-button.mailchimp-sf-button-submit.btn-primary')
+			.contains('Manual Sync')
+			.click();
 
 		// Verify sync started
 		cy.get('.mailchimp-sf-sync-progress').should('be.visible');
@@ -182,7 +181,7 @@ describe('User Sync Tests', () => {
 			if (attempts >= 9) return;
 
 			cy.wait(10000);
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.get('body').then(($body) => {
 				if ($body.find('.mailchimp-sf-sync-progress').length === 0) {
 					return;
@@ -220,10 +219,12 @@ describe('User Sync Tests', () => {
 	});
 
 	it('Admin can cancel inprogress user sync', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Start sync
-		cy.get('a.button.button-secondary').contains('Synchronize all users').click();
+		cy.get('a.mailchimp-sf-button.mailchimp-sf-button-submit.btn-primary')
+			.contains('Manual Sync')
+			.click();
 
 		// Cancel sync
 		cy.get('.mailchimp-cancel-user-sync-button').click();
@@ -233,8 +234,9 @@ describe('User Sync Tests', () => {
 	});
 
 	it('New user and user update should sync to Mailchimp', () => {
-		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
-		cy.get('#enable_user_sync').check();
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#enable_user_sync').check({ force: true });
+		cy.get('#existing_contacts_only').trigger('change');
 		cy.get('.mailchimp-user-sync-user-roles input[type="checkbox"]').uncheck();
 		cy.get('input[name="mailchimp_sf_user_sync_settings[existing_contacts_only]"]').uncheck();
 		cy.get('input[name="mailchimp_sf_user_sync_settings[user_roles][subscriber]"]').check();
@@ -250,7 +252,7 @@ describe('User Sync Tests', () => {
 			if (attempts >= 9) return;
 
 			cy.wait(10000);
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.getContactInMailchimp(email).then((res) => {
 				if (res && res.id) {
 					return;
@@ -271,7 +273,7 @@ describe('User Sync Tests', () => {
 			if (attempts >= 9) return;
 
 			cy.wait(10000);
-			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options&tab=user_sync');
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.getContactInMailchimp(email).then((res) => {
 				if (res && res.merge_fields?.FNAME) {
 					cy.wrap(res.merge_fields?.FNAME).should('eq', firstName);

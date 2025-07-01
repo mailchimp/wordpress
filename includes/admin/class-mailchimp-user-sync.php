@@ -411,10 +411,7 @@ class Mailchimp_User_Sync {
 		update_option( 'mailchimp_sf_user_sync_start_cta_shown', true );
 
 		$return_url = add_query_arg(
-			array(
-				'page' => 'mailchimp_sf_options',
-				'tab'  => 'user_sync',
-			),
+			array( 'page' => 'mailchimp_sf_options' ),
 			admin_url( 'admin.php' )
 		);
 
@@ -493,10 +490,7 @@ class Mailchimp_User_Sync {
 		wp_safe_redirect(
 			esc_url_raw(
 				add_query_arg(
-					array(
-						'page' => 'mailchimp_sf_options',
-						'tab'  => 'user_sync',
-					),
+					array( 'page' => 'mailchimp_sf_options' ),
 					admin_url( 'admin.php' )
 				)
 			)
@@ -524,10 +518,7 @@ class Mailchimp_User_Sync {
 		wp_safe_redirect(
 			esc_url_raw(
 				add_query_arg(
-					array(
-						'page' => 'mailchimp_sf_options',
-						'tab'  => 'user_sync',
-					),
+					array( 'page' => 'mailchimp_sf_options' ),
 					admin_url( 'admin.php' )
 				)
 			)

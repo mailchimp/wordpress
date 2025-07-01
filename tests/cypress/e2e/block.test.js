@@ -10,7 +10,8 @@ describe('Block Tests', () => {
 		// Hide all interest groups
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('input[id^="mc_show_interest_groups_"]').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	it('Admin can create a Signup form using Mailchimp block', () => {
