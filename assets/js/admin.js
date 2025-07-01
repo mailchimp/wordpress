@@ -601,6 +601,23 @@
 		}
 
 		/**
+		 * Debounce function
+		 *
+		 * @param {Function} func - The function to debounce
+		 * @param {number} delay - The delay in milliseconds
+		 * @returns {Function} The debounced function
+		 */
+		function debounce(func, delay) {
+			let timeout;
+			return function (...args) {
+				clearTimeout(timeout);
+				timeout = setTimeout(() => {
+					func.apply(this, args);
+				}, delay);
+			};
+		}
+
+		/**
 		 * Preview the form.
 		 */
 		function previewForm() {
@@ -655,11 +672,13 @@
 			);
 		}
 
+		const debouncedPreviewForm = debounce(previewForm, 300);
+
 		// Watch for changes on all form elements
 		$form.on('input change', 'input, textarea, select', function () {
 			const $changedInput = $(this);
 			toggleSubmitButtons($changedInput);
-			previewForm();
+			debouncedPreviewForm();
 		});
 
 		// Watch for changes on user sync form elements
