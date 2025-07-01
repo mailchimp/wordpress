@@ -69,7 +69,6 @@ class Mailchimp_User_Sync {
 		add_action( 'wp_ajax_mailchimp_sf_delete_user_sync_error', [ $this, 'delete_user_sync_error' ] );
 		// Render the user sync status and errors.
 		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_status' ] );
-		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_start_cta' ] );
 		add_action( 'mailchimp_sf_user_sync_after_form', [ $this, 'render_user_sync_errors' ] );
 
 		$settings = $this->get_user_sync_settings();
