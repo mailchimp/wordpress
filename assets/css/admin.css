@@ -268,8 +268,8 @@ th.mailchimp-connect {
 	background: transparent;
 	color: #000;
 	margin-left: 0;
-    font-weight: 500;
-    padding: 5px 12px;
+	font-weight: 500;
+	padding: 5px 12px;
 }
 
 .mailchimp-sf-nav-tab-wrapper a.nav-tab:hover {
@@ -301,7 +301,7 @@ th.mailchimp-connect {
 }
 
 #mailchimp-sf-settings-page .flex {
-    display:flex;
+	display:flex;
 }
 
 #mailchimp-sf-settings-page .gap-x-6 {
@@ -313,11 +313,11 @@ th.mailchimp-connect {
 }
 
 #mailchimp-sf-settings-page .justify-between {
-    justify-content: space-between;
+	justify-content: space-between;
 }
 
 #mailchimp-sf-settings-page .items-center {
-    align-items: center;
+	align-items: center;
 }
 
 #mailchimp-sf-settings-page .opacity-25 {
@@ -338,8 +338,8 @@ th.mailchimp-connect {
 
 #mailchimp-sf-settings-page .wizard-steps {
 	color: rgba(36, 28, 21);
-    font-size: 14px;
-    line-height: 18px;
+	font-size: 14px;
+	line-height: 18px;
 }
 
 #mailchimp-sf-settings-page .wizard-steps .deselected {
@@ -404,15 +404,15 @@ th.mailchimp-connect {
 }
 
 .mailchimp-sf-header .logo {
-    margin: 6px 0px;
+	margin: 6px 0px;
 }
 
 .mailchimp-sf-header .mailchimp-sf-create-account-plus {
 	margin: 0px 10px;
-    font-family: "Means Web", serif;
-    font-size: 44px;
-    color: #8C8C8C;
-    font-weight: 300;
+	font-family: "Means Web", serif;
+	font-size: 44px;
+	color: #8C8C8C;
+	font-weight: 300;
 }
 
 body.admin_page_mailchimp_sf_create_account {
@@ -456,16 +456,16 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 
 .mailchimp-sf-content-box {
 	background-color: #ffffff;
-    border-radius: 12px;
-    border: 1px solid rgba(36, 28, 21, 0.15);
-    padding: 52px 64px;
+	border-radius: 12px;
+	border: 1px solid rgba(36, 28, 21, 0.15);
+	padding: 52px 64px;
 }
 
 #mailchimp-sf-settings-page .email-opener {
 	font-size: 16px;
-    line-height: 24px;
-    font-weight: 500;
-    text-decoration: underline;
+	line-height: 24px;
+	font-weight: 500;
+	text-decoration: underline;
 }
 
 #mailchimp-sf-settings-page .h4 {
@@ -511,8 +511,8 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 
 .button.mailchimp-sf-button.button-secondary {
 	color: var(--mailchimp-color-link);
-    background-color: #fff;
-    border: 1px solid var(--mailchimp-color-link);
+	background-color: #fff;
+	border: 1px solid var(--mailchimp-color-link);
 }
 
 .button.mailchimp-sf-button:hover,
@@ -578,7 +578,7 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 .mailchimp-sf-create-account__body .terms a {
 	color: var(--mailchimp-color-link);
 	font-weight: 500;
-    text-decoration: none;
+	text-decoration: none;
 }
 
 .mailchimp-sf-create-account__body .terms p {
@@ -589,7 +589,7 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 }
 
 .mailchimp-sf-create-account__body .terms p:last-child {
-    margin-bottom: 32px;
+	margin-bottom: 32px;
 }
 
 .mailchimp-sf-create-account__body .terms a:hover {
@@ -656,9 +656,9 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 	width: 100%;
 	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	font-size: 16px;
-    color: #000;
-    line-height: 1.5em;
-    font-weight: 400;
+	color: #000;
+	line-height: 1.5em;
+	font-weight: 400;
 }
 
 .mailchimp-sf-form-wrapper fieldset input[type="text"]:focus,
@@ -1007,7 +1007,7 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	gap: 24px;
 	background: #EEEEEA;
 	border-radius: 8px;
-    box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .mailchimp-sf-settings-page-hero-content,
@@ -1056,17 +1056,17 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	white-space: nowrap;
 	cursor: pointer;
 	text-align: center;
-    vertical-align: middle;
+	vertical-align: middle;
 	-ms-transition: all 0.2s;
-    transition: all 0.2s;
+	transition: all 0.2s;
 	height: 40px;
-    border: 1px solid transparent;
+	border: 1px solid transparent;
 	white-space: nowrap;
 	justify-content: center;
 }
 
 .mailchimp-sf-button:hover, .mailchimp-sf-button:active {
-    background-color: #d5dee3
+	background-color: #d5dee3
 }
 
 .mailchimp-sf-button:focus {
@@ -1075,8 +1075,8 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 }
 
 .mailchimp-sf-button[disabled] {
-    pointer-events: none;
-    opacity: .4;
+	pointer-events: none;
+	opacity: .4;
 }
 
 .mailchimp-sf-button.button-primary,
@@ -1170,14 +1170,14 @@ table.widefat.mailchimp-sf-settings-table {
 	margin-top: 16px;
 	width: 100%;
 	border-radius: 8px;
-    border: 1px solid var(--mailchimp-border-color);
+	border: 1px solid var(--mailchimp-border-color);
 }
 
 .mailchimp-sf-settings-table thead tr th {
 	background-color: var(--mailchimp-color-header-bg);
 	padding: 24px;
 	border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+	border-top-right-radius: 8px;
 }
 
 .mailchimp-sf-settings-form-previewer .mailchimp-sf-settings-table thead tr th {
@@ -1258,14 +1258,14 @@ table.widefat.mailchimp-sf-settings-table ul {
 /* Input fields */
 #mailchimp-sf-settings-page select {
 	font-size: 14px;
-    padding: 10px 32px 10px 10px;
-    height: 40px;
+	padding: 10px 32px 10px 10px;
+	height: 40px;
 	background-color: #fff;
-    border-radius: 6px;
-    border: 1px solid #c3ced5;
-    color: var(--mailchimp-color-text);
+	border-radius: 6px;
+	border: 1px solid #c3ced5;
+	color: var(--mailchimp-color-text);
 	line-height: 1.2em;
-    font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	font-weight: 400;
 	transition: all 0.2s;
 	min-width: 200px;
@@ -1278,23 +1278,23 @@ table.widefat.mailchimp-sf-settings-table ul {
 
 #mailchimp-sf-settings-page select:focus {
 	background-color: #fff;
-    border-color: var(--mailchimp-color-link);
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    outline-offset: -2px;
-    outline: 2px solid var(--mailchimp-color-link);
+	border-color: var(--mailchimp-color-link);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	outline-offset: -2px;
+	outline: 2px solid var(--mailchimp-color-link);
 }
 
 #mailchimp-sf-settings-page input[type="text"] {
 	font-size: 16px;
-    padding: 10px 12px;
-    height: 40px;
+	padding: 10px 12px;
+	height: 40px;
 	background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid var(--mailchimp-border-color);
-    color: var(--mailchimp-color-text);
+	border-radius: 4px;
+	border: 1px solid var(--mailchimp-border-color);
+	color: var(--mailchimp-color-text);
 	line-height: 1.35em;
-    font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	font-weight: 400;
 	transition: all 0.2s;
 	min-width: 120px;
@@ -1308,18 +1308,18 @@ table.widefat.mailchimp-sf-settings-table ul {
 
 #mailchimp-sf-settings-page input[type="text"]:focus {
 	outline-offset: -2px;
-    outline: 2px solid var(--mailchimp-color-link);
+	outline: 2px solid var(--mailchimp-color-link);
 }
 
 #mailchimp-sf-settings-page textarea {
 	font-size: 16px;
-    padding: 10px 12px;
+	padding: 10px 12px;
 	background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid var(--mailchimp-border-color);
-    color: var(--mailchimp-color-text);
+	border-radius: 4px;
+	border: 1px solid var(--mailchimp-border-color);
+	color: var(--mailchimp-color-text);
 	line-height: 1.35em;
-    font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
+	font-family: 'Graphik Mailchimp Web', ui-sans-serif, system-ui, sans-serif;
 	font-weight: 400;
 	transition: all 0.2s;
 	min-width: 200px;
@@ -1333,7 +1333,7 @@ table.widefat.mailchimp-sf-settings-table ul {
 
 #mailchimp-sf-settings-page textarea:focus {
 	outline-offset: -2px;
-    outline: 2px solid var(--mailchimp-color-link);
+	outline: 2px solid var(--mailchimp-color-link);
 }
 
 .mailchimp-sf-ch-wrapper {
@@ -1371,14 +1371,14 @@ input[type=checkbox].mailchimp-sf-checkbox:checked::before {
 
 input[type=checkbox].mailchimp-sf-checkbox:checked:after {
 	content: "";
-    width: 12px;
-    height: 5px;
-    border-radius: 0.5px;
-    transform: rotate(-45deg);
-    border-left: 2px solid #fff;
-    border-bottom: 2px solid #fff;
-    margin: 6px 4px;
-    display: block;
+	width: 12px;
+	height: 5px;
+	border-radius: 0.5px;
+	transform: rotate(-45deg);
+	border-left: 2px solid #fff;
+	border-bottom: 2px solid #fff;
+	margin: 6px 4px;
+	display: block;
 }
 
 input[type=checkbox].mailchimp-sf-checkbox[disabled] {
@@ -1436,9 +1436,9 @@ input[type=radio].mailchimp-sf-radio:checked:after {
 }
 
 span.mailchimp-sf-last-sync-time {
-    vertical-align: middle;
-    margin-left: 12px;
-    color: var(--mailchimp-color-text-gray);
+	vertical-align: middle;
+	margin-left: 12px;
+	color: var(--mailchimp-color-text-gray);
 }
 
 .mailchimp-sf-toggle-switch {
@@ -1519,11 +1519,11 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 }
 
 .toplevel_page_mailchimp_sf_options .notice {
-    display: none;
+	display: none;
 }
 
 .toplevel_page_mailchimp_sf_options .mailchimp-sf-settings-page .notice {
-    display: block;
+	display: block;
 }
 
 @media screen and (max-width: 992px) {
@@ -1590,4 +1590,3 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 		min-width: 0;
 	}
 }
-
