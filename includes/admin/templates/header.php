@@ -23,7 +23,7 @@ $is_logged_in = ! ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_
 				if ( ! empty( $user['avatar_url'] ) ) {
 					?>
 					<div class="user-profile-avatar">
-						<img src="<?php echo esc_url( $user['avatar_url'] ); ?>" alt="">
+						<img src="<?php echo esc_url( $user['avatar_url'] ); ?>" alt="<?php echo esc_attr( $user['first_name'] ); ?>">
 					</div>
 					<?php
 				}

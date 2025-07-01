@@ -887,6 +887,10 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	margin-left: auto;
 }
 
+#mailchimp-sf-settings-page .user-profile-wrapper form {
+	margin: 0px;
+}
+
 #mailchimp-sf-settings-page .user-profile {
 	display: flex;
 	flex-direction: row;

@@ -11,12 +11,12 @@
  * // Select a Mailchimp list named "10up List"
  * cy.selectList('10up List');
  */
-Cypress.Commands.add('selectList', (listName) => {
+Cypress.Commands.add('selectList', (listName, force = false) => {
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 	cy.get('#mc_list_id option:selected')
 		.invoke('text')
 		.then((value) => {
-			if (value === listName) {
+			if (value === listName && !force) {
 				// Value matches, you can log or perform actions
 				cy.log('Select has the expected value');
 			} else {
@@ -130,7 +130,7 @@ Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up', fie
 	// Set all merge fields to required in the Mailchimp test user account
 	cy.getListId(listName).then((listId) => {
 		cy.updateMergeFieldsByList(listId, { required }, fields).then(() => {
-			cy.selectList(listName); // Ensure list is selected, refreshes Mailchimp data with WP
+			cy.selectList(listName, true); // Ensure list is selected, refreshes Mailchimp data with WP
 		});
 	});
 });

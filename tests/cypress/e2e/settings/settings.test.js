@@ -293,4 +293,66 @@ describe('Admin can update plugin settings', () => {
 			});
 		});
 	});
+
+	it('Admin can view form preview on the settings page', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('h2.mailchimp-sf-settings-table-title')
+			.contains('Form preview')
+			.should('be.visible');
+	});
+
+	it('Form preview should reflect changes made on the settings page', () => {
+		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
+		cy.get('#mc_header_content').clear().type('My Custom Header');
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview .mc_custom_border_hdr').should(
+			'have.text',
+			'My Custom Header',
+		);
+
+		cy.get('#mc_subheader_content').clear().type('My Custom Subheader');
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview #mc_subheader').contains('My Custom Subheader');
+
+		cy.get('#mc_submit_text').clear().type('My Custom Button');
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview #mc_signup_submit').contains('My Custom Button');
+
+		// Field options
+		cy.get('#mc_mv_FNAME').uncheck();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview input#mc_mv_FNAME').should('not.exist');
+
+		cy.get('#mc_mv_LNAME').uncheck();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview input#mc_mv_LNAME').should('not.exist');
+
+		cy.get('#mc_mv_FNAME').check();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview input#mc_mv_FNAME').should('exist');
+
+		cy.get('#mc_mv_LNAME').check();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview input#mc_mv_LNAME').should('exist');
+
+		// Unsubscribe link
+		cy.get('#mc_use_unsub_link').check();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview #mc_unsub_link').should('exist');
+
+		cy.get('#mc_use_unsub_link').uncheck();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview #mc_unsub_link').should('not.exist');
+
+		// Groups
+		cy.get('input[id^="mc_show_interest_groups_"]').check();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview .mc_interests_header').should('exist');
+		cy.get('.mailchimp-sf-form-preview .mc_interest').should('exist');
+
+		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
+		cy.wait(1000);
+		cy.get('.mailchimp-sf-form-preview .mc_interests_header').should('not.exist');
+		cy.get('.mailchimp-sf-form-preview .mc_interest').should('not.exist');
+	});
 });

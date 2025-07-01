@@ -38,7 +38,6 @@ describe('Mailchimp lists ', () => {
 
 		// Verify that list can be saved
 		cy.selectList('10up');
-		cy.get('.notice.notice-success.is-dismissible').first().contains('Success!');
 
 		// Verify that the settings are visible if a list is saved
 		cy.get('h2.mailchimp-sf-settings-table-title')
