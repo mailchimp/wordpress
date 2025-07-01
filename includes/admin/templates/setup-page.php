@@ -17,7 +17,7 @@
 					<thead>
 						<tr>
 							<th colspan="2">
-								<h2 class="mailchimp-sf-settings-table-title"><?php esc_html_e( 'Form Copy', 'mailchimp' ); ?></h2>
+								<h2 class="mailchimp-sf-settings-table-title"><?php esc_html_e( 'Form copy', 'mailchimp' ); ?></h2>
 							</th>
 						</tr>
 					</thead>
@@ -88,7 +88,7 @@
 			} else {
 				?>
 				<div class="mailchimp-sf-section">
-					<table class="widefat mailchimp-sf-settings-table">
+					<table class="widefat mailchimp-sf-settings-table fixed">
 						<thead>
 							<tr>
 								<th colspan="4">
@@ -126,7 +126,7 @@
 											);
 											?>
 										</label>
-										<input name="<?php echo esc_attr( $opt ); ?>" type="checkbox" id="<?php echo esc_attr( $opt ); ?>" class="mailchimp-sf-checkbox"<?php checked( $checked ); ?> <?php disabled( $mv_var['required'] ); ?> />
+										<input name="<?php echo esc_attr( $opt ); ?>" type="checkbox" id="<?php echo esc_attr( $opt ); ?>" class="mailchimp-sf-checkbox"<?php checked( $checked ); ?> <?php disabled( $mv_var['required'] ); ?> data-tag="<?php echo esc_attr( $mv_var['tag'] ); ?>"/>
 									</td>
 								</tr>
 								<?php
@@ -146,11 +146,11 @@
 				if ( is_array( $igs ) && ! empty( $igs ) ) {
 					?>
 					<div class="mailchimp-sf-section">
-						<table class="widefat mailchimp-sf-settings-table">
+						<table class="widefat mailchimp-sf-settings-table fixed">
 							<thead>
 								<tr>
 									<th colspan="4">
-										<h2 class="mailchimp-sf-settings-table-title"><?php esc_html_e( 'Group Settings', 'mailchimp' ); ?></h2>
+										<h2 class="mailchimp-sf-settings-table-title"><?php esc_html_e( 'Group settings', 'mailchimp' ); ?></h2>
 									</th>
 								</tr>
 							</thead>
@@ -188,7 +188,7 @@
 													</ul>
 												</td>
 												<td>
-													<input name="<?php echo esc_attr( 'mc_show_interest_groups_' . $ig['id'] ); ?>" id="<?php echo esc_attr( 'mc_show_interest_groups_' . $ig['id'] ); ?>" type="checkbox" class="mailchimp-sf-checkbox"<?php checked( 'on', get_option( 'mc_show_interest_groups_' . $ig['id'] ) ); ?> />
+													<input name="<?php echo esc_attr( 'mc_show_interest_groups_' . $ig['id'] ); ?>" id="<?php echo esc_attr( 'mc_show_interest_groups_' . $ig['id'] ); ?>" type="checkbox" class="mailchimp-sf-checkbox"<?php checked( 'on', get_option( 'mc_show_interest_groups_' . $ig['id'] ) ); ?> data-group-id="<?php echo esc_attr( $ig['id'] ); ?>"/>
 												</td>
 											</tr>
 											<?php
@@ -421,6 +421,10 @@
 					<tr>
 						<td class="mailchimp-sf-form-preview-content">
 							<div class="mailchimp-sf-form-preview">
+								<?php
+								mailchimp_sf_load_resources();
+								mailchimp_sf_signup_form();
+								?>
 							</div>
 						</td>
 					</tr>

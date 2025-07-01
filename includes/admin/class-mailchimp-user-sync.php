@@ -382,7 +382,7 @@ class Mailchimp_User_Sync {
 					sprintf(
 						/* translators: %s: last sync time. */
 						esc_html__( 'Last sync: %s', 'mailchimp' ),
-						date_i18n( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $last_sync_time )
+						wp_date( get_option( 'date_format' ) . ' \a\t ' . get_option( 'time_format' ), $last_sync_time )
 					)
 				);
 				?>

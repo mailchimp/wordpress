@@ -386,9 +386,10 @@ th.mailchimp-connect {
 	font-family: "Means Web", serif;
 	margin-bottom: 0px;
 	margin-top: 0px;
-	font-weight: 400;
+	font-weight: 300;
 	font-size: 20px;
 	line-height: 1.2em;
+	letter-spacing: -0.72px;
 }
 
 .mailchimp-sf-user-sync-settings-field-label {
@@ -956,10 +957,11 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 .mailchimp-sf-settings-page-hero-title {
 	font-family: "Means Web", serif;
 	font-size: 36px;
-	font-weight: 400;
 	line-height: 1.1em;
 	margin-bottom: 24px;
 	margin-top: 0px;
+	font-weight: 300;
+	letter-spacing: -0.72px;
 }
 
 .mailchimp-sf-settings-page-hero-description,
@@ -978,8 +980,9 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 .mailchimp-sf-settings-page-hero-content h3 {
 	font-family: "Means Web", serif;
 	font-size: 20px;
-	font-weight: 400;
 	line-height: 1.25em;
+	font-weight: 300;
+	letter-spacing: -0.72px;
 }
 
 .mailchimp-sf-settings-page-hero-content p,
@@ -1155,6 +1158,7 @@ body.toplevel_page_mailchimp_sf_options a.mailchimp-sf-button.btn-primary:hover 
 
 .mailchimp-sf-main-setings-wrapper .mailchimp-sf-settings-form-previewer {
 	flex: 1;
+	width: 100%;
 }
 
 .mailchimp-sf-main-settings,
@@ -1183,7 +1187,8 @@ table.widefat.mailchimp-sf-settings-table {
 .mailchimp-sf-settings-table thead tr th h2 {
 	color: var(--mailchimp-color-text);
 	font-family: "Means Web", serif;
-	font-weight: 400;
+	font-weight: 300;
+	letter-spacing: -0.72px;
 	font-size: 24px;
 	line-height: 1.25em;
 	margin: 0;
@@ -1441,6 +1446,7 @@ span.mailchimp-sf-last-sync-time {
 	display: inline-block;
 	width: 40px;
 	height: 24px;
+	min-width: 40px;
 }
 
 .mailchimp-sf-toggle-switch input[type="checkbox"] {
@@ -1508,6 +1514,18 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 	margin: 0px;
 }
 
+.mailchimp-sf-form-preview-content {
+	position: relative;
+}
+
+.toplevel_page_mailchimp_sf_options .notice {
+    display: none;
+}
+
+.toplevel_page_mailchimp_sf_options .mailchimp-sf-settings-page .notice {
+    display: block;
+}
+
 @media screen and (max-width: 992px) {
 	.mailchimp-sf-main-setings-wrapper {
 		flex-direction: column;
@@ -1530,6 +1548,10 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 
 	.mailchimp-sf-header {
 		padding: 14px 20px;
+	}
+
+	table.widefat.mailchimp-sf-user-sync-errors-table {
+		table-layout: fixed;
 	}
 }
 
@@ -1561,6 +1583,11 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 
 	.mailchimp-sf-user-sync-user-roles .input-checkbox-wrapper{
 		flex: 1 1 100%;
+	}
+
+	.mailchimp-sf-user-sync-error-action {
+		flex-direction: column;
+		min-width: 0;
 	}
 }
 
