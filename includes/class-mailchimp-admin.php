@@ -293,12 +293,11 @@ class Mailchimp_Admin {
 	 * This function previews the subscribe form on the settings page based on the form settings.
 	 */
 	public function preview_subscribe_form() {
-		// Validate the nonce and permissions.
-		if (
-			! current_user_can( 'manage_options' ) ||
-			! isset( $_POST['nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['nonce'] ) ), 'mailchimp_sf_preview_form_nonce' )
-		) {
+		// Check the nonce for security
+		check_ajax_referer( 'mailchimp_sf_preview_form_nonce', 'nonce' );
+
+		// Validate the permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'mailchimp' ) ) );
 		}
 

@@ -565,8 +565,8 @@
 		const $userSyncForm = $('.mailchimp-sf-user-sync-form');
 		const $submitButtons = $('input[type="submit"].mailchimp-sf-button-submit');
 		const params = window.mailchimp_sf_admin_params || {};
-		const ajaxUrl = params.ajax_url;
-		const ajaxNonce = params.preview_form_nonce;
+		const ajaxUrl = params.ajax_url || '';
+		const ajaxNonce = params.preview_form_nonce || '';
 
 		// Initially hide all submit buttons
 		$submitButtons.hide();
@@ -649,14 +649,15 @@
 				display_unsub_link: $('#mc_use_unsub_link').is(':checked'),
 			};
 
-			$.post(
-				ajaxUrl,
-				{
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				data: {
 					action: 'mailchimp_sf_preview_form',
 					nonce: ajaxNonce,
 					preview_data: previewData,
 				},
-				function (response) {
+				success(response) {
 					if (response.success && response.data) {
 						unblockElement('.mailchimp-sf-form-preview-content');
 						$previewer.html(response.data);
@@ -669,7 +670,17 @@
 						);
 					}
 				},
-			);
+				error(jqXHR, textStatus, errorThrown) {
+					// eslint-disable-next-line no-console
+					console.error('Error: ', textStatus, ', Details: ', errorThrown);
+					unblockElement('.mailchimp-sf-form-preview-content');
+					$previewer.html(
+						'<div class="mailchimp-sf-form-preview-error">' +
+							params.generic_error +
+							'</div>',
+					);
+				},
+			});
 		}
 
 		const debouncedPreviewForm = debounce(previewForm, 300);
