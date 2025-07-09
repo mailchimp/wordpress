@@ -246,7 +246,7 @@
 
 				if ( 'on' === get_option( 'mc_custom_style' ) ) {
 					?>
-					<table class="widefat mailchimp-sf-settings-table mc-custom-styling" style="<?php echo esc_attr( ( get_option( 'mc_nuke_all_styles' ) === '1' ? 'display:none;' : '' ) ); ?>">
+					<table class="widefat mailchimp-sf-settings-table mc-custom-styling" style="<?php echo esc_attr( ( get_option( 'mc_nuke_all_styles' ) === '1' ? 'display:none;' : '' ) ); ?>" id="mc-custom-styling">
 						<thead>
 							<tr>
 								<th colspan="2">
@@ -323,7 +323,7 @@
 				}
 				?>
 
-				<table class="widefat mailchimp-sf-settings-table">
+				<table class="widefat mailchimp-sf-settings-table mailchimp-sf-list-settings">
 					<thead>
 						<tr>
 							<th colspan="2">
