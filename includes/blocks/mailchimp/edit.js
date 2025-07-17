@@ -18,6 +18,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import Icon from './icon';
+import { VariationPicker } from './variation-picker';
 
 const SelectListPlaceholder = () => {
 	return (
@@ -161,19 +162,14 @@ export const BlockEdit = (props) => {
 								tag: field.tag,
 								label: field.name,
 								type: field.type,
-								visible:
-									(field.required ||
-										merge_fields_visibility?.[field.tag] === 'on') &&
-									field.public,
+								visible: field.required, // Keep newly added fields hidden by default, except for required fields.
 							}),
 						);
 						const newGroupBlocks = newFormGroups.map((group) =>
 							createBlock('mailchimp/mailchimp-audience-group', {
 								id: group.id,
 								label: group.title,
-								visible:
-									interest_groups_visibility?.[group.id] === 'on' &&
-									group.type !== 'hidden',
+								visible: false, // Keep newly added groups hidden by default.
 							}),
 						);
 
@@ -277,6 +273,11 @@ export const BlockEdit = (props) => {
 				</div>
 			</div>
 		);
+	}
+
+	// Display the variation picker if there are no innerBlocks.
+	if (innerBlocks.length === 0) {
+		return <VariationPicker {...props} />;
 	}
 
 	// Create a template for innerBlocks based on list data and visibility settings.

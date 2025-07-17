@@ -78,6 +78,8 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			'double_opt_in'               => (bool) get_option( 'mc_double_optin', true ),
 			'merge_fields_visibility'     => $merge_fields_visibility,
 			'interest_groups_visibility'  => $interest_groups_visibility,
+			'merge_fields'                => $merge_fields,
+			'interest_groups'             => $interest_groups,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
