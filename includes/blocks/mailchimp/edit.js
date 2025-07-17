@@ -75,7 +75,10 @@ export const BlockEdit = (props) => {
 	);
 	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag).filter(Boolean);
 	const exisingGroups = innerBlocks.map((block) => block?.attributes?.id).filter(Boolean);
-	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
+	const visibleFields = innerBlocks
+		.filter((block) => block?.attributes?.visible)
+		.map((block) => block?.attributes?.tag);
+	const visibleFieldsCount = visibleFields.length;
 
 	const listOptions = [];
 	// Check if selected list is not in the list of available lists.
@@ -117,10 +120,18 @@ export const BlockEdit = (props) => {
 								tag: field.tag,
 								label: field.name,
 								type: field.type,
+								/**
+								 * Visibility logic:
+								 * 1. If there are visible fields from the previous list, make the field visible if it's required or it's visible in the previous list form (Try to keep the same visibility as the previous list form).
+								 * 2. If there are no visible fields from the previous list, make the field visible if it's required or it's public and the visibility setting is on in the global settings.
+								 */
 								visible:
-									(field.required ||
-										merge_fields_visibility?.[field.tag] === 'on') &&
-									field.public,
+									field.required ||
+									(visibleFields.length > 0 &&
+										visibleFields.includes(field.tag)) ||
+									(visibleFields.length === 0 &&
+										merge_fields_visibility?.[field.tag] === 'on' &&
+										field.public),
 							}),
 						) || [];
 					const listGroupsBlocks =
@@ -128,9 +139,7 @@ export const BlockEdit = (props) => {
 							createBlock('mailchimp/mailchimp-audience-group', {
 								id: group.id,
 								label: group.title,
-								visible:
-									interest_groups_visibility?.[group.id] === 'on' &&
-									group.type !== 'hidden',
+								visible: false, // Keep the groups hidden by default.
 							}),
 						) || [];
 					replaceInnerBlocks(clientId, [...listFieldsBlocks, ...listGroupsBlocks], false);
