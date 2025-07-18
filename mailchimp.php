@@ -191,7 +191,7 @@ function mailchimp_sf_load_resources() {
 function mailchimp_sf_custom_style_css() {
 	ob_start();
 	?>
-	#mc_signup_form {
+	.mc_signup_form {
 		padding:5px;
 		border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
 		border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;

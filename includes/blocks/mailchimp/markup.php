@@ -13,7 +13,6 @@ if ( ! mailchimp_sf_should_display_form() ) {
 ?>
 <div <?php echo get_block_wrapper_attributes(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>>
 	<?php
-
 	// Backwards compatibility for old block, which didn't have innerBlocks.
 	$block_instance = $block->parsed_block;
 	$inner_blocks   = $block_instance['innerBlocks'] ?? [];
@@ -27,6 +26,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 
 	// Make sure we have a list ID and it's valid.
 	$list_id  = $attributes['list_id'] ?? '';
+	$form_id  = wp_unique_id( $list_id . '_' );
 	$lists    = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
 	$list_ids = array_map(
 		function ( $single_list ) {
@@ -93,7 +93,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 		}
 		if ( $sub_heading ) {
 			?>
-			<div id="mc_subheader">
+			<div class="mc_subheader">
 				<h3>
 					<?php echo wp_kses_post( $sub_heading ); ?>
 				</h3>
@@ -101,9 +101,9 @@ if ( ! mailchimp_sf_should_display_form() ) {
 			<?php
 		}
 		?>
-		<div id="mc_signup">
-			<form method="post" action="#mc_signup" id="mc_signup_form" class="mc_signup_form">
-				<input type="hidden" id="mc_submit_type" class="mc_submit_type" name="mc_submit_type" value="html" />
+		<div id="mc_signup_<?php echo esc_attr( $form_id ); ?>">
+			<form method="post" action="#mc_signup_<?php echo esc_attr( $form_id ); ?>" id="mc_signup_form_<?php echo esc_attr( $form_id ); ?>" class="mc_signup_form">
+				<input type="hidden" class="mc_submit_type" name="mc_submit_type" value="html" />
 				<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 				<input type="hidden" name="mailchimp_sf_list_id" value="<?php echo esc_attr( $list_id ); ?>" />
 				<input type="hidden" name="mailchimp_sf_update_existing_subscribers" value="<?php echo esc_attr( $update_existing_subscribers ); ?>" />
@@ -113,7 +113,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 				wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false );
 				?>
 				<div class="mc_form_inside">
-					<div class="mc_message_wrapper" id="mc_message">
+					<div class="mc_message_wrapper">
 						<?php echo wp_kses_post( mailchimp_sf_global_msg() ); ?>
 					</div>
 
@@ -132,7 +132,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					// Show an explanation of the * if there's more than one field
 					if ( $show_required_indicator ) {
 						?>
-						<div id="mc-indicates-required">
+						<div class="mc-indicates-required">
 							<?php echo esc_html( $required_indicator_text ); ?>
 						</div><!-- /mc-indicates-required -->
 						<?php
@@ -142,7 +142,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 					mailchimp_sf_honeypot_field();
 					?>
 					<div class="mc_signup_submit">
-						<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
+						<input type="submit" name="mc_signup_submit" class="mc_signup_submit_button" id="mc_signup_submit_<?php echo esc_attr( $form_id ); ?>" value="<?php echo esc_attr( $submit_text ); ?>" class="button" />
 					</div><!-- /mc_signup_submit -->
 
 					<?php
@@ -151,7 +151,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 						$api  = mailchimp_sf_get_api();
 						$host = 'https://' . $api->datacenter . '.list-manage.com';
 						?>
-						<div id="mc_unsub_link" align="center">
+						<div class="mc_unsub_link" align="center">
 							<a href="<?php echo esc_url( $host . '/unsubscribe/?u=' . $user['account_id'] . '&amp;id=' . $list_id ); ?>" target="_blank">
 								<?php echo esc_html( $unsubscribe_link_text ); ?>
 							</a>
