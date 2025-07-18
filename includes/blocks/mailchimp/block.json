@@ -81,5 +81,5 @@
   "textdomain": "mailchimp",
   "editorScript": "file:./index.js",
   "render": "file:./markup.php",
-  "editorStyle": "file:./editor.css"
+  "editorStyle": ["file:./editor.css", "dashicons"]
 }
