@@ -37,10 +37,6 @@ If these constants are added after you've already authenticated with Mailchimp, 
 
 == Frequently Asked Questions ==
 
-= Can I have multiple forms on one page? =
-
-No, only one form should exist per page, no matter the display type (block, widget, or shortcode).
-
 = Why am I not seeing all my fields in my form? =
 
 You need to ensure that the fields are enabled both in your Mailchimp account (Audience > Signup forms) and in the settings of this plugin.  Once the fields are enabled in both places, then they'll appear in the editor and frontend of your site.
