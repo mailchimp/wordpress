@@ -35,27 +35,27 @@ describe('Validate unrequired fields', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 
-			cy.get('#mc_signup').should('exist');
-			cy.get('#mc_mv_EMAIL').should('exist');
-			cy.get('#mc_signup_submit').should('exist');
+			cy.get('.mc_signup_form').should('exist');
+			cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+			cy.get('.mc_signup_submit_button').should('exist');
 
 			// Optional merge fields
-			cy.get('#mc_mv_FNAME').should('exist');
-			cy.get('#mc_mv_LNAME').should('exist');
-			cy.get('#mc_mv_ADDRESS-addr1').should('exist'); // Address line 1
-			cy.get('#mc_mv_ADDRESS-addr2').should('exist'); // Address line 2
-			cy.get('#mc_mv_ADDRESS-city').should('exist'); // City
-			cy.get('#mc_mv_ADDRESS-state').should('exist'); // State
-			cy.get('#mc_mv_ADDRESS-zip').should('exist'); // ZIP code
-			cy.get('#mc_mv_ADDRESS-country').should('exist'); // Country
-			cy.get('#mc_mv_BIRTHDAY').should('exist');
-			cy.get('#mc_mv_COMPANY').should('exist');
+			cy.get('input[id^="mc_mv_FNAME"]').should('exist');
+			cy.get('input[id^="mc_mv_LNAME"]').should('exist');
+			cy.get('input[name="mc_mv_ADDRESS[addr1]"]').should('exist'); // Address line 1
+			cy.get('input[name="mc_mv_ADDRESS[addr2]"]').should('exist'); // Address line 2
+			cy.get('input[name="mc_mv_ADDRESS[city]"]').should('exist'); // City
+			cy.get('input[name="mc_mv_ADDRESS[state]"]').should('exist'); // State
+			cy.get('input[name="mc_mv_ADDRESS[zip]"]').should('exist'); // ZIP code
+			cy.get('select[name="mc_mv_ADDRESS[country]"]').should('exist'); // Country
+			cy.get('input[id^="mc_mv_BIRTHDAY"]').should('exist');
+			cy.get('input[id^="mc_mv_COMPANY"]').should('exist');
 
 			// Validation assertions
 
 			// Email is required
 			const email = generateRandomEmail('unrequired-validation-test');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 
 			// Step 6: Verify that the form was submitted successfully
 			cy.submitFormAndVerifyWPSuccess();

@@ -59,9 +59,9 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 	});
 
 	function fillPhoneInputs(phone) {
-		cy.get('#mc_mv_PHONE-area').clear().type(phone.area);
-		cy.get('#mc_mv_PHONE-detail1').clear().type(phone.detail1);
-		cy.get('#mc_mv_PHONE-detail2').clear().type(phone.detail2);
+		cy.get('input[name="mc_mv_PHONE[area]"]').clear().type(phone.area);
+		cy.get('input[name="mc_mv_PHONE[detail1]"]').clear().type(phone.detail1);
+		cy.get('input[name="mc_mv_PHONE[detail2]"]').clear().type(phone.detail2);
 	}
 
 	it('Valid phone numbers', () => {
@@ -69,7 +69,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 		validPhones.forEach((phone) => {
 			const email = generateRandomEmail('validphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyWPSuccess();
 
@@ -83,7 +83,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 		invalidPhones.forEach((phone) => {
 			const email = generateRandomEmail('invalidphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyError();
 			cy.get('.mc_error_msg').contains('must consist of only numbers');
@@ -95,7 +95,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 		tooShortPhones.forEach((phone) => {
 			const email = generateRandomEmail('shortphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyError();
 			cy.get('.mc_error_msg').contains('Phone number is too short');
@@ -103,7 +103,7 @@ describe.skip('US Multi-Input Phone Number Validation', () => {
 
 		tooLongPhones.forEach((phone) => {
 			const email = generateRandomEmail('longphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyError();
 			cy.get('.mc_error_msg').contains('Phone number is too long');

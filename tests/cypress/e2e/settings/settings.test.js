@@ -31,8 +31,8 @@ describe('Admin can update plugin settings', () => {
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
 			cy.get('.mc_custom_border_hdr').contains(header);
-			cy.get('#mc_subheader').contains(subHeader);
-			cy.get('#mc_signup_submit').contains(button);
+			cy.get('.mc_subheader').first().contains(subHeader);
+			cy.get('.mc_signup_submit_button').contains(button);
 		});
 	});
 
@@ -54,11 +54,11 @@ describe('Admin can update plugin settings', () => {
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_mv_FNAME').should('not.exist');
-			cy.get('#mc_mv_LNAME').should('not.exist');
-			cy.get('#mc_mv_ADDRESS-addr1').should('not.exist'); // The address field has several inputs
-			cy.get('#mc_mv_BIRTHDAY').should('not.exist');
-			cy.get('#mc_mv_COMPANY').should('not.exist');
+			cy.get('input[id^="mc_mv_FNAME"]').should('not.exist');
+			cy.get('input[id^="mc_mv_LNAME"]').should('not.exist');
+			cy.get('input[name="mc_mv_ADDRESS[addr1]"]').should('not.exist'); // The address field has several inputs
+			cy.get('input[id^="mc_mv_BIRTHDAY"]').should('not.exist');
+			cy.get('input[id^="mc_mv_COMPANY"]').should('not.exist');
 		});
 
 		// Reset and recheck all merge fields
@@ -73,11 +73,11 @@ describe('Admin can update plugin settings', () => {
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_mv_FNAME').should('exist');
-			cy.get('#mc_mv_LNAME').should('exist');
-			cy.get('#mc_mv_ADDRESS-addr1').should('exist'); // The address field has several inputs
-			cy.get('#mc_mv_BIRTHDAY').should('exist');
-			cy.get('#mc_mv_COMPANY').should('exist');
+			cy.get('input[id^="mc_mv_FNAME"]').should('exist');
+			cy.get('input[id^="mc_mv_LNAME"]').should('exist');
+			cy.get('input[name="mc_mv_ADDRESS[addr1]"]').should('exist'); // The address field has several inputs
+			cy.get('input[id^="mc_mv_BIRTHDAY"]').should('exist');
+			cy.get('input[id^="mc_mv_COMPANY"]').should('exist');
 		});
 	});
 
@@ -118,7 +118,7 @@ describe('Admin can update plugin settings', () => {
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_unsub_link').should('exist');
+			cy.get('.mc_unsub_link').first().should('exist');
 		});
 
 		// Reset
@@ -128,7 +128,7 @@ describe('Admin can update plugin settings', () => {
 
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_unsub_link').should('not.exist');
+			cy.get('.mc_unsub_link').should('not.exist');
 		});
 	});
 
@@ -141,10 +141,10 @@ describe('Admin can update plugin settings', () => {
 		// Verify
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_mv_EMAIL').should('exist');
-			cy.get('#mc_mv_EMAIL').clear().type('unsubscribed_user@gmail.com');
-			cy.get('#mc_signup_submit').should('exist');
-			cy.get('#mc_signup_submit').click();
+			cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+			cy.get('input[id^="mc_mv_EMAIL"]').clear().type('unsubscribed_user@gmail.com');
+			cy.get('.mc_signup_submit_button').should('exist');
+			cy.get('.mc_signup_submit_button').click();
 			cy.get('.mc_error_msg').should('exist');
 			cy.get('.mc_error_msg').contains(
 				'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please sign up here.',
@@ -164,15 +164,15 @@ describe('Admin can update plugin settings', () => {
 			const firstName = 'John';
 			const lastName = 'Doe';
 			cy.visit(url);
-			cy.get('#mc_mv_EMAIL').should('exist');
-			cy.get('#mc_mv_FNAME').clear().type(firstName);
-			cy.get('#mc_mv_LNAME').clear().type(lastName);
-			cy.get('#mc_signup_submit').should('exist');
-			cy.get('#mc_signup_submit').click();
+			cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+			cy.get('input[id^="mc_mv_FNAME"]').clear().type(firstName);
+			cy.get('input[id^="mc_mv_LNAME"]').clear().type(lastName);
+			cy.get('.mc_signup_submit_button').should('exist');
+			cy.get('.mc_signup_submit_button').click();
 			cy.get('.mc_error_msg').should('exist');
 			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
-			cy.get('#mc_mv_FNAME').should('have.value', firstName);
-			cy.get('#mc_mv_LNAME').should('have.value', lastName);
+			cy.get('input[id^="mc_mv_FNAME"]').should('have.value', firstName);
+			cy.get('input[id^="mc_mv_LNAME"]').should('have.value', lastName);
 		});
 	});
 
@@ -211,12 +211,12 @@ describe('Admin can update plugin settings', () => {
 		// Show error message to spam bots.
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
-			cy.get('#mc_signup').should('exist');
+			cy.get('.mc_signup_form').should('exist');
 			cy.get('input[name="mailchimp_sf_alt_email"]').then((el) => {
 				el.val('123');
 			});
-			cy.get('#mc_signup_submit').should('exist');
-			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_signup_submit_button').should('exist');
+			cy.get('.mc_signup_submit_button').click();
 			cy.get('.mc_error_msg').should('exist');
 			cy.get('.mc_error_msg').contains(
 				"We couldn't process your submission as it was flagged as potential spam",
@@ -224,9 +224,9 @@ describe('Admin can update plugin settings', () => {
 
 			// Normal user should not see the error message.
 			cy.visit(url);
-			cy.get('#mc_signup').should('exist');
-			cy.get('#mc_signup_submit').should('exist');
-			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_signup_form').should('exist');
+			cy.get('.mc_signup_submit_button').should('exist');
+			cy.get('.mc_signup_submit_button').click();
 			cy.get('.mc_error_msg').should('exist');
 			cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
 		});
