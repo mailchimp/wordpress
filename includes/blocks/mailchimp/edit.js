@@ -60,6 +60,7 @@ export const BlockEdit = (props) => {
 		unsubscribe_link_text,
 		show_required_indicator = true,
 		required_indicator_text,
+		template = 'default',
 	} = attributes;
 
 	const [listData, setListData] = useState({});
@@ -122,16 +123,17 @@ export const BlockEdit = (props) => {
 								type: field.type,
 								/**
 								 * Visibility logic:
-								 * 1. If there are visible fields from the previous list, make the field visible if it's required or it's visible in the previous list form (Try to keep the same visibility as the previous list form).
+								 * 1. If there are visible fields from the previous list, make the field visible if it's visible in the previous list form (Try to keep the same visibility as the previous list form) for the default template also make the field visible if it's required.
 								 * 2. If there are no visible fields from the previous list, make the field visible if it's required or it's public and the visibility setting is on in the global settings.
 								 */
 								visible:
-									field.required ||
+									(template === 'default' && field.required) ||
 									(visibleFields.length > 0 &&
 										visibleFields.includes(field.tag)) ||
 									(visibleFields.length === 0 &&
-										merge_fields_visibility?.[field.tag] === 'on' &&
-										field.public),
+										(field.required ||
+											(merge_fields_visibility?.[field.tag] === 'on' &&
+												field.public))),
 							}),
 						) || [];
 					const listGroupsBlocks =
@@ -171,7 +173,7 @@ export const BlockEdit = (props) => {
 								tag: field.tag,
 								label: field.name,
 								type: field.type,
-								visible: field.required, // Keep newly added fields hidden by default, except for required fields.
+								visible: template === 'default' && field.required, // Keep newly added fields hidden by default, except for required fields.
 							}),
 						);
 						const newGroupBlocks = newFormGroups.map((group) =>
@@ -311,7 +313,7 @@ export const BlockEdit = (props) => {
 				visible: interest_groups_visibility?.[group.id] === 'on' && group.type !== 'hidden',
 			},
 		]) || [];
-	const template = [...templateFields, ...templateGroups];
+	const templateBlocks = [...templateFields, ...templateGroups];
 
 	return (
 		<>
@@ -353,7 +355,7 @@ export const BlockEdit = (props) => {
 									<InnerBlocks
 										allowedBlocks={['mailchimp/mailchimp-form-field']}
 										orientation="vertical"
-										template={template}
+										template={templateBlocks}
 										templateLock="insert"
 									/>
 									{show_required_indicator && (

@@ -38,6 +38,10 @@
     "required_indicator_text": {
       "type": "string",
       "default": "* = required field"
+    },
+    "template": {
+      "type": "string",
+      "default": "default"
     }
   },
   "supports": {
@@ -76,7 +80,8 @@
   ],
   "providesContext": {
     "mailchimp/list_id": "list_id",
-    "mailchimp/show_required_indicator": "show_required_indicator"
+    "mailchimp/show_required_indicator": "show_required_indicator",
+    "mailchimp/template": "template"
   },
   "textdomain": "mailchimp",
   "editorScript": "file:./index.js",

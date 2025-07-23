@@ -312,11 +312,13 @@ export const BlockEdit = (props) => {
 	const {
 		attributes,
 		setAttributes,
-		context: { 'mailchimp/list_id': listId },
+		context: { 'mailchimp/list_id': listId, 'mailchimp/template': template },
 	} = props;
 	const { visible, tag } = attributes;
 	const { mailchimpListData } = window;
-	const isRequired = mailchimpListData?.[listId]?.mergeFields?.[tag]?.required || false;
+	const isRequired =
+		(template === 'default' && mailchimpListData?.[listId]?.mergeFields?.[tag]?.required) ||
+		tag === 'EMAIL';
 
 	return (
 		<div {...blockProps} style={{ color: 'inherit' }}>

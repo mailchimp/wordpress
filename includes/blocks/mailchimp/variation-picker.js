@@ -8,6 +8,8 @@ import { useDispatch, useSelect } from '@wordpress/data';
 import { __, _n, sprintf } from '@wordpress/i18n';
 import { formFields, formFieldTitles } from './variations';
 
+const { merge_fields = [] } = window.mailchimp_sf_block_data;
+
 const getMissingFields = (variation) => {
 	const variationName = variation.name;
 	const variationFields = formFields[variationName] || [];
@@ -20,6 +22,17 @@ const getMissingFields = (variation) => {
 		});
 
 	return variationFields.filter((field) => !formFieldsTags.includes(field));
+};
+
+const getHiddenRequiredFields = (variation) => {
+	const variationName = variation.name;
+	if (variationName === 'default') {
+		return [];
+	}
+
+	const requiredFields = merge_fields.filter((field) => field.required).map((field) => field.tag);
+	const variationFields = formFields[variationName] || [];
+	return requiredFields.filter((field) => !variationFields.includes(field));
 };
 
 export const VariationPicker = ({ name, setAttributes, clientId }) => {
@@ -54,11 +67,26 @@ export const VariationPicker = ({ name, setAttributes, clientId }) => {
 
 					if (nextVariation.innerBlocks) {
 						const missingFields = getMissingFields(nextVariation);
+						const hiddenRequiredFields = getHiddenRequiredFields(nextVariation);
 
 						replaceInnerBlocks(
 							clientId,
 							createBlocksFromInnerBlocksTemplate(nextVariation.innerBlocks),
 						);
+
+						// Add a notice if there are required fields missing from the selected form template.
+						if (hiddenRequiredFields.length > 0) {
+							createNotice(
+								'warning',
+								sprintf(
+									__(
+										'The selected form template is missing some required fields (%s) for Mailchimp, so merge validation will be turned off for this form.',
+										'mailchimp',
+									),
+									hiddenRequiredFields.join(', '),
+								),
+							);
+						}
 
 						// Add a notice if there are missing fields from the selected form template.
 						if (missingFields.length > 0) {

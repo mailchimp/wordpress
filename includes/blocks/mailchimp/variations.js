@@ -8,45 +8,10 @@ const {
 	merge_fields = [],
 	interest_groups = [],
 	merge_fields_visibility = {},
+	interest_groups_visibility = {},
 } = mailchimp_sf_block_data;
 
 /** @typedef {import('@wordpress/blocks').WPBlockVariation} WPBlockVariation */
-
-const groupInnerBlocks = interest_groups.map((group) => [
-	'mailchimp/mailchimp-audience-group',
-	{
-		id: group.id,
-		label: group.title,
-		visible: false,
-	},
-]);
-
-const prepareInnerBlocks = (merge_fields = [], fields = []) => {
-	return [...merge_fields]
-		.sort((a, b) => {
-			const aIndex = fields.indexOf(a.tag);
-			const bIndex = fields.indexOf(b.tag);
-			return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex);
-		})
-		.map((field) => {
-			let visible =
-				field.required ||
-				fields.includes(field.tag) ||
-				fields.includes(field.type?.toUpperCase());
-			if (fields.length === 0) {
-				visible = field.required || merge_fields_visibility?.[field.tag] === 'on';
-			}
-			return [
-				'mailchimp/mailchimp-form-field',
-				{
-					tag: field.tag,
-					label: field.name,
-					type: field.type,
-					visible,
-				},
-			];
-		});
-};
 
 export const formFields = {
 	'email-only-form': ['EMAIL'],
@@ -63,6 +28,46 @@ export const formFieldTitles = {
 	ADDRESS: __('Address', 'mailchimp'),
 };
 
+const prepareInnerBlocks = (merge_fields = [], template = 'default') => {
+	const fields = formFields[template] || [];
+	const fieldInnerBlocks = [...merge_fields]
+		.sort((a, b) => {
+			const aIndex = fields.indexOf(a.tag);
+			const bIndex = fields.indexOf(b.tag);
+			return (aIndex === -1 ? Infinity : aIndex) - (bIndex === -1 ? Infinity : bIndex);
+		})
+		.map((field) => {
+			let visible =
+				(template === 'default' && field.required) ||
+				fields.includes(field.tag) ||
+				fields.includes(field.type?.toUpperCase());
+			if (fields.length === 0) {
+				visible = field.required || merge_fields_visibility?.[field.tag] === 'on';
+			}
+			return [
+				'mailchimp/mailchimp-form-field',
+				{
+					tag: field.tag,
+					label: field.name,
+					type: field.type,
+					visible,
+				},
+			];
+		});
+	const groupInnerBlocks = interest_groups.map((group) => [
+		'mailchimp/mailchimp-audience-group',
+		{
+			id: group.id,
+			label: group.title,
+			visible:
+				template !== 'default'
+					? false
+					: interest_groups_visibility?.[group.id] === 'on' && group.type !== 'hidden',
+		},
+	]);
+	return [...fieldInnerBlocks, ...groupInnerBlocks];
+};
+
 /**
  * Template option choices for predefined columns layouts.
  *
@@ -74,10 +79,10 @@ export const variations = [
 		title: __('Quick Signup (Email Only)', 'mailchimp'),
 		description: __('A quick signup form with only an email field.', 'mailchimp'),
 		icon: 'email',
-		innerBlocks: [
-			...prepareInnerBlocks(merge_fields, formFields['email-only-form']),
-			...groupInnerBlocks,
-		],
+		attributes: {
+			template: 'email-only-form',
+		},
+		innerBlocks: prepareInnerBlocks(merge_fields, 'email-only-form'),
 		scope: ['block'],
 	},
 	{
@@ -85,10 +90,10 @@ export const variations = [
 		title: __('Personal Signup (Name and Email)', 'mailchimp'),
 		description: __('A personal signup form with only a name and email fields', 'mailchimp'),
 		icon: 'admin-users',
-		innerBlocks: [
-			...prepareInnerBlocks(merge_fields, formFields['name-and-email-form']),
-			...groupInnerBlocks,
-		],
+		attributes: {
+			template: 'name-and-email-form',
+		},
+		innerBlocks: prepareInnerBlocks(merge_fields, 'name-and-email-form'),
 		scope: ['block'],
 	},
 	{
@@ -99,10 +104,10 @@ export const variations = [
 			'mailchimp',
 		),
 		icon: 'id',
-		innerBlocks: [
-			...prepareInnerBlocks(merge_fields, formFields['contact-form']),
-			...groupInnerBlocks,
-		],
+		attributes: {
+			template: 'contact-form',
+		},
+		innerBlocks: prepareInnerBlocks(merge_fields, 'contact-form'),
 		scope: ['block'],
 	},
 	{
@@ -110,8 +115,11 @@ export const variations = [
 		title: __('Default Form (All Fields)', 'mailchimp'),
 		description: __('A default form, Fields based on settings.', 'mailchimp'),
 		icon: 'admin-settings',
+		attributes: {
+			template: 'default',
+		},
 		isDefault: true,
-		innerBlocks: [...prepareInnerBlocks(merge_fields, formFields.default), ...groupInnerBlocks],
+		innerBlocks: prepareInnerBlocks(merge_fields, 'default'),
 		scope: ['block'],
 	},
 ];
