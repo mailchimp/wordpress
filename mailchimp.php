@@ -4,7 +4,7 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           1.8.0
+ * Version:           1.9.0
  * Requires at least: 6.4
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
@@ -67,7 +67,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '1.8.0' );
+define( 'MCSF_VER', '1.9.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -94,6 +94,8 @@ require_once 'mailchimp_compat.php';
 require_once 'mailchimp_upgrade.php';
 
 // Init Admin functions.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-user-sync-backgroud-process.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mailchimp-user-sync.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
@@ -124,8 +126,10 @@ function mailchimp_sf_plugin_init() {
 		mailchimp_sf_update_merge_fields();
 	}
 
-	// Bring in our appropriate JS and CSS resources
-	mailchimp_sf_load_resources();
+	if ( mailchimp_sf_should_display_form() ) {
+		// Bring in our appropriate JS and CSS resources
+		add_action( 'wp_enqueue_scripts', 'mailchimp_sf_load_resources' );
+	}
 }
 
 add_action( 'init', 'mailchimp_sf_plugin_init' );
@@ -153,89 +157,51 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'mailchimp_sf_
  */
 function mailchimp_sf_load_resources() {
 	// JS
-	if ( ! is_admin() ) {
-		wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form' ), MCSF_VER, true );
-		// some javascript to get ajax version submitting to the proper location
-		global $wp_scripts;
-		$wp_scripts->localize(
-			'mailchimp_sf_main_js',
-			'mailchimpSF',
-			array(
-				'ajax_url' => trailingslashit( home_url() ),
-			)
-		);
+	wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form', 'jquery-ui-datepicker' ), MCSF_VER, true );
+	// some javascript to get ajax version submitting to the proper location
+	global $wp_scripts;
+	$wp_scripts->localize(
+		'mailchimp_sf_main_js',
+		'mailchimpSF',
+		array(
+			'ajax_url' => trailingslashit( home_url() ),
+		)
+	);
 
-		// Datepicker theme
-		wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
+	// Datepicker theme
+	wp_enqueue_style( 'flick', MCSF_URL . 'assets/css/flick/flick.css', array(), MCSF_VER );
 
-		// Datepicker JS
-		wp_enqueue_script( 'jquery-ui-datepicker' );
-	}
-
+	// CSS
 	if ( get_option( 'mc_nuke_all_styles' ) !== '1' ) {
-		wp_enqueue_style( 'mailchimp_sf_main_css', home_url( '?mcsf_action=main_css&ver=' . MCSF_VER, 'relative' ), array(), MCSF_VER );
-		global $wp_styles;
-		$wp_styles->add_data( 'mailchimp_sf_ie_css', 'conditional', 'IE' );
-	}
-}
+		wp_enqueue_style( 'mailchimp_sf_main_css', MCSF_URL . 'assets/css/frontend.css', array(), MCSF_VER );
 
-/**
- * Loads jQuery Datepicker for the date-pick class
- **/
-function mc_datepicker_load() {
-	require_once MCSF_DIR . '/views/datepicker.php';
-}
-
-if ( ! is_admin() ) {
-	add_action( 'wp_head', 'mc_datepicker_load' );
-}
-
-/**
- * Handles requests that as light-weight a load as possible.
- * typically, JS or CSS
- *
- * @return void
- */
-function mailchimp_sf_early_request_handler() {
-	if ( isset( $_GET['mcsf_action'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
-		switch ( $_GET['mcsf_action'] ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- ignoring because this is only adding CSS
-			case 'main_css':
-				header( 'Content-type: text/css' );
-				mailchimp_sf_main_css();
-				exit;
+		// Backwards compatibility. TODO: Remove this in a future version.
+		if ( get_option( 'mc_custom_style' ) === 'on' ) {
+			$custom_css = mailchimp_sf_custom_style_css();
+			wp_add_inline_style( 'mailchimp_sf_main_css', $custom_css );
 		}
 	}
 }
 
-add_action( 'init', 'mailchimp_sf_early_request_handler', 0 );
-
 /**
- * Outputs the front-end CSS.  This checks several options, so it
- * was best to put it in a Request-handled script, as opposed to
- * a static file.
- */
-function mailchimp_sf_main_css() {
-	require_once MCSF_DIR . '/views/css/frontend.php';
-}
-
-
-/**
- * Add our settings page to the admin menu
+ * Custom styles CSS
  *
- * @return void
+ * @return string
  */
-function mailchimp_sf_add_pages() {
-	// Add settings page for users who can edit plugins
-	add_menu_page(
-		esc_html__( 'Mailchimp Setup', 'mailchimp' ),
-		esc_html__( 'Mailchimp', 'mailchimp' ),
-		MCSF_CAP_THRESHOLD,
-		'mailchimp_sf_options',
-		'mailchimp_sf_setup_page',
-		'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1Mi4wMyA1NSI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjx0aXRsZT5Bc3NldCAxPC90aXRsZT48ZyBpZD0iTGF5ZXJfMiIgZGF0YS1uYW1lPSJMYXllciAyIj48ZyBpZD0iTGF5ZXJfMS0yIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTExLjY0LDI4LjU0YTQuNzUsNC43NSwwLDAsMC0xLjE3LjA4Yy0yLjc5LjU2LTQuMzYsMi45NC00LjA1LDZhNi4yNCw2LjI0LDAsMCwwLDUuNzIsNS4yMSw0LjE3LDQuMTcsMCwwLDAsLjgtLjA2YzIuODMtLjQ4LDMuNTctMy41NSwzLjEtNi41N0MxNS41MSwyOS44MywxMy4yMSwyOC42MywxMS42NCwyOC41NFptMi43Nyw4LjA3YTEuMTcsMS4xNywwLDAsMS0xLjEuNTUsMS41MywxLjUzLDAsMCwxLTEuMzctMS41OEE0LDQsMCwwLDEsMTIuMjMsMzRhMS40NCwxLjQ0LDAsMCwwLS41NS0xLjc0LDEuNDgsMS40OCwwLDAsMC0xLjEyLS4yMSwxLjQ0LDEuNDQsMCwwLDAtLjkyLjY0LDMuMzksMy4zOSwwLDAsMC0uMzQuNzlsMCwuMTFjLS4xMy4zNC0uMzMuNDUtLjQ3LjQzcy0uMTYtLjA1LS4yMS0uMjFhMywzLDAsMCwxLC43OC0yLjU1LDIuNDYsMi40NiwwLDAsMSwyLjExLS43NiwyLjUsMi41LDAsMCwxLDEuOTEsMS4zOSwzLjE5LDMuMTksMCwwLDEtLjIzLDIuODJsLS4wOS4yQTEuMTYsMS4xNiwwLDAsMCwxMywzNmEuNzQuNzQsMCwwLDAsLjYzLjMyLDEuMzgsMS4zOCwwLDAsMCwuMzQsMGMuMTUsMCwuMy0uMDcuMzksMEEuMjQuMjQsMCwwLDEsMTQuNDEsMzYuNjFaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNNTEsMzMuODhhMy44NCwzLjg0LDAsMCwwLTEuMTUtMWwtLjExLS4zNy0uMTQtLjQyYTUuNTcsNS41NywwLDAsMCwuNS0zLjMyLDUuNDMsNS40MywwLDAsMC0xLjU0LTMsMTAuMDksMTAuMDksMCwwLDAtNC4yNC0yLjI2YzAtLjY3LDAtMS40My0uMDYtMS45YTEyLjgzLDEyLjgzLDAsMCwwLS40OS0zLjI1LDEwLjQ2LDEwLjQ2LDAsMCwwLTEuMy0yLjkyYzIuMTQtMi41NiwzLjI5LTUuMjEsMy4yOS03LjU3LDAtMy44My0zLTYuMy03LjU5LTYuM2ExOS4zLDE5LjMsMCwwLDAtNy4yMiwxLjZsLS4zNC4xNEwyOC43LDEuNTJBNi4zMSw2LjMxLDAsMCwwLDI0LjQzLDAsMTQuMDcsMTQuMDcsMCwwLDAsMTcuNiwyLjJhMzYuOTMsMzYuOTMsMCwwLDAtNi43OCw1LjIxYy00LjYsNC4zOC04LjMsOS42My05LjkxLDE0QTEyLjUxLDEyLjUxLDAsMCwwLDAsMjYuNTRhNi4xNiw2LjE2LDAsMCwwLDIuMTMsNC40bC43OC42NkExMC40NCwxMC40NCwwLDAsMCwyLjc0LDM1YTkuMzYsOS4zNiwwLDAsMCwzLjIxLDYsMTAsMTAsMCwwLDAsNS4xMywyLjQzLDIwLjE5LDIwLjE5LDAsMCwwLDcuMzEsOEEyMy4zMywyMy4zMywwLDAsMCwzMC4xNyw1NUgzMWEyMy4yNywyMy4yNywwLDAsMCwxMi0zLjE2LDE5LjEsMTkuMSwwLDAsMCw3LjgyLTkuMDZsMCwwQTE2Ljg5LDE2Ljg5LDAsMCwwLDUyLDM3LjIzLDUuMTcsNS4xNywwLDAsMCw1MSwzMy44OFptLTEuNzgsOC4yMWMtMyw3LjI5LTEwLjMsMTEuMzUtMTksMTEuMDktOC4wNi0uMjQtMTQuOTQtNC41LTE4LTExLjQzYTcuOTQsNy45NCwwLDAsMS01LjEyLTIuMDYsNy41Niw3LjU2LDAsMCwxLTIuNjEtNC44NUE4LjMxLDguMzEsMCwwLDEsNSwzMUwzLjMyLDI5LjU2Qy00LjQyLDIzLDE5Ljc3LTMuODYsMjcuNTEsMi44OWwyLjY0LDIuNTgsMS40NC0uNjFjNi43OS0yLjgxLDEyLjMtMS40NSwxMi4zLDMsMCwyLjMzLTEuNDgsNS4wNS0zLjg2LDcuNTJhNy41NCw3LjU0LDAsMCwxLDIsMy40OCwxMSwxMSwwLDAsMSwuNDIsMi44MmMwLDEsLjA5LDMuMTYuMDksMy4ybDEsLjI3QTguNjQsOC42NCwwLDAsMSw0Ny4yLDI3YTMuNjYsMy42NiwwLDAsMSwxLjA2LDIuMDZBNCw0LDAsMCwxLDQ3LjU1LDMyLDEwLjE1LDEwLjE1LDAsMCwxLDQ4LDMzLjA4Yy4yLjY0LjM1LDEuMTguMzcsMS4yNS43NCwwLDEuODkuODUsMS44OSwyLjg5QTE1LjI5LDE1LjI5LDAsMCwxLDQ5LjE4LDQyLjA5WiIvPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTQ4LDM2YTEuMzYsMS4zNiwwLDAsMC0uODYtLjE2LDExLjc2LDExLjc2LDAsMCwwLS44Mi0yLjc4QTE3Ljg5LDE3Ljg5LDAsMCwxLDQwLjQ1LDM2YTIzLjY0LDIzLjY0LDAsMCwxLTcuODEuODRjLTEuNjktLjE0LTIuODEtLjYzLTMuMjMuNzRhMTguMywxOC4zLDAsMCwwLDgsLjgxLjE0LjE0LDAsMCwxLC4xNi4xMy4xNS4xNSwwLDAsMS0uMDkuMTVzLTMuMTQsMS40Ni04LjE0LS4wOGEyLjU4LDIuNTgsMCwwLDAsMS44MywxLjkxLDguMjQsOC4yNCwwLDAsMCwxLjQ0LjM5YzYuMTksMS4wNiwxMi0yLjQ3LDEzLjI3LTMuMzYuMS0uMDcuMTYsMCwuMDguMTJsLS4xMy4xOGMtMS41OSwyLjA2LTUuODgsNC40NC0xMS40NSw0LjQ0LTIuNDMsMC00Ljg2LS44Ni01Ljc1LTIuMTctMS4zOC0yLS4wNy01LDIuMjQtNC43MWwxLC4xMWEyMS4xMywyMS4xMywwLDAsMCwxMC41LTEuNjhjMy4xNS0xLjQ2LDQuMzQtMy4wNyw0LjE2LTQuMzdBMS44NywxLjg3LDAsMCwwLDQ2LDI4LjM0YTYuOCw2LjgsMCwwLDAtMy0xLjQxYy0uNS0uMTQtLjg0LS4yMy0xLjItLjM1LS42NS0uMjEtMS0uMzktMS0xLjYxLDAtLjUzLS4xMi0yLjQtLjE2LTMuMTYtLjA2LTEuMzUtLjIyLTMuMTktMS4zNi00YTEuOTIsMS45MiwwLDAsMC0xLS4zMSwxLjg2LDEuODYsMCwwLDAtLjU4LjA2LDMuMDcsMy4wNywwLDAsMC0xLjUyLjg2LDUuMjQsNS4yNCwwLDAsMS00LDEuMzJjLS44LDAtMS42NS0uMTYtMi42Mi0uMjJsLS41NywwYTUuMjIsNS4yMiwwLDAsMC01LDQuNTdjLS41NiwzLjgzLDIuMjIsNS44MSwzLDdhMSwxLDAsMCwxLC4yMi41Mi44My44MywwLDAsMS0uMjguNTVoMGE5LjgsOS44LDAsMCwwLTIuMTYsOS4yLDcuNTksNy41OSwwLDAsMCwuNDEsMS4xMmMyLDQuNzMsOC4zLDYuOTMsMTQuNDMsNC45M2ExNS4wNiwxNS4wNiwwLDAsMCwyLjMzLTEsMTIuMjMsMTIuMjMsMCwwLDAsMy41Ny0yLjY3LDEwLjYxLDEwLjYxLDAsMCwwLDMtNS44MkM0OC42LDM2LjcsNDguMzMsMzYuMjMsNDgsMzZabS04LjI1LTcuODJjMCwuNS0uMzEuOTEtLjY4LjlzLS42Ni0uNDItLjY1LS45Mi4zMS0uOTEuNjgtLjlTMzkuNzIsMjcuNjgsMzkuNzEsMjguMThabS0xLjY4LTZjLjcxLS4xMiwxLjA2LjYyLDEuMzIsMS44NWEzLjY0LDMuNjQsMCwwLDEtLjA1LDIsNC4xNCw0LjE0LDAsMCwwLTEuMDYsMCw0LjEzLDQuMTMsMCwwLDEtLjY4LTEuNjRDMzcuMjksMjMuMjMsMzcuMzEsMjIuMzQsMzgsMjIuMjNabS0yLjQsNi41N2EuODIuODIsMCwwLDEsMS4xMS0uMTljLjQ1LjIyLjY5LjY3LjUzLDFhLjgyLjgyLDAsMCwxLTEuMTEuMTlDMzUuNywyOS41OCwzNS40NywyOS4xMywzNS42MywyOC44Wm0tMi44LS4zN2MtLjA3LjExLS4yMy4wOS0uNTcuMDZhNC4yNCw0LjI0LDAsMCwwLTIuMTQuMjIsMiwyLDAsMCwxLS40OS4xNC4xNi4xNiwwLDAsMS0uMTEsMCwuMTUuMTUsMCwwLDEtLjA1LS4xMi44MS44MSwwLDAsMSwuMzItLjUxLDIuNDEsMi40MSwwLDAsMSwxLjI3LS41MywxLjk0LDEuOTQsMCwwLDEsMS43NS41N0EuMTkuMTksMCwwLDEsMzIuODMsMjguNDNabS01LjExLTEuMjZjLS4xMiwwLS4xNy0uMDctLjE5LS4xNHMuMjgtLjU2LjYyLS44MWEzLjYsMy42LDAsMCwxLDMuNTEtLjQyQTMsMywwLDAsMSwzMywyNi44N2MuMTIuMi4xNS4zNS4wNy40NHMtLjQ0LDAtLjk1LS4yNGE0LjE4LDQuMTgsMCwwLDAtMi0uNDNBMjEuODUsMjEuODUsMCwwLDAsMjcuNzEsMjcuMTdaIi8+PHBhdGggY2xhc3M9ImNscy0xIiBkPSJNMzUuNSwxMy4yOWMuMSwwLC4xNi0uMTUuMDctLjJhMTEsMTEsMCwwLDAtNC42OS0xLjIzLjA5LjA5LDAsMCwxLS4wNy0uMTQsNC43OCw0Ljc4LDAsMCwxLC44OC0uODkuMDkuMDksMCwwLDAtLjA2LS4xNiwxMi40NiwxMi40NiwwLDAsMC01LjYxLDIsLjA5LjA5LDAsMCwxLS4xMy0uMDksNi4xNiw2LjE2LDAsMCwxLC41OS0xLjQ1LjA4LjA4LDAsMCwwLS4xMS0uMTFBMjIuNzksMjIuNzksMCwwLDAsMjAsMTYuMjRhLjA5LjA5LDAsMCwwLC4xMi4xM0ExOS41MywxOS41MywwLDAsMSwyNywxMy4zMiwxOS4xLDE5LjEsMCwwLDEsMzUuNSwxMy4yOVoiLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik0yOC4zNCw2LjQyUzI2LjIzLDQsMjUuNiwzLjhDMjEuNjksMi43NCwxMy4yNCw4LjU3LDcuODQsMTYuMjcsNS42NiwxOS4zOSwyLjUzLDI0LjksNCwyNy43NGExMS40MywxMS40MywwLDAsMCwxLjc5LDEuNzJBNi42NSw2LjY1LDAsMCwxLDEwLDI2Ljc4LDM0LjIxLDM0LjIxLDAsMCwxLDIwLjgsMTEuNjIsNTUuMDksNTUuMDksMCwwLDEsMjguMzQsNi40MloiLz48L2c+PC9nPjwvc3ZnPg=='
-	);
+function mailchimp_sf_custom_style_css() {
+	ob_start();
+	?>
+	#mc_signup_form {
+		padding:5px;
+		border-width: <?php echo absint( get_option( 'mc_form_border_width' ) ); ?>px;
+		border-style: <?php echo ( get_option( 'mc_form_border_width' ) === 0 ) ? 'none' : 'solid'; ?>;
+		border-color: #<?php echo esc_attr( get_option( 'mc_form_border_color' ) ); ?>;
+		color: #<?php echo esc_attr( get_option( 'mc_form_text_color' ) ); ?>;
+		background-color: #<?php echo esc_attr( get_option( 'mc_form_background' ) ); ?>;
+	}
+	<?php
+	return ob_get_clean();
 }
-add_action( 'admin_menu', 'mailchimp_sf_add_pages' );
 
 /**
  * Request handler
@@ -744,15 +710,6 @@ function mailchimp_sf_get_interest_categories( $list_id, $new_list, $update_opti
 	}
 
 	return $igs['categories'];
-}
-
-
-/**
- * Outputs the Settings/Options page
- */
-function mailchimp_sf_setup_page() {
-	$path = plugin_dir_path( __FILE__ );
-	require_once $path . '/includes/admin/templates/settings.php';
 }
 
 /**

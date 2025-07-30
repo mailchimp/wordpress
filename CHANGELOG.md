@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [1.9.0] - 2025-06-04
+
+### Added
+
+- New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
+
+### Changed
+
+- Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
+
 ## [1.8.0] - 2025-05-08
 
 **Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
@@ -313,6 +323,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[1.9.0]: https://github.com/mailchimp/wordpress/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/mailchimp/wordpress/compare/1.7.0...1.8.0
 [1.7.0]: https://github.com/mailchimp/wordpress/compare/1.6.3...1.7.0
 [1.6.3]: https://github.com/mailchimp/wordpress/compare/1.6.2...1.6.3

@@ -28,7 +28,7 @@ Starting in version 1.6.0, authentication has changed to use OAuth. As part of t
 
 With no additional configuration, we use the standard `LOGGED_IN_KEY` and `LOGGED_IN_SALT` constants that are normally set in your site's `wp-config.php` file. Some sites make use of security plugins that rotate these constants on a periodic basis. When this happens, we won't be able to decrypt the access token and you’ll need to reconnect your Mailchimp account to generate a new access token.
 
-To prevent such issues, it is recommended to define two additional constants in your site's `wp-config.php` file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from [here](https://api.wordpress.org/secret-key/1.1/salt/) and use them. You'll end up with additional code like the following in your `wp-config.php` file:
+To prevent such issues, it is recommended to define two additional constants in your site's `wp-config.php` file: `MAILCHIMP_SF_ENCRYPTION_KEY` and `MAILCHIMP_SF_ENCRYPTION_SALT`. These constants should consist of a combination of characters, preferably at least 32 characters long. Once set, these values should not be changed. For strong values, you can copy some of the values from the [WordPress Secret Key Generator](https://api.wordpress.org/secret-key/1.1/salt/) and use them. You'll end up with additional code like the following in your `wp-config.php` file:
 
 ```php
 define( 'MAILCHIMP_SF_ENCRYPTION_KEY', 'put your unique phrase here' );
@@ -49,7 +49,7 @@ This section describes how to install the plugin and get started using it.
 
 ![Connecting your Mailchimp account to WordPress via OAuth.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-4.jpg?raw=true)
 
-![Creating a new Mailchimp account.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-9.jpg?raw=true)
+![Creating a new Mailchimp account.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-7.jpg?raw=true)
 
 4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application. If you don't have an acccount, instead click the "Create an account" button to create one.
 
@@ -57,15 +57,13 @@ This section describes how to install the plugin and get started using it.
 
 5. Select the list where you want to send new Mailchimp subscribers.
 
-![Configuring your Signup Form display format (optional).](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-6.jpg?raw=true)
-
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
 
-![Configuring extra fields on your Signup Form (optional).](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-7.jpg?raw=true)
+![Configuring extra fields on your Signup Form (optional).](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-6.jpg?raw=true)
 
-7. Optional: adjust frontend site display with available CSS options.
+7. Optional: turn on user synchronization to sync WordPress users to Mailchimp.
 
-![CSS options for styling your Signup Form.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-8.jpg?raw=true)
+![Configuring user synchronization settings.](https://github.com/mailchimp/wordpress/blob/develop/.wordpress-org/screenshot-8.jpg?raw=true)
 
 ## Upgrading
 
@@ -88,23 +86,25 @@ You need to ensure that the fields are enabled both in your Mailchimp account (A
 Internationalization (i18n) is available on GlotPress at [https://translate.wordpress.org/projects/wp-plugins/mailchimp/](https://translate.wordpress.org/projects/wp-plugins/mailchimp/).  Any assistance [translating the plugin](https://translate.wordpress.org/projects/wp-plugins/mailchimp/) is greatly appreciated!
 
 ## E2E tests
+
 The `tests` directory contains end-to-end tests for the project, utilizing Cypress to run tests in an environment created using wp-env.
 
 ### Pre-requisites
+
 - Node.js v20
 - Docker
 - Create an account in [Mailchimp](https://mailchimp.com/)
 
 ### Run E2E tests in local
+
 1. Run `npm install`.
 2. Run `npm run build`.
 3. Run `npm run env:start`.
 4. Duplicate the `.env.test.sample` file and rename `.env.test`. Populate this file with your own Mailchimp account credentials.
     - **NOTE:** Use a test account that does not require 2FA. 2FA will fail some of the tests.
 5. Set your Mailchimp account up
-  - Name the audience in your Mailchimp test account "10up". Required for `settings.test.js`.
-  - Enable all merge fields. From your Mailchimp account home page -> `/audience/settings/` -> Edit merge fields/tags -> Set all merge fields to "visible". Required for `settings.test.js`.
-
+    - Name the audience in your Mailchimp test account "10up". Required for `settings.test.js`.
+    - Enable all merge fields. From your Mailchimp account home page -> `/audience/settings/` -> Edit merge fields/tags -> Set all merge fields to "visible". Required for `settings.test.js`.
 6. Run `npm run cypress:run`. You can also run `npm run cypress:open` to run tests in UI mode.
 
 ## Support Level

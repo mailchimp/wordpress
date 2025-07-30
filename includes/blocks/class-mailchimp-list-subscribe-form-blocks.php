@@ -82,10 +82,11 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
 
-		ob_start();
-		require_once MCSF_DIR . '/views/css/frontend.php';
-		$data = ob_get_clean();
-		wp_add_inline_style( 'mailchimp-mailchimp-editor-style', $data );
+		// Backwards compatibility. TODO: Remove this in a future version.
+		if ( get_option( 'mc_custom_style' ) === 'on' ) {
+			$custom_css = mailchimp_sf_custom_style_css();
+			wp_add_inline_style( 'mailchimp-mailchimp-editor-style', $custom_css );
+		}
 	}
 
 	/**
