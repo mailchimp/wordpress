@@ -32,7 +32,9 @@ const getHiddenRequiredFields = (variation) => {
 
 	const requiredFields = merge_fields.filter((field) => field.required).map((field) => field.tag);
 	const variationFields = formFields[variationName] || [];
-	return requiredFields.filter((field) => !variationFields.includes(field));
+	return requiredFields
+		.filter((field) => !variationFields.includes(field))
+		.map((field) => formFieldTitles[field] || field);
 };
 
 export const VariationPicker = ({ name, setAttributes, clientId }) => {
@@ -50,7 +52,7 @@ export const VariationPicker = ({ name, setAttributes, clientId }) => {
 		[name],
 	);
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
-	const { createNotice } = useDispatch('core/notices');
+	const { createNotice, removeNotice } = useDispatch('core/notices');
 	const blockProps = useBlockProps();
 
 	return (
@@ -69,6 +71,10 @@ export const VariationPicker = ({ name, setAttributes, clientId }) => {
 						const missingFields = getMissingFields(nextVariation);
 						const hiddenRequiredFields = getHiddenRequiredFields(nextVariation);
 
+						// Remove any existing notices.
+						removeNotice('mailchimp-form-template-required-field-notice');
+						removeNotice('mailchimp-form-template-field-notice');
+
 						replaceInnerBlocks(
 							clientId,
 							createBlocksFromInnerBlocksTemplate(nextVariation.innerBlocks),
@@ -85,6 +91,10 @@ export const VariationPicker = ({ name, setAttributes, clientId }) => {
 									),
 									hiddenRequiredFields.join(', '),
 								),
+								{
+									id: 'mailchimp-form-template-required-field-notice',
+									isDismissible: true,
+								},
 							);
 						}
 
