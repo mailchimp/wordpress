@@ -421,9 +421,8 @@ function mailchimp_form_field( $data, $num_fields, $should_display = null, $labe
 				break;
 			case 'phone':
 				$is_us_phone = isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'];
-				$html .= '
-					<input type="tel" size="20" minlength="6" maxlength="20" pattern="^\+?[\d\s\-\(\)\.]*$" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input mailchimp-sf-phone" placeholder="' . esc_attr( $is_us_phone ? '(###) ### - ####' : '' ) . '" />
-					';
+				$html       .= '
+					<input type="tel" size="20" minlength="6" maxlength="20" pattern="^\+?[\d\s\-\(\)\.]*$" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input mailchimp-sf-phone" placeholder="' . esc_attr( $is_us_phone ? '(###) ### - ####' : '' ) . '" />';
 				break;
 			case 'email':
 			case 'url':

@@ -196,6 +196,7 @@ class Mailchimp_Form_Submission {
 		if ( preg_match( '/^\+?[\d\s\-\(\)\.]*$/', $opt_val ) ) {
 			return $opt_val;
 		} else {
+			/* translators: %s: field name */
 			$message = sprintf( esc_html__( 'Please enter a valid %s.', 'mailchimp' ), esc_html( $data['name'] ) );
 			return new WP_Error( 'mc_phone_validation', $message );
 		}
