@@ -491,7 +491,7 @@
 	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
 		e.preventDefault();
 		$(this).prop('disabled', true);
-		$('.mailchimp-sf-user-sync-errors-header-actions .spinner').addClass('is-active');
+		$('.mailchimp-sf-user-sync-errors-footer-actions .spinner').addClass('is-active');
 
 		$.ajax({
 			url: params.ajax_url,
@@ -504,7 +504,7 @@
 			success(response) {
 				if (response && response.success) {
 					$(tableSelector + ' tbody').html(noErrorsFoundRow);
-					$('.mailchimp-sf-user-sync-errors-header-actions .spinner').removeClass(
+					$('.mailchimp-sf-user-sync-errors-footer-actions .spinner').removeClass(
 						'is-active',
 					);
 				} else {

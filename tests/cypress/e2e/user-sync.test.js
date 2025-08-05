@@ -199,7 +199,9 @@ describe('User Sync Tests', () => {
 
 		// Verify error logs section
 		cy.get('.mailchimp-sf-user-sync-errors').should('be.visible');
-		cy.get('.mailchimp-sf-user-sync-errors-header h2').should('contain', 'User Sync Errors');
+		cy.get(
+			'.mailchimp-user-sync-user-sync-errors .mailchimp-sf-user-sync-settings-field-label',
+		).should('contain', 'User Sync Errors');
 
 		// Verify error log
 		cy.get('.mailchimp-sf-user-sync-errors-table tbody tr').should('have.length', 1);

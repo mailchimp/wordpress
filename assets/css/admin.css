@@ -228,6 +228,36 @@ table.mc-widefat.mc-api tr:first-child {
 	background: var(--mailchimp-color-header-bg) !important;
 }
 
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table {
+	table-layout: fixed;
+}
+
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr th:first-child,
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table trtd:first-child {
+	width: 48px;
+}
+
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr th:last-child,
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr td:last-child {
+	width: 120px;
+}
+
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr th {
+	margin: 0px;
+	padding: 12px;
+	border-radius: 0px;
+}
+
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr td {
+	font-size: 14px;
+	padding: 12px;
+	word-wrap: break-word;
+}
+
+.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table tr td strong {
+	word-wrap: break-word;
+}
+
 a.mc-api-key {
 	color: var(--mailchimp-color-white);
 	display: block;
@@ -398,7 +428,8 @@ th.mailchimp-connect {
 }
 
 .mailchimp-user-sync-subscriber-status .mailchimp-sf-user-sync-settings-field-label,
-.mailchimp-user-sync-user-roles .mailchimp-sf-user-sync-settings-field-label {
+.mailchimp-user-sync-user-roles .mailchimp-sf-user-sync-settings-field-label,
+.mailchimp-user-sync-user-sync-errors .mailchimp-sf-user-sync-settings-field-label {
 	border-bottom: 1px solid var(--mailchimp-border-color);
 	padding-bottom: 20px;
 }
@@ -832,10 +863,10 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	margin-top: 2rem;
 }
 
-.mailchimp-sf-user-sync-errors-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+.mailchimp-sf-user-sync-errors-footer {
+	display: block;
+	margin: 1em 0;
+	text-align: right;
 }
 
 .mailchimp-sf-user-sync-error-action {

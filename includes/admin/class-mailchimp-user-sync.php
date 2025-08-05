@@ -69,7 +69,6 @@ class Mailchimp_User_Sync {
 		add_action( 'wp_ajax_mailchimp_sf_delete_user_sync_error', [ $this, 'delete_user_sync_error' ] );
 		// Render the user sync status and errors.
 		add_action( 'mailchimp_sf_user_sync_before_form', [ $this, 'render_user_sync_status' ] );
-		add_action( 'mailchimp_sf_user_sync_after_form', [ $this, 'render_user_sync_errors' ] );
 
 		$settings = $this->get_user_sync_settings();
 		// If auto user sync is enabled, keep listening to user register and profile update actions.
@@ -98,7 +97,8 @@ class Mailchimp_User_Sync {
 	 * @since 1.9.0
 	 */
 	public function setup_fields_sections() {
-		$section_id = $this->option_name . '_section';
+		$section_id       = $this->option_name . '_section';
+		$user_sync_errors = $this->get_user_sync_errors();
 		add_settings_section(
 			$section_id,
 			'',
@@ -149,6 +149,19 @@ class Mailchimp_User_Sync {
 				'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-user-roles',
 			]
 		);
+
+		if ( ! empty( $user_sync_errors ) ) {
+			add_settings_field(
+				'user_sync_errors',
+				__( 'User Sync Errors', 'mailchimp' ),
+				array( $this, 'render_user_sync_errors' ),
+				$this->option_name,
+				$section_id,
+				[
+					'class' => 'mailchimp-user-sync-settings-field mailchimp-user-sync-user-sync-errors',
+				]
+			);
+		}
 
 		add_settings_field(
 			'sync_all_users',
@@ -833,16 +846,8 @@ class Mailchimp_User_Sync {
 
 		// Get last 100 records
 		$errors = array_slice( $errors, -100 );
-
 		?>
 		<div class="mailchimp-sf-user-sync-errors">
-			<div class="mailchimp-sf-user-sync-errors-header">
-				<h2><?php esc_html_e( 'User Sync Errors', 'mailchimp' ); ?></h2>
-				<div class="mailchimp-sf-user-sync-errors-header-actions">
-					<span class="spinner" style="float: none;"></span>
-					<button id="mailchimp-sf-clear-user-sync-errors" class="mailchimp-sf-button btn-secondary btn-small"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
-				</div>
-			</div>
 			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
 				<thead>
 					<tr>
@@ -874,15 +879,13 @@ class Mailchimp_User_Sync {
 					}
 					?>
 				</tbody>
-				<tfoot>
-					<tr>
-						<th><?php esc_html_e( 'ID', 'mailchimp' ); ?></th>
-						<th><?php esc_html_e( 'Email', 'mailchimp' ); ?></th>
-						<th><?php esc_html_e( 'Error', 'mailchimp' ); ?></th>
-						<th><?php esc_html_e( 'Actions', 'mailchimp' ); ?></th>
-					</tr>
-				</tfoot>
 			</table>
+			<div class="mailchimp-sf-user-sync-errors-footer">
+				<div class="mailchimp-sf-user-sync-errors-footer-actions">
+					<span class="spinner" style="float: none;"></span>
+					<button id="mailchimp-sf-clear-user-sync-errors" class="mailchimp-sf-button btn-secondary btn-small"><?php esc_html_e( 'Clear Error logs', 'mailchimp' ); ?></button>
+				</div>
+			</div>
 		</div>
 		<?php
 	}
