@@ -164,7 +164,8 @@ function mailchimp_sf_load_resources() {
 		'mailchimp_sf_main_js',
 		'mailchimpSF',
 		array(
-			'ajax_url' => trailingslashit( home_url() ),
+			'ajax_url'               => trailingslashit( home_url() ),
+			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
 		)
 	);
 

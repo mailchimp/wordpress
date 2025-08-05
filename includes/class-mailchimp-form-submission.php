@@ -176,42 +176,29 @@ class Mailchimp_Form_Submission {
 	/**
 	 * Validate phone
 	 *
-	 * @param array $opt_val Option value.
-	 * @param array $data    Data.
+	 * @param string $opt_val Option value.
+	 * @param array  $data    Data.
 	 * @return string|WP_Error Option value or error.
 	 */
 	public function validate_phone( $opt_val, $data ) {
-		// This filters out all 'falsy' elements
-		$opt_val = array_filter( $opt_val );
-		// If they weren't all empty
 		if ( empty( $opt_val ) ) {
 			return '';
 		}
 
-		// Trim the phone number
-		$opt_val = array_map(
-			function ( $ele ) {
-				return preg_replace( '/\s+/', '', trim( $ele ) );
-			},
-			$opt_val
-		);
-
-		$opt_val = implode( '-', $opt_val );
-		if ( strlen( $opt_val ) !== 12 ) {
-			// translators: %s: field name
-			$message = sprintf( esc_html__( '%s should be 10 digits long.', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'mc_phone_validation', $message );
-			return $error;
+		// Backwards compatibility for old phone format.
+		if ( is_array( $opt_val ) ) {
+			$opt_val = implode( '-', $opt_val );
 		}
 
-		if ( ! preg_match( '/^[0-9]{3}-[0-9]{3}-[0-9]{4}$/', $opt_val ) ) {
-			/* translators: %s: field name */
-			$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'mc_phone_validation', $message );
-			return $error;
-		}
+		$opt_val = trim( $opt_val );
 
-		return $opt_val;
+		// Validate phone number.
+		if ( preg_match( '/^\+?[\d\s\-\(\)\.]*$/', $opt_val ) ) {
+			return $opt_val;
+		} else {
+			$message = sprintf( esc_html__( 'Please enter a valid %s.', 'mailchimp' ), esc_html( $data['name'] ) );
+			return new WP_Error( 'mc_phone_validation', $message );
+		}
 	}
 
 	/**
@@ -265,21 +252,12 @@ class Mailchimp_Form_Submission {
 
 			switch ( $merge_field['type'] ) {
 				/**
-				 * US Phone validation
-				 *
-				 * - Merge field is phone
-				 * - Phone format is set in Mailchimp account
-				 * - Phone format is US in Mailchimp account
+				 * US/International Phone validation
 				 */
 				case 'phone':
-					if (
-						isset( $merge_field['options']['phone_format'] )
-						&& 'US' === $merge_field['options']['phone_format']
-					) {
-						$opt_val = $this->validate_phone( $opt_val, $merge_field );
-						if ( is_wp_error( $opt_val ) ) {
-							return $opt_val;
-						}
+					$opt_val = $this->validate_phone( $opt_val, $merge_field );
+					if ( is_wp_error( $opt_val ) ) {
+						return $opt_val;
 					}
 					break;
 

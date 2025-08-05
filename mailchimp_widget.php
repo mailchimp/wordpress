@@ -420,17 +420,10 @@ function mailchimp_form_field( $data, $num_fields, $should_display = null, $labe
 	<input type="text" size="18" maxlength="5" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input" />';
 				break;
 			case 'phone':
-				if ( isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'] ) {
-					$html .= '
-			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[area]' ) . '" id="' . esc_attr( $opt . '-area' ) . '" class="mc_input mc_phone" />
-			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[detail1]' ) . '" id="' . esc_attr( $opt . '-detail1' ) . '" class="mc_input mc_phone" />
-			<input type="text" size="5" maxlength="4" value="" name="' . esc_attr( $opt . '[detail2]' ) . '" id="' . esc_attr( $opt . '-detail2' ) . '" class="mc_input mc_phone" />
-				';
-				} else {
-					$html .= '
-						<input type="text" size="18" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input" />
+				$is_us_phone = isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'];
+				$html .= '
+					<input type="tel" size="20" minlength="6" maxlength="20" data-pattern="^\+?[\d\s\-\(\)\.]*$" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt ) . '" class="mc_input mailchimp-sf-phone" placeholder="' . esc_attr( $is_us_phone ? '(###) ### - ####' : '' ) . '" />
 					';
-				}
 				break;
 			case 'email':
 			case 'url':

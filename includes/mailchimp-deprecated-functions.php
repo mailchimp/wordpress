@@ -127,6 +127,9 @@ function mailchimp_sf_merge_remove_empty( $merge ) {
 function mailchimp_sf_merge_validate_phone( $opt_val, $data ): string|WP_Error {
 	_deprecated_function( __FUNCTION__, 'x.x.x', 'Mailchimp_Form_Submission::validate_phone()' );
 
+	if ( is_array( $opt_val ) ) {
+		$opt_val = implode( '-', $opt_val );
+	}
 	$form_submission = new Mailchimp_Form_Submission();
 	return $form_submission->validate_phone( $opt_val, $data );
 }
