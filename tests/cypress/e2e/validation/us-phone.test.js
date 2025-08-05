@@ -64,8 +64,10 @@ describe('Phone Number Validation', () => {
 			const email = generateRandomEmail('invalidphone');
 			cy.get('#mc_mv_EMAIL').type(email);
 			fillPhoneInputs(phone);
-			cy.submitFormAndVerifyError();
-			cy.get('.mc_error_msg').contains('Please enter a valid Phone Number.');
+			cy.get('#mc_signup_submit').click();
+			cy.get('#mc_mv_PHONE:invalid')
+				.invoke('prop', 'validationMessage')
+				.should('equal', 'Please enter a valid phone number.');
 		});
 	});
 });
