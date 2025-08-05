@@ -98,14 +98,7 @@ describe('Validate required fields', () => {
 		cy.get('#mc_mv_EMAIL').clear().type(email); // Email is always required
 
 		requiredFields.forEach((field) => {
-			if (field.selector === '#mc_mv_PHONE') {
-				const phone = field.input.split('-');
-				cy.get('#mc_mv_PHONE-area').clear().type(phone[0]);
-				cy.get('#mc_mv_PHONE-detail1').clear().type(phone[1]);
-				cy.get('#mc_mv_PHONE-detail2').clear().type(phone[2]);
-			} else {
-				cy.get(field.selector).clear().type(field.input);
-			}
+			cy.get(field.selector).clear().type(field.input);
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 
@@ -131,14 +124,7 @@ describe('Validate required fields', () => {
 
 		// Test validation for each required field
 		requiredFields.forEach((field) => {
-			// Submit the form without input to trigger validation
-			if (field.selector === '#mc_mv_PHONE') {
-				cy.get('#mc_mv_PHONE-area').clear();
-				cy.get('#mc_mv_PHONE-detail1').clear();
-				cy.get('#mc_mv_PHONE-detail2').clear();
-			} else {
-				cy.get(field.selector).clear(); // Ensure field is empty
-			}
+			cy.get(field.selector).clear(); // Ensure field is empty
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 			cy.get('#mc_signup_submit').click();
 
@@ -147,14 +133,7 @@ describe('Validate required fields', () => {
 			cy.get('.mc_error_msg').should('include.text', field.errorMessage);
 
 			// Fill in the field
-			if (field.selector === '#mc_mv_PHONE') {
-				const phone = field.input.split('-');
-				cy.get('#mc_mv_PHONE-area').clear().type(phone[0]);
-				cy.get('#mc_mv_PHONE-detail1').clear().type(phone[1]);
-				cy.get('#mc_mv_PHONE-detail2').clear().type(phone[2]);
-			} else {
-				cy.get(field.selector).type(field.input);
-			}
+			cy.get(field.selector).type(field.input);
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 	});
