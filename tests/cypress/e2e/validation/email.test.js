@@ -41,7 +41,7 @@ describe('General merge field validation', () => {
 		// Email assertions
 		cy.get('#mc_mv_EMAIL').clear(); // No email
 		cy.submitFormAndVerifyError();
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 
 		cy.get('#mc_mv_EMAIL').clear().type('user@'); // Missing domain
 		cy.submitFormAndVerifyError();
@@ -71,10 +71,9 @@ describe('General merge field validation', () => {
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		// TODO: Mailchimp accepts this. Is this a bug?
-		// cy.get('#mc_mv_EMAIL').clear().type('user@example-.com'); // Domain ending with dash
-		// cy.submitFormAndVerifyError();
-		// cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
+		cy.get('#mc_mv_EMAIL').clear().type('user@example-.com'); // Domain ending with dash
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
 		cy.get('#mc_mv_EMAIL').clear().type('"user@example.com'); // Unclosed quoted string
 		cy.submitFormAndVerifyError();

@@ -93,4 +93,19 @@
 			});
 		});
 	}
+
+	// Phone validation custom error message.
+	if ($('.mailchimp-sf-phone').length > 0) {
+		$('.mailchimp-sf-phone').each(function () {
+			$(this)
+				.on('input', function () {
+					this.setCustomValidity('');
+				})
+				.on('invalid', function () {
+					if (!this.validity.valid) {
+						this.setCustomValidity(window.mailchimpSF.phone_validation_error);
+					}
+				});
+		});
+	}
 })(window.jQuery);

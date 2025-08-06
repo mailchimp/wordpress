@@ -174,6 +174,64 @@ class Mailchimp_Form_Submission {
 	}
 
 	/**
+	 * Validate phone
+	 *
+	 * @param string $opt_val Option value.
+	 * @param array  $data    Data.
+	 * @return string|WP_Error Option value or error.
+	 */
+	public function validate_phone( $opt_val, $data ) {
+		if ( empty( $opt_val ) ) {
+			return '';
+		}
+
+		// Backwards compatibility for old phone format.
+		if ( is_array( $opt_val ) ) {
+			$opt_val = implode( '-', $opt_val );
+		}
+
+		$opt_val = trim( $opt_val );
+
+		// Validate phone number.
+		if ( preg_match( '/^\+?[\d\s\-\(\)\.]*$/', $opt_val ) ) {
+			return $opt_val;
+		} else {
+			/* translators: %s: field name */
+			$message = sprintf( esc_html__( 'Please enter a valid %s.', 'mailchimp' ), esc_html( $data['name'] ) );
+			return new WP_Error( 'mc_phone_validation', $message );
+		}
+	}
+
+	/**
+	 * Validate address
+	 *
+	 * @param array $opt_val Option value
+	 * @param array $data Data
+	 * @return mixed
+	 */
+	public function validate_address( $opt_val, $data ) {
+		if ( true === (bool) $data['required'] ) {
+			if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
+				/* translators: %s: field name */
+				$message = sprintf( esc_html__( '%s: Please enter a complete address.', 'mailchimp' ), esc_html( $data['name'] ) );
+				$error   = new WP_Error( 'invalid_address_merge', $message );
+				return $error;
+			}
+		} elseif ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
+			return false;
+		}
+
+		$merge          = new stdClass();
+		$merge->addr1   = $opt_val['addr1'];
+		$merge->addr2   = $opt_val['addr2'];
+		$merge->city    = $opt_val['city'];
+		$merge->state   = $opt_val['state'];
+		$merge->zip     = $opt_val['zip'];
+		$merge->country = $opt_val['country'];
+		return $merge;
+	}
+
+	/**
 	 * Prepare the merge fields body for the API request.
 	 *
 	 * @param array $merge_fields Merge fields.
@@ -187,7 +245,7 @@ class Mailchimp_Form_Submission {
 			$opt = 'mc_mv_' . $tag;
 
 			// Skip if the field is not required and not submitted.
-			if ( 'Y' !== $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) {
+			if ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) {
 				continue;
 			}
 
@@ -195,21 +253,12 @@ class Mailchimp_Form_Submission {
 
 			switch ( $merge_field['type'] ) {
 				/**
-				 * US Phone validation
-				 *
-				 * - Merge field is phone
-				 * - Phone format is set in Mailchimp account
-				 * - Phone format is US in Mailchimp account
+				 * US/International Phone validation
 				 */
 				case 'phone':
-					if (
-						isset( $merge_field['options']['phone_format'] )
-						&& 'US' === $merge_field['options']['phone_format']
-					) {
-						$opt_val = mailchimp_sf_merge_validate_phone( $opt_val, $merge_field );
-						if ( is_wp_error( $opt_val ) ) {
-							return $opt_val;
-						}
+					$opt_val = $this->validate_phone( $opt_val, $merge_field );
+					if ( is_wp_error( $opt_val ) ) {
+						return $opt_val;
 					}
 					break;
 
@@ -221,7 +270,7 @@ class Mailchimp_Form_Submission {
 				 */
 				case 'address':
 					if ( is_array( $opt_val ) ) {
-						$validate = mailchimp_sf_merge_validate_address( $opt_val, $merge_field );
+						$validate = $this->validate_address( $opt_val, $merge_field );
 						if ( is_wp_error( $validate ) ) {
 							return $validate;
 						}
@@ -254,9 +303,9 @@ class Mailchimp_Form_Submission {
 			/**
 			 * Required fields
 			 *
-			 * If the field is required and empty, return an error
+			 * If the field is required and empty, +return an error
 			 */
-			if ( 'Y' === $merge_field['required'] && trim( $opt_val ) === '' ) {
+			if ( true === (bool) $merge_field['required'] && empty( $opt_val ) ) {
 				/* translators: %s: field name */
 				$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $merge_field['name'] ) );
 				$error   = new WP_Error( 'missing_required_field', $message );
@@ -499,6 +548,16 @@ class Mailchimp_Form_Submission {
 		$user_agent = isset( $_SERVER['HTTP_USER_AGENT'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 		if ( strlen( $user_agent ) < 2 ) {
 			return new WP_Error( 'spam', $spam_message );
+		}
+
+		// Early return if the email is not set
+		if ( empty( $_POST['mc_mv_EMAIL'] ) ) {
+			return new WP_Error( 'email_required', esc_html__( 'Please enter your email address.', 'mailchimp' ) );
+		}
+
+		// Check if the email is valid
+		if ( ! is_email( sanitize_email( wp_unslash( $_POST['mc_mv_EMAIL'] ) ) ) ) {
+			return new WP_Error( 'invalid_email', esc_html__( 'Please enter a valid email address.', 'mailchimp' ) );
 		}
 
 		/**
