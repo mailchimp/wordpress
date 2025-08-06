@@ -833,7 +833,7 @@ class Mailchimp_User_Sync {
 
 	/**
 	 * Render the user sync errors.
-	 * Note: This is only renders last 100 records.
+	 * Note: This is only renders last 25 records.
 	 *
 	 * @since 1.9.0
 	 */
@@ -844,8 +844,8 @@ class Mailchimp_User_Sync {
 			return;
 		}
 
-		// Get last 100 records
-		$errors = array_slice( $errors, -100 );
+		// Get last 25 records
+		$errors = array_slice( $errors, -25 );
 		?>
 		<div class="mailchimp-sf-user-sync-errors">
 			<table class="widefat striped mailchimp-sf-user-sync-errors-table">
