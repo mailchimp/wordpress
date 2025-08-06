@@ -17,7 +17,7 @@ describe('Admin can login and make sure plugin is activated', () => {
 
 		// Check Heading
 		cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options').click();
-		cy.get('#wpbody .mailchimp-sf-header h3').contains('Mailchimp List Subscribe Form');
+		cy.get('#wpbody h1.mailchimp-sf-settings-page-hero-title').contains('Settings');
 	});
 
 	it('Admin can see "Create account" button and Can visit "Create account" settings page.', () => {

@@ -13,7 +13,7 @@ describe('Logout tests', () => {
 			return true;
 		});
 
-		cy.get('input[value="Logout"]').click();
+		cy.get('input[value="Log out"]').click();
 
 		// connect to "Mailchimp" Account button should be visible.
 		cy.get('#mailchimp_sf_oauth_connect').should('exist');
