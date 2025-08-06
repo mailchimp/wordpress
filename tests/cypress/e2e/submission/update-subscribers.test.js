@@ -45,9 +45,9 @@ describe('Update Existing Subscriber?', () => {
 		const lastName = generateRandomString();
 
 		// Fill the form and submit it
-		cy.get('#mc_mv_EMAIL').clear().type(email);
-		cy.get('#mc_mv_FNAME').clear().type(firstName);
-		cy.get('#mc_mv_LNAME').clear().type(lastName);
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(email);
+		cy.get('input[id^="mc_mv_FNAME"]').clear().type(firstName);
+		cy.get('input[id^="mc_mv_LNAME"]').clear().type(lastName);
 
 		// Submit and assert success
 		cy.submitFormAndVerifyWPSuccess();
@@ -69,9 +69,9 @@ describe('Update Existing Subscriber?', () => {
 		const lastName = generateRandomString();
 
 		// Fill the form and submit it
-		cy.get('#mc_mv_EMAIL').clear().type(email);
-		cy.get('#mc_mv_FNAME').clear().type(firstName);
-		cy.get('#mc_mv_LNAME').clear().type(lastName);
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(email);
+		cy.get('input[id^="mc_mv_FNAME"]').clear().type(firstName);
+		cy.get('input[id^="mc_mv_LNAME"]').clear().type(lastName);
 
 		// Submit and assert success
 		cy.submitFormAndVerifyWPSuccess();
@@ -103,9 +103,9 @@ describe('Update Existing Subscriber?', () => {
 		cy.visit(blockPostPostURL);
 
 		// Fill the form and submit it
-		cy.get('#mc_mv_EMAIL').clear().type(email);
-		cy.get('#mc_mv_FNAME').clear().type('Should not submit');
-		cy.get('#mc_mv_LNAME').clear().type('Should not submit');
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(email);
+		cy.get('input[id^="mc_mv_FNAME"]').clear().type('Should not submit');
+		cy.get('input[id^="mc_mv_LNAME"]').clear().type('Should not submit');
 
 		// Verify error
 		cy.submitFormAndVerifyError();

@@ -9,7 +9,7 @@
 div.mc_interest{
 	width:100%;
 }
-#mc_signup_form label.mc_interest_label {
+.mc_signup_form label.mc_interest_label {
 	display:inline;
 }
 .mc_signup_submit {
@@ -35,7 +35,7 @@ ul.mc_list li {
 	margin-bottom: 0.75em;
 }
 .mc_custom_border_hdr,
-#mc_subheader {
+.mc_subheader {
 	line-height: 1.25em;
 	margin-bottom: 18px;
 }
@@ -86,15 +86,15 @@ select.mc_select {
 .mc_interest input {
 	margin-bottom: 0.4em;
 }
-#mc_signup_submit {
+.mc_signup_submit_button {
 	margin-top: 1.5em;
 	padding: 10px 8px;
 	width: 80%;
 }
-#mc_unsub_link a {
+.mc_unsub_link a {
 	font-size: 0.75em;
 }
-#mc_unsub_link {
+.mc_unsub_link {
 	margin-top: 1.0em;
 }
 .mc_header_address,
@@ -110,7 +110,7 @@ select.mc_select {
 .mc_email_type {
 	padding-left: 4px;
 }
-#mc-indicates-required {
+.mc-indicates-required {
 	width:100%;
 	margin-top: 1em;
 }

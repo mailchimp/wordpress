@@ -328,9 +328,9 @@ export const BlockEdit = (props) => {
 							value={header}
 							onChange={(header) => setAttributes({ header })}
 						/>
-						<div id="mc_signup">
-							<div id="mc_signup_form">
-								<div id="mc_subheader">
+						<div className="mc_signup">
+							<div className="mc_signup_form">
+								<div className="mc_subheader">
 									<RichText
 										className="mailchimp-block__sub-header"
 										tagName="h3"
@@ -359,7 +359,7 @@ export const BlockEdit = (props) => {
 										templateLock="insert"
 									/>
 									{show_required_indicator && (
-										<div id="mc-indicates-required">
+										<div className="mc-indicates-required">
 											<RichText
 												tagName="span"
 												value={required_indicator_text}
@@ -372,8 +372,7 @@ export const BlockEdit = (props) => {
 									)}
 									<div className="mc_signup_submit">
 										<RichText
-											id="mc_signup_submit"
-											className="button"
+											className="mc_signup_submit_button button"
 											tagName="button"
 											placeholder={__('Enter button text.', 'mailchimp')}
 											value={submit_text}
@@ -383,7 +382,7 @@ export const BlockEdit = (props) => {
 										/>
 									</div>
 									{!!show_unsubscribe_link && (
-										<div id="mc_unsub_link">
+										<div className="mc_unsub_link">
 											<RichText
 												tagName="a"
 												value={unsubscribe_link_text}
