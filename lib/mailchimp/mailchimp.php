@@ -142,13 +142,14 @@ class MailChimp_API {
 	/**
 	 * Sends request to Mailchimp endpoint.
 	 *
-	 * @param string $endpoint The endpoint to send the request.
-	 * @param string $body The body of the request
-	 * @param string $method The request method.
-	 * @param string $list_id The list id.
+	 * @param string  $endpoint The endpoint to send the request.
+	 * @param string  $body The body of the request
+	 * @param string  $method The request method.
+	 * @param string  $list_id The list id.
+	 * @param boolean $is_sync Whether the request is for user sync.
 	 * @return mixed
 	 */
-	public function post( $endpoint, $body, $method = 'POST', $list_id = '' ) {
+	public function post( $endpoint, $body, $method = 'POST', $list_id = '', $is_sync = false ) {
 		$url = $this->api_url . $endpoint;
 
 		$headers = array();
@@ -183,7 +184,17 @@ class MailChimp_API {
 				update_option( 'mailchimp_sf_auth_error', true );
 			}
 
-			$body   = json_decode( $request['body'], true );
+			$body = json_decode( $request['body'], true );
+
+			// If the request is for user sync, return the error message from the API.
+			if ( $is_sync ) {
+				if ( isset( $body['detail'] ) && ! empty( $body['detail'] ) ) {
+					return new WP_Error( 'mc-subscribe-error-api', $body['detail'] );
+				} else {
+					return new WP_Error( 'mc-subscribe-error-api', $request['body'] );
+				}
+			}
+
 			$merges = get_option( 'mc_merge_vars' );
 			// Get merge fields for the list if we have a list id.
 			if ( ! empty( $list_id ) ) {

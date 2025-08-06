@@ -1,8 +1,8 @@
 === Mailchimp List Subscribe Form ===
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
-Tested up to: 6.7
-Stable tag:   1.7.0
+Tested up to: 6.8
+Stable tag:   1.9.0
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -61,7 +61,7 @@ This section describes how to install the plugin and get started using it.
 4. Click the Log in button and proceed through the OAuth flow, logging in to your Mailchimp account and authorizing the application.
 5. Select the list where you want to send new Mailchimp subscribers.
 6. Optional: Turn **Merge Fields** and **Groups** on or off. Navigate to **Appearance**, and click **Widgets**. Drag the Mailchimp Widget into one of your Widget Areas.
-7. Optional: adjust frontend site display with available CSS options.
+7. Optional: turn on user synchronization to sync WordPress users to Mailchimp.
 
 == Upgrading ==
 
@@ -74,12 +74,24 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 3. Mailchimp List Subscribe Form block previewing sign up form headers, fields, and button.
 4. Connecting your Mailchimp account to WordPress via OAuth.
 5. Logged in to your Mailchimp account and selecting a list to connect to.
-6. Configuring your Signup Form display format (optional).
-7. Configuring extra fields on your Signup Form (optional).
-8. CSS options for styling your Signup Form.
-9. Creating a new Mailchimp account.
+6. Configuring extra fields on your Signup Form (optional).
+7. Creating a new Mailchimp account.
+8. Configuring user synchronization settings.
 
 == Changelog ==
+
+= 1.9.0 - 2025-06-04 =
+* **Added:** New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
+* **Changed:** Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
+
+= 1.8.0 - 2025-05-08 =
+**Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
+
+* **Added:** Honeypot and no-JS fields to help prevent spam (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#139](https://github.com/mailchimp/wordpress/pull/139)).
+* **Added:** Confirmation prompt before logging out the user (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#149](https://github.com/mailchimp/wordpress/pull/149)).
+* **Added:** A note advising users to set the website URL in the Mailchimp Audience settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#145](https://github.com/mailchimp/wordpress/pull/145)).
+* **Changed:** Bump WordPress "tested up to" version 6.8 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+* **Changed:** Bump WordPress minimum supported version from 6.3 to 6.4 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
 
 = 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
@@ -152,14 +164,12 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 * **Fixed:** Ensure the custom block and shortcode both have consistent spacing (props [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@nateconley](https://github.com/nateconley), [@vikrampm1](https://github.com/vikrampm1) via [#41](https://github.com/mailchimp/wordpress/pull/41)).
 * **Fixed:** Address some PHP warnings when a form submission happens (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#54](https://github.com/mailchimp/wordpress/pull/54)).
 
-= 1.5.8 - 2022-09-26 =
-* **Changed:** Updated `readme.txt` link.
-* **Fixed:* PHP warning for merge tags.
-* **Fixed:** Double slashes on resources being loaded.
-
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 1.8.0 =
+This release bumps the WordPress minimum version from 6.3 to 6.4.
 
 = 1.6.2 =
 This release bumps the WordPress minimum version from 6.1 to 6.3.
