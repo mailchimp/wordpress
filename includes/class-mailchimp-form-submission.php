@@ -92,24 +92,27 @@ class Mailchimp_Form_Submission {
 			return new WP_Error( 'mailchimp-invalid-form', esc_html__( 'Invalid form submission.', 'mailchimp' ) );
 		}
 
-		$list_id         = get_option( 'mc_list_id' );
-		$update_existing = get_option( 'mc_update_existing' );
-		$double_opt_in   = get_option( 'mc_double_optin' );
-		$merge_fields    = get_option( 'mc_merge_vars', array() );
-		$interest_groups = get_option( 'mc_interest_groups', array() );
+		$list_id               = get_option( 'mc_list_id' );
+		$update_existing       = get_option( 'mc_update_existing' );
+		$double_opt_in         = get_option( 'mc_double_optin' );
+		$skip_merge_validation = false;
+		$merge_fields          = get_option( 'mc_merge_vars', array() );
+		$interest_groups       = get_option( 'mc_interest_groups', array() );
 
 		// Check if request from latest block.
 		if ( isset( $_POST['mailchimp_sf_list_id'] ) ) {
-			$list_id         = isset( $_POST['mailchimp_sf_list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_list_id'] ) ) : '';
-			$update_existing = isset( $_POST['mailchimp_sf_update_existing_subscribers'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_update_existing_subscribers'] ) ) : '';
-			$double_opt_in   = isset( $_POST['mailchimp_sf_double_opt_in'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_double_opt_in'] ) ) : '';
-			$hash            = isset( $_POST['mailchimp_sf_hash'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_hash'] ) ) : '';
-			$expected        = wp_hash(
+			$list_id               = isset( $_POST['mailchimp_sf_list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_list_id'] ) ) : '';
+			$update_existing       = isset( $_POST['mailchimp_sf_update_existing_subscribers'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_update_existing_subscribers'] ) ) : '';
+			$double_opt_in         = isset( $_POST['mailchimp_sf_double_opt_in'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_double_opt_in'] ) ) : '';
+			$skip_merge_validation = isset( $_POST['mailchimp_sf_skip_merge_validation'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_skip_merge_validation'] ) ) : '';
+			$hash                  = isset( $_POST['mailchimp_sf_hash'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_hash'] ) ) : '';
+			$expected              = wp_hash(
 				serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 					array(
-						'list_id'         => $list_id,
-						'update_existing' => $update_existing,
-						'double_opt_in'   => $double_opt_in,
+						'list_id'               => $list_id,
+						'update_existing'       => $update_existing,
+						'double_opt_in'         => $double_opt_in,
+						'skip_merge_validation' => $skip_merge_validation,
 					)
 				)
 			);
@@ -119,15 +122,16 @@ class Mailchimp_Form_Submission {
 				return new WP_Error( 'mailchimp-invalid-hash', esc_html__( 'Invalid form submission.', 'mailchimp' ) );
 			}
 
-			$update_existing = 'yes' === $update_existing;
-			$double_opt_in   = 'yes' === $double_opt_in;
-			$merge_fields    = get_option( 'mailchimp_sf_merge_fields_' . $list_id, array() );
-			$interest_groups = get_option( 'mailchimp_sf_interest_groups_' . $list_id, array() );
+			$update_existing       = 'yes' === $update_existing;
+			$double_opt_in         = 'yes' === $double_opt_in;
+			$skip_merge_validation = 'yes' === $skip_merge_validation;
+			$merge_fields          = get_option( 'mailchimp_sf_merge_fields_' . $list_id, array() );
+			$interest_groups       = get_option( 'mailchimp_sf_interest_groups_' . $list_id, array() );
 		}
 
 		// Prepare request body
 		$email             = isset( $_POST['mc_mv_EMAIL'] ) ? wp_strip_all_tags( wp_unslash( $_POST['mc_mv_EMAIL'] ) ) : '';
-		$merge_fields_body = $this->prepare_merge_fields_body( $merge_fields );
+		$merge_fields_body = $this->prepare_merge_fields_body( $merge_fields, $skip_merge_validation );
 
 		// Catch errors and fail early.
 		if ( is_wp_error( $merge_fields_body ) ) {
@@ -149,11 +153,12 @@ class Mailchimp_Form_Submission {
 			$list_id,
 			$email,
 			array(
-				'email_type'      => $email_type,
-				'merge_fields'    => $merge_fields_body,
-				'interests'       => $groups,
-				'update_existing' => $update_existing,
-				'double_opt_in'   => $double_opt_in,
+				'email_type'            => $email_type,
+				'merge_fields'          => $merge_fields_body,
+				'interests'             => $groups,
+				'update_existing'       => $update_existing,
+				'double_opt_in'         => $double_opt_in,
+				'skip_merge_validation' => $skip_merge_validation,
 			)
 		);
 
@@ -234,10 +239,11 @@ class Mailchimp_Form_Submission {
 	/**
 	 * Prepare the merge fields body for the API request.
 	 *
-	 * @param array $merge_fields Merge fields.
+	 * @param array $merge_fields          Merge fields.
+	 * @param bool  $skip_merge_validation Skip merge validation.
 	 * @return stdClass|WP_Error
 	 */
-	public function prepare_merge_fields_body( $merge_fields ) {
+	public function prepare_merge_fields_body( $merge_fields, $skip_merge_validation = false ) {
 		// Loop through our merge fields, and if they're empty, but required, then print an error, and mark as failed
 		$merge = new stdClass();
 		foreach ( $merge_fields as $merge_field ) {
@@ -245,7 +251,7 @@ class Mailchimp_Form_Submission {
 			$opt = 'mc_mv_' . $tag;
 
 			// Skip if the field is not required and not submitted.
-			if ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) {
+			if ( ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) || $skip_merge_validation ) {
 				continue;
 			}
 
@@ -461,6 +467,11 @@ class Mailchimp_Form_Submission {
 		if ( ! $args['update_existing'] && ! $is_new_subscriber ) {
 			$msg = esc_html__( 'This email address has already been subscribed to this list.', 'mailchimp' );
 			return new WP_Error( 'mailchimp-update-existing', $msg );
+		}
+
+		// Add skip merge validation for handle hidden required fields for the form template.
+		if ( isset( $args['skip_merge_validation'] ) && $args['skip_merge_validation'] ) {
+			$url .= '?skip_merge_validation=true';
 		}
 
 		// Prepare request body
