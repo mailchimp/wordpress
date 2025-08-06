@@ -1179,7 +1179,8 @@ body.toplevel_page_mailchimp_sf_options a.mailchimp-sf-button.btn-primary:hover 
 	justify-content: space-between;
 }
 
-.mailchimp-sf-main-setings-wrapper {
+.mailchimp-sf-main-setings-wrapper,
+.mailchimp-sf-user-sync-page-wrapper {
 	display: flex;
 	flex-direction: row;
 	align-items: flex-start;
@@ -1187,13 +1188,19 @@ body.toplevel_page_mailchimp_sf_options a.mailchimp-sf-button.btn-primary:hover 
 	gap: 16px;
 }
 
-.mailchimp-sf-main-setings-wrapper .mailchimp-sf-main-settings {
+.mailchimp-sf-main-setings-wrapper .mailchimp-sf-main-settings,
+.mailchimp-sf-user-sync-page-wrapper .mailchimp-sf-user-sync-page {
 	flex: 3;
 }
 
-.mailchimp-sf-main-setings-wrapper .mailchimp-sf-settings-form-previewer {
+.mailchimp-sf-main-setings-wrapper .mailchimp-sf-settings-form-previewer,
+.mailchimp-sf-user-sync-page-wrapper .mailchimp-sf-user-sync-settings-column {
 	flex: 1;
 	width: 100%;
+}
+
+.mailchimp-sf-user-sync-page-wrapper .mailchimp-sf-user-sync-settings-column {
+	min-width: 250px;
 }
 
 .mailchimp-sf-main-settings,
@@ -1567,11 +1574,13 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 }
 
 @media screen and (max-width: 992px) {
-	.mailchimp-sf-main-setings-wrapper {
+	.mailchimp-sf-main-setings-wrapper,
+	.mailchimp-sf-user-sync-page-wrapper {
 		flex-direction: column;
 	}
 
-	.mailchimp-sf-main-setings-wrapper .mailchimp-sf-main-settings {
+	.mailchimp-sf-main-setings-wrapper .mailchimp-sf-main-settings,
+	.mailchimp-sf-user-sync-page-wrapper .mailchimp-sf-user-sync-page {
 		flex: 1;
 	}
 }
@@ -1588,10 +1597,6 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 
 	.mailchimp-sf-header {
 		padding: 14px 20px;
-	}
-
-	table.widefat.mailchimp-sf-user-sync-errors-table {
-		table-layout: fixed;
 	}
 }
 
@@ -1652,5 +1657,18 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 		display: block;
 		margin-left: 0px;
 		margin-top: 12px;
+	}
+
+	.mailchimp-sf-user-sync-page table.widefat.mailchimp-sf-settings-table {
+		table-layout: fixed;
+	}
+
+	.mailchimp-sf-settings-table table.widefat.mailchimp-sf-user-sync-errors-table {
+		table-layout: auto;
+	}
+
+	.mailchimp-sf-user-sync-errors {
+		width: 100%;
+		overflow-x: scroll;
 	}
 }
