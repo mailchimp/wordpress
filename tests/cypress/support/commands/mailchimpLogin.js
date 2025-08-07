@@ -4,8 +4,8 @@
 Cypress.Commands.add('mailchimpLogout', () => {
 	// Logout if already connected.
 	cy.get('body').then(($body) => {
-		if ($body.find('input[value="Logout"]').length > 0) {
-			cy.get('input[value="Logout"]').click();
+		if ($body.find('input[value="Log out"]').length > 0) {
+			cy.get('input[value="Log out"]').click();
 		}
 	});
 });
@@ -72,10 +72,10 @@ Cypress.Commands.add('mailchimpLoginIfNotAlreadyLoggedIn', () => {
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 	// Log into Mailchimp account if we need to.
 	cy.get('body').then(($body) => {
-		const hasLogout = $body.find('input[value="Logout"]').length > 0;
+		const hasLogout = $body.find('input[value="Log out"]').length > 0;
 		if (!hasLogout) {
 			cy.mailchimpLogin();
-			cy.get('.mc-user h3').contains('Logged in as: ');
+			cy.get('.user-profile-name').should('be.visible');
 		} else {
 			cy.log('Already logged into Mailchimp account');
 		}

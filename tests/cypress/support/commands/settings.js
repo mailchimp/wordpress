@@ -11,10 +11,19 @@
  * // Select a Mailchimp list named "10up List"
  * cy.selectList('10up List');
  */
-Cypress.Commands.add('selectList', (listName) => {
+Cypress.Commands.add('selectList', (listName, force = false) => {
 	cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
-	cy.get('#mc_list_id').select(listName, { force: true });
-	cy.get('input[value="Update List"]').click();
+	cy.get('#mc_list_id option:selected')
+		.invoke('text')
+		.then((value) => {
+			if (value === listName && !force) {
+				// Value matches, you can log or perform actions
+				cy.log('Select has the expected value');
+			} else {
+				cy.get('#mc_list_id').select(listName, { force: true });
+				cy.get('input[value="Fetch list settings"]').click();
+			}
+		});
 });
 
 /**
@@ -43,7 +52,8 @@ function setDoubleOptInOption(enabled) {
 	} else {
 		cy.get('#mc_double_optin').uncheck();
 	}
-	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	cy.get('#mc_double_optin').trigger('change');
+	cy.get('input[value="Save Changes"]:visible').first().click();
 }
 
 Cypress.Commands.add('setSettingsOption', setSettingsOption);
@@ -54,7 +64,8 @@ function setSettingsOption(selector, enabled) {
 	} else {
 		cy.get(selector).uncheck();
 	}
-	cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+	cy.get(selector).trigger('change');
+	cy.get('input[value="Save Changes"]:visible').first().click();
 }
 
 /**
@@ -88,7 +99,8 @@ function toggleMergeFields(action) {
 			cy.get(field).should('exist')[action]();
 		});
 
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('#mc_mv_FNAME').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 }
 
@@ -118,7 +130,7 @@ Cypress.Commands.add('setMergeFieldsRequired', (required, listName = '10up', fie
 	// Set all merge fields to required in the Mailchimp test user account
 	cy.getListId(listName).then((listId) => {
 		cy.updateMergeFieldsByList(listId, { required }, fields).then(() => {
-			cy.selectList(listName); // Ensure list is selected, refreshes Mailchimp data with WP
+			cy.selectList(listName, true); // Ensure list is selected, refreshes Mailchimp data with WP
 		});
 	});
 });

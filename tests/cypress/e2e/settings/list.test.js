@@ -37,12 +37,13 @@ describe('Mailchimp lists ', () => {
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 
 		// Verify that list can be saved
-		cy.get('.mc-h2').contains('Your Lists');
 		cy.selectList('10up');
-		cy.get('.notice.notice-success.is-dismissible').first().contains('Success!');
 
 		// Verify that the settings are visible if a list is saved
-		cy.get('input[value="Update Subscribe Form Settings"]').should('exist');
+		cy.get('h2.mailchimp-sf-settings-table-title')
+			.first()
+			.contains('Form copy')
+			.should('be.visible');
 	});
 
 	it('Admin that has never saved a list can not see the form on the front end', () => {
