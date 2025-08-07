@@ -232,37 +232,20 @@ export const MailchimpFormField = (props) => {
 				);
 
 			case 'phone':
-				if (field?.options?.phone_format === 'US') {
-					return (
-						<>
-							<input
-								type="text"
-								size="2"
-								maxLength="3"
-								name={`${tag}[area]`}
-								id={`${tag}-area`}
-								className="mc_input mc_phone"
-							/>
-							<input
-								type="text"
-								size="2"
-								maxLength="3"
-								name={`${tag}[detail1]`}
-								id={`${tag}-detail1`}
-								className="mc_input mc_phone"
-							/>
-							<input
-								type="text"
-								size="5"
-								maxLength="4"
-								name={`${tag}[detail2]`}
-								id={`${tag}-detail2`}
-								className="mc_input mc_phone"
-							/>
-						</>
-					);
-				}
-				return <input type="text" size="18" name={tag} id={tag} className="mc_input" />;
+				// eslint-disable-next-line no-case-declarations
+				const isUSPhone = field?.options?.phone_format === 'US';
+				// eslint-disable-next-line no-case-declarations
+				const placeholder = isUSPhone ? '(###) ### - ####' : '';
+				return (
+					<input
+						type="tel"
+						size="18"
+						name={tag}
+						id={tag}
+						className="mc_input"
+						placeholder={placeholder}
+					/>
+				);
 
 			case 'email':
 			case 'url':
