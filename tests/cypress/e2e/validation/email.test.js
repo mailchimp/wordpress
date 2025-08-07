@@ -35,54 +35,54 @@ describe('General merge field validation', () => {
 		cy.visit(blockPostPostURL);
 
 		// Ensure the form exists
-		cy.get('#mc_signup').should('exist');
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('#mc_signup_submit').should('exist');
+		cy.get('.mc_signup_form').should('exist');
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('.mc_signup_submit_button').should('exist');
 
 		// Email assertions
-		cy.get('#mc_mv_EMAIL').clear(); // No email
+		cy.get('input[id^="mc_mv_EMAIL"]').clear(); // No email
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains('Please enter your email address.');
 
-		cy.get('#mc_mv_EMAIL').clear().type('user@'); // Missing domain
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@'); // Missing domain
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('@example.com'); // Missing username
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('@example.com'); // Missing username
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('userexample.com'); // Missing '@' symbol
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('userexample.com'); // Missing '@' symbol
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('user..name@example.com'); // Consecutive dots
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user..name@example.com'); // Consecutive dots
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('user!#%&*{}@example.com'); // Invalid characters
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user!#%&*{}@example.com'); // Invalid characters
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('user@example'); // Missing top-level domain
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@example'); // Missing top-level domain
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('user@-example.com'); // Domain starting with dash
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@-example.com'); // Domain starting with dash
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('user@example-.com'); // Domain ending with dash
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@example-.com'); // Domain ending with dash
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		cy.get('#mc_mv_EMAIL').clear().type('"user@example.com'); // Unclosed quoted string
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('"user@example.com'); // Unclosed quoted string
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
 		// Test exceeding maximum email length
 		let longEmail = 'a'.repeat(245) + '@example.com';
-		cy.get('#mc_mv_EMAIL').clear().type(longEmail);
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(longEmail);
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 	});

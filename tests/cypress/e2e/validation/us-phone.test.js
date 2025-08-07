@@ -48,7 +48,7 @@ describe('Phone Number Validation', () => {
 
 		validPhones.forEach((phone) => {
 			const email = generateRandomEmail('validphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
 			cy.submitFormAndVerifyWPSuccess();
 
@@ -62,10 +62,10 @@ describe('Phone Number Validation', () => {
 
 		invalidPhones.forEach((phone) => {
 			const email = generateRandomEmail('invalidphone');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 			fillPhoneInputs(phone);
-			cy.get('#mc_signup_submit').click();
-			cy.get('#mc_mv_PHONE:invalid')
+			cy.get('input[name="mc_signup_submit"][type="submit"]').click();
+			cy.get('input[id^="mc_mv_PHONE"]:invalid')
 				.invoke('prop', 'validationMessage')
 				.should('equal', 'Please enter a valid phone number.');
 		});

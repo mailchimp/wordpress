@@ -7,28 +7,60 @@ describe('Validate required fields', () => {
 
 	// (almost) the same in the WP admin as on the FE
 	const requiredFields = [
-		{ selector: '#mc_mv_FNAME', errorMessage: 'You must fill in First Name', input: 'Test' },
-		{ selector: '#mc_mv_LNAME', errorMessage: 'You must fill in Last Name', input: 'User' },
-		{ selector: '#mc_mv_ADDRESS-addr1', errorMessage: 'Address:', input: '123 Fake St.' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_ADDRESS-city', errorMessage: 'Address:', input: 'Nashville' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_ADDRESS-state', errorMessage: 'Address:', input: 'TN' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_ADDRESS-zip', errorMessage: 'Address:', input: '12345' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_BIRTHDAY', errorMessage: 'You must fill in Birthday', input: '01/10' },
-		{ selector: '#mc_mv_COMPANY', errorMessage: 'You must fill in Company', input: '10up' },
 		{
-			selector: '#mc_mv_PHONE',
+			selector: 'input[id^="mc_mv_FNAME"]',
+			errorMessage: 'You must fill in First Name',
+			input: 'Test',
+		},
+		{
+			selector: 'input[id^="mc_mv_LNAME"]',
+			errorMessage: 'You must fill in Last Name',
+			input: 'User',
+		},
+		{
+			selector: 'input[name="mc_mv_ADDRESS[addr1]"]',
+			errorMessage: 'Address:',
+			input: '123 Fake St.',
+		}, // Address has sub fields on the FE form
+		{
+			selector: 'input[name="mc_mv_ADDRESS[city]"]',
+			errorMessage: 'Address:',
+			input: 'Nashville',
+		}, // Address has sub fields on the FE form
+		{ selector: 'input[name="mc_mv_ADDRESS[state]"]', errorMessage: 'Address:', input: 'TN' }, // Address has sub fields on the FE form
+		{ selector: 'input[name="mc_mv_ADDRESS[zip]"]', errorMessage: 'Address:', input: '12345' }, // Address has sub fields on the FE form
+		{
+			selector: 'input[id^="mc_mv_BIRTHDAY"]',
+			errorMessage: 'You must fill in Birthday',
+			input: '01/10',
+		},
+		{
+			selector: 'input[id^="mc_mv_COMPANY"]',
+			errorMessage: 'You must fill in Company',
+			input: '10up',
+		},
+		{
+			selector: 'input[name="mc_mv_PHONE"]',
 			errorMessage: 'You must fill in Phone Number.',
 			input: '555-555-5555',
 		},
-		{ selector: '#mc_mv_MMERGE8', errorMessage: 'You must fill in Date.', input: '01/01/2030' },
-		{ selector: '#mc_mv_MMERGE9', errorMessage: 'You must fill in Zip Code.', input: '12345' },
 		{
-			selector: '#mc_mv_MMERGE10',
+			selector: 'input[id^="mc_mv_MMERGE8"]',
+			errorMessage: 'You must fill in Date.',
+			input: '01/01/2030',
+		},
+		{
+			selector: 'input[id^="mc_mv_MMERGE9"]',
+			errorMessage: 'You must fill in Zip Code.',
+			input: '12345',
+		},
+		{
+			selector: 'input[id^="mc_mv_MMERGE10"]',
 			errorMessage: 'You must fill in Website.',
 			input: 'https://10up.com',
 		},
 		{
-			selector: '#mc_mv_MMERGE11',
+			selector: 'input[id^="mc_mv_MMERGE11"]',
 			errorMessage: 'You must fill in Image.',
 			input: 'https://10up.com/wp-content/themes/10up-sept2016/assets/img/icon-strategy.png',
 		},
@@ -37,11 +69,19 @@ describe('Validate required fields', () => {
 	const requiredSelectFields = [
 		// Country is selected by default so no need to test this validation
 		// { selector: '#mc_mv_ADDRESS-country', errorMessage: 'Address:', input: 'USA' }, // Address has sub fields on the FE form
-		{ selector: '#mc_mv_MMERGE7', errorMessage: 'Choose one:', input: 'First Choice' },
+		{
+			selector: 'select[id^="mc_mv_MMERGE7"]',
+			errorMessage: 'Choose one:',
+			input: 'First Choice',
+		},
 	];
 
 	const requiredCheckboxFields = [
-		{ selector: '#mc_mv_MMERGE6_0', errorMessage: 'Choose one:', input: 'First Choice' },
+		{
+			selector: 'input[name="mc_mv_MMERGE6"]',
+			errorMessage: 'Choose one:',
+			input: 'First Choice',
+		},
 	];
 
 	before(() => {
@@ -95,7 +135,7 @@ describe('Validate required fields', () => {
 	});
 
 	function fillOutAllFields() {
-		cy.get('#mc_mv_EMAIL').clear().type(email); // Email is always required
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(email); // Email is always required
 
 		requiredFields.forEach((field) => {
 			cy.get(field.selector).clear().type(field.input);
@@ -108,7 +148,7 @@ describe('Validate required fields', () => {
 		});
 
 		requiredCheckboxFields.forEach((field) => {
-			cy.get(field.selector).check();
+			cy.get(field.selector).first().check();
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 	}
@@ -117,7 +157,7 @@ describe('Validate required fields', () => {
 		cy.visit(blockPostPostURL);
 
 		// Ensure the form exists
-		cy.get('#mc_signup').should('exist');
+		cy.get('.mc_signup_form').should('exist');
 
 		// Fill out entire form everytime so we can narrow tests to one input at a time
 		fillOutAllFields();
@@ -126,7 +166,7 @@ describe('Validate required fields', () => {
 		requiredFields.forEach((field) => {
 			cy.get(field.selector).clear(); // Ensure field is empty
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
-			cy.get('#mc_signup_submit').click();
+			cy.get('.mc_signup_submit_button').click();
 
 			// Assert the error message is displayed
 			cy.get('.mc_error_msg').should('exist');

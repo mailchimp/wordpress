@@ -49,10 +49,10 @@ describe('Mailchimp lists ', () => {
 	it('Admin that has never saved a list can not see the form on the front end', () => {
 		cy.wpCli('wp option delete mc_list_id').then(() => {
 			cy.visit(shortcodePostURL);
-			cy.get('#mc_signup_form').should('not.exist');
+			cy.get('.mc_signup_form').should('not.exist');
 
 			cy.visit(blockPostPostURL);
-			cy.get('#mc_signup_form').should('not.exist');
+			cy.get('.mc_signup_form').should('not.exist');
 
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 			cy.selectList('10up');
