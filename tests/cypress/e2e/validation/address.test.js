@@ -31,7 +31,7 @@ describe('Address Field Validation', () => {
 		// Set address fields (Addr 1 and City) as required
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: true }).then(() => {
-				cy.selectList('10up'); // Refresh list in WordPress
+				cy.selectList('10up', true); // Refresh list in WordPress
 			});
 		});
 	});
@@ -40,7 +40,7 @@ describe('Address Field Validation', () => {
 		// Cleanup: Reset address fields to optional
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: false }).then(() => {
-				cy.selectList('10up'); // Refresh list in WordPress
+				cy.selectList('10up', true); // Refresh list in WordPress
 			});
 		});
 	});

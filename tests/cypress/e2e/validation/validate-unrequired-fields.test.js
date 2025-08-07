@@ -19,7 +19,8 @@ describe('Validate unrequired fields', () => {
 
 		// Enable all merge fields
 		cy.toggleMergeFields('check');
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('#mc_mv_FNAME').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	after(() => {

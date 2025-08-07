@@ -31,6 +31,7 @@ module.exports = defineConfig({
 			'tests/cypress/e2e/submission/**.test.js',
 			'tests/cypress/e2e/validation/**.test.js',
 			'tests/cypress/e2e/block.test.js',
+			'tests/cypress/e2e/form-templates.test.js',
 			'tests/cypress/e2e/user-sync.test.js',
 			'tests/cypress/e2e/logout.test.js',
 		],

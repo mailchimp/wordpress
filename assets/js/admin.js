@@ -63,7 +63,7 @@
 					},
 					{
 						text: params.modal_button_try_again,
-						class: 'button mailchimp-sf-button',
+						class: 'button mailchimp-sf-button button-primary',
 						click() {
 							$(this).dialog('close');
 							setConnectButtonLoading();
@@ -420,14 +420,14 @@
 	const userSyncSettingsPage = $('.mailchimp-sf-user-sync-page');
 	if (userSyncSettingsPage.length > 0) {
 		const syncExistingContactsOnly = $(
-			'tr.mailchimp-user-sync-existing-contacts-only input[type="checkbox"]',
+			'input[type="checkbox"][name="mailchimp_sf_user_sync_settings[existing_contacts_only]"]',
 		);
 		if (syncExistingContactsOnly) {
 			syncExistingContactsOnly.change(function () {
 				if (this.checked) {
-					$('tr.mailchimp-user-sync-subscriber-status').hide();
+					$('div.mailchimp-user-sync-subscriber-status').hide();
 				} else {
-					$('tr.mailchimp-user-sync-subscriber-status').show();
+					$('div.mailchimp-user-sync-subscriber-status').show();
 				}
 			});
 
@@ -491,7 +491,7 @@
 	$('#mailchimp-sf-clear-user-sync-errors').on('click', function (e) {
 		e.preventDefault();
 		$(this).prop('disabled', true);
-		$('.mailchimp-sf-user-sync-errors-header-actions .spinner').addClass('is-active');
+		$('.mailchimp-sf-user-sync-errors-footer-actions .spinner').addClass('is-active');
 
 		$.ajax({
 			url: params.ajax_url,
@@ -504,7 +504,7 @@
 			success(response) {
 				if (response && response.success) {
 					$(tableSelector + ' tbody').html(noErrorsFoundRow);
-					$('.mailchimp-sf-user-sync-errors-header-actions .spinner').removeClass(
+					$('.mailchimp-sf-user-sync-errors-footer-actions .spinner').removeClass(
 						'is-active',
 					);
 				} else {
@@ -553,4 +553,152 @@
 			},
 		});
 	});
+})(jQuery); // eslint-disable-line no-undef
+
+// Form settings.
+(function ($) {
+	/**
+	 * Initialize form settings functionality
+	 */
+	function initFormSettings() {
+		const $form = $('#mailchimp-sf-settings-form');
+		const $userSyncForm = $('.mailchimp-sf-user-sync-form');
+		const $submitButtons = $('input[type="submit"].mailchimp-sf-button-submit');
+		const params = window.mailchimp_sf_admin_params || {};
+		const ajaxUrl = params.ajax_url || '';
+		const ajaxNonce = params.preview_form_nonce || '';
+
+		// Initially hide all submit buttons
+		$submitButtons.hide();
+
+		/**
+		 * Toggle submit buttons visibility based on form state
+		 *
+		 * @param {jQuery} $changedInput - The input that was changed
+		 */
+		function toggleSubmitButtons($changedInput) {
+			$changedInput
+				.closest('.mailchimp-sf-section')
+				.find('.mailchimp-sf-button-submit')
+				.show();
+			$changedInput
+				.closest('.mailchimp-sf-section')
+				.find('.mailchimp-sf-section-footer')
+				.slideDown({ duration: 200 });
+		}
+
+		function blockElement(elementSelector) {
+			const $el = $(elementSelector);
+			$el.append(
+				'<div class="block-overlay" style="position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.35);z-index:100;display:flex;justify-content:center;align-items:center;">' +
+					'<div style="background:#fff;border-radius: 50%;"><span class="spinner is-active" style="margin: 0px;"></span></div>' +
+					'</div>',
+			);
+		}
+
+		function unblockElement(elementSelector) {
+			$(elementSelector + ' .block-overlay').remove();
+		}
+
+		/**
+		 * Debounce function
+		 *
+		 * @param {Function} func - The function to debounce
+		 * @param {number} delay - The delay in milliseconds
+		 * @returns {Function} The debounced function
+		 */
+		function debounce(func, delay) {
+			let timeout;
+			return function (...args) {
+				clearTimeout(timeout);
+				timeout = setTimeout(() => {
+					func.apply(this, args);
+				}, delay);
+			};
+		}
+
+		/**
+		 * Preview the form.
+		 */
+		function previewForm() {
+			const $previewer = $('.mailchimp-sf-form-preview');
+			if ($previewer.length === 0) {
+				return;
+			}
+
+			// Loading overlay.
+			blockElement('.mailchimp-sf-form-preview-content');
+
+			const fields = {};
+			const groups = {};
+			$form.find('input[name^="mc_mv_"]').each(function () {
+				const $input = $(this);
+				fields[$input.data('tag')] = $input.is(':checked');
+			});
+			$form.find('input[name^="mc_show_interest_groups_"]').each(function () {
+				const $input = $(this);
+				groups[$input.data('group-id')] = $input.is(':checked');
+			});
+
+			const previewData = {
+				header: $('#mc_header_content').val(),
+				sub_heading: $('#mc_subheader_content').val(),
+				submit_text: $('#mc_submit_text').val(),
+				fields,
+				groups,
+				display_unsub_link: $('#mc_use_unsub_link').is(':checked'),
+			};
+
+			$.ajax({
+				url: ajaxUrl,
+				type: 'POST',
+				data: {
+					action: 'mailchimp_sf_preview_form',
+					nonce: ajaxNonce,
+					preview_data: previewData,
+				},
+				success(response) {
+					if (response.success && response.data) {
+						unblockElement('.mailchimp-sf-form-preview-content');
+						$previewer.html(response.data);
+					} else {
+						unblockElement('.mailchimp-sf-form-preview-content');
+						$previewer.html(
+							'<div class="mailchimp-sf-form-preview-error">' +
+								params.generic_error +
+								'</div>',
+						);
+					}
+				},
+				error(jqXHR, textStatus, errorThrown) {
+					// eslint-disable-next-line no-console
+					console.error('Error: ', textStatus, ', Details: ', errorThrown);
+					unblockElement('.mailchimp-sf-form-preview-content');
+					$previewer.html(
+						'<div class="mailchimp-sf-form-preview-error">' +
+							params.generic_error +
+							'</div>',
+					);
+				},
+			});
+		}
+
+		const debouncedPreviewForm = debounce(previewForm, 300);
+
+		// Watch for changes on all form elements
+		$form.on('input change', 'input, textarea, select', function () {
+			const $changedInput = $(this);
+			toggleSubmitButtons($changedInput);
+			debouncedPreviewForm();
+		});
+
+		// Watch for changes on user sync form elements
+		$userSyncForm.on('input change', 'input, textarea, select', function () {
+			const $changedInput = $(this);
+			toggleSubmitButtons($changedInput);
+		});
+	}
+
+	// Initialize when document is ready
+	$(document).ready(initFormSettings);
 })(jQuery); // eslint-disable-line no-undef

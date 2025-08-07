@@ -42,19 +42,22 @@ if ( ! mailchimp_sf_should_display_form() ) {
 	$header                      = $attributes['header'] ?? '';
 	$sub_heading                 = $attributes['sub_header'] ?? '';
 	$submit_text                 = $attributes['submit_text'] ?? __( 'Subscribe', 'mailchimp' );
-	$merge_fields                = get_option( 'mailchimp_sf_merge_fields_' . $list_id );
+	$merge_fields                = get_option( 'mailchimp_sf_merge_fields_' . $list_id, array() );
 	$show_unsubscribe_link       = $attributes['show_unsubscribe_link'] ?? get_option( 'mc_use_unsub_link' ) === 'on';
 	$unsubscribe_link_text       = $attributes['unsubscribe_link_text'] ?? __( 'unsubscribe from list', 'mailchimp' );
 	$update_existing_subscribers = ( $attributes['update_existing_subscribers'] ?? get_option( 'mc_update_existing' ) === 'on' ) ? 'yes' : 'no';
 	$double_opt_in               = ( $attributes['double_opt_in'] ?? get_option( 'mc_double_optin' ) === 'on' ) ? 'yes' : 'no';
 	$show_required_indicator     = $attributes['show_required_indicator'] ?? true;
 	$required_indicator_text     = $attributes['required_indicator_text'] ?? __( '* = required field', 'mailchimp' );
+	$template                    = $attributes['template'] ?? 'default';
+	$skip_merge_validation       = ( new Mailchimp_List_Subscribe_Form_Blocks() )->should_skip_merge_validation( $inner_blocks, $merge_fields, $template ) ? 'yes' : 'no';
 	$hash                        = wp_hash(
 		serialize( // phpcs:ignore WordPress.PHP.DiscouragedPHPFunctions.serialize_serialize
 			array(
-				'list_id'         => $list_id,
-				'update_existing' => $update_existing_subscribers,
-				'double_opt_in'   => $double_opt_in,
+				'list_id'               => $list_id,
+				'update_existing'       => $update_existing_subscribers,
+				'double_opt_in'         => $double_opt_in,
+				'skip_merge_validation' => $skip_merge_validation,
 			)
 		)
 	);
@@ -108,6 +111,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 				<input type="hidden" name="mailchimp_sf_list_id" value="<?php echo esc_attr( $list_id ); ?>" />
 				<input type="hidden" name="mailchimp_sf_update_existing_subscribers" value="<?php echo esc_attr( $update_existing_subscribers ); ?>" />
 				<input type="hidden" name="mailchimp_sf_double_opt_in" value="<?php echo esc_attr( $double_opt_in ); ?>" />
+				<input type="hidden" name="mailchimp_sf_skip_merge_validation" value="<?php echo esc_attr( $skip_merge_validation ); ?>" />
 				<input type="hidden" name="mailchimp_sf_hash" value="<?php echo esc_attr( $hash ); ?>" />
 				<?php
 				wp_nonce_field( 'mc_submit_signup_form', '_mc_submit_signup_form_nonce', false );

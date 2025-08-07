@@ -10,13 +10,20 @@ describe('Block Tests', () => {
 		// Hide all interest groups
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('input[id^="mc_show_interest_groups_"]').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	it('Admin can create a Signup form using Mailchimp block', () => {
 		const postTitle = 'Mailchimp signup form - Block';
 		const beforeSave = () => {
-			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
+			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form').then(
+				(blockId) => {
+					cy.getBlockEditor()
+						.find(`#${blockId} .block-editor-block-variation-picker__skip button`)
+						.click();
+				},
+			);
 			cy.wait(500);
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
@@ -242,6 +249,11 @@ describe('Block Tests', () => {
 			cy.get('#mc_signup_submit').should('exist');
 
 			cy.visit(`/wp-admin/post.php?post=${oldBlockPostId}&action=edit`);
+			cy.getBlockEditor()
+				.find(
+					'.wp-block-mailchimp-mailchimp .block-editor-block-variation-picker__skip button',
+				)
+				.click();
 			const header = '[NEW BLOCK] Subscribe to our newsletter';
 			cy.getBlockEditor()
 				.find('h2[aria-label="Enter a header (optional)"]')

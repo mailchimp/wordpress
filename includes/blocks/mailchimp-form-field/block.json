@@ -30,7 +30,7 @@
   "parent": [
     "mailchimp/mailchimp"
   ],
-  "usesContext": ["mailchimp/list_id","mailchimp/show_required_indicator"],
+  "usesContext": ["mailchimp/list_id","mailchimp/show_required_indicator","mailchimp/template"],
   "editorScript": "file:./index.js",
   "render": "file:./field-markup.php"
 }
