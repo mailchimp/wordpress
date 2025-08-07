@@ -7,6 +7,7 @@
 
 $list_id                 = $block->context['mailchimp/list_id'] ?? '';
 $show_required_indicator = $block->context['mailchimp/show_required_indicator'] ?? true;
+$template                = $block->context['mailchimp/template'] ?? 'default';
 $field_tag               = $attributes['tag'] ?? '';
 $label                   = $attributes['label'] ?? '';
 $is_visible              = $attributes['visible'] ?? false;
@@ -29,6 +30,11 @@ $merge_fields = array_filter(
 $merge_field = current( $merge_fields );
 // Bail if we don't have a merge field.
 if ( empty( $merge_field ) ) {
+	return;
+}
+
+// If the template is not default and the field is marked as hidden, don't render the field.
+if ( 'default' !== $template && ! $is_visible && 'EMAIL' !== $field_tag ) {
 	return;
 }
 

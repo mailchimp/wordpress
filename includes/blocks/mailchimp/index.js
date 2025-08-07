@@ -4,9 +4,11 @@ import { InnerBlocks } from '@wordpress/block-editor';
 import { BlockEdit } from './edit';
 import metadata from './block.json';
 import Icon from './icon';
+import { variations } from './variations';
 
 registerBlockType(metadata, {
 	icon: Icon,
+	variations,
 	transforms: {
 		from: [
 			{
