@@ -76,6 +76,19 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 2.0.0 - 2025-08-07 =
+* **Added:** Form templates to the Mailchimp List Subscribe Form block, allowing users to quickly insert and publish specific forms (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@vikrampm1](https://github.com/vikrampm1), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#171](https://github.com/mailchimp/wordpress/pull/171)).
+* **Changed:** Improved navigation and UX enhancements to the plugin settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#169](https://github.com/mailchimp/wordpress/pull/169)).
+* **Changed:** Allowed multiple Mailchimp forms on a single page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#173](https://github.com/mailchimp/wordpress/pull/173)).
+* **Changed:** Update the form ID attribute and form field ID attributes (if you're using ID selectors for custom styling, please update the selectors accordingly) (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#173](https://github.com/mailchimp/wordpress/pull/173)).
+* **Fixed:** Phone number and required field validations (props [@iamdharmesh](https://github.com/iamdharmesh), [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#159](https://github.com/mailchimp/wordpress/pull/159)).
+* **Security:** Bump `tar-fs` from 2.1.1 to 3.1.0 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#175](https://github.com/mailchimp/wordpress/pull/175)).
+* **Security:** Bump `form-data` from 2.3.3 to 2.5.5 and `@cypress/request` from 3.0.1 to 3.0.9 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#176](https://github.com/mailchimp/wordpress/pull/176)).
+* **Security:** Bump `@babel/runtime` from 7.24.6 to 7.28.2 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#177](https://github.com/mailchimp/wordpress/pull/177)).
+* **Security:** Bump `on-headers` from 1.0.2 to 1.1.0 and `compression` from 1.7.4 to 1.8.1 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#178](https://github.com/mailchimp/wordpress/pull/178)).
+* **Security:** Bump `serialize-javascript` from 6.0.0 to 6.0.2 and `mocha` from 10.4.0 to 11.7.1 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#179](https://github.com/mailchimp/wordpress/pull/179)).
+* **Security:** Bump `http-proxy-middleware` from 2.0.6 to 2.0.9 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#180](https://github.com/mailchimp/wordpress/pull/180)).
+
 = 1.9.0 - 2025-06-04 =
 * **Added:** New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
 * **Changed:** Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
@@ -163,6 +176,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 [View historical changelog details here](https://github.com/mailchimp/wordpress/blob/develop/CHANGELOG.md).
 
 == Upgrade Notice ==
+
+= 2.0.0 =
+This release updates the form ID attribute and form field ID attributes. If you're using ID selectors for custom styling, please update the selectors accordingly.
 
 = 1.8.0 =
 This release bumps the WordPress minimum version from 6.3 to 6.4.
