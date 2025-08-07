@@ -42,6 +42,7 @@ class Mailchimp_Admin {
 		add_action( 'wp_ajax_mailchimp_sf_oauth_finish', array( $this, 'finish_oauth_process' ) );
 		add_action( 'wp_ajax_mailchimp_sf_create_account', array( $this, 'mailchimp_create_account' ) );
 		add_action( 'wp_ajax_mailchimp_sf_check_login_session', array( $this, 'check_login_session' ) );
+		add_action( 'wp_ajax_mailchimp_sf_preview_form', array( $this, 'preview_subscribe_form' ) );
 
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_page_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_admin_menu_pages' ) );
@@ -285,6 +286,57 @@ class Mailchimp_Admin {
 	}
 
 	/**
+	 * Preview the subscribe form.
+	 *
+	 * This function is called via AJAX.
+	 *
+	 * This function previews the subscribe form on the settings page based on the form settings.
+	 */
+	public function preview_subscribe_form() {
+		// Check the nonce for security
+		check_ajax_referer( 'mailchimp_sf_preview_form_nonce', 'nonce' );
+
+		// Validate the permissions.
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'You do not have permission to perform this action.', 'mailchimp' ) ) );
+		}
+
+		$fields = isset( $_POST['preview_data']['fields'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['preview_data']['fields'] ) ) : array();
+		$fields = array_map(
+			function ( $ele ) {
+				return 'true' === $ele;
+			},
+			$fields
+		);
+		$groups = isset( $_POST['preview_data']['groups'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['preview_data']['groups'] ) ) : array();
+		$groups = array_map(
+			function ( $ele ) {
+				return 'true' === $ele;
+			},
+			$groups
+		);
+
+		$preview_data = array(
+			'header'             => isset( $_POST['preview_data']['header'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_data']['header'] ) ) : get_option( 'mc_header_content' ),
+			'sub_heading'        => isset( $_POST['preview_data']['sub_heading'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_data']['sub_heading'] ) ) : get_option( 'mc_subheader_content' ),
+			'submit_text'        => isset( $_POST['preview_data']['submit_text'] ) ? sanitize_text_field( wp_unslash( $_POST['preview_data']['submit_text'] ) ) : get_option( 'mc_submit_text' ),
+			'fields'             => $fields,
+			'groups'             => $groups,
+			'display_unsub_link' => isset( $_POST['preview_data']['display_unsub_link'] ) ? 'true' === sanitize_text_field( wp_unslash( $_POST['preview_data']['display_unsub_link'] ) ) : get_option( 'mc_use_unsub_link' ),
+		);
+
+		ob_start();
+		mailchimp_sf_signup_form(
+			array(
+				'is_preview'   => true,
+				'preview_data' => $preview_data,
+			)
+		);
+		$form = ob_get_clean();
+		wp_send_json_success( $form );
+	}
+
+	/**
 	 * Verify and save the OAuth token.
 	 *
 	 * @param string $access_token The token to verify.
@@ -492,6 +544,7 @@ class Mailchimp_Admin {
 			'user_sync_status_nonce'       => wp_create_nonce( 'mailchimp_sf_user_sync_status' ),
 			'delete_user_sync_error_nonce' => wp_create_nonce( 'mailchimp_sf_delete_user_sync_error' ),
 			'no_errors_found'              => esc_html__( 'No errors found', 'mailchimp' ),
+			'preview_form_nonce'           => wp_create_nonce( 'mailchimp_sf_preview_form_nonce' ),
 		);
 
 		// Create account page specific data.

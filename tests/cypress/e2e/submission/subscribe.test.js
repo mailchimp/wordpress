@@ -22,7 +22,7 @@ describe('Subscribe actions', () => {
 		// Step 4: Test error handling
 		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 
 		// Step 5: Test that the form can be submitted
 		const email = generateRandomEmail('shortcode-signup-test');

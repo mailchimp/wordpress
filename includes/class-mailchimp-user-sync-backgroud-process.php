@@ -132,6 +132,9 @@ class Mailchimp_User_Sync_Background_Process {
 					),
 					'success'
 				);
+
+				// Update the last sync time.
+				update_option( 'mailchimp_sf_last_sync_time', time() );
 			}
 			$this->clear_running_sync();
 			return;
@@ -193,6 +196,10 @@ class Mailchimp_User_Sync_Background_Process {
 				),
 				'success'
 			);
+
+			// Update the last sync time.
+			update_option( 'mailchimp_sf_last_sync_time', time() );
+
 			$this->clear_running_sync();
 			return;
 		}

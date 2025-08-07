@@ -78,6 +78,8 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			'double_opt_in'               => (bool) get_option( 'mc_double_optin', true ),
 			'merge_fields_visibility'     => $merge_fields_visibility,
 			'interest_groups_visibility'  => $interest_groups_visibility,
+			'merge_fields'                => $merge_fields,
+			'interest_groups'             => $interest_groups,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
@@ -208,5 +210,52 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 	 */
 	public function get_list_data_permissions_check() {
 		return current_user_can( 'edit_posts' );
+	}
+
+	/**
+	 * Check if the merge validation should be skipped.
+	 *
+	 * @param array  $inner_blocks The inner blocks of the block.
+	 * @param array  $merge_fields The merge fields.
+	 * @param string $template     The template of the block.
+	 * @return bool True if the merge validation should be skipped, false otherwise.
+	 */
+	public function should_skip_merge_validation( $inner_blocks = array(), $merge_fields = array(), $template = 'default' ) {
+		if ( 'default' === $template ) {
+			return false;
+		}
+
+		// Get the tags of the visible inner blocks.
+		$visible_inner_blocks = array_map(
+			function ( $block ) {
+				return $block['attrs']['tag'] ?? '';
+			},
+			array_filter(
+				$inner_blocks,
+				function ( $block ) {
+					return 'mailchimp/mailchimp-form-field' === $block['blockName'] && isset( $block['attrs']['visible'] ) && $block['attrs']['visible'];
+				}
+			)
+		);
+
+		// Get the tags of the required merge fields.
+		$required_merge_fields = array_map(
+			function ( $field ) {
+				return $field['tag'] ?? '';
+			},
+			array_filter(
+				$merge_fields,
+				function ( $field ) {
+					return $field['required'];
+				}
+			)
+		);
+
+		$missing_required_fields = array_diff( $required_merge_fields, $visible_inner_blocks );
+		if ( ! empty( $missing_required_fields ) ) {
+			return true;
+		}
+
+		return false;
 	}
 }

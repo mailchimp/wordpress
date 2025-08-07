@@ -7,8 +7,16 @@ describe('Validate required fields', () => {
 
 	// (almost) the same in the WP admin as on the FE
 	const requiredFields = [
-		{ selector: 'input[id^="mc_mv_FNAME"]', errorMessage: 'First Name:', input: 'Test' },
-		{ selector: 'input[id^="mc_mv_LNAME"]', errorMessage: 'Last Name:', input: 'User' },
+		{
+			selector: 'input[id^="mc_mv_FNAME"]',
+			errorMessage: 'You must fill in First Name',
+			input: 'Test',
+		},
+		{
+			selector: 'input[id^="mc_mv_LNAME"]',
+			errorMessage: 'You must fill in Last Name',
+			input: 'User',
+		},
 		{
 			selector: 'input[name="mc_mv_ADDRESS[addr1]"]',
 			errorMessage: 'Address:',
@@ -21,23 +29,39 @@ describe('Validate required fields', () => {
 		}, // Address has sub fields on the FE form
 		{ selector: 'input[name="mc_mv_ADDRESS[state]"]', errorMessage: 'Address:', input: 'TN' }, // Address has sub fields on the FE form
 		{ selector: 'input[name="mc_mv_ADDRESS[zip]"]', errorMessage: 'Address:', input: '12345' }, // Address has sub fields on the FE form
-		{ selector: 'input[id^="mc_mv_BIRTHDAY"]', errorMessage: 'Birthday:', input: '01/10' },
-		{ selector: 'input[id^="mc_mv_COMPANY"]', errorMessage: 'Company:', input: '10up' },
+		{
+			selector: 'input[id^="mc_mv_BIRTHDAY"]',
+			errorMessage: 'You must fill in Birthday',
+			input: '01/10',
+		},
+		{
+			selector: 'input[id^="mc_mv_COMPANY"]',
+			errorMessage: 'You must fill in Company',
+			input: '10up',
+		},
 		{
 			selector: 'input[name="mc_mv_PHONE"]',
-			errorMessage: 'Phone Number:',
+			errorMessage: 'You must fill in Phone Number.',
 			input: '555-555-5555',
 		},
-		{ selector: 'input[id^="mc_mv_MMERGE8"]', errorMessage: 'Date:', input: '01/01/2030' },
-		{ selector: 'input[id^="mc_mv_MMERGE9"]', errorMessage: 'Zip Code:', input: '12345' },
+		{
+			selector: 'input[id^="mc_mv_MMERGE8"]',
+			errorMessage: 'You must fill in Date.',
+			input: '01/01/2030',
+		},
+		{
+			selector: 'input[id^="mc_mv_MMERGE9"]',
+			errorMessage: 'You must fill in Zip Code.',
+			input: '12345',
+		},
 		{
 			selector: 'input[id^="mc_mv_MMERGE10"]',
-			errorMessage: 'Website:',
+			errorMessage: 'You must fill in Website.',
 			input: 'https://10up.com',
 		},
 		{
 			selector: 'input[id^="mc_mv_MMERGE11"]',
-			errorMessage: 'Image:',
+			errorMessage: 'You must fill in Image.',
 			input: 'https://10up.com/wp-content/themes/10up-sept2016/assets/img/icon-strategy.png',
 		},
 	];
@@ -110,20 +134,11 @@ describe('Validate required fields', () => {
 		cy.toggleMergeFields('uncheck');
 	});
 
-	// TODO: Validation errors clear the entire form. We should fix this.
-	// We could also significantly reduce the time this test takes by fixing this bug.
 	function fillOutAllFields() {
 		cy.get('input[id^="mc_mv_EMAIL"]').clear().type(email); // Email is always required
 
 		requiredFields.forEach((field) => {
-			if (field.selector === 'input[name="mc_mv_PHONE"]') {
-				const phone = field.input.split('-');
-				cy.get('input[name="mc_mv_PHONE[area]"]').clear().type(phone[0]);
-				cy.get('input[name="mc_mv_PHONE[detail1]"]').clear().type(phone[1]);
-				cy.get('input[name="mc_mv_PHONE[detail2]"]').clear().type(phone[2]);
-			} else {
-				cy.get(field.selector).clear().type(field.input);
-			}
+			cy.get(field.selector).clear().type(field.input);
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 
@@ -138,7 +153,6 @@ describe('Validate required fields', () => {
 		});
 	}
 
-	// TODO: Test just takes too long to run
 	it('ensures that a required field can not be empty', () => {
 		cy.visit(blockPostPostURL);
 
@@ -150,14 +164,7 @@ describe('Validate required fields', () => {
 
 		// Test validation for each required field
 		requiredFields.forEach((field) => {
-			// Submit the form without input to trigger validation
-			if (field.selector === 'input[name="mc_mv_PHONE"]') {
-				cy.get('input[name="mc_mv_PHONE[area]"]').clear();
-				cy.get('input[name="mc_mv_PHONE[detail1]"]').clear();
-				cy.get('input[name="mc_mv_PHONE[detail2]"]').clear();
-			} else {
-				cy.get(field.selector).clear(); // Ensure field is empty
-			}
+			cy.get(field.selector).clear(); // Ensure field is empty
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 			cy.get('.mc_signup_submit_button').click();
 
@@ -166,14 +173,7 @@ describe('Validate required fields', () => {
 			cy.get('.mc_error_msg').should('include.text', field.errorMessage);
 
 			// Fill in the field
-			if (field.selector === 'input[name="mc_mv_PHONE"]') {
-				const phone = field.input.split('-');
-				cy.get('input[name="mc_mv_PHONE[area]"]').clear().type(phone[0]);
-				cy.get('input[name="mc_mv_PHONE[detail1]"]').clear().type(phone[1]);
-				cy.get('input[name="mc_mv_PHONE[detail2]"]').clear().type(phone[2]);
-			} else {
-				cy.get(field.selector).type(field.input);
-			}
+			cy.get(field.selector).type(field.input);
 			cy.get('body').click(0, 0); // Click outside the field to clear the datepicker modal
 		});
 	});

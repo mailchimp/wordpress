@@ -21,6 +21,8 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	$after_title   = isset( $args['after_title'] ) ? $args['after_title'] : '';
 	$before_widget = isset( $args['before_widget'] ) ? $args['before_widget'] : '';
 	$after_widget  = isset( $args['after_widget'] ) ? $args['after_widget'] : '';
+	$is_preview    = isset( $args['is_preview'] ) ? (bool) $args['is_preview'] : false;
+	$preview_data  = isset( $args['preview_data'] ) ? $args['preview_data'] : array();
 
 	$mv  = get_option( 'mc_merge_vars' );
 	$igs = get_option( 'mc_interest_groups' );
@@ -65,6 +67,9 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	}
 
 	$header = get_option( 'mc_header_content' );
+	if ( $is_preview && ! empty( $preview_data ) ) {
+		$header = $preview_data['header'] ?? $header;
+	}
 
 	// See if we have custom header content
 	if ( ! empty( $header ) ) {
@@ -81,6 +86,9 @@ function mailchimp_sf_signup_form( $args = array() ) {
 	$sub_heading = trim( get_option( 'mc_subheader_content' ) );
 	$list_id     = get_option( 'mc_list_id' );
 	$form_id     = wp_unique_id( $list_id . '_' );
+	if ( $is_preview && ! empty( $preview_data ) ) {
+		$sub_heading = $preview_data['sub_heading'] ?? $sub_heading;
+	}
 	?>
 
 <div id="mc_signup_<?php echo esc_attr( $form_id ); ?>">
@@ -110,7 +118,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		$num_fields = 0;
 		foreach ( (array) $mv as $mv_var ) {
 			$opt = 'mc_mv_' . $mv_var['tag'];
-			if ( $mv_var['required'] || get_option( $opt ) === 'on' ) {
+			if ( $is_preview && ! empty( $preview_data ) ) {
+				if ( $mv_var['required'] || ( isset( $preview_data['fields'][ $mv_var['tag'] ] ) && $preview_data['fields'][ $mv_var['tag'] ] ) ) {
+					++$num_fields;
+				}
+			} elseif ( $mv_var['required'] || get_option( $opt ) === 'on' ) {
 				++$num_fields;
 			}
 		}
@@ -122,7 +134,13 @@ function mailchimp_sf_signup_form( $args = array() ) {
 
 		// Loop over our vars, and output the ones that are set to display
 		foreach ( $mv as $mv_var ) {
-			echo mailchimp_form_field( $mv_var, $num_fields ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
+			$opt            = 'mc_mv_' . $mv_var['tag'];
+			$should_display = 'on' === get_option( $opt );
+			if ( $is_preview && ! empty( $preview_data ) ) {
+				$should_display = $preview_data['fields'][ $mv_var['tag'] ] ?? $should_display;
+			}
+
+			echo mailchimp_form_field( $mv_var, $num_fields, $should_display ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- Ignoring because form field is escaped in function
 		}
 
 		// Show an explanation of the * if there's more than one field
@@ -138,7 +156,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		if ( is_array( $igs ) && ! empty( $igs ) ) {
 			foreach ( $igs as $ig ) {
 				if ( is_array( $ig ) && isset( $ig['id'] ) ) {
-					if ( ( $igs && get_option( 'mc_show_interest_groups_' . $ig['id'] ) === 'on' ) ) {
+					$should_display = 'on' === get_option( 'mc_show_interest_groups_' . $ig['id'] );
+					if ( $is_preview && ! empty( $preview_data ) ) {
+						$should_display = $preview_data['groups'][ $ig['id'] ] ?? $should_display;
+					}
+					if ( ( $igs && $should_display ) ) {
 						if ( 'hidden' !== $ig['type'] ) {
 							?>
 							<div class="mc_interests_header">
@@ -183,6 +205,11 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		mailchimp_sf_honeypot_field();
 
 		$submit_text = get_option( 'mc_submit_text' );
+
+		// Preview.
+		if ( $is_preview && ! empty( $preview_data ) ) {
+			$submit_text = $preview_data['submit_text'] ?? $submit_text;
+		}
 		?>
 
 		<div class="mc_signup_submit">
@@ -190,8 +217,13 @@ function mailchimp_sf_signup_form( $args = array() ) {
 		</div><!-- /mc_signup_submit -->
 
 		<?php
-		$user = get_option( 'mc_user' );
-		if ( $user && get_option( 'mc_use_unsub_link' ) === 'on' ) {
+		$user               = get_option( 'mc_user' );
+		$display_unsub_link = 'on' === get_option( 'mc_use_unsub_link' );
+		if ( $is_preview && ! empty( $preview_data ) ) {
+			$display_unsub_link = $preview_data['display_unsub_link'] ?? $display_unsub_link;
+		}
+
+		if ( $user && $display_unsub_link ) {
 			$api  = mailchimp_sf_get_api();
 			$host = 'http://' . $api->datacenter . '.list-manage.com';
 			?>
@@ -426,17 +458,9 @@ function mailchimp_form_field( $data, $num_fields, $should_display = null, $labe
 	<input type="text" size="18" maxlength="5" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt_id ) . '" class="mc_input" />';
 				break;
 			case 'phone':
-				if ( isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'] ) {
-					$html .= '
-			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[area]' ) . '" id="' . esc_attr( $opt_id . '-area' ) . '" class="mc_input mc_phone" />
-			<input type="text" size="2" maxlength="3" value="" name="' . esc_attr( $opt . '[detail1]' ) . '" id="' . esc_attr( $opt_id . '-detail1' ) . '" class="mc_input mc_phone" />
-			<input type="text" size="5" maxlength="4" value="" name="' . esc_attr( $opt . '[detail2]' ) . '" id="' . esc_attr( $opt_id . '-detail2' ) . '" class="mc_input mc_phone" />
-				';
-				} else {
-					$html .= '
-						<input type="text" size="18" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt_id ) . '" class="mc_input" />
-					';
-				}
+				$is_us_phone = isset( $data['options']['phone_format'] ) && 'US' === $data['options']['phone_format'];
+				$html       .= '
+					<input type="tel" size="20" minlength="6" maxlength="20" pattern="^\+?[\d\s\-\(\)\.]*$" value="" name="' . esc_attr( $opt ) . '" id="' . esc_attr( $opt_id ) . '" class="mc_input mailchimp-sf-phone" placeholder="' . esc_attr( $is_us_phone ? '(###) ### - ####' : '' ) . '" />';
 				break;
 			case 'email':
 			case 'url':

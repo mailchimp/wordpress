@@ -164,7 +164,8 @@ function mailchimp_sf_load_resources() {
 		'mailchimp_sf_main_js',
 		'mailchimpSF',
 		array(
-			'ajax_url' => trailingslashit( home_url() ),
+			'ajax_url'               => trailingslashit( home_url() ),
+			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
 		)
 	);
 
@@ -510,7 +511,7 @@ function mailchimp_sf_save_general_form_settings() {
 	if ( is_array( $mv ) ) {
 		foreach ( $mv as $mv_var ) {
 			$opt = 'mc_mv_' . $mv_var['tag'];
-			if ( isset( $_POST[ $opt ] ) || 'Y' === $mv_var['required'] ) {
+			if ( isset( $_POST[ $opt ] ) || true === (bool) $mv_var['required'] ) {
 				update_option( $opt, 'on' );
 			} else {
 				update_option( $opt, 'off' );
@@ -785,65 +786,6 @@ function mailchimp_sf_check_status( $endpoint ) {
 		return false;
 	}
 	return $subscriber['status'];
-}
-
-/**
- * Validate phone
- *
- * @param array $opt_val Option value
- * @param array $data Data
- * @return void
- */
-function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
-	// This filters out all 'falsey' elements
-	$opt_val = array_filter( $opt_val );
-	// If they weren't all empty
-	if ( ! $opt_val ) {
-		return;
-	}
-
-	$opt_val = implode( '-', $opt_val );
-	if ( strlen( $opt_val ) < 12 ) {
-		$opt_val = '';
-	}
-
-	if ( ! preg_match( '/[0-9]{0,3}-[0-9]{0,3}-[0-9]{0,4}/A', $opt_val ) ) {
-		/* translators: %s: field name */
-		$message = sprintf( esc_html__( '%s must consist of only numbers', 'mailchimp' ), esc_html( $data['name'] ) );
-		$error   = new WP_Error( 'mc_phone_validation', $message );
-		return $error;
-	}
-
-	return $opt_val;
-}
-
-/**
- * Validate address
- *
- * @param array $opt_val Option value
- * @param array $data Data
- * @return mixed
- */
-function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
-	if ( 'Y' === $data['required'] ) {
-		if ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-			/* translators: %s: field name */
-			$message = sprintf( esc_html__( 'You must fill in %s.', 'mailchimp' ), esc_html( $data['name'] ) );
-			$error   = new WP_Error( 'invalid_address_merge', $message );
-			return $error;
-		}
-	} elseif ( empty( $opt_val['addr1'] ) || empty( $opt_val['city'] ) ) {
-		return false;
-	}
-
-	$merge          = new stdClass();
-	$merge->addr1   = $opt_val['addr1'];
-	$merge->addr2   = $opt_val['addr2'];
-	$merge->city    = $opt_val['city'];
-	$merge->state   = $opt_val['state'];
-	$merge->zip     = $opt_val['zip'];
-	$merge->country = $opt_val['country'];
-	return $merge;
 }
 
 /**

@@ -18,7 +18,7 @@
 			</p>
 
 			<div class="mailchimp-sf-oauth-connect-wrapper">
-				<button id="mailchimp_sf_oauth_connect" class="button mailchimp-sf-button">
+				<button id="mailchimp_sf_oauth_connect" class="button mailchimp-sf-button button-primary">
 					<span class="mailchimp-sf-loading hidden">
 						<svg class="animate-spin" width="24" height="24" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
 								<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

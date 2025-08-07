@@ -27,7 +27,8 @@ describe('General merge field validation', () => {
 
 		// Disable all merge fields
 		cy.toggleMergeFields('uncheck');
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('#mc_mv_FNAME').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	it('Invalid email addresses fail validation', () => {
@@ -41,7 +42,7 @@ describe('General merge field validation', () => {
 		// Email assertions
 		cy.get('input[id^="mc_mv_EMAIL"]').clear(); // No email
 		cy.submitFormAndVerifyError();
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 
 		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@'); // Missing domain
 		cy.submitFormAndVerifyError();
@@ -71,10 +72,9 @@ describe('General merge field validation', () => {
 		cy.submitFormAndVerifyError();
 		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
-		// TODO: Mailchimp accepts this. Is this a bug?
-		// cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@example-.com'); // Domain ending with dash
-		// cy.submitFormAndVerifyError();
-		// cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('user@example-.com'); // Domain ending with dash
+		cy.submitFormAndVerifyError();
+		cy.get('.mc_error_msg').contains(invalidEmailErrorRegex);
 
 		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('"user@example.com'); // Unclosed quoted string
 		cy.submitFormAndVerifyError();
