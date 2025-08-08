@@ -185,6 +185,8 @@ describe('Admin can update plugin settings', () => {
 
 	// TODO: Add case for separate account login and settings get reset.
 	it('Ensure settings persist between logging out and logging back in of Mailchimp account', () => {
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
+
 		// Step 1: Visit Mailchimp settings page
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('#mailchimp_sf_oauth_connect').should('not.exist');
@@ -215,6 +217,7 @@ describe('Admin can update plugin settings', () => {
 	});
 
 	it('Spam protection should work as expected', () => {
+		cy.mailchimpLoginIfNotAlreadyLoggedIn();
 		// Show error message to spam bots.
 		[shortcodePostURL, blockPostPostURL].forEach((url) => {
 			cy.visit(url);
@@ -312,37 +315,37 @@ describe('Admin can update plugin settings', () => {
 
 		cy.get('#mc_subheader_content').clear().type('My Custom Subheader');
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview #mc_subheader').contains('My Custom Subheader');
+		cy.get('.mailchimp-sf-form-preview .mc_subheader').contains('My Custom Subheader');
 
 		cy.get('#mc_submit_text').clear().type('My Custom Button');
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview #mc_signup_submit').contains('My Custom Button');
+		cy.get('.mailchimp-sf-form-preview .mc_signup_submit_button').contains('My Custom Button');
 
 		// Field options
 		cy.get('#mc_mv_FNAME').uncheck();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview input#mc_mv_FNAME').should('not.exist');
+		cy.get('.mailchimp-sf-form-preview input[id^="mc_mv_FNAME"]').should('not.exist');
 
 		cy.get('#mc_mv_LNAME').uncheck();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview input#mc_mv_LNAME').should('not.exist');
+		cy.get('.mailchimp-sf-form-preview input[id^="mc_mv_LNAME"]').should('not.exist');
 
 		cy.get('#mc_mv_FNAME').check();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview input#mc_mv_FNAME').should('exist');
+		cy.get('.mailchimp-sf-form-preview input[id^="mc_mv_FNAME"]').should('exist');
 
 		cy.get('#mc_mv_LNAME').check();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview input#mc_mv_LNAME').should('exist');
+		cy.get('.mailchimp-sf-form-preview input[id^="mc_mv_LNAME"]').should('exist');
 
 		// Unsubscribe link
 		cy.get('#mc_use_unsub_link').check();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview #mc_unsub_link').should('exist');
+		cy.get('.mailchimp-sf-form-preview .mc_unsub_link').should('exist');
 
 		cy.get('#mc_use_unsub_link').uncheck();
 		cy.wait(1000);
-		cy.get('.mailchimp-sf-form-preview #mc_unsub_link').should('not.exist');
+		cy.get('.mailchimp-sf-form-preview .mc_unsub_link').should('not.exist');
 
 		// Groups
 		cy.get('input[id^="mc_show_interest_groups_"]').check();
