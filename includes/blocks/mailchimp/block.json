@@ -38,11 +38,14 @@
     "required_indicator_text": {
       "type": "string",
       "default": "* = required field"
+    },
+    "template": {
+      "type": "string",
+      "default": "default"
     }
   },
   "supports": {
     "html": false,
-    "multiple": false,
     "reusable": true,
     "align": [ "wide", "full" ],
     "__experimentalBorder": {
@@ -76,10 +79,11 @@
   ],
   "providesContext": {
     "mailchimp/list_id": "list_id",
-    "mailchimp/show_required_indicator": "show_required_indicator"
+    "mailchimp/show_required_indicator": "show_required_indicator",
+    "mailchimp/template": "template"
   },
   "textdomain": "mailchimp",
   "editorScript": "file:./index.js",
   "render": "file:./markup.php",
-  "editorStyle": "file:./editor.css"
+  "editorStyle": ["file:./editor.css", "dashicons"]
 }

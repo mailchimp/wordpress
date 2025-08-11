@@ -15,18 +15,18 @@ describe('Subscribe actions', () => {
 		cy.visit(url);
 
 		// Step 3: Verify the form is displayed
-		cy.get('#mc_signup').should('exist');
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('#mc_signup_submit').should('exist');
+		cy.get('.mc_signup_form').should('exist');
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('.mc_signup_submit_button').should('exist');
 
 		// Step 4: Test error handling
-		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 
 		// Step 5: Test that the form can be submitted
 		const email = generateRandomEmail('shortcode-signup-test');
-		cy.get('#mc_mv_EMAIL').type(email);
+		cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 
 		// Step 6: Verify that the form was submitted successfully
 		cy.submitFormAndVerifyWPSuccess();

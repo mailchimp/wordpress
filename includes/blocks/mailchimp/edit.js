@@ -18,6 +18,7 @@ import apiFetch from '@wordpress/api-fetch';
 import { useDispatch, useSelect } from '@wordpress/data';
 import { createBlock } from '@wordpress/blocks';
 import Icon from './icon';
+import { VariationPicker } from './variation-picker';
 
 const SelectListPlaceholder = () => {
 	return (
@@ -59,6 +60,7 @@ export const BlockEdit = (props) => {
 		unsubscribe_link_text,
 		show_required_indicator = true,
 		required_indicator_text,
+		template = 'default',
 	} = attributes;
 
 	const [listData, setListData] = useState({});
@@ -74,7 +76,10 @@ export const BlockEdit = (props) => {
 	);
 	const exisingTags = innerBlocks.map((block) => block?.attributes?.tag).filter(Boolean);
 	const exisingGroups = innerBlocks.map((block) => block?.attributes?.id).filter(Boolean);
-	const visibleFieldsCount = innerBlocks.filter((block) => block?.attributes?.visible).length;
+	const visibleFields = innerBlocks
+		.filter((block) => block?.attributes?.visible)
+		.map((block) => block?.attributes?.tag);
+	const visibleFieldsCount = visibleFields.length;
 
 	const listOptions = [];
 	// Check if selected list is not in the list of available lists.
@@ -116,10 +121,19 @@ export const BlockEdit = (props) => {
 								tag: field.tag,
 								label: field.name,
 								type: field.type,
+								/**
+								 * Visibility logic:
+								 * 1. If there are visible fields from the previous list, make the field visible if it's visible in the previous list form (Try to keep the same visibility as the previous list form) for the default template also make the field visible if it's required.
+								 * 2. If there are no visible fields from the previous list, make the field visible if it's required or it's public and the visibility setting is on in the global settings.
+								 */
 								visible:
-									(field.required ||
-										merge_fields_visibility?.[field.tag] === 'on') &&
-									field.public,
+									(template === 'default' && field.required) ||
+									(visibleFields.length > 0 &&
+										visibleFields.includes(field.tag)) ||
+									(visibleFields.length === 0 &&
+										(field.required ||
+											(merge_fields_visibility?.[field.tag] === 'on' &&
+												field.public))),
 							}),
 						) || [];
 					const listGroupsBlocks =
@@ -127,9 +141,7 @@ export const BlockEdit = (props) => {
 							createBlock('mailchimp/mailchimp-audience-group', {
 								id: group.id,
 								label: group.title,
-								visible:
-									interest_groups_visibility?.[group.id] === 'on' &&
-									group.type !== 'hidden',
+								visible: false, // Keep the groups hidden by default.
 							}),
 						) || [];
 					replaceInnerBlocks(clientId, [...listFieldsBlocks, ...listGroupsBlocks], false);
@@ -161,19 +173,14 @@ export const BlockEdit = (props) => {
 								tag: field.tag,
 								label: field.name,
 								type: field.type,
-								visible:
-									(field.required ||
-										merge_fields_visibility?.[field.tag] === 'on') &&
-									field.public,
+								visible: template === 'default' && field.required, // Keep newly added fields hidden by default, except for required fields.
 							}),
 						);
 						const newGroupBlocks = newFormGroups.map((group) =>
 							createBlock('mailchimp/mailchimp-audience-group', {
 								id: group.id,
 								label: group.title,
-								visible:
-									interest_groups_visibility?.[group.id] === 'on' &&
-									group.type !== 'hidden',
+								visible: false, // Keep newly added groups hidden by default.
 							}),
 						);
 
@@ -279,6 +286,11 @@ export const BlockEdit = (props) => {
 		);
 	}
 
+	// Display the variation picker if there are no innerBlocks.
+	if (innerBlocks.length === 0) {
+		return <VariationPicker {...props} />;
+	}
+
 	// Create a template for innerBlocks based on list data and visibility settings.
 	const templateFields =
 		listData?.merge_fields?.map((field) => [
@@ -301,7 +313,7 @@ export const BlockEdit = (props) => {
 				visible: interest_groups_visibility?.[group.id] === 'on' && group.type !== 'hidden',
 			},
 		]) || [];
-	const template = [...templateFields, ...templateGroups];
+	const templateBlocks = [...templateFields, ...templateGroups];
 
 	return (
 		<>
@@ -316,9 +328,9 @@ export const BlockEdit = (props) => {
 							value={header}
 							onChange={(header) => setAttributes({ header })}
 						/>
-						<div id="mc_signup">
-							<div id="mc_signup_form">
-								<div id="mc_subheader">
+						<div className="mc_signup">
+							<div className="mc_signup_form">
+								<div className="mc_subheader">
 									<RichText
 										className="mailchimp-block__sub-header"
 										tagName="h3"
@@ -343,11 +355,11 @@ export const BlockEdit = (props) => {
 									<InnerBlocks
 										allowedBlocks={['mailchimp/mailchimp-form-field']}
 										orientation="vertical"
-										template={template}
+										template={templateBlocks}
 										templateLock="insert"
 									/>
 									{show_required_indicator && (
-										<div id="mc-indicates-required">
+										<div className="mc-indicates-required">
 											<RichText
 												tagName="span"
 												value={required_indicator_text}
@@ -360,8 +372,7 @@ export const BlockEdit = (props) => {
 									)}
 									<div className="mc_signup_submit">
 										<RichText
-											id="mc_signup_submit"
-											className="button"
+											className="mc_signup_submit_button button"
 											tagName="button"
 											placeholder={__('Enter button text.', 'mailchimp')}
 											value={submit_text}
@@ -371,7 +382,7 @@ export const BlockEdit = (props) => {
 										/>
 									</div>
 									{!!show_unsubscribe_link && (
-										<div id="mc_unsub_link">
+										<div className="mc_unsub_link">
 											<RichText
 												tagName="a"
 												value={unsubscribe_link_text}

@@ -3,7 +3,7 @@
  */
 Cypress.Commands.add('submitFormAndVerifyWPSuccess', () => {
 	// Submit the form
-	cy.get('#mc_signup_submit').click();
+	cy.get('.mc_signup_submit_button').click();
 
 	// Verify that the form was submitted successfully
 	cy.get('.mc_success_msg').should('exist');
@@ -14,7 +14,7 @@ Cypress.Commands.add('submitFormAndVerifyWPSuccess', () => {
  */
 Cypress.Commands.add('submitFormAndVerifyError', () => {
     // Submit the form
-    cy.get('#mc_signup_submit').click();
+    cy.get('.mc_signup_submit_button').click();
 
     // Verify that the form submission failed
     cy.get('.mc_error_msg').should('exist');

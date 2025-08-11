@@ -31,7 +31,7 @@ describe('Address Field Validation', () => {
 		// Set address fields (Addr 1 and City) as required
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: true }).then(() => {
-				cy.selectList('10up'); // Refresh list in WordPress
+				cy.selectList('10up', true); // Refresh list in WordPress
 			});
 		});
 	});
@@ -40,7 +40,7 @@ describe('Address Field Validation', () => {
 		// Cleanup: Reset address fields to optional
 		cy.getListId('10up').then((listId) => {
 			cy.updateMergeFieldByTag(listId, 'ADDRESS', { required: false }).then(() => {
-				cy.selectList('10up'); // Refresh list in WordPress
+				cy.selectList('10up', true); // Refresh list in WordPress
 			});
 		});
 	});
@@ -50,12 +50,12 @@ describe('Address Field Validation', () => {
 			cy.visit(blockPostPostURL);
 
 			const email = generateRandomEmail('validemail');
-			cy.get('#mc_mv_EMAIL').type(email);
-			cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
-			cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
-			cy.get('#mc_mv_ADDRESS-state').clear().type(address.state);
-			cy.get('#mc_mv_ADDRESS-zip').type(address.zip);
-			cy.get('#mc_mv_ADDRESS-country').type(address.country);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
+			cy.get('input[name="mc_mv_ADDRESS[addr1]"]').clear().type(address.addr1);
+			cy.get('input[name="mc_mv_ADDRESS[city]"]').clear().type(address.city);
+			cy.get('input[name="mc_mv_ADDRESS[state]"]').clear().type(address.state);
+			cy.get('input[name="mc_mv_ADDRESS[zip]"]').type(address.zip);
+			cy.get('select[name="mc_mv_ADDRESS[country]"]').type(address.country);
 			cy.submitFormAndVerifyWPSuccess();
 
 			// Delete contact to clean up
@@ -68,13 +68,13 @@ describe('Address Field Validation', () => {
 			cy.visit(blockPostPostURL);
 
 			const email = generateRandomEmail('invalidemail');
-			cy.get('#mc_mv_EMAIL').type(email);
+			cy.get('input[id^="mc_mv_EMAIL"]').type(email);
 
 			if (address.addr1 !== '') {
-				cy.get('#mc_mv_ADDRESS-addr1').clear().type(address.addr1);
+				cy.get('input[name="mc_mv_ADDRESS[addr1]"]').clear().type(address.addr1);
 			}
 			if (address.city !== '') {
-				cy.get('#mc_mv_ADDRESS-city').clear().type(address.city);
+				cy.get('input[name="mc_mv_ADDRESS[city]"]').clear().type(address.city);
 			}
 
 			cy.submitFormAndVerifyError();

@@ -113,3 +113,39 @@ function mailchimp_sf_merge_remove_empty( $merge ) {
 	$form_submission = new Mailchimp_Form_Submission();
 	return $form_submission->remove_empty_merge_fields( $merge );
 }
+
+
+/**
+ * Validate phone
+ *
+ * @deprecated 2.0.0
+ *
+ * @param array $opt_val Option value.
+ * @param array $data    Data.
+ * @return string|WP_Error Option value or error.
+ */
+function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'Mailchimp_Form_Submission::validate_phone()' );
+
+	if ( is_array( $opt_val ) ) {
+		$opt_val = implode( '-', $opt_val );
+	}
+	$form_submission = new Mailchimp_Form_Submission();
+	return $form_submission->validate_phone( $opt_val, $data );
+}
+
+/**
+ * Validate address
+ *
+ * @deprecated 2.0.0
+ *
+ * @param array $opt_val Option value.
+ * @param array $data    Data.
+ * @return mixed
+ */
+function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'Mailchimp_Form_Submission::validate_address()' );
+
+	$form_submission = new Mailchimp_Form_Submission();
+	return $form_submission->validate_address( $opt_val, $data );
+}

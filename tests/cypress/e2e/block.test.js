@@ -10,25 +10,32 @@ describe('Block Tests', () => {
 		// Hide all interest groups
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('input[id^="mc_show_interest_groups_"]').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	it('Admin can create a Signup form using Mailchimp block', () => {
 		const postTitle = 'Mailchimp signup form - Block';
 		const beforeSave = () => {
-			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form');
+			cy.insertBlock('mailchimp/mailchimp', 'Mailchimp List Subscribe Form').then(
+				(blockId) => {
+					cy.getBlockEditor()
+						.find(`#${blockId} .block-editor-block-variation-picker__skip button`)
+						.click();
+				},
+			);
 			cy.wait(500);
 		};
 		cy.createPost({ title: postTitle, content: '', beforeSave }).then((postBlock) => {
 			if (postBlock) {
 				postId = postBlock.id;
 				cy.visit(`/?p=${postId}`);
-				cy.get('#mc_signup').should('exist');
-				cy.get('#mc_mv_EMAIL').should('exist');
-				cy.get('#mc_signup_submit').should('exist');
-				cy.get('#mc_signup_submit').click();
+				cy.get('.mc_signup_form').should('exist');
+				cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+				cy.get('.mc_signup_submit_button').should('exist');
+				cy.get('.mc_signup_submit_button').click();
 				cy.get('.mc_error_msg').should('exist');
-				cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+				cy.get('.mc_error_msg').contains('Please enter your email address.');
 			}
 		});
 	});
@@ -48,12 +55,13 @@ describe('Block Tests', () => {
 			.type(subHeader);
 		cy.getBlockEditor().find('button[aria-label="Enter button text."]').clear().type(button);
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
 		cy.get('.mc_custom_border_hdr').contains(header);
-		cy.get('#mc_subheader').contains(subHeader);
-		cy.get('#mc_signup_submit').contains(button);
+		cy.get('.mc_subheader').first().contains(subHeader);
+		cy.get('.mc_signup_submit_button').contains(button);
 	});
 
 	it('Admin can re-order form fields in block', () => {
@@ -67,6 +75,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Move down"]')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify order of fields
 		cy.visit(`/?p=${postId}`);
@@ -83,6 +92,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Move up"]')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
+		cy.wait(1000);
 
 		// Verify order of fields
 		cy.visit(`/?p=${postId}`);
@@ -100,11 +110,11 @@ describe('Block Tests', () => {
 
 		cy.get('.block-editor-block-toolbar__slot').find('button[aria-label="Visibility"]').click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_mv_FNAME').should('not.exist');
+		cy.get('input[id^="mc_mv_FNAME"]').should('not.exist');
 
 		// Show First name field
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
@@ -116,11 +126,11 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Visibility"].is-pressed')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_mv_FNAME').should('exist');
+		cy.get('input[id^="mc_mv_FNAME"]').should('exist');
 	});
 
 	it('Admin can show/hide groups from block settings', () => {
@@ -134,7 +144,7 @@ describe('Block Tests', () => {
 			.find('button[aria-label="Visibility"].is-pressed')
 			.click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -149,7 +159,7 @@ describe('Block Tests', () => {
 
 		cy.get('.block-editor-block-toolbar__slot').find('button[aria-label="Visibility"]').click();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
@@ -164,12 +174,12 @@ describe('Block Tests', () => {
 		cy.getBlockEditor().find('label[for="EMAIL"] label').clear().type(emailLabel);
 
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('label[for="mc_mv_EMAIL"]').contains(emailLabel);
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('label[for^="mc_mv_EMAIL"]').first().contains(emailLabel);
 	});
 
 	it('Admin can show/hide unsubscribe link from block settings', () => {
@@ -179,11 +189,11 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_unsub_link').should('exist');
+		cy.get('.mc_unsub_link').first().should('exist');
 
 		// Reset
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
@@ -191,11 +201,11 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-unsubscribe-link input.components-form-toggle__input').first().uncheck();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_unsub_link').should('not.exist');
+		cy.get('.mc_unsub_link').should('not.exist');
 	});
 
 	it('Admin can change audience list from block settings', () => {
@@ -209,13 +219,13 @@ describe('Block Tests', () => {
 		cy.getBlockEditor().find('label[for="MMERGE9"]').should('not.exist');
 
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_signup').should('exist');
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('#mc_signup_submit').should('exist');
+		cy.get('.mc_signup_form').should('exist');
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('.mc_signup_submit_button').should('exist');
 
 		// Reset
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
@@ -225,7 +235,7 @@ describe('Block Tests', () => {
 		cy.wait(2000);
 		cy.getBlockEditor().find('label[for="MMERGE9"]').should('exist');
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 	});
 
 	it('[Backward Compatibility] Admin can see settings for the existing old block', () => {
@@ -234,18 +244,23 @@ describe('Block Tests', () => {
 		).then((response) => {
 			const oldBlockPostId = response.stdout;
 			cy.visit(`/?p=${oldBlockPostId}`);
-			cy.get('#mc_signup').should('exist');
-			cy.get('#mc_mv_EMAIL').should('exist');
-			cy.get('#mc_signup_submit').should('exist');
+			cy.get('.mc_signup_form').should('exist');
+			cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+			cy.get('.mc_signup_submit_button').should('exist');
 
 			cy.visit(`/wp-admin/post.php?post=${oldBlockPostId}&action=edit`);
+			cy.getBlockEditor()
+				.find(
+					'.wp-block-mailchimp-mailchimp .block-editor-block-variation-picker__skip button',
+				)
+				.click();
 			const header = '[NEW BLOCK] Subscribe to our newsletter';
 			cy.getBlockEditor()
 				.find('h2[aria-label="Enter a header (optional)"]')
 				.clear()
 				.type(header);
 			cy.get('button.editor-post-publish-button').click();
-			cy.wait(500);
+			cy.wait(1000);
 
 			// Verify
 			cy.visit(`/?p=${oldBlockPostId}`);
@@ -262,14 +277,14 @@ describe('Block Tests', () => {
 			.first()
 			.check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 
 		// Verify
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('#mc_mv_EMAIL').clear().type('unsubscribed_user@gmail.com');
-		cy.get('#mc_signup_submit').should('exist');
-		cy.get('#mc_signup_submit').click();
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('input[id^="mc_mv_EMAIL"]').clear().type('unsubscribed_user@gmail.com');
+		cy.get('.mc_signup_submit_button').should('exist');
+		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
 		cy.get('.mc_error_msg').contains(
 			'The email address cannot be subscribed because it was previously unsubscribed, bounced, or is under review. Please sign up here.',
@@ -281,7 +296,7 @@ describe('Block Tests', () => {
 		cy.openDocumentSettingsPanel('Form Settings', 'Block');
 		cy.get('.mailchimp-double-opt-in input.components-form-toggle__input').first().check();
 		cy.get('button.editor-post-publish-button').click();
-		cy.wait(500);
+		cy.wait(1000);
 	});
 
 	it('Form data should persist if validation fails', () => {
@@ -289,26 +304,26 @@ describe('Block Tests', () => {
 		const firstName = 'John';
 		const lastName = 'Doe';
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_mv_EMAIL').should('exist');
-		cy.get('#mc_mv_FNAME').clear().type(firstName);
-		cy.get('#mc_mv_LNAME').clear().type(lastName);
-		cy.get('#mc_signup_submit').should('exist');
-		cy.get('#mc_signup_submit').click();
+		cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+		cy.get('input[id^="mc_mv_FNAME"]').clear().type(firstName);
+		cy.get('input[id^="mc_mv_LNAME"]').clear().type(lastName);
+		cy.get('.mc_signup_submit_button').should('exist');
+		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
-		cy.get('#mc_mv_FNAME').should('have.value', firstName);
-		cy.get('#mc_mv_LNAME').should('have.value', lastName);
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
+		cy.get('input[id^="mc_mv_FNAME"]').should('have.value', firstName);
+		cy.get('input[id^="mc_mv_LNAME"]').should('have.value', lastName);
 	});
 
 	it('Spam protection should work as expected', () => {
 		// Show error message to spam bots.
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_signup').should('exist');
+		cy.get('.mc_signup_form').should('exist');
 		cy.get('input[name="mailchimp_sf_alt_email"]').then((el) => {
 			el.val('123');
 		});
-		cy.get('#mc_signup_submit').should('exist');
-		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_signup_submit_button').should('exist');
+		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
 		cy.get('.mc_error_msg').contains(
 			"We couldn't process your submission as it was flagged as potential spam",
@@ -316,11 +331,11 @@ describe('Block Tests', () => {
 
 		// Normal user should not see the error message.
 		cy.visit(`/?p=${postId}`);
-		cy.get('#mc_signup').should('exist');
-		cy.get('#mc_signup_submit').should('exist');
-		cy.get('#mc_signup_submit').click();
+		cy.get('.mc_signup_form').should('exist');
+		cy.get('.mc_signup_submit_button').should('exist');
+		cy.get('.mc_signup_submit_button').click();
 		cy.get('.mc_error_msg').should('exist');
-		cy.get('.mc_error_msg').contains('Email Address: This value should not be blank.');
+		cy.get('.mc_error_msg').contains('Please enter your email address.');
 	});
 
 	// TODO: Add tests for the Double Opt-in and Update existing subscribers settings.
