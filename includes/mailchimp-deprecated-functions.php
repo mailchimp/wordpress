@@ -118,14 +118,14 @@ function mailchimp_sf_merge_remove_empty( $merge ) {
 /**
  * Validate phone
  *
- * @deprecated x.x.x
+ * @deprecated 2.0.0
  *
  * @param array $opt_val Option value.
  * @param array $data    Data.
  * @return string|WP_Error Option value or error.
  */
-function mailchimp_sf_merge_validate_phone( $opt_val, $data ): string|WP_Error {
-	_deprecated_function( __FUNCTION__, 'x.x.x', 'Mailchimp_Form_Submission::validate_phone()' );
+function mailchimp_sf_merge_validate_phone( $opt_val, $data ) {
+	_deprecated_function( __FUNCTION__, '2.0.0', 'Mailchimp_Form_Submission::validate_phone()' );
 
 	if ( is_array( $opt_val ) ) {
 		$opt_val = implode( '-', $opt_val );
@@ -137,14 +137,14 @@ function mailchimp_sf_merge_validate_phone( $opt_val, $data ): string|WP_Error {
 /**
  * Validate address
  *
- * @deprecated x.x.x
+ * @deprecated 2.0.0
  *
  * @param array $opt_val Option value.
  * @param array $data    Data.
  * @return mixed
  */
 function mailchimp_sf_merge_validate_address( $opt_val, $data ) {
-	_deprecated_function( __FUNCTION__, 'x.x.x', 'Mailchimp_Form_Submission::validate_address()' );
+	_deprecated_function( __FUNCTION__, '2.0.0', 'Mailchimp_Form_Submission::validate_address()' );
 
 	$form_submission = new Mailchimp_Form_Submission();
 	return $form_submission->validate_address( $opt_val, $data );

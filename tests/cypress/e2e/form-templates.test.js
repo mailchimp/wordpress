@@ -8,7 +8,8 @@ describe('Form Templates Tests', () => {
 		// Hide all interest groups
 		cy.visit('/wp-admin/admin.php?page=mailchimp_sf_options');
 		cy.get('input[id^="mc_show_interest_groups_"]').uncheck();
-		cy.get('input[value="Update Subscribe Form Settings"]').first().click();
+		cy.get('input[id^="mc_show_interest_groups_"]').trigger('change');
+		cy.get('input[value="Save Changes"]:visible').first().click();
 	});
 
 	it('Admin should see the form templates in the block', () => {
@@ -67,11 +68,11 @@ describe('Form Templates Tests', () => {
 			(postBlock) => {
 				if (postBlock) {
 					cy.visit(`/?p=${postBlock.id}`);
-					cy.get('#mc_mv_EMAIL').should('exist');
-					cy.get('#mc_signup_submit').should('exist');
-					cy.get('#mc_mv_FNAME').should('not.exist');
-					cy.get('#mc_mv_LNAME').should('not.exist');
-					cy.get('#mc_mv_PHONE').should('not.exist');
+					cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+					cy.get('.mc_signup_submit_button').should('exist');
+					cy.get('input[id^="mc_mv_FNAME"]').should('not.exist');
+					cy.get('input[id^="mc_mv_LNAME"]').should('not.exist');
+					cy.get('input[id^="mc_mv_PHONE"]').should('not.exist');
 				}
 			},
 		);
@@ -83,10 +84,10 @@ describe('Form Templates Tests', () => {
 			(postBlock2) => {
 				if (postBlock2) {
 					cy.visit(`/?p=${postBlock2.id}`);
-					cy.get('#mc_mv_EMAIL').should('exist');
-					cy.get('#mc_signup_submit').should('exist');
-					cy.get('#mc_mv_FNAME').should('exist');
-					cy.get('#mc_mv_LNAME').should('exist');
+					cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+					cy.get('.mc_signup_submit_button').should('exist');
+					cy.get('input[id^="mc_mv_FNAME"]').should('exist');
+					cy.get('input[id^="mc_mv_LNAME"]').should('exist');
 					cy.get('input[id^="mc_mv_PHONE"]').should('not.exist');
 				}
 			},
@@ -99,14 +100,14 @@ describe('Form Templates Tests', () => {
 			(postBlock3) => {
 				if (postBlock3) {
 					cy.visit(`/?p=${postBlock3.id}`);
-					cy.get('#mc_mv_EMAIL').should('exist');
-					cy.get('#mc_signup_submit').should('exist');
-					cy.get('#mc_mv_FNAME').should('exist');
-					cy.get('#mc_mv_LNAME').should('exist');
+					cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+					cy.get('.mc_signup_submit_button').should('exist');
+					cy.get('input[id^="mc_mv_FNAME"]').should('exist');
+					cy.get('input[id^="mc_mv_LNAME"]').should('exist');
 					cy.get('input[id^="mc_mv_PHONE"]').should('exist');
-					cy.get('#mc_mv_ADDRESS-addr1').should('exist');
-					cy.get('#mc_mv_ADDRESS-addr2').should('exist');
-					cy.get('#mc_mv_ADDRESS-city').should('exist');
+					cy.get('input[name="mc_mv_ADDRESS[addr1]"]').should('exist');
+					cy.get('input[name="mc_mv_ADDRESS[addr2]"]').should('exist');
+					cy.get('input[name="mc_mv_ADDRESS[city]"]').should('exist');
 				}
 			},
 		);
@@ -118,14 +119,14 @@ describe('Form Templates Tests', () => {
 			(postBlock4) => {
 				if (postBlock4) {
 					cy.visit(`/?p=${postBlock4.id}`);
-					cy.get('#mc_mv_EMAIL').should('exist');
-					cy.get('#mc_signup_submit').should('exist');
-					cy.get('#mc_mv_FNAME').should('exist');
-					cy.get('#mc_mv_LNAME').should('exist');
+					cy.get('input[id^="mc_mv_EMAIL"]').should('exist');
+					cy.get('.mc_signup_submit_button').should('exist');
+					cy.get('input[id^="mc_mv_FNAME"]').should('exist');
+					cy.get('input[id^="mc_mv_LNAME"]').should('exist');
 					cy.get('input[id^="mc_mv_PHONE"]').should('exist');
-					cy.get('#mc_mv_COMPANY').should('exist');
-					cy.get('#mc_mv_ADDRESS-addr1').should('exist');
-					cy.get('#mc_mv_ADDRESS-addr2').should('exist');
+					cy.get('input[id^="mc_mv_COMPANY"]').should('exist');
+					cy.get('input[name="mc_mv_ADDRESS[addr1]"]').should('exist');
+					cy.get('input[name="mc_mv_ADDRESS[addr2]"]').should('exist');
 				}
 			},
 		);

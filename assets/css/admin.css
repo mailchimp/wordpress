@@ -1333,7 +1333,8 @@ table.widefat.mailchimp-sf-settings-table ul {
 	outline: 2px solid var(--mailchimp-color-link);
 }
 
-#mailchimp-sf-settings-page input[type="text"] {
+#mailchimp-sf-settings-page input[type="text"],
+#mailchimp-sf-settings-page input[type="tel"] {
 	font-size: 16px;
 	padding: 10px 12px;
 	height: 40px;
@@ -1347,13 +1348,15 @@ table.widefat.mailchimp-sf-settings-table ul {
 	transition: all 0.2s;
 }
 
-#mailchimp-sf-settings-page input[type="text"]:hover {
+#mailchimp-sf-settings-page input[type="text"]:hover,
+#mailchimp-sf-settings-page input[type="tel"]:hover {
 	background-color: #f8fafb;
 	border-color: #3c4348;
 	outline: none;
 }
 
-#mailchimp-sf-settings-page input[type="text"]:focus {
+#mailchimp-sf-settings-page input[type="text"]:focus,
+#mailchimp-sf-settings-page input[type="tel"]:focus {
 	outline-offset: -2px;
 	outline: 2px solid var(--mailchimp-color-link);
 }

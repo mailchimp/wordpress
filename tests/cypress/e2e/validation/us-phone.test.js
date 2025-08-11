@@ -23,7 +23,7 @@ describe('Phone Number Validation', () => {
 				required: true,
 				options: { phone_format: 'US' },
 			}).then(() => {
-				cy.selectList('10up');
+				cy.selectList('10up', true);
 			});
 		});
 	});
@@ -34,13 +34,13 @@ describe('Phone Number Validation', () => {
 				required: false,
 				options: { phone_format: 'none' },
 			}).then(() => {
-				cy.selectList('10up');
+				cy.selectList('10up', true);
 			});
 		});
 	});
 
 	function fillPhoneInputs(phone) {
-		cy.get('#mc_mv_PHONE').clear().type(phone);
+		cy.get('input[id^="mc_mv_PHONE"]').clear().type(phone);
 	}
 
 	it('Valid phone numbers', () => {
