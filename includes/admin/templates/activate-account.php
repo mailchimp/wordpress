@@ -5,10 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 ?>
 <div class="mailchimp-sf-confirm-email-wrapper mailchimp-sf-content-box-wrapper <?php echo esc_attr( ( ! $signup_initiated ) ? 'hidden' : '' ); ?>">
 	<div class="mailchimp-sf-confirm-email mailchimp-sf-content-box">

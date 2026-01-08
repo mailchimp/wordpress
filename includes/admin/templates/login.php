@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 ?>
 <div class="wrap">
 	<hr class="wp-header-end" style="display:none;"/>

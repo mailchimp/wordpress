@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Displays a Mailchimp Signup Form
  *

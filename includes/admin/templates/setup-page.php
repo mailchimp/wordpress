@@ -5,10 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
 ?>
 <div class="mailchimp-sf-main-setings-wrapper">
 	<div class="mailchimp-sf-main-settings">

@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 use function Mailchimp\WordPress\Includes\Admin\admin_notice_error;
 
 $user         = get_option( 'mc_user' );

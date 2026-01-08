@@ -7,11 +7,6 @@
 
 namespace Mailchimp\WordPress\Includes\Admin;
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /**
  * Display success admin notice.
  *

@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 /* Form Display Functions */
 if ( ! function_exists( 'mc_display_widget' ) ) {
 

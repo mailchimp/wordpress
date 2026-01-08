@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 $list_id    = $block->context['mailchimp/list_id'] ?? '';
 $group_id   = $attributes['id'] ?? '';
 $label      = $attributes['label'] ?? '';

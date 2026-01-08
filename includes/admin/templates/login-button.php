@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 $button_text = $login_button_text ?? __( 'Log in', 'mailchimp' );
 ?>
 <button id="mailchimp_sf_oauth_connect" class="button mailchimp-sf-button button-primary">

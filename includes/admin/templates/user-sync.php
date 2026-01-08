@@ -5,11 +5,6 @@
  * @package Mailchimp
  */
 
-// Exit if accessed directly.
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
-
 global $wp_settings_sections, $wp_settings_fields;
 ?>
 <div class="mailchimp-sf-user-sync-page-wrapper">
