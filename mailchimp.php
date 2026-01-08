@@ -3,7 +3,7 @@
 Plugin Name: MailChimp
 Plugin URI: http://www.mailchimp.com/plugins/mailchimp-wordpress-plugin/
 Description: The MailChimp plugin allows you to quickly and easily add a signup form for your MailChimp list.
-Version: 1.5.8
+Version: 1.5.9
 Author: MailChimp
 Author URI: https://mailchimp.com/
 */
@@ -25,7 +25,7 @@ Author URI: https://mailchimp.com/
 */
 
 // Version constant for easy CSS refreshes
-define('MCSF_VER', '1.5.8');
+define('MCSF_VER', '1.5.9');
 
 // What's our permission (capability) threshold
 define('MCSF_CAP_THRESHOLD', 'manage_options');
@@ -185,6 +185,14 @@ function mailchimpSF_request_handler() {
     if (isset($_POST['mcsf_action'])) {
         switch ($_POST['mcsf_action']) {
             case 'login':
+                if (
+                    ! current_user_can( MCSF_CAP_THRESHOLD ) ||
+                    ! isset( $_POST['_mcsf_nonce_action'] ) ||
+                    ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['_mcsf_nonce_action'] ) ), 'mc_login' )
+                ) {
+                    wp_die('Security check failed.');
+                }
+
                 $key = trim($_POST['mailchimpSF_api_key']);
 
                 try {
@@ -572,8 +580,17 @@ function mailchimpSF_save_general_form_settings() {
  * Sees if the user changed the list, and updates options accordingly
  **/
 function mailchimpSF_change_list_if_necessary() {
-    // Simple permission check before going through all this
-    if (!current_user_can(MCSF_CAP_THRESHOLD)) { return; }
+    if ( ! isset( $_POST['mc_list_id'] ) ) {
+		return;
+	}
+
+	if (
+		! current_user_can( MCSF_CAP_THRESHOLD ) ||
+		! isset( $_POST['update_mc_list_id_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['update_mc_list_id_nonce'] ), 'update_mc_list_id_action' )
+	) {
+		wp_die( 'Security check failed.' );
+	}
 
     $api = mailchimpSF_get_api();
     if (!$api) { return; }

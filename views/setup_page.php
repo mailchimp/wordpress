@@ -46,6 +46,7 @@ if (!$user || !get_option('mc_api_key')) {
                         <input type="password" name="mailchimpSF_api_key" placeholder="API Key">
                     </td>
                     <td>
+                        <?php wp_nonce_field('mc_login', '_mcsf_nonce_action'); ?>
                         <input type="submit" value="Connnect">
                     </td>
                 </tr>
@@ -140,6 +141,7 @@ if ($api){
                 </td>
                 <td>
                     <input type="hidden" name="mcsf_action" value="update_mc_list_id" />
+                    <?php wp_nonce_field( 'update_mc_list_id_action', 'update_mc_list_id_nonce' ); ?>
                     <input type="submit" name="Submit" value="<?php esc_attr_e('Update List', 'mailchimp_i18n'); ?>" class="button" />
                 </td>
             </tr>
