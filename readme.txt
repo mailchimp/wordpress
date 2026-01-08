@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.7
-Stable tag:   1.7.0
+Stable tag:   1.7.1
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -80,6 +80,8 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+= 1.7.1 - 2026-01-08 =
+* **Fix:** Provide CSRF hardening for Mailchimp List changes.
 
 = 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
