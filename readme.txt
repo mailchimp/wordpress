@@ -77,6 +77,7 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 == Changelog ==
 
 = 2.0.1 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 * **Fixed:** Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 * **Changed:** Bump WordPress "tested up to" version 6.9 (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 

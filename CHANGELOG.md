@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ### Fixed
 
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 - Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 ### Changed
