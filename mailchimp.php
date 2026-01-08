@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Mailchimp List Subscribe Form
+ * Plugin Name:       Mailchimp
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
