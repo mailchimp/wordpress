@@ -5,6 +5,10 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="mailchimp-sf-settings-page-hero-wrapper">
 	<div class="mailchimp-sf-settings-page-hero">

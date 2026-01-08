@@ -5,6 +5,10 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 ?>
 <div class="mailchimp-sf-suggest-to-login mailchimp-sf-content-box-wrapper hidden">
 	<div class="mailchimp-sf-content-box">

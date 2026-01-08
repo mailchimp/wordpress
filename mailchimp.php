@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Mailchimp
+ * Plugin Name:       Mailchimp List Subscribe Form
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
@@ -33,6 +33,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 // Check if the autoload file exists
 if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
@@ -421,7 +426,7 @@ function mailchimp_sf_set_form_defaults( $list_name = '' ) {
  * @return void
  **/
 function mailchimp_sf_save_general_form_settings() {
-
+	// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the mailchimp_sf_request_handler() function.
 	/*Enable double optin toggle*/
 	if ( isset( $_POST['mc_double_optin'] ) ) {
 		update_option( 'mc_double_optin', true );
@@ -447,11 +452,11 @@ function mailchimp_sf_save_general_form_settings() {
 	/* Update existing */
 	if ( isset( $_POST['mc_update_existing'] ) ) {
 		update_option( 'mc_update_existing', true );
-		$msg = esc_html__( 'Update existing subscribers turned On!' );
+		$msg = esc_html__( 'Update existing subscribers turned On!', 'mailchimp' );
 		admin_notice_success( $msg );
 	} elseif ( get_option( 'mc_update_existing' ) !== false ) {
 		update_option( 'mc_update_existing', false );
-		$msg = esc_html__( 'Update existing subscribers turned Off!' );
+		$msg = esc_html__( 'Update existing subscribers turned Off!', 'mailchimp' );
 		admin_notice_success( $msg );
 	}
 
@@ -521,6 +526,7 @@ function mailchimp_sf_save_general_form_settings() {
 
 	$msg = esc_html__( 'Successfully Updated your List Subscribe Form Settings!', 'mailchimp' );
 	admin_notice_success( $msg );
+	// phpcs:enable WordPress.Security.NonceVerification.Missing
 }
 
 /**
@@ -531,14 +537,19 @@ function mailchimp_sf_change_list_if_necessary() {
 		return;
 	}
 
+	if (
+		! current_user_can( MCSF_CAP_THRESHOLD ) ||
+		! isset( $_POST['update_mc_list_id_nonce'] ) ||
+		! wp_verify_nonce( sanitize_key( $_POST['update_mc_list_id_nonce'] ), 'update_mc_list_id_action' )
+	) {
+		wp_die( 'Security check failed.' );
+	}
+
 	if ( empty( $_POST['mc_list_id'] ) ) {
 		$msg = esc_html__( 'Please choose a valid list', 'mailchimp' );
 		admin_notice_error( $msg );
 		return;
 	}
-
-	// Simple permission check before going through all this
-	if ( ! current_user_can( MCSF_CAP_THRESHOLD ) ) { return; }
 
 	$api = mailchimp_sf_get_api();
 	if ( ! $api ) { return; }
@@ -605,7 +616,7 @@ function mailchimp_sf_change_list_if_necessary() {
 				__( '<b>Success!</b> Loaded and saved the info for %d Merge Variables', 'mailchimp' ) . $igs_text,
 				count( $mv )
 			) . ' ' .
-			esc_html__( 'from your list' ) . ' "' . $list_name . '"<br/><br/>' .
+			esc_html__( 'from your list', 'mailchimp' ) . ' "' . $list_name . '"<br/><br/>' .
 			esc_html__( 'Now you should either Turn On the Mailchimp Widget or change your options below, then turn it on.', 'mailchimp' );
 
 			admin_notice_success( $msg );

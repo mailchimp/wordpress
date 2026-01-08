@@ -5,6 +5,11 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 use function Mailchimp\WordPress\Includes\Admin\admin_notice_error;
 
 $user         = get_option( 'mc_user' );
@@ -94,6 +99,7 @@ $is_list_selected = false;
 									</div>
 									<div class="mailchimp-sf-settings-list-select-button">
 										<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
+										<?php wp_nonce_field( 'update_mc_list_id_action', 'update_mc_list_id_nonce' ); ?>
 										<input type="submit" name="submit" value="<?php esc_attr_e( 'Fetch list settings', 'mailchimp' ); ?>" class="mailchimp-sf-button btn-secondary" />
 									</div>
 								</div>

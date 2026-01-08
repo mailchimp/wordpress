@@ -5,6 +5,11 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 // Check if we should display the form.
 if ( ! mailchimp_sf_should_display_form() ) {
 	return;

@@ -5,6 +5,11 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $admin_email = get_option( 'admin_email' );
 $user        = get_user_by( 'email', $admin_email );
 

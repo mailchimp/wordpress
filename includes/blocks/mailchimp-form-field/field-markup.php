@@ -5,6 +5,11 @@
  * @package Mailchimp
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 $list_id                 = $block->context['mailchimp/list_id'] ?? '';
 $show_required_indicator = $block->context['mailchimp/show_required_indicator'] ?? true;
 $template                = $block->context['mailchimp/template'] ?? 'default';
