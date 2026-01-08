@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [2.0.1] - 2026-01-08
+
+### Fixed
+
+- Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
+### Changed
+
+- Bump WordPress "tested up to" version 6.9 (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 ## [2.0.0] - 2025-08-11
 
 ### Added
@@ -352,6 +362,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[2.0.1]: https://github.com/mailchimp/wordpress/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/mailchimp/wordpress/compare/1.9.0...2.0.0
 [1.9.0]: https://github.com/mailchimp/wordpress/compare/1.8.0...1.9.0
 [1.8.0]: https://github.com/mailchimp/wordpress/compare/1.7.0...1.8.0

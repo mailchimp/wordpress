@@ -76,6 +76,10 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 2.0.1 - 2026-01-08 =
+* **Fixed:** Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+* **Changed:** Bump WordPress "tested up to" version 6.9 (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 = 2.0.0 - 2025-08-11 =
 * **Added:** Form templates to the Mailchimp List Subscribe Form block, allowing users to quickly insert and publish specific forms (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@vikrampm1](https://github.com/vikrampm1), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#171](https://github.com/mailchimp/wordpress/pull/171)).
 * **Changed:** Improved navigation and UX enhancements to the plugin settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#169](https://github.com/mailchimp/wordpress/pull/169)).
