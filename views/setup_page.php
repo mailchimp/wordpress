@@ -104,6 +104,7 @@ $is_list_selected = false;
 						</td>
 						<td>
 							<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
+							<?php wp_nonce_field( 'update_mc_list_id_action', 'update_mc_list_id_nonce' ); ?>
 							<input type="submit" name="Submit" value="<?php esc_attr_e( 'Update List', 'mailchimp' ); ?>" class="button mailchimp-sf-button small" />
 						</td>
 					</tr>
