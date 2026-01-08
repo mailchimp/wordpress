@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.8
-Stable tag:   1.8.0
+Stable tag:   1.8.1
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -80,6 +80,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 9. Creating a new Mailchimp account.
 
 == Changelog ==
+
+= 1.8.1 - 2026-01-08 =
+* **Fix:** Provide CSRF hardening for Mailchimp List changes.
 
 = 1.8.0 - 2025-05-08 =
 **Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
