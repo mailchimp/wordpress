@@ -2,7 +2,7 @@
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
 Tested up to: 6.8
-Stable tag:   1.9.0
+Stable tag:   1.9.1
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -79,6 +79,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 8. Configuring user synchronization settings.
 
 == Changelog ==
+
+= 1.9.1 - 2026-01-08 =
+* **Fix:** Provide CSRF hardening for Mailchimp List changes.
 
 = 1.9.0 - 2025-06-04 =
 * **Added:** New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
