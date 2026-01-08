@@ -224,7 +224,7 @@
 							<tr>
 								<th class="mailchimp-sf-option-header">
 									<label for="mc_nuke_all_styles">
-										<?php esc_html_e( 'Remove CSS' ); ?>
+										<?php esc_html_e( 'Remove CSS', 'mailchimp' ); ?>
 									</label>
 								</th>
 								<td>
@@ -234,7 +234,7 @@
 											<input type="checkbox" name="mc_nuke_all_styles" id="mc_nuke_all_styles" class="mailchimp-sf-checkbox" <?php checked( get_option( 'mc_nuke_all_styles' ), true ); ?> onclick="showMe('mc-custom-styling')"/>
 										</div>
 										<label for="mc_nuke_all_styles">
-											<?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.' ); ?>
+											<?php esc_html_e( 'This will disable all Mailchimp CSS, so it\'s recommended for WordPress experts only.', 'mailchimp' ); ?>
 										</label>
 									</div>
 								</td>
@@ -265,7 +265,7 @@
 											<input type="checkbox" name="mc_custom_style" id="mc_custom_style" class="mailchimp-sf-checkbox"<?php checked( get_option( 'mc_custom_style' ), 'on' ); ?> />
 										</div>
 										<label for="mc_custom_style">
-											<?php esc_html_e( 'Edit the default Mailchimp CSS style.' ); ?>
+											<?php esc_html_e( 'Edit the default Mailchimp CSS style.', 'mailchimp' ); ?>
 										</label>
 									</div>
 								</td>

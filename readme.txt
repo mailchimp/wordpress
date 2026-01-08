@@ -1,8 +1,8 @@
 === Mailchimp List Subscribe Form ===
 Contributors: Mailchimp
 Tags:         mailchimp, email, newsletter, signup, marketing
-Tested up to: 6.8
-Stable tag:   2.0.0
+Tested up to: 6.9
+Stable tag:   2.0.1
 License:      GPL-2.0-or-later
 License URI:  https://spdx.org/licenses/GPL-2.0-or-later.html
 
@@ -76,6 +76,11 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Changelog ==
 
+= 2.0.1 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+* **Fixed:** Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+* **Changed:** Bump WordPress "tested up to" version 6.9 (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 = 2.0.0 - 2025-08-11 =
 * **Added:** Form templates to the Mailchimp List Subscribe Form block, allowing users to quickly insert and publish specific forms (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@vikrampm1](https://github.com/vikrampm1), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#171](https://github.com/mailchimp/wordpress/pull/171)).
 * **Changed:** Improved navigation and UX enhancements to the plugin settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#169](https://github.com/mailchimp/wordpress/pull/169)).
@@ -89,9 +94,15 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 * **Security:** Bump `serialize-javascript` from 6.0.0 to 6.0.2 and `mocha` from 10.4.0 to 11.7.1 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#179](https://github.com/mailchimp/wordpress/pull/179)).
 * **Security:** Bump `http-proxy-middleware` from 2.0.6 to 2.0.9 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh) via [#180](https://github.com/mailchimp/wordpress/pull/180)).
 
+= 1.9.1 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 = 1.9.0 - 2025-06-04 =
 * **Added:** New user synchronization feature that allows syncing WordPress users to Mailchimp (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#156](https://github.com/mailchimp/wordpress/pull/156)).
 * **Changed:** Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
+
+= 1.8.1 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 = 1.8.0 - 2025-05-08 =
 **Note that this release bumps the WordPress minimum version from 6.3 to 6.4.**
@@ -101,6 +112,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 * **Added:** A note advising users to set the website URL in the Mailchimp Audience settings (props [@iamdharmesh](https://github.com/iamdharmesh), [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#145](https://github.com/mailchimp/wordpress/pull/145)).
 * **Changed:** Bump WordPress "tested up to" version 6.8 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
 * **Changed:** Bump WordPress minimum supported version from 6.3 to 6.4 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+
+= 1.7.1 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 = 1.7.0 - 2025-04-08 =
 * **Changed:** Enhance the Mailchimp List Subscribe Form block to allow for selecting an audience list, reorder fields, toggle field and group visibility, and various other improvements (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
@@ -115,6 +129,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 * **Removed:** The "Custom Styling" settings from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
 * **Removed:** The "Remove Mailchimp CSS" settings from the Mailchimp settings page (props [@iamdharmesh](https://github.com/iamdharmesh), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#126](https://github.com/mailchimp/wordpress/pull/126)).
 * **Security:** Bump `express` from 4.21.0 to 4.21.2 (props [@dependabot](https://github.com/apps/dependabot), [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter) via [#125](https://github.com/mailchimp/wordpress/pull/125)).
+
+= 1.6.4 - 2026-01-08 =
+* **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 = 1.6.3 - 2025-01-30 =
 * **Added:** Transform the `mailchimp_sf_shortcode` shortcode to the Mailchimp List Subscribe Form block (props [@MaxwellGarceau](https://github.com/qasumitbagthariya), [@jeffpaul](https://github.com/vikrampm1), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#84](https://github.com/mailchimp/wordpress/pull/84)).

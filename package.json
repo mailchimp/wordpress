@@ -1,6 +1,6 @@
 {
   "name": "@mailchimp/wordpress",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Add a Mailchimp signup form widget to your WordPress site.",
   "homepage": "https://github.com/mailchimp/wordpress",
   "bugs": {

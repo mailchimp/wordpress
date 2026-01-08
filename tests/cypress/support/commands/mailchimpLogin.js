@@ -50,6 +50,8 @@ Cypress.Commands.add('mailchimpLogin', (user = null, pass = null) => {
 	});
 
 	cy.popup().find('input#username').clear().type(username, { force: true });
+	cy.popup().find('button[type="submit"]').click({ force: true });
+	cy.wait(5000);
 	cy.popup().find('input#password').clear().type(password, { force: true });
 	cy.popup().find('button[type="submit"]').click({ force: true });
 	cy.wait(10000); // Not a best practice, but did not find a better way to handle this.
