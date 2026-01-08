@@ -325,7 +325,8 @@ class Mailchimp_User_Sync {
 					_n(
 						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contact.',
 						'You will need %1$sa Mailchimp plan%2$s that includes %3$d contacts.',
-						absint( $users_count )
+						absint( $users_count ),
+						'mailchimp'
 					),
 					'<a href="https://mailchimp.com/help/about-mailchimp-pricing-plans/" target="_blank" rel="noopener noreferrer">',
 					'</a>',

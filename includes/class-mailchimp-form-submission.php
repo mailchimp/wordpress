@@ -99,6 +99,7 @@ class Mailchimp_Form_Submission {
 		$merge_fields          = get_option( 'mc_merge_vars', array() );
 		$interest_groups       = get_option( 'mc_interest_groups', array() );
 
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
 		// Check if request from latest block.
 		if ( isset( $_POST['mailchimp_sf_list_id'] ) ) {
 			$list_id               = isset( $_POST['mailchimp_sf_list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_list_id'] ) ) : '';
@@ -148,6 +149,7 @@ class Mailchimp_Form_Submission {
 		} else {
 			$email_type = 'html';
 		}
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 
 		$response = $this->subscribe_to_list(
 			$list_id,
@@ -251,10 +253,11 @@ class Mailchimp_Form_Submission {
 			$opt = 'mc_mv_' . $tag;
 
 			// Skip if the field is not required and not submitted.
-			if ( ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) || $skip_merge_validation ) {
+			if ( ( true !== (bool) $merge_field['required'] && ! isset( $_POST[ $opt ] ) ) || $skip_merge_validation ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
 				continue;
 			}
 
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
 			$opt_val = isset( $_POST[ $opt ] ) ? map_deep( stripslashes_deep( $_POST[ $opt ] ), 'sanitize_text_field' ) : '';
 
 			switch ( $merge_field['type'] ) {
@@ -339,6 +342,7 @@ class Mailchimp_Form_Submission {
 
 		foreach ( $interest_groups as $interest_group ) {
 			$ig_id = $interest_group['id'];
+			// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
 			if ( isset( $_POST['group'][ $ig_id ] ) && 'hidden' !== $interest_group['type'] ) {
 				switch ( $interest_group['type'] ) {
 					case 'dropdown':
@@ -367,6 +371,7 @@ class Mailchimp_Form_Submission {
 						break;
 				}
 			}
+			// phpcs:enable WordPress.Security.NonceVerification.Missing
 		}
 		return $groups;
 	}
@@ -544,6 +549,7 @@ class Mailchimp_Form_Submission {
 	 * @return bool|WP_Error True if valid, WP_Error if invalid.
 	 */
 	protected function validate_form_submission() {
+		// phpcs:disable WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
 		$spam_message = esc_html__( "We couldn't process your submission as it was flagged as potential spam. Please try again.", 'mailchimp' );
 		// Make sure the honeypot field is set, but not filled (if it is, then it's a spam).
 		if ( ! isset( $_POST['mailchimp_sf_alt_email'] ) || ! empty( $_POST['mailchimp_sf_alt_email'] ) ) {
@@ -579,5 +585,6 @@ class Mailchimp_Form_Submission {
 		 * @param array $post_data The $_POST data.
 		 */
 		return apply_filters( 'mailchimp_sf_form_submission_validation', true, $_POST );
+		// phpcs:enable WordPress.Security.NonceVerification.Missing
 	}
 }

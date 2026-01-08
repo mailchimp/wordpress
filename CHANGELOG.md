@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [2.0.1] - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+- Plugin check plugin errors to improve overall codebase (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
+### Changed
+
+- Bump WordPress "tested up to" version 6.9 (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 ## [2.0.0] - 2025-08-11
 
 ### Added
@@ -33,6 +44,12 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 - Update 10up-toolkit from 6.2.0 to 6.5.0 (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter) via [#174](https://github.com/mailchimp/wordpress/pull/174)).
 
+## [1.9.1] - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 ## [1.9.0] - 2025-06-04
 
 ### Added
@@ -42,6 +59,13 @@ All notable changes to this project will be documented in this file, per [the Ke
 ### Changed
 
 - Improved the enqueueing of JavaScript scripts and styles (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya) via [#161](https://github.com/mailchimp/wordpress/pull/161)).
+
+## [1.8.1] - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
+
 
 ## [1.8.0] - 2025-05-08
 
@@ -57,6 +81,12 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 - Bump WordPress "tested up to" version 6.8 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
 - Bump WordPress minimum supported version from 6.3 to 6.4 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@dkotter](https://github.com/dkotter) via [#148](https://github.com/mailchimp/wordpress/pull/148)).
+
+## [1.7.1] - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 ## [1.7.0] - 2025-04-08
 
@@ -90,6 +120,12 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Update existing tests to more robustly cover E2E critical flows. Modularized reusable testing code (props [@MaxwellGarceau](https://github.com/MaxwellGarceau), [@jeffpaul](https://github.com/jeffpaul), [@dkotter](https://github.com/dkotter), [@iamdharmesh](https://github.com/iamdharmesh) via [#87](https://github.com/mailchimp/wordpress/pull/87), [#99](https://github.com/mailchimp/wordpress/pull/99)).
 - Update all third-party actions our workflows rely on to use versions based on specific commit hashes (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul), [@iamdharmesh](https://github.com/iamdharmesh) via [#128](https://github.com/mailchimp/wordpress/pull/128)).
 - Prevent overwriting the release content with the body text provided in the GitHub Action workflow file (props [@iamdharmesh](https://github.com/iamdharmesh), [@dkotter](https://github.com/dkotter) via [#129](https://github.com/mailchimp/wordpress/pull/129)).
+
+## [1.6.4] - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
 
 ## [1.6.3] - 2025-01-30
 
@@ -208,6 +244,13 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Added PHPCS Linting GitHub Action Workflow (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#19](https://github.com/mailchimp/wordpress/pull/19)).
 - Added ESLint GitHub Action Workflow (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#20](https://github.com/mailchimp/wordpress/pull/20)).
 - Added Standard GitHub Action Workflows (props [@dkotter](https://github.com/dkotter), [@jeffpaul](https://github.com/jeffpaul) via [#21](https://github.com/mailchimp/wordpress/pull/21)).
+
+## 1.5.9 - 2026-01-08
+
+### Fixed
+
+- Provide CSRF hardening for Mailchimp List changes.
+
 
 ## 1.5.8 - 2022-09-26
 
@@ -352,10 +395,15 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[2.0.1]: https://github.com/mailchimp/wordpress/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/mailchimp/wordpress/compare/1.9.0...2.0.0
+[1.9.1]: https://github.com/mailchimp/wordpress/compare/1.9.0...1.9.1
 [1.9.0]: https://github.com/mailchimp/wordpress/compare/1.8.0...1.9.0
+[1.8.1]: https://github.com/mailchimp/wordpress/compare/1.8.0...1.8.1
 [1.8.0]: https://github.com/mailchimp/wordpress/compare/1.7.0...1.8.0
+[1.7.1]: https://github.com/mailchimp/wordpress/compare/1.7.0...1.7.1
 [1.7.0]: https://github.com/mailchimp/wordpress/compare/1.6.3...1.7.0
+[1.6.4]: https://github.com/mailchimp/wordpress/compare/1.6.3...1.6.4
 [1.6.3]: https://github.com/mailchimp/wordpress/compare/1.6.2...1.6.3
 [1.6.2]: https://github.com/mailchimp/wordpress/compare/1.6.1...1.6.2
 [1.6.1]: https://github.com/mailchimp/wordpress/compare/1.6.0...1.6.1
