@@ -78,15 +78,20 @@ class MailChimp_API {
 	 * @param string  $endpoint The Mailchimp endpoint.
 	 * @param integer $count The count to retrieve.
 	 * @param array   $fields The fields to retrieve.
+	 * @param integer $offset The offset for pagination.
 	 * @return mixed
 	 */
-	public function get( $endpoint, $count = 10, $fields = array() ) {
+	public function get( $endpoint, $count = 10, $fields = array(), $offset = 0 ) {
 		$query_params = '';
 
 		$url = $this->api_url . $endpoint;
 
 		if ( $count ) {
 			$query_params = 'count=' . $count . '&';
+		}
+
+		if ( $offset ) {
+			$query_params .= 'offset=' . $offset . '&';
 		}
 
 		if ( ! empty( $fields ) ) {
