@@ -12,6 +12,9 @@ import {
 	SelectControl,
 	Spinner,
 	Placeholder,
+	Button,
+	Flex,
+	FlexItem,
 } from '@wordpress/components';
 import { useEffect, useState } from '@wordpress/element';
 import apiFetch from '@wordpress/api-fetch';
@@ -66,6 +69,12 @@ export const BlockEdit = (props) => {
 	const [listData, setListData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
 	const [error, setError] = useState('');
+	const [listPage, setListPage] = useState(0);
+
+	const listsPerPage = window.mailchimp_sf_block_data?.lists_per_page || 50;
+	const totalLists = lists?.length || 0;
+	const totalPages = Math.ceil(totalLists / listsPerPage);
+	const pagedLists = lists?.slice(listPage * listsPerPage, (listPage + 1) * listsPerPage) || [];
 	const blockProps = useBlockProps();
 	const { replaceInnerBlocks } = useDispatch(blockEditorStore);
 
@@ -93,7 +102,7 @@ export const BlockEdit = (props) => {
 	}
 
 	listOptions.push(
-		...(lists?.map((list) => ({
+		...(pagedLists?.map((list) => ({
 			label: list.name,
 			value: list.id,
 		})) || []),
@@ -416,6 +425,35 @@ export const BlockEdit = (props) => {
 						)}
 						__nextHasNoMarginBottom
 					/>
+					{totalPages > 1 && (
+						<Flex justify="space-between" align="center" style={{ marginTop: '8px' }}>
+							<FlexItem>
+								<Button
+									variant="tertiary"
+									disabled={listPage === 0}
+									onClick={() => setListPage((p) => p - 1)}
+								>
+									&laquo; {__('Prev', 'mailchimp')}
+								</Button>
+							</FlexItem>
+							<FlexItem>
+								<span style={{ fontSize: '12px' }}>
+									{listPage * listsPerPage + 1}&ndash;
+									{Math.min((listPage + 1) * listsPerPage, totalLists)}{' '}
+									{sprintf(__('of %d', 'mailchimp'), totalLists)}
+								</span>
+							</FlexItem>
+							<FlexItem>
+								<Button
+									variant="tertiary"
+									disabled={listPage >= totalPages - 1}
+									onClick={() => setListPage((p) => p + 1)}
+								>
+									{__('Next', 'mailchimp')} &raquo;
+								</Button>
+							</FlexItem>
+						</Flex>
+					)}
 				</PanelBody>
 				<PanelBody title={__('Form Settings', 'mailchimp')} initialOpen={false}>
 					<ToggleControl

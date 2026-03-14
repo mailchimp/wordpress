@@ -80,6 +80,7 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			'interest_groups_visibility'  => $interest_groups_visibility,
 			'merge_fields'                => $merge_fields,
 			'interest_groups'             => $interest_groups,
+			'lists_per_page'              => MCSF_LISTS_PER_PAGE,
 		);
 		$data = 'window.mailchimp_sf_block_data = ' . wp_json_encode( $data );
 		wp_add_inline_script( 'mailchimp-mailchimp-editor-script', $data, 'before' );
@@ -109,13 +110,23 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			return array();
 		}
 
-		// we *could* support paging, but 100 is more than enough for now.
-		$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
-		if ( is_wp_error( $lists ) ) {
-			return array();
-		}
+		// Fetch all lists using paginated API requests.
+		$all_lists   = array();
+		$offset      = 0;
+		$total_items = null;
+		do {
+			$response = $api->get( 'lists', MCSF_LISTS_API_FETCH_LIMIT, array( 'fields' => 'lists.id,lists.name,lists.email_type_option,total_items' ), $offset );
+			if ( is_wp_error( $response ) ) {
+				return array();
+			}
+			if ( null === $total_items ) {
+				$total_items = $response['total_items'] ?? 0;
+			}
+			$all_lists = array_merge( $all_lists, $response['lists'] ?? array() );
+			$offset   += MCSF_LISTS_API_FETCH_LIMIT;
+		} while ( count( $all_lists ) < $total_items );
 
-		$lists = $lists['lists'] ?? array();
+		$lists = $all_lists;
 
 		// Update the option with the lists.
 		update_option( 'mailchimp_sf_lists', $lists );
