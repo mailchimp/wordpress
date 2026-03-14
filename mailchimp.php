@@ -72,6 +72,12 @@ define( 'MCSF_VER', '2.0.1' );
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
 
+// Number of lists to fetch per API request when paginating
+define( 'MCSF_LISTS_API_FETCH_LIMIT', 100 );
+
+// Number of lists to display per page in the admin UI and block editor
+define( 'MCSF_LISTS_PER_PAGE', 50 );
+
 // Define our location constants, both MCSF_DIR and MCSF_URL
 mailchimp_sf_where_am_i();
 
