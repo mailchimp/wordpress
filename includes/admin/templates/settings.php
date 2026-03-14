@@ -49,10 +49,13 @@ $is_list_selected = false;
 						<p class="mailchimp-sf-settings-list-description">
 							<strong><?php esc_html_e( 'Note:', 'mailchimp' ); ?></strong> <?php esc_html_e( 'List settings are fetched from Mailchimp, fetching a new list will override your current settings.', 'mailchimp' ); ?>
 						</p>
+						<?php
+						$mc_list_page   = isset( $_GET['mc_list_page'] ) ? max( 0, intval( $_GET['mc_list_page'] ) ) : 0;
+						$mc_list_offset = $mc_list_page * MCSF_LISTS_PER_PAGE;
+						?>
 						<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 							<?php
-							// we *could* support paging, but few users have that many lists (and shouldn't)
-							$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name' ) );
+							$lists = $api->get( 'lists', MCSF_LISTS_PER_PAGE, array( 'fields' => 'lists.id,lists.name,total_items' ), $mc_list_offset );
 							if ( is_wp_error( $lists ) ) {
 								$msg = sprintf(
 									/* translators: %s: error message */
@@ -68,6 +71,7 @@ $is_list_selected = false;
 								);
 								admin_notice_error( $msg );
 							} else {
+								$total_items      = $lists['total_items'] ?? 0;
 								$lists            = $lists['lists'];
 								$option           = get_option( 'mc_list_id' );
 								$list_ids         = array_map(
@@ -76,7 +80,7 @@ $is_list_selected = false;
 									},
 									$lists
 								);
-								$is_list_selected = in_array( $option, $list_ids, true );
+								$is_list_selected = ! empty( $option );
 								?>
 								<div class="mailchimp-sf-settings-list-select-wrapper">
 									<div class="mailchimp-sf-settings-list-select">
@@ -99,6 +103,34 @@ $is_list_selected = false;
 									</div>
 								</div>
 								<?php
+								if ( $total_items > MCSF_LISTS_PER_PAGE ) {
+									$base_url   = admin_url( 'admin.php?page=mailchimp_sf_options' );
+									$has_prev   = $mc_list_page > 0;
+									$has_next   = ( $mc_list_offset + count( $lists ) ) < $total_items;
+									$first_item = $mc_list_offset + 1;
+									$last_item  = $mc_list_offset + count( $lists );
+									?>
+									<div class="mailchimp-sf-list-pagination">
+										<?php if ( $has_prev ) : ?>
+											<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page - 1, $base_url ) ); ?>" class="button">&laquo; <?php esc_html_e( 'Previous', 'mailchimp' ); ?></a>
+										<?php endif; ?>
+										<span class="mailchimp-sf-list-pagination-info">
+											<?php
+											printf(
+												/* translators: 1: first item number, 2: last item number, 3: total items */
+												esc_html__( '%1$d&ndash;%2$d of %3$d lists', 'mailchimp' ),
+												$first_item,
+												$last_item,
+												$total_items
+											);
+											?>
+										</span>
+										<?php if ( $has_next ) : ?>
+											<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page + 1, $base_url ) ); ?>" class="button"><?php esc_html_e( 'Next', 'mailchimp' ); ?> &raquo;</a>
+										<?php endif; ?>
+									</div>
+									<?php
+								}
 							} //end select list
 							?>
 						</form>
