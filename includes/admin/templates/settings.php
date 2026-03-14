@@ -95,6 +95,40 @@ $is_list_selected = false;
 											}
 											?>
 										</select>
+										<?php
+										if ( $total_items > MCSF_LISTS_PER_PAGE ) {
+											$base_url   = admin_url( 'admin.php?page=mailchimp_sf_options' );
+											$has_prev   = $mc_list_page > 0;
+											$has_next   = ( $mc_list_offset + count( $lists ) ) < $total_items;
+											$first_item = $mc_list_offset + 1;
+											$last_item  = $mc_list_offset + count( $lists );
+											?>
+											<div class="mailchimp-sf-list-pagination">
+												<div class="mailchimp-sf-pagination-prev">
+													<?php if ( $has_prev ) : ?>
+														<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page - 1, $base_url ) ); ?>" class="button">&laquo; <?php esc_html_e( 'Previous', 'mailchimp' ); ?></a>
+													<?php endif; ?>
+												</div>
+												<span class="mailchimp-sf-list-pagination-info">
+													<?php
+													printf(
+														/* translators: 1: first item number, 2: last item number, 3: total items */
+														esc_html__( '%1$d&ndash;%2$d of %3$d lists', 'mailchimp' ),
+														$first_item,
+														$last_item,
+														$total_items
+													);
+													?>
+												</span>
+												<div class="mailchimp-sf-pagination-next">
+													<?php if ( $has_next ) : ?>
+														<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page + 1, $base_url ) ); ?>" class="button"><?php esc_html_e( 'Next', 'mailchimp' ); ?> &raquo;</a>
+													<?php endif; ?>
+												</div>
+											</div>
+											<?php
+										}
+										?>
 									</div>
 									<div class="mailchimp-sf-settings-list-select-button">
 										<input type="hidden" name="mcsf_action" value="update_mc_list_id" />
@@ -103,34 +137,6 @@ $is_list_selected = false;
 									</div>
 								</div>
 								<?php
-								if ( $total_items > MCSF_LISTS_PER_PAGE ) {
-									$base_url   = admin_url( 'admin.php?page=mailchimp_sf_options' );
-									$has_prev   = $mc_list_page > 0;
-									$has_next   = ( $mc_list_offset + count( $lists ) ) < $total_items;
-									$first_item = $mc_list_offset + 1;
-									$last_item  = $mc_list_offset + count( $lists );
-									?>
-									<div class="mailchimp-sf-list-pagination">
-										<?php if ( $has_prev ) : ?>
-											<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page - 1, $base_url ) ); ?>" class="button">&laquo; <?php esc_html_e( 'Previous', 'mailchimp' ); ?></a>
-										<?php endif; ?>
-										<span class="mailchimp-sf-list-pagination-info">
-											<?php
-											printf(
-												/* translators: 1: first item number, 2: last item number, 3: total items */
-												esc_html__( '%1$d&ndash;%2$d of %3$d lists', 'mailchimp' ),
-												$first_item,
-												$last_item,
-												$total_items
-											);
-											?>
-										</span>
-										<?php if ( $has_next ) : ?>
-											<a href="<?php echo esc_url( add_query_arg( 'mc_list_page', $mc_list_page + 1, $base_url ) ); ?>" class="button"><?php esc_html_e( 'Next', 'mailchimp' ); ?> &raquo;</a>
-										<?php endif; ?>
-									</div>
-									<?php
-								}
 							} //end select list
 							?>
 						</form>

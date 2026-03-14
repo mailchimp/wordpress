@@ -1065,9 +1065,14 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 .mailchimp-sf-settings-list-select-wrapper {
 	display: flex;
 	flex-direction: row;
-	align-items: center;
+	align-items: flex-start;
 	gap: 8px;
 	margin-bottom: 16px;
+}
+
+.mailchimp-sf-settings-list-select {
+	display: flex;
+	flex-direction: column;
 }
 
 /* List Pagination */
@@ -1075,9 +1080,17 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	gap: 12px;
+	justify-content: space-between;
 	margin-top: 8px;
-	margin-bottom: 16px;
+}
+
+.mailchimp-sf-pagination-prev,
+.mailchimp-sf-pagination-next {
+	flex: 1;
+}
+
+.mailchimp-sf-pagination-next {
+	text-align: right;
 }
 
 .mailchimp-sf-list-pagination .button {
