@@ -372,9 +372,23 @@ class Mailchimp_Admin {
 			update_option( 'mc_user', $this->sanitize_data( $user ) );
 
 			// Clear Mailchimp List ID if saved list is not available.
-			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
-			if ( ! is_wp_error( $lists ) ) {
-				$lists         = $lists['lists'] ?? array();
+			$all_lists   = array();
+			$offset      = 0;
+			$total_items = null;
+			do {
+				$response = $api->get( 'lists', MCSF_LISTS_API_FETCH_LIMIT, array( 'fields' => 'lists.id,lists.name,lists.email_type_option,total_items' ), $offset );
+				if ( is_wp_error( $response ) ) {
+					break;
+				}
+				if ( null === $total_items ) {
+					$total_items = $response['total_items'] ?? 0;
+				}
+				$all_lists = array_merge( $all_lists, $response['lists'] ?? array() );
+				$offset   += MCSF_LISTS_API_FETCH_LIMIT;
+			} while ( count( $all_lists ) < $total_items );
+
+			$lists = $all_lists;
+			if ( ! empty( $lists ) ) {
 				$saved_list_id = get_option( 'mc_list_id' );
 				$list_ids      = array_map(
 					function ( $ele ) {

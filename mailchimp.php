@@ -555,14 +555,22 @@ function mailchimp_sf_change_list_if_necessary() {
 	$api = mailchimp_sf_get_api();
 	if ( ! $api ) { return; }
 
-	// we *could* support paging, but few users have that many lists (and shouldn't)
-	$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
+	$all_lists   = array();
+	$offset      = 0;
+	$total_items = null;
+	do {
+		$response = $api->get( 'lists', MCSF_LISTS_API_FETCH_LIMIT, array( 'fields' => 'lists.id,lists.name,lists.email_type_option,total_items' ), $offset );
+		if ( ! isset( $response['lists'] ) || is_wp_error( $response ) ) {
+			return;
+		}
+		if ( null === $total_items ) {
+			$total_items = $response['total_items'] ?? 0;
+		}
+		$all_lists = array_merge( $all_lists, $response['lists'] );
+		$offset   += MCSF_LISTS_API_FETCH_LIMIT;
+	} while ( count( $all_lists ) < $total_items );
 
-	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
-		return;
-	}
-
-	$lists = $lists['lists'];
+	$lists = $all_lists;
 
 	if ( is_array( $lists ) && ! empty( $lists ) ) {
 
