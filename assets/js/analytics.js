@@ -4,16 +4,13 @@
  * @package Mailchimp
  */
 
-( function () {
-	'use strict';
-
-	var dateRangeSelect = document.getElementById( 'mailchimp-sf-date-range' );
-	var customDates = document.querySelector( '.mailchimp-sf-custom-dates' );
-	var dateFrom = document.getElementById( 'mailchimp-sf-date-from' );
-	var dateTo = document.getElementById( 'mailchimp-sf-date-to' );
-	var listFilter = document.getElementById( 'mailchimp-sf-list-filter' );
-	var resolvedDisplay = document.getElementById( 'mailchimp-sf-resolved-date-range' );
-	var contentArea = document.getElementById( 'mailchimp-sf-analytics-content' );
+(function () {
+	const dateRangeSelect = document.getElementById('mailchimp-sf-date-range');
+	const customDates = document.querySelector('.mailchimp-sf-custom-dates');
+	const dateFrom = document.getElementById('mailchimp-sf-date-from');
+	const dateTo = document.getElementById('mailchimp-sf-date-to');
+	const listFilter = document.getElementById('mailchimp-sf-list-filter');
+	const resolvedDisplay = document.getElementById('mailchimp-sf-resolved-date-range');
 
 	/**
 	 * Format a Date object to a human-readable string.
@@ -21,12 +18,12 @@
 	 * @param {Date} date
 	 * @return {string}
 	 */
-	function formatDate( date ) {
-		return date.toLocaleDateString( undefined, {
+	function formatDate(date) {
+		return date.toLocaleDateString(undefined, {
 			year: 'numeric',
 			month: 'short',
 			day: 'numeric',
-		} );
+		});
 	}
 
 	/**
@@ -35,32 +32,32 @@
 	 * @return {{ from: Date, to: Date }|null}
 	 */
 	function getDateRange() {
-		var value = dateRangeSelect.value;
-		var to = new Date();
-		var from;
+		const value = dateRangeSelect.value;
+		let to = new Date();
+		let from;
 
-		if ( value === 'custom' ) {
-			if ( ! dateFrom.value || ! dateTo.value ) {
+		if (value === 'custom') {
+			if (!dateFrom.value || !dateTo.value) {
 				return null;
 			}
-			from = new Date( dateFrom.value + 'T00:00:00' );
-			to = new Date( dateTo.value + 'T23:59:59' );
-			return { from: from, to: to };
+			from = new Date(dateFrom.value + 'T00:00:00');
+			to = new Date(dateTo.value + 'T23:59:59');
+			return { from, to };
 		}
 
-		var days = parseInt( value, 10 );
+		const days = parseInt(value, 10);
 		from = new Date();
-		from.setDate( from.getDate() - days );
-		return { from: from, to: to };
+		from.setDate(from.getDate() - days);
+		return { from, to };
 	}
 
 	/**
 	 * Update the resolved date range display text.
 	 */
 	function updateResolvedDateRange() {
-		var range = getDateRange();
-		if ( range ) {
-			resolvedDisplay.textContent = formatDate( range.from ) + ' \u2013 ' + formatDate( range.to );
+		const range = getDateRange();
+		if (range) {
+			resolvedDisplay.textContent = formatDate(range.from) + ' \u2013 ' + formatDate(range.to);
 		} else {
 			resolvedDisplay.textContent = '';
 		}
@@ -70,7 +67,7 @@
 	 * Toggle visibility of custom date inputs.
 	 */
 	function toggleCustomDates() {
-		var isCustom = dateRangeSelect.value === 'custom';
+		const isCustom = dateRangeSelect.value === 'custom';
 		customDates.style.display = isCustom ? 'flex' : 'none';
 	}
 
@@ -80,45 +77,45 @@
 	function refreshAnalytics() {
 		updateResolvedDateRange();
 
-		var range = getDateRange();
-		var listId = listFilter ? listFilter.value : '';
+		const range = getDateRange();
+		const listId = listFilter ? listFilter.value : '';
 
-		if ( ! range ) {
+		if (!range) {
 			return;
 		}
 
 		// Dispatch a custom event so other scripts can listen for filter changes.
-		var event = new CustomEvent( 'mailchimp-analytics-refresh', {
+		const event = new CustomEvent('mailchimp-analytics-refresh', {
 			detail: {
 				from: range.from.toISOString(),
 				to: range.to.toISOString(),
-				listId: listId,
+				listId,
 			},
-		} );
-		document.dispatchEvent( event );
+		});
+		document.dispatchEvent(event);
 	}
 
 	// Bind events.
-	if ( dateRangeSelect ) {
-		dateRangeSelect.addEventListener( 'change', function () {
+	if (dateRangeSelect) {
+		dateRangeSelect.addEventListener('change', function () {
 			toggleCustomDates();
 			refreshAnalytics();
-		} );
+		});
 	}
 
-	if ( dateFrom ) {
-		dateFrom.addEventListener( 'change', refreshAnalytics );
+	if (dateFrom) {
+		dateFrom.addEventListener('change', refreshAnalytics);
 	}
 
-	if ( dateTo ) {
-		dateTo.addEventListener( 'change', refreshAnalytics );
+	if (dateTo) {
+		dateTo.addEventListener('change', refreshAnalytics);
 	}
 
-	if ( listFilter ) {
-		listFilter.addEventListener( 'change', refreshAnalytics );
+	if (listFilter) {
+		listFilter.addEventListener('change', refreshAnalytics);
 	}
 
 	// Initialize on load.
 	toggleCustomDates();
 	updateResolvedDateRange();
-} )();
+})();
