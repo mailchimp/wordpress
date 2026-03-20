@@ -32,7 +32,7 @@
 	 * @return {{ from: Date, to: Date }|null}
 	 */
 	function getDateRange() {
-		const value = dateRangeSelect.value;
+		const { value } = dateRangeSelect;
 		let to = new Date();
 		let from;
 
@@ -40,8 +40,8 @@
 			if (!dateFrom.value || !dateTo.value) {
 				return null;
 			}
-			from = new Date(dateFrom.value + 'T00:00:00');
-			to = new Date(dateTo.value + 'T23:59:59');
+			from = new Date(`${dateFrom.value}T00:00:00`);
+			to = new Date(`${dateTo.value}T23:59:59`);
 			return { from, to };
 		}
 
@@ -57,7 +57,8 @@
 	function updateResolvedDateRange() {
 		const range = getDateRange();
 		if (range) {
-			resolvedDisplay.textContent = formatDate(range.from) + ' \u2013 ' + formatDate(range.to);
+			resolvedDisplay.textContent =
+				`${formatDate(range.from)} \u2013 ${formatDate(range.to)}`;
 		} else {
 			resolvedDisplay.textContent = '';
 		}
