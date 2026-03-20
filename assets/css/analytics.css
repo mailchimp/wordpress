@@ -1,0 +1,136 @@
+/**
+ * Mailchimp Analytics Page Styles
+ *
+ * @package Mailchimp
+ */
+
+/* Filters bar */
+.mailchimp-sf-analytics-wrapper {
+	max-width: 1200px;
+	margin: 20px 0;
+}
+
+.mailchimp-sf-analytics-filters {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: flex-end;
+	gap: 16px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	margin-bottom: 20px;
+}
+
+.mailchimp-sf-analytics-filter-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.mailchimp-sf-analytics-filter-group label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #1d2327;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.mailchimp-sf-analytics-filter-group select,
+.mailchimp-sf-analytics-filter-group input[type="date"] {
+	min-width: 180px;
+	height: 36px;
+	padding: 0 8px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	font-size: 14px;
+	color: #1d2327;
+	background-color: #fff;
+}
+
+.mailchimp-sf-analytics-filter-group select:focus,
+.mailchimp-sf-analytics-filter-group input[type="date"]:focus {
+	border-color: #007cba;
+	box-shadow: 0 0 0 1px #007cba;
+	outline: none;
+}
+
+/* Custom date range row */
+.mailchimp-sf-custom-dates {
+	flex-direction: row;
+	align-items: flex-end;
+	gap: 8px;
+}
+
+.mailchimp-sf-custom-dates label {
+	align-self: center;
+}
+
+/* Resolved date range display */
+.mailchimp-sf-analytics-date-display {
+	margin-left: auto;
+	align-self: center;
+	font-size: 14px;
+	color: #50575e;
+	font-style: italic;
+}
+
+/* Content area */
+.mailchimp-sf-analytics-content {
+	padding: 24px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 4px;
+	min-height: 200px;
+	margin-bottom: 20px;
+}
+
+.mailchimp-sf-analytics-placeholder {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 200px;
+	color: #8c8f94;
+	font-size: 15px;
+}
+
+/* Deep link */
+.mailchimp-sf-analytics-deep-link {
+	margin-top: 16px;
+}
+
+.mailchimp-sf-analytics-deep-link a {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.mailchimp-sf-analytics-deep-link .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	line-height: 16px;
+}
+
+/* Responsive */
+@media screen and (max-width: 782px) {
+	.mailchimp-sf-analytics-filters {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.mailchimp-sf-analytics-date-display {
+		margin-left: 0;
+	}
+
+	.mailchimp-sf-custom-dates {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.mailchimp-sf-analytics-filter-group select,
+	.mailchimp-sf-analytics-filter-group input[type="date"] {
+		min-width: auto;
+		width: 100%;
+	}
+}

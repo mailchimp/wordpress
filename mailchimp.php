@@ -110,6 +110,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submis
 $form_submission = new Mailchimp_Form_Submission();
 $form_submission->init();
 
+// Init Analytics page.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.php';
+$analytics = new Mailchimp_Analytics();
+$analytics->init();
+
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
 

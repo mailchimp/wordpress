@@ -1,0 +1,116 @@
+<?php
+/**
+ * Class responsible for the Analytics admin page.
+ *
+ * @package Mailchimp
+ */
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Class Mailchimp_Analytics
+ */
+class Mailchimp_Analytics {
+
+	/**
+	 * Initialize the class.
+	 */
+	public function init() {
+		add_action( 'admin_menu', array( $this, 'register_admin_page' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+	}
+
+	/**
+	 * Check if a Mailchimp account is connected.
+	 *
+	 * @return bool
+	 */
+	private function is_connected() {
+		$user = get_option( 'mc_user' );
+		return $user && ( get_option( 'mc_api_key' ) || mailchimp_sf_get_access_token() );
+	}
+
+	/**
+	 * Register the Analytics submenu page under Mailchimp.
+	 */
+	public function register_admin_page() {
+		if ( ! $this->is_connected() ) {
+			return;
+		}
+
+		add_submenu_page(
+			'mailchimp_sf_options',
+			esc_html__( 'Analytics', 'mailchimp' ),
+			esc_html__( 'Analytics', 'mailchimp' ),
+			MCSF_CAP_THRESHOLD,
+			'mailchimp_sf_analytics',
+			array( $this, 'render_page' )
+		);
+	}
+
+	/**
+	 * Render the Analytics page.
+	 */
+	public function render_page() {
+		include_once MCSF_DIR . 'includes/admin/templates/analytics.php';
+	}
+
+	/**
+	 * Enqueue scripts and styles only on the analytics page.
+	 *
+	 * @param string $hook_suffix The current admin page hook suffix.
+	 */
+	public function enqueue_scripts( $hook_suffix ) {
+		if ( 'mailchimp_page_mailchimp_sf_analytics' !== $hook_suffix ) {
+			return;
+		}
+
+		wp_enqueue_style(
+			'mailchimp_sf_admin_css',
+			MCSF_URL . 'assets/css/admin.css',
+			array(),
+			MCSF_VER
+		);
+
+		wp_enqueue_style(
+			'mailchimp_sf_analytics_css',
+			MCSF_URL . 'assets/css/analytics.css',
+			array( 'mailchimp_sf_admin_css' ),
+			MCSF_VER
+		);
+
+		wp_enqueue_script(
+			'chartjs',
+			'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+			array(),
+			'4.4.7',
+			true
+		);
+
+		wp_enqueue_script(
+			'mailchimp_sf_analytics_js',
+			MCSF_URL . 'assets/js/analytics.js',
+			array( 'chartjs' ),
+			MCSF_VER,
+			true
+		);
+
+		// Pass data to JS.
+		$lists      = get_option( 'mailchimp_sf_lists', array() );
+		$dc         = get_option( 'mc_datacenter', '' );
+		$current_id = get_option( 'mc_list_id', '' );
+
+		wp_localize_script(
+			'mailchimp_sf_analytics_js',
+			'mailchimpAnalytics',
+			array(
+				'lists'         => $lists,
+				'currentListId' => $current_id,
+				'dataCenter'    => $dc,
+			)
+		);
+	}
+}
