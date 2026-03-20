@@ -12,7 +12,7 @@ $current_list = get_option( 'mc_list_id', '' );
 $dc           = get_option( 'mc_datacenter', '' );
 ?>
 <div id="mailchimp-sf-analytics-page">
-	<?php include_once MCSF_DIR . 'includes/admin/templates/header.php'; ?>
+	<?php require_once MCSF_DIR . 'includes/admin/templates/header.php'; ?>
 
 	<div class="mailchimp-sf-settings-page-hero-wrapper">
 		<div class="mailchimp-sf-settings-page-hero">
@@ -76,9 +76,9 @@ $dc           = get_option( 'mc_datacenter', '' );
 			<?php if ( $dc ) : ?>
 				<div class="mailchimp-sf-analytics-deep-link">
 					<a href="<?php echo esc_url( 'https://' . $dc . '.admin.mailchimp.com/analytics/audience-analytics/' ); ?>"
-					   target="_blank"
-					   rel="noopener noreferrer"
-					   class="mailchimp-sf-button btn-secondary">
+						target="_blank"
+						rel="noopener noreferrer"
+						class="mailchimp-sf-button btn-secondary">
 						<?php esc_html_e( 'View detailed analytics in Mailchimp', 'mailchimp' ); ?>
 						<span class="dashicons dashicons-external" aria-hidden="true"></span>
 					</a>

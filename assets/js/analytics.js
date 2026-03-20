@@ -15,8 +15,8 @@
 	/**
 	 * Format a Date object to a human-readable string.
 	 *
-	 * @param {Date} date
-	 * @return {string}
+	 * @param {Date} date Date to format.
+	 * @returns {string} Formatted date string.
 	 */
 	function formatDate(date) {
 		return date.toLocaleDateString(undefined, {
@@ -29,7 +29,7 @@
 	/**
 	 * Get the resolved date range based on current filter selection.
 	 *
-	 * @return {{ from: Date, to: Date }|null}
+	 * @returns {{ from: Date, to: Date }|null} Date range or null.
 	 */
 	function getDateRange() {
 		const { value } = dateRangeSelect;
@@ -57,8 +57,7 @@
 	function updateResolvedDateRange() {
 		const range = getDateRange();
 		if (range) {
-			resolvedDisplay.textContent =
-				`${formatDate(range.from)} \u2013 ${formatDate(range.to)}`;
+			resolvedDisplay.textContent = `${formatDate(range.from)} \u2013 ${formatDate(range.to)}`;
 		} else {
 			resolvedDisplay.textContent = '';
 		}
