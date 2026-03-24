@@ -26,6 +26,12 @@ function mailchimp_version_check() {
 		mailchimp_update_1_7_0();
 	}
 
+	// Create analytics table if it doesn't exist.
+	$analytics_db_version = get_option( 'mailchimp_sf_analytics_db_version' );
+	if ( false === $analytics_db_version || version_compare( Mailchimp_Analytics_Data::DB_VERSION, $analytics_db_version, '>' ) ) {
+		Mailchimp_Analytics_Data::create_table();
+	}
+
 	update_option( 'mc_version', MCSF_VER );
 }
 

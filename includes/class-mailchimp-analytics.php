@@ -97,6 +97,5 @@ class Mailchimp_Analytics {
 			MCSF_VER,
 			true
 		);
-
 	}
 }

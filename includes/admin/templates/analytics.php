@@ -84,9 +84,19 @@ $dc           = get_option( 'mc_datacenter', '' );
 			</div>
 
 			<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
-				<div class="mailchimp-sf-analytics-placeholder">
-					<p><?php esc_html_e( 'Select a date range and list to view analytics.', 'mailchimp' ); ?></p>
-				</div>
+				<?php
+				$analytics_data = new Mailchimp_Analytics_Data();
+				$end_date       = current_time( 'Y-m-d' );
+				$start_date     = gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+
+				$totals = $analytics_data->get_totals( $current_list, $start_date, $end_date );
+				$daily  = $analytics_data->get_analytics_data( $current_list, $start_date, $end_date );
+				?>
+				<h3><?php esc_html_e( 'Totals (Last 30 days)', 'mailchimp' ); ?></h3>
+				<pre><?php print_r( $totals ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r ?></pre>
+
+				<h3><?php esc_html_e( 'Daily Breakdown', 'mailchimp' ); ?></h3>
+				<pre><?php print_r( $daily ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r ?></pre>
 			</div>
 
 			<?php if ( $dc ) : ?>

@@ -109,3 +109,31 @@
 		});
 	}
 })(window.jQuery);
+
+/* Form view tracking for analytics */
+(function () {
+	if (!window.mailchimpSF || !window.mailchimpSF.analytics_ajax_url) {
+		return;
+	}
+
+	const forms = document.querySelectorAll('.mc_signup_form[data-list-id]');
+	const tracked = {};
+
+	for (let i = 0; i < forms.length; i++) {
+		const listId = forms[i].getAttribute('data-list-id');
+		if (listId && !tracked[listId]) {
+			tracked[listId] = true;
+
+			const formData = new FormData();
+			formData.append('action', 'mailchimp_sf_track_form_view');
+			formData.append('list_id', listId);
+			formData.append('nonce', window.mailchimpSF.analytics_nonce);
+
+			fetch(window.mailchimpSF.analytics_ajax_url, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin',
+			});
+		}
+	}
+})();

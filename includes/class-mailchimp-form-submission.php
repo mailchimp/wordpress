@@ -176,6 +176,13 @@ class Mailchimp_Form_Submission {
 			$message = __( 'Success, you\'ve been signed up! Please look for our confirmation email.', 'mailchimp' );
 		}
 
+		/**
+		 * Fires after a successful form submission.
+		 *
+		 * @param string $list_id The list ID the user subscribed to.
+		 */
+		do_action( 'mailchimp_sf_form_submission_success', $list_id );
+
 		// Return success message.
 		return $message;
 	}

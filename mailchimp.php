@@ -115,6 +115,14 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.p
 $analytics = new Mailchimp_Analytics();
 $analytics->init();
 
+// Analytics data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-data.php';
+$analytics_data = new Mailchimp_Analytics_Data();
+$analytics_data->init();
+
+// Create analytics table on activation.
+register_activation_hook( __FILE__, array( 'Mailchimp_Analytics_Data', 'create_table' ) );
+
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
 
@@ -171,6 +179,8 @@ function mailchimp_sf_load_resources() {
 		array(
 			'ajax_url'               => trailingslashit( home_url() ),
 			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
+			'analytics_ajax_url'     => admin_url( 'admin-ajax.php' ),
+			'analytics_nonce'        => wp_create_nonce( 'mailchimp_sf_analytics_nonce' ),
 		)
 	);
 
