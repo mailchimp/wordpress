@@ -28,7 +28,7 @@
 	gap: 4px;
 }
 
-.mailchimp-sf-analytics-filter-group label {
+.mailchimp-sf-analytics-filter-group > label {
 	font-size: 12px;
 	font-weight: 600;
 	color: #1d2327;
@@ -36,8 +36,7 @@
 	letter-spacing: 0.5px;
 }
 
-.mailchimp-sf-analytics-filter-group select,
-.mailchimp-sf-analytics-filter-group input[type="date"] {
+.mailchimp-sf-analytics-filter-group select {
 	min-width: 180px;
 	height: 36px;
 	padding: 0 8px;
@@ -48,31 +47,144 @@
 	background-color: #fff;
 }
 
-.mailchimp-sf-analytics-filter-group select:focus,
-.mailchimp-sf-analytics-filter-group input[type="date"]:focus {
+.mailchimp-sf-analytics-filter-group select:focus {
 	border-color: #007cba;
 	box-shadow: 0 0 0 1px #007cba;
 	outline: none;
 }
 
-/* Custom date range row */
-.mailchimp-sf-custom-dates {
-	flex-direction: row;
-	align-items: flex-end;
+/* Date picker trigger */
+.mailchimp-sf-date-picker {
+	position: relative;
+}
+
+.mailchimp-sf-date-picker-trigger {
+	display: inline-flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	min-width: 220px;
+	height: 36px;
+	padding: 0 10px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	font-size: 14px;
+	color: #1d2327;
+	background-color: #fff;
+	cursor: pointer;
+	text-align: left;
+}
+
+.mailchimp-sf-date-picker-trigger:hover {
+	border-color: #007cba;
+}
+
+.mailchimp-sf-date-picker-trigger:focus {
+	border-color: #007cba;
+	box-shadow: 0 0 0 1px #007cba;
+	outline: none;
+}
+
+.mailchimp-sf-date-picker-trigger .dashicons {
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	line-height: 18px;
+	color: #50575e;
+}
+
+/* Date picker popover */
+.mailchimp-sf-date-picker-popover {
+	display: none;
+	position: absolute;
+	top: calc(100% + 6px);
+	left: 0;
+	z-index: 100;
+	min-width: 480px;
+	padding: 20px;
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.mailchimp-sf-date-picker-popover.is-open {
+	display: block;
+}
+
+.mailchimp-sf-date-picker-popover-row {
+	display: flex;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.mailchimp-sf-date-picker-field {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	flex: 1;
+}
+
+.mailchimp-sf-date-picker-field label {
+	font-size: 12px;
+	font-weight: 600;
+	color: #50575e;
+}
+
+.mailchimp-sf-date-picker-field select,
+.mailchimp-sf-date-picker-field input[type="date"] {
+	height: 36px;
+	padding: 0 8px;
+	border: 1px solid #8c8f94;
+	border-radius: 4px;
+	font-size: 14px;
+	color: #1d2327;
+	background-color: #fff;
+	width: 100%;
+}
+
+.mailchimp-sf-date-picker-field select:focus,
+.mailchimp-sf-date-picker-field input[type="date"]:focus {
+	border-color: #007cba;
+	box-shadow: 0 0 0 1px #007cba;
+	outline: none;
+}
+
+/* Popover actions */
+.mailchimp-sf-date-picker-actions {
+	display: flex;
+	justify-content: flex-end;
 	gap: 8px;
 }
 
-.mailchimp-sf-custom-dates label {
-	align-self: center;
+.mailchimp-sf-date-picker-cancel,
+.mailchimp-sf-date-picker-apply {
+	padding: 6px 16px;
+	font-size: 14px;
+	border-radius: 4px;
+	cursor: pointer;
+	border: 1px solid transparent;
+	line-height: 1.4;
 }
 
-/* Resolved date range display */
-.mailchimp-sf-analytics-date-display {
-	margin-left: auto;
-	align-self: center;
-	font-size: 14px;
-	color: #50575e;
-	font-style: italic;
+.mailchimp-sf-date-picker-cancel {
+	background: #fff;
+	color: #1d2327;
+	border-color: #8c8f94;
+}
+
+.mailchimp-sf-date-picker-cancel:hover {
+	background: #f0f0f1;
+}
+
+.mailchimp-sf-date-picker-apply {
+	background: #241c15;
+	color: #fff;
+	border-color: #241c15;
+}
+
+.mailchimp-sf-date-picker-apply:hover {
+	background: #3c3226;
 }
 
 /* Content area */
@@ -119,17 +231,22 @@
 		align-items: stretch;
 	}
 
-	.mailchimp-sf-analytics-date-display {
-		margin-left: 0;
+	.mailchimp-sf-date-picker-popover {
+		min-width: auto;
+		width: calc(100vw - 60px);
+		left: 0;
 	}
 
-	.mailchimp-sf-custom-dates {
+	.mailchimp-sf-date-picker-popover-row {
 		flex-direction: column;
-		align-items: stretch;
 	}
 
-	.mailchimp-sf-analytics-filter-group select,
-	.mailchimp-sf-analytics-filter-group input[type="date"] {
+	.mailchimp-sf-date-picker-trigger {
+		width: 100%;
+		min-width: auto;
+	}
+
+	.mailchimp-sf-analytics-filter-group select {
 		min-width: auto;
 		width: 100%;
 	}

@@ -29,22 +29,44 @@ $dc           = get_option( 'mc_datacenter', '' );
 		<div class="mailchimp-sf-analytics-wrapper">
 			<div class="mailchimp-sf-analytics-filters">
 				<div class="mailchimp-sf-analytics-filter-group">
-					<label for="mailchimp-sf-date-range"><?php esc_html_e( 'Date Range', 'mailchimp' ); ?></label>
-					<select id="mailchimp-sf-date-range">
-						<option value="7"><?php esc_html_e( 'Last 7 days', 'mailchimp' ); ?></option>
-						<option value="30" selected><?php esc_html_e( 'Last 30 days', 'mailchimp' ); ?></option>
-						<option value="90"><?php esc_html_e( 'Last 90 days', 'mailchimp' ); ?></option>
-						<option value="180"><?php esc_html_e( 'Last 6 months', 'mailchimp' ); ?></option>
-						<option value="365"><?php esc_html_e( 'Last year', 'mailchimp' ); ?></option>
-						<option value="custom"><?php esc_html_e( 'Custom', 'mailchimp' ); ?></option>
-					</select>
-				</div>
-
-				<div class="mailchimp-sf-analytics-filter-group mailchimp-sf-custom-dates" style="display: none;">
-					<label for="mailchimp-sf-date-from"><?php esc_html_e( 'From', 'mailchimp' ); ?></label>
-					<input type="date" id="mailchimp-sf-date-from" />
-					<label for="mailchimp-sf-date-to"><?php esc_html_e( 'To', 'mailchimp' ); ?></label>
-					<input type="date" id="mailchimp-sf-date-to" />
+					<label><?php esc_html_e( 'Date range', 'mailchimp' ); ?></label>
+					<div class="mailchimp-sf-date-picker">
+						<button type="button" class="mailchimp-sf-date-picker-trigger" id="mailchimp-sf-date-picker-trigger">
+							<span id="mailchimp-sf-date-picker-label"><?php esc_html_e( 'Last 30 days', 'mailchimp' ); ?></span>
+							<span class="dashicons dashicons-calendar-alt" aria-hidden="true"></span>
+						</button>
+						<div class="mailchimp-sf-date-picker-popover" id="mailchimp-sf-date-picker-popover">
+							<div class="mailchimp-sf-date-picker-popover-row">
+								<div class="mailchimp-sf-date-picker-field">
+									<label for="mailchimp-sf-date-range"><?php esc_html_e( 'Date range', 'mailchimp' ); ?></label>
+									<select id="mailchimp-sf-date-range">
+										<option value="7"><?php esc_html_e( 'Last 7 days', 'mailchimp' ); ?></option>
+										<option value="30" selected><?php esc_html_e( 'Last 30 days', 'mailchimp' ); ?></option>
+										<option value="90"><?php esc_html_e( 'Last 90 days', 'mailchimp' ); ?></option>
+										<option value="180"><?php esc_html_e( 'Last 6 months', 'mailchimp' ); ?></option>
+										<option value="365"><?php esc_html_e( 'Last year', 'mailchimp' ); ?></option>
+										<option value="custom"><?php esc_html_e( 'Custom', 'mailchimp' ); ?></option>
+									</select>
+								</div>
+								<div class="mailchimp-sf-date-picker-field">
+									<label for="mailchimp-sf-date-from"><?php esc_html_e( 'Start date', 'mailchimp' ); ?></label>
+									<input type="date" id="mailchimp-sf-date-from" />
+								</div>
+								<div class="mailchimp-sf-date-picker-field">
+									<label for="mailchimp-sf-date-to"><?php esc_html_e( 'End date', 'mailchimp' ); ?></label>
+									<input type="date" id="mailchimp-sf-date-to" />
+								</div>
+							</div>
+							<div class="mailchimp-sf-date-picker-actions">
+								<button type="button" class="mailchimp-sf-date-picker-cancel" id="mailchimp-sf-date-picker-cancel">
+									<?php esc_html_e( 'Cancel', 'mailchimp' ); ?>
+								</button>
+								<button type="button" class="mailchimp-sf-date-picker-apply" id="mailchimp-sf-date-picker-apply">
+									<?php esc_html_e( 'Apply', 'mailchimp' ); ?>
+								</button>
+							</div>
+						</div>
+					</div>
 				</div>
 
 				<div class="mailchimp-sf-analytics-filter-group">
@@ -58,10 +80,6 @@ $dc           = get_option( 'mc_datacenter', '' );
 							<?php endforeach; ?>
 						<?php endif; ?>
 					</select>
-				</div>
-
-				<div class="mailchimp-sf-analytics-date-display">
-					<span id="mailchimp-sf-resolved-date-range"></span>
 				</div>
 			</div>
 
