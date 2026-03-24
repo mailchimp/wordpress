@@ -5,14 +5,12 @@
  * @package Mailchimp
  */
 
-$user         = get_option( 'mc_user' );
-$is_logged_in = ! ( ! $user || ( ! get_option( 'mc_api_key' ) && ! mailchimp_sf_get_access_token() ) );
 $lists        = get_option( 'mailchimp_sf_lists', array() );
 $current_list = get_option( 'mc_list_id', '' );
 $dc           = get_option( 'mc_datacenter', '' );
 ?>
-<div id="mailchimp-sf-analytics-page">
-	<?php require_once MCSF_DIR . 'includes/admin/templates/header.php'; ?>
+<div id="mailchimp-sf-settings-page">
+	<?php include_once MCSF_DIR . 'includes/admin/templates/header.php'; // phpcs:ignore PEAR.Files.IncludingFile.UseRequireOnce ?>
 
 	<div class="mailchimp-sf-settings-page-hero-wrapper">
 		<div class="mailchimp-sf-settings-page-hero">
