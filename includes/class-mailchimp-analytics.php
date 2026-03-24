@@ -19,6 +19,10 @@ class Mailchimp_Analytics {
 	 * Initialize the class.
 	 */
 	public function init() {
+		if ( ! $this->is_connected() ) {
+			return;
+		}
+
 		add_action( 'admin_menu', array( $this, 'register_admin_page' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 	}
@@ -37,10 +41,6 @@ class Mailchimp_Analytics {
 	 * Register the Analytics submenu page under Mailchimp.
 	 */
 	public function register_admin_page() {
-		if ( ! $this->is_connected() ) {
-			return;
-		}
-
 		add_submenu_page(
 			'mailchimp_sf_options',
 			esc_html__( 'Analytics', 'mailchimp' ),
@@ -83,8 +83,8 @@ class Mailchimp_Analytics {
 		);
 
 		wp_enqueue_script(
-			'chartjs',
-			'https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js',
+			'mailchimp_sf_chartjs',
+			MCSF_URL . 'assets/js/chart.umd.min.js',
 			array(),
 			'4.4.7',
 			true
@@ -93,24 +93,10 @@ class Mailchimp_Analytics {
 		wp_enqueue_script(
 			'mailchimp_sf_analytics_js',
 			MCSF_URL . 'assets/js/analytics.js',
-			array( 'chartjs' ),
+			array( 'mailchimp_sf_chartjs' ),
 			MCSF_VER,
 			true
 		);
 
-		// Pass data to JS.
-		$lists      = get_option( 'mailchimp_sf_lists', array() );
-		$dc         = get_option( 'mc_datacenter', '' );
-		$current_id = get_option( 'mc_list_id', '' );
-
-		wp_localize_script(
-			'mailchimp_sf_analytics_js',
-			'mailchimpAnalytics',
-			array(
-				'lists'         => $lists,
-				'currentListId' => $current_id,
-				'dataCenter'    => $dc,
-			)
-		);
 	}
 }
