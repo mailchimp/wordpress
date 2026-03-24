@@ -5,7 +5,7 @@
  * @package Mailchimp
  */
 
-$lists        = get_option( 'mailchimp_sf_lists', array() );
+$lists        = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
 $current_list = get_option( 'mc_list_id', '' );
 $dc           = get_option( 'mc_datacenter', '' );
 ?>
