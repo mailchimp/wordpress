@@ -582,14 +582,11 @@ class Mailchimp_Admin {
 		);
 
 		// Rename the auto-generated first submenu item to "Form Settings".
-		add_submenu_page(
-			'mailchimp_sf_options',
-			esc_html__( 'Form Settings', 'mailchimp' ),
-			esc_html__( 'Form Settings', 'mailchimp' ),
-			MCSF_CAP_THRESHOLD,
-			'mailchimp_sf_options',
-			array( $this, 'settings_page' )
-		);
+		global $submenu;
+		if ( isset( $submenu['mailchimp_sf_options'][0] ) ) {
+			$submenu['mailchimp_sf_options'][0][0] = esc_html__( 'Mailchimp Form Settings', 'mailchimp' );
+			$submenu['mailchimp_sf_options'][0][3] = esc_html__( 'Mailchimp Form Settings', 'mailchimp' );
+		}
 
 		add_submenu_page(
 			'admin.php',
