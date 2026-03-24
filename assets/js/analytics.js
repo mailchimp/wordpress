@@ -67,8 +67,21 @@
 	 * Toggle visibility of custom date inputs.
 	 */
 	function toggleCustomDates() {
+		if (!dateRangeSelect || !customDates) {
+			return;
+		}
 		const isCustom = dateRangeSelect.value === 'custom';
 		customDates.style.display = isCustom ? 'flex' : 'none';
+	}
+
+	/**
+	 * Format a Date object to a YYYY-MM-DD string in local time.
+	 */
+	function toLocalDateString(date) {
+		const year = date.getFullYear();
+		const month = String(date.getMonth() + 1).padStart(2, '0');
+		const day = String(date.getDate()).padStart(2, '0');
+		return `${year}-${month}-${day}`;
 	}
 
 	/**
@@ -84,11 +97,16 @@
 			return;
 		}
 
+		// Validate that "from" date is not after "to" date.
+		if (range.from > range.to) {
+			return;
+		}
+
 		// Dispatch a custom event so other scripts can listen for filter changes.
 		const event = new CustomEvent('mailchimp-analytics-refresh', {
 			detail: {
-				from: range.from.toISOString(),
-				to: range.to.toISOString(),
+				from: toLocalDateString(range.from),
+				to: toLocalDateString(range.to),
 				listId,
 			},
 		});
