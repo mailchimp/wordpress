@@ -34,37 +34,49 @@ describe('Analytics admin page', () => {
 			cy.get('link[id="mailchimp_sf_analytics_css-css"]').should('not.exist');
 		});
 
-		it('Date range filter defaults to "Last 30 days"', () => {
+		it('Date picker trigger shows "Last 30 days" by default', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#mailchimp-sf-date-range').should('have.value', '30');
+			cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 30 days');
 		});
 
-		it('Custom date inputs are hidden by default', () => {
+		it('Date picker popover is hidden by default', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('.mailchimp-sf-custom-dates').should('not.be.visible');
+			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
 		});
 
-		it('Selecting "Custom" shows custom date inputs', () => {
+		it('Clicking the trigger opens the date picker popover', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#mailchimp-sf-date-range').select('custom');
-			cy.get('.mailchimp-sf-custom-dates').should('be.visible');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-picker-popover').should('be.visible');
+			cy.get('#mailchimp-sf-date-range').should('be.visible');
 			cy.get('#mailchimp-sf-date-from').should('be.visible');
 			cy.get('#mailchimp-sf-date-to').should('be.visible');
 		});
 
-		it('Switching back to a preset hides custom date inputs', () => {
+		it('Cancel button closes the popover without applying', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#mailchimp-sf-date-range').select('custom');
-			cy.get('.mailchimp-sf-custom-dates').should('be.visible');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
 			cy.get('#mailchimp-sf-date-range').select('7');
-			cy.get('.mailchimp-sf-custom-dates').should('not.be.visible');
+			cy.get('#mailchimp-sf-date-picker-cancel').click();
+			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
+			cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 30 days');
 		});
 
-		it('Resolved date range display updates on filter change', () => {
+		it('Apply button updates the trigger label and closes the popover', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#mailchimp-sf-resolved-date-range').should('not.be.empty');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
 			cy.get('#mailchimp-sf-date-range').select('7');
-			cy.get('#mailchimp-sf-resolved-date-range').should('not.be.empty');
+			cy.get('#mailchimp-sf-date-picker-apply').click();
+			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
+			cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
+		});
+
+		it('Clicking outside the popover closes it', () => {
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-picker-popover').should('be.visible');
+			cy.get('body').click(0, 0);
+			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
 		});
 
 		it('List filter is present with options', () => {
