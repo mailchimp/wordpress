@@ -5,7 +5,7 @@
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
  * Version:           2.0.1
- * Requires at least: 6.4
+ * Requires at least: 6.6
  * Requires PHP:      7.0
  * PHP tested up to:  8.3
  * Author:            Mailchimp
