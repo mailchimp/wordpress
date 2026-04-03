@@ -914,7 +914,7 @@ class Mailchimp_Admin {
 	public function admin_footer_text( $text ) {
 		$current_screen    = get_current_screen();
 		$current_screen_id = $current_screen ? $current_screen->id : '';
-		if ( ! in_array( $current_screen_id, array( 'toplevel_page_mailchimp_sf_options', 'admin_page_mailchimp_sf_create_account' ), true ) ) {
+		if ( ! in_array( $current_screen_id, array( 'toplevel_page_mailchimp_sf_options', 'admin_page_mailchimp_sf_create_account', 'mailchimp_page_mailchimp_sf_analytics' ), true ) ) {
 			return $text;
 		}
 
