@@ -14,6 +14,9 @@
 	const popover = document.getElementById('mailchimp-sf-date-picker-popover');
 	const cancelBtn = document.getElementById('mailchimp-sf-date-picker-cancel');
 	const applyBtn = document.getElementById('mailchimp-sf-date-picker-apply');
+	const datePickerWrap = trigger ? trigger.closest('.mailchimp-sf-date-picker') : null;
+
+	const PRESET_VALUES = ['7', '30', '90', '180', '365'];
 
 	let appliedState = {
 		preset: '30',
@@ -60,6 +63,26 @@
 	}
 
 	/**
+	 * Inclusive last-N-days range ending today (local calendar).
+	 *
+	 * @param {string} presetValue Numeric preset id (e.g. "7", "30").
+	 * @returns {{ from: string, to: string }|null} Range or null if not a numeric preset.
+	 */
+	function getRangeForPreset(presetValue) {
+		if (presetValue === 'custom') {
+			return null;
+		}
+		const days = parseInt(presetValue, 10);
+		if (Number.isNaN(days) || days < 1) {
+			return null;
+		}
+		const to = new Date();
+		const from = new Date();
+		from.setDate(from.getDate() - (days - 1));
+		return { from: toLocalDateString(from), to: toLocalDateString(to) };
+	}
+
+	/**
 	 * Get the resolved date range based on current applied state.
 	 *
 	 * @returns {{ from: string, to: string }|null} Date range strings (YYYY-MM-DD) or null.
@@ -72,15 +95,11 @@
 			return { from: appliedState.from, to: appliedState.to };
 		}
 
-		const days = parseInt(appliedState.preset, 10);
-		const to = new Date();
-		const from = new Date();
-		from.setDate(from.getDate() - days);
-		return { from: toLocalDateString(from), to: toLocalDateString(to) };
+		return getRangeForPreset(appliedState.preset);
 	}
 
 	/**
-	 * Compute start/end dates for a preset and populate the date inputs.
+	 * Populate start/end inputs from applied state (when opening popover).
 	 */
 	function syncDateInputs() {
 		const range = getDateRange();
@@ -88,6 +107,43 @@
 			dateFrom.value = range.from;
 			dateTo.value = range.to;
 		}
+	}
+
+	/**
+	 * Fill date inputs from a preset (popover: user picked a non-custom range).
+	 *
+	 * @param {string} presetVal Preset value.
+	 */
+	function applyPresetToInputs(presetVal) {
+		if (!dateFrom || !dateTo || presetVal === 'custom') {
+			return;
+		}
+		const range = getRangeForPreset(presetVal);
+		if (range) {
+			dateFrom.value = range.from;
+			dateTo.value = range.to;
+		}
+	}
+
+	/**
+	 * If current inputs match a rolling preset for today, select it; otherwise Custom.
+	 */
+	function syncSelectFromDateInputs() {
+		if (!dateRangeSelect || !dateFrom || !dateTo) {
+			return;
+		}
+		if (!dateFrom.value || !dateTo.value) {
+			return;
+		}
+		for (let i = 0; i < PRESET_VALUES.length; i++) {
+			const preset = PRESET_VALUES[i];
+			const range = getRangeForPreset(preset);
+			if (range && range.from === dateFrom.value && range.to === dateTo.value) {
+				dateRangeSelect.value = preset;
+				return;
+			}
+		}
+		dateRangeSelect.value = 'custom';
 	}
 
 	/**
@@ -107,6 +163,23 @@
 	}
 
 	/**
+	 * Set the popover and date picker wrap open state.
+	 *
+	 * @param {boolean} open Whether the popover is visible.
+	 */
+	function setPopoverOpen(open) {
+		if (popover) {
+			popover.classList.toggle('is-open', open);
+		}
+		if (datePickerWrap) {
+			datePickerWrap.classList.toggle('is-open', open);
+		}
+		if (trigger) {
+			trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+		}
+	}
+
+	/**
 	 * Toggle the popover open/closed.
 	 */
 	function togglePopover() {
@@ -115,13 +188,13 @@
 		}
 		const isOpen = popover.classList.contains('is-open');
 		if (isOpen) {
-			popover.classList.remove('is-open');
+			setPopoverOpen(false);
 		} else {
 			syncDateInputs();
 			if (dateRangeSelect) {
 				dateRangeSelect.value = appliedState.preset;
 			}
-			popover.classList.add('is-open');
+			setPopoverOpen(true);
 		}
 	}
 
@@ -129,9 +202,7 @@
 	 * Close the popover without applying.
 	 */
 	function closePopover() {
-		if (popover) {
-			popover.classList.remove('is-open');
-		}
+		setPopoverOpen(false);
 	}
 
 	/**
@@ -195,6 +266,7 @@
 
 	// Bind events.
 	if (trigger) {
+		trigger.setAttribute('aria-expanded', 'false');
 		trigger.addEventListener('click', togglePopover);
 	}
 
@@ -204,6 +276,22 @@
 
 	if (applyBtn) {
 		applyBtn.addEventListener('click', applyDateRange);
+	}
+
+	if (dateRangeSelect) {
+		dateRangeSelect.addEventListener('change', function () {
+			if (dateRangeSelect.value === 'custom') {
+				return;
+			}
+			applyPresetToInputs(dateRangeSelect.value);
+		});
+	}
+
+	if (dateFrom) {
+		dateFrom.addEventListener('change', syncSelectFromDateInputs);
+	}
+	if (dateTo) {
+		dateTo.addEventListener('change', syncSelectFromDateInputs);
 	}
 
 	if (listFilter) {

@@ -4,21 +4,11 @@
  * @package Mailchimp
  */
 
-/* Filters bar */
-.mailchimp-sf-analytics-wrapper {
-	max-width: 1200px;
-	margin: 20px 0;
-}
-
 .mailchimp-sf-analytics-filters {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: flex-end;
 	gap: 16px;
-	padding: 20px;
-	background: #fff;
-	border: 1px solid #dcdcde;
-	border-radius: 4px;
 	margin-bottom: 20px;
 }
 
@@ -29,11 +19,9 @@
 }
 
 .mailchimp-sf-analytics-filter-group > label {
-	font-size: 12px;
-	font-weight: 600;
+	font-size: 14px;
+	font-weight: 400;
 	color: #1d2327;
-	text-transform: uppercase;
-	letter-spacing: 0.5px;
 }
 
 .mailchimp-sf-analytics-filter-group select {
@@ -48,8 +36,8 @@
 }
 
 .mailchimp-sf-analytics-filter-group select:focus {
-	border-color: #007cba;
-	box-shadow: 0 0 0 1px #007cba;
+	border-color: var(--mailchimp-color-link, #017e89);
+	box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
 	outline: none;
 }
 
@@ -64,25 +52,33 @@
 	justify-content: space-between;
 	gap: 8px;
 	min-width: 220px;
-	height: 36px;
+	height: 40px;
 	padding: 0 10px;
-	border: 1px solid #8c8f94;
-	border-radius: 4px;
+	border: 1px solid #c3ced5;
+    color: var(--mailchimp-color-text);;
+	border-radius: 6px;
 	font-size: 14px;
-	color: #1d2327;
 	background-color: #fff;
 	cursor: pointer;
 	text-align: left;
+    transition: all 0.2s;
+    min-width: 200px;
 }
 
 .mailchimp-sf-date-picker-trigger:hover {
-	border-color: #007cba;
+	border-color: var(--mailchimp-color-link, #017e89);
 }
 
 .mailchimp-sf-date-picker-trigger:focus {
-	border-color: #007cba;
-	box-shadow: 0 0 0 1px #007cba;
+	border-color: var(--mailchimp-color-link, #017e89);
+	box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
 	outline: none;
+}
+
+.mailchimp-sf-date-picker.is-open .mailchimp-sf-date-picker-trigger {
+	border-color: var(--mailchimp-color-link, #017e89);
+	box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
+	background-color: rgba(1, 126, 137, 0.08);
 }
 
 .mailchimp-sf-date-picker-trigger .dashicons {
@@ -126,75 +122,46 @@
 }
 
 .mailchimp-sf-date-picker-field label {
-	font-size: 12px;
-	font-weight: 600;
-	color: #50575e;
+	font-size: 14px;
+    font-weight: 400;
+    color: #4A5565;
 }
 
-.mailchimp-sf-date-picker-field select,
-.mailchimp-sf-date-picker-field input[type="date"] {
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field select,
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="date"] {
 	height: 36px;
-	padding: 0 8px;
-	border: 1px solid #8c8f94;
-	border-radius: 4px;
 	font-size: 14px;
 	color: #1d2327;
 	background-color: #fff;
 	width: 100%;
 }
 
-.mailchimp-sf-date-picker-field select:focus,
-.mailchimp-sf-date-picker-field input[type="date"]:focus {
-	border-color: #007cba;
-	box-shadow: 0 0 0 1px #007cba;
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field select:focus,
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="date"]:focus {
+	border-color: var(--mailchimp-color-link, #017e89);
+	box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
 	outline: none;
 }
 
-/* Popover actions */
+/* Popover actions — .mailchimp-sf-button.btn-primary / .btn-secondary.btn-small; pill shape to match design */
 .mailchimp-sf-date-picker-actions {
 	display: flex;
 	justify-content: flex-end;
 	gap: 8px;
 }
 
-.mailchimp-sf-date-picker-cancel,
-.mailchimp-sf-date-picker-apply {
-	padding: 6px 16px;
-	font-size: 14px;
-	border-radius: 4px;
-	cursor: pointer;
-	border: 1px solid transparent;
-	line-height: 1.4;
-}
-
-.mailchimp-sf-date-picker-cancel {
-	background: #fff;
-	color: #1d2327;
-	border-color: #8c8f94;
-}
-
-.mailchimp-sf-date-picker-cancel:hover {
-	background: #f0f0f1;
-}
-
-.mailchimp-sf-date-picker-apply {
-	background: #241c15;
-	color: #fff;
-	border-color: #241c15;
-}
-
-.mailchimp-sf-date-picker-apply:hover {
-	background: #3c3226;
-}
 
 /* Content area */
 .mailchimp-sf-analytics-content {
+	border: 1px solid #D3D0C8;
+    border-radius: 8px;
+    width: 100%;
+    overflow: auto;
 	padding: 24px;
 	background: #fff;
-	border: 1px solid #dcdcde;
-	border-radius: 4px;
 	min-height: 200px;
 	margin-bottom: 20px;
+    box-sizing: border-box;
 }
 
 .mailchimp-sf-analytics-placeholder {
