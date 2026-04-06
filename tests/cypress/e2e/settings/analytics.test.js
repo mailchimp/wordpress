@@ -15,7 +15,7 @@ describe('Analytics admin page', () => {
 
 		it('Can visit Analytics page and see the heading', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#wpbody h1.mailchimp-sf-settings-page-hero-title').contains('Analytics');
+			cy.get('#wpbody h1.mailchimp-sf-settings-page-header-title').contains('Analytics');
 		});
 
 		it('Analytics page loads required assets', () => {
@@ -69,6 +69,44 @@ describe('Analytics admin page', () => {
 			cy.get('#mailchimp-sf-date-picker-apply').click();
 			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
 			cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
+		});
+
+		it('Selecting Last 7 days updates start and end inputs to an inclusive 7-day range', () => {
+			cy.clock(new Date(2026, 3, 2).getTime(), ['Date']);
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-range').select('7');
+			cy.get('#mailchimp-sf-date-from').should('have.value', '2026-03-27');
+			cy.get('#mailchimp-sf-date-to').should('have.value', '2026-04-02');
+		});
+
+		it('Editing dates to a non-matching range sets the preset dropdown to Custom', () => {
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-from').invoke('val', '2000-01-01');
+			cy.get('#mailchimp-sf-date-to').invoke('val', '2000-01-31').trigger('change');
+			cy.get('#mailchimp-sf-date-range').should('have.value', 'custom');
+		});
+
+		it('Date picker trigger reflects aria-expanded when the popover opens and closes', () => {
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
+			cy.get('#mailchimp-sf-date-picker-trigger').should(
+				'have.attr',
+				'aria-expanded',
+				'false',
+			);
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-picker-trigger').should(
+				'have.attr',
+				'aria-expanded',
+				'true',
+			);
+			cy.get('#mailchimp-sf-date-picker-cancel').click();
+			cy.get('#mailchimp-sf-date-picker-trigger').should(
+				'have.attr',
+				'aria-expanded',
+				'false',
+			);
 		});
 
 		it('Clicking outside the popover closes it', () => {

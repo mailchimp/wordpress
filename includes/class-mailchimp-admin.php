@@ -582,11 +582,14 @@ class Mailchimp_Admin {
 		);
 
 		// Rename the auto-generated first submenu item to "Form Settings".
-		global $submenu;
-		if ( isset( $submenu['mailchimp_sf_options'][0] ) ) {
-			$submenu['mailchimp_sf_options'][0][0] = esc_html__( 'Mailchimp Form Settings', 'mailchimp' );
-			$submenu['mailchimp_sf_options'][0][3] = esc_html__( 'Mailchimp Form Settings', 'mailchimp' );
-		}
+		add_submenu_page(
+			'mailchimp_sf_options',
+			esc_html__( 'Mailchimp Form Settings', 'mailchimp' ),
+			esc_html__( 'Form Settings', 'mailchimp' ),
+			MCSF_CAP_THRESHOLD,
+			'mailchimp_sf_options',
+			array( $this, 'settings_page' )
+		);
 
 		add_submenu_page(
 			'admin.php',
@@ -911,7 +914,7 @@ class Mailchimp_Admin {
 	public function admin_footer_text( $text ) {
 		$current_screen    = get_current_screen();
 		$current_screen_id = $current_screen ? $current_screen->id : '';
-		if ( ! in_array( $current_screen_id, array( 'toplevel_page_mailchimp_sf_options', 'admin_page_mailchimp_sf_create_account' ), true ) ) {
+		if ( ! in_array( $current_screen_id, array( 'toplevel_page_mailchimp_sf_options', 'admin_page_mailchimp_sf_create_account', 'mailchimp_page_mailchimp_sf_analytics' ), true ) ) {
 			return $text;
 		}
 

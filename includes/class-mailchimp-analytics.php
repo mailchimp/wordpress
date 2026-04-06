@@ -77,7 +77,7 @@ class Mailchimp_Analytics {
 
 		wp_enqueue_style(
 			'mailchimp_sf_analytics_css',
-			MCSF_URL . 'assets/css/analytics.css',
+			MCSF_URL . 'dist/css/analytics.css',
 			array( 'mailchimp_sf_admin_css' ),
 			MCSF_VER
 		);
@@ -92,7 +92,7 @@ class Mailchimp_Analytics {
 
 		wp_enqueue_script(
 			'mailchimp_sf_analytics_js',
-			MCSF_URL . 'assets/js/analytics.js',
+			MCSF_URL . 'dist/js/analytics.js',
 			array( 'mailchimp_sf_chartjs' ),
 			MCSF_VER,
 			true
