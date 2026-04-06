@@ -127,7 +127,7 @@
 			const formData = new FormData();
 			formData.append('action', 'mailchimp_sf_track_form_view');
 			formData.append('list_id', listId);
-			formData.append('nonce', window.mailchimpSF.analytics_nonce);
+			formData.append('mailchimp_sf_nonce', window.mailchimpSF.analytics_nonce);
 
 			fetch(window.mailchimpSF.analytics_ajax_url, {
 				method: 'POST',

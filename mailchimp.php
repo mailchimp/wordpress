@@ -173,15 +173,20 @@ function mailchimp_sf_load_resources() {
 	wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form', 'jquery-ui-datepicker' ), MCSF_VER, true );
 	// some javascript to get ajax version submitting to the proper location
 	global $wp_scripts;
+	$localize_data = array(
+		'ajax_url'               => trailingslashit( home_url() ),
+		'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
+	);
+
+	if ( ! is_admin() ) {
+		$localize_data['analytics_ajax_url'] = admin_url( 'admin-ajax.php' );
+		$localize_data['analytics_nonce']    = wp_create_nonce( 'mailchimp_sf_analytics_nonce' );
+	}
+
 	$wp_scripts->localize(
 		'mailchimp_sf_main_js',
 		'mailchimpSF',
-		array(
-			'ajax_url'               => trailingslashit( home_url() ),
-			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
-			'analytics_ajax_url'     => admin_url( 'admin-ajax.php' ),
-			'analytics_nonce'        => wp_create_nonce( 'mailchimp_sf_analytics_nonce' ),
-		)
+		$localize_data
 	);
 
 	// Datepicker theme
