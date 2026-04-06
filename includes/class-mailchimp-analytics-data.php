@@ -201,8 +201,64 @@ class Mailchimp_Analytics_Data {
 			wp_send_json_error( 'Missing list_id.', 400 );
 		}
 
+		// Ensure the list ID is one of the configured/known lists to prevent
+		// arbitrary IDs from polluting analytics data.
+		if ( ! $this->is_valid_list_id( $list_id ) ) {
+			wp_send_json_error( 'Invalid list_id.', 400 );
+		}
+
 		$this->increment_views( $list_id );
 		wp_send_json_success();
+	}
+
+	/**
+	 * Determine whether a list ID is one of the configured/known lists.
+	 *
+	 * This helps ensure that analytics data is only recorded for legitimate lists
+	 * configured within the plugin options.
+	 *
+	 * @param string $list_id The list ID to validate.
+	 * @return bool True if the list ID is known/configured, false otherwise.
+	 */
+	private function is_valid_list_id( $list_id ) {
+		if ( empty( $list_id ) ) {
+			return false;
+		}
+
+		$valid_ids = array();
+
+		// Collect list IDs from the stored Mailchimp lists option, if present.
+		$mailchimp_lists = get_option( 'mailchimp_sf_lists' );
+		if ( is_array( $mailchimp_lists ) ) {
+			foreach ( $mailchimp_lists as $list ) {
+				// Handle both scalar IDs and associative array structures.
+				if ( is_string( $list ) || is_int( $list ) ) {
+					$valid_ids[] = (string) $list;
+				} elseif ( is_array( $list ) ) {
+					// Common keys used to store list IDs.
+					foreach ( array( 'id', 'list_id', 'mc_list_id' ) as $key ) {
+						if ( isset( $list[ $key ] ) && ! empty( $list[ $key ] ) ) {
+							$valid_ids[] = (string) $list[ $key ];
+						}
+					}
+				}
+			}
+		}
+
+		// Include the active Mailchimp list ID option, if set.
+		$active_list_id = get_option( 'mc_list_id' );
+		if ( ! empty( $active_list_id ) ) {
+			$valid_ids[] = (string) $active_list_id;
+		}
+
+		// If we have no configured IDs, fail closed and do not treat arbitrary IDs as valid.
+		if ( empty( $valid_ids ) ) {
+			return false;
+		}
+
+		$valid_ids = array_unique( $valid_ids );
+
+		return in_array( (string) $list_id, $valid_ids, true );
 	}
 
 	/**
