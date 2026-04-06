@@ -28,6 +28,7 @@ class Mailchimp_Analytics_Data {
 	public function init() {
 		add_action( 'wp_ajax_mailchimp_sf_track_form_view', array( $this, 'handle_form_view' ) );
 		add_action( 'wp_ajax_nopriv_mailchimp_sf_track_form_view', array( $this, 'handle_form_view' ) );
+		add_action( 'wp_ajax_mailchimp_sf_get_analytics', array( $this, 'handle_get_analytics' ) );
 		add_action( 'mailchimp_sf_form_submission_success', array( $this, 'track_submission' ) );
 	}
 
@@ -267,6 +268,35 @@ class Mailchimp_Analytics_Data {
 		$valid_ids = array_unique( $valid_ids );
 
 		return in_array( (string) $list_id, $valid_ids, true );
+	}
+
+	/**
+	 * Handle the AJAX request to fetch analytics data.
+	 */
+	public function handle_get_analytics() {
+		if ( ! current_user_can( MCSF_CAP_THRESHOLD ) ) {
+			wp_send_json_error( 'Unauthorized.', 403 );
+		}
+
+		check_ajax_referer( 'mailchimp_sf_analytics_admin_nonce', 'nonce' );
+
+		$list_id    = isset( $_POST['list_id'] ) ? sanitize_text_field( wp_unslash( $_POST['list_id'] ) ) : '';
+		$start_date = isset( $_POST['start_date'] ) ? sanitize_text_field( wp_unslash( $_POST['start_date'] ) ) : '';
+		$end_date   = isset( $_POST['end_date'] ) ? sanitize_text_field( wp_unslash( $_POST['end_date'] ) ) : '';
+
+		if ( empty( $list_id ) || empty( $start_date ) || empty( $end_date ) ) {
+			wp_send_json_error( 'Missing required parameters.', 400 );
+		}
+
+		$totals = $this->get_totals( $list_id, $start_date, $end_date );
+		$daily  = $this->get_analytics_data( $list_id, $start_date, $end_date );
+
+		wp_send_json_success(
+			array(
+				'totals' => $totals,
+				'daily'  => $daily,
+			)
+		);
 	}
 
 	/**
