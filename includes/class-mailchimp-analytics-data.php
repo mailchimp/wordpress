@@ -79,7 +79,7 @@ class Mailchimp_Analytics_Data {
 		$table_name = self::get_table_name();
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query(
+		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO {$table_name} (list_id, form_id, event_date, views, submissions)
 				VALUES (%s, %s, %s, 1, 0)
@@ -90,6 +90,10 @@ class Mailchimp_Analytics_Data {
 			)
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( false === $result ) {
+			error_log( 'Mailchimp Analytics: Failed to increment views for list_id ' . sanitize_text_field( $list_id ) . '. DB error: ' . $wpdb->last_error );
+		}
 	}
 
 	/**
@@ -104,7 +108,7 @@ class Mailchimp_Analytics_Data {
 		$table_name = self::get_table_name();
 
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$wpdb->query(
+		$result = $wpdb->query(
 			$wpdb->prepare(
 				"INSERT INTO {$table_name} (list_id, form_id, event_date, views, submissions)
 				VALUES (%s, %s, %s, 0, 1)
@@ -115,6 +119,10 @@ class Mailchimp_Analytics_Data {
 			)
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+
+		if ( false === $result ) {
+			error_log( 'Mailchimp Analytics: Failed to increment submissions for list_id ' . sanitize_text_field( $list_id ) . '. DB error: ' . $wpdb->last_error );
+		}
 	}
 
 	/**
@@ -191,7 +199,7 @@ class Mailchimp_Analytics_Data {
 	 */
 	public function handle_form_view() {
 		// Verify nonce.
-		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['nonce'] ), 'mailchimp_sf_analytics_nonce' ) ) {
+		if ( ! isset( $_POST['mailchimp_sf_nonce'] ) || ! wp_verify_nonce( sanitize_key( $_POST['mailchimp_sf_nonce'] ), 'mailchimp_sf_analytics_nonce' ) ) {
 			wp_send_json_error( 'Invalid nonce.', 403 );
 		}
 
