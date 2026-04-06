@@ -97,5 +97,14 @@ class Mailchimp_Analytics {
 			MCSF_VER,
 			true
 		);
+
+		wp_localize_script(
+			'mailchimp_sf_analytics_js',
+			'mailchimpSFAnalytics',
+			array(
+				'ajax_url' => admin_url( 'admin-ajax.php' ),
+				'nonce'    => wp_create_nonce( 'mailchimp_sf_analytics_admin_nonce' ),
+			)
+		);
 	}
 }
