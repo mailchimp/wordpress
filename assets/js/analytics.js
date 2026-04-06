@@ -23,19 +23,23 @@ import '../css/analytics.css';
 	const applyBtn = document.getElementById('mailchimp-sf-date-picker-apply');
 	const datePickerWrap = trigger ? trigger.closest('.mailchimp-sf-date-picker') : null;
 
-	// Initialize datepicker.
-	const fromDatepicker = new Datepicker(dateFrom, {
-		format: 'yyyy-mm-dd',
-		autohide: true,
-		maxDate: new Date(),
-	});
+	// Initialize datepicker only when both inputs are present.
+	let fromDatepicker = null;
+	let toDatepicker = null;
 
-	const toDatepicker = new Datepicker(dateTo, {
-		format: 'yyyy-mm-dd',
-		autohide: true,
-		maxDate: new Date(),
-	});
+	if (dateFrom && dateTo) {
+		fromDatepicker = new Datepicker(dateFrom, {
+			format: 'yyyy-mm-dd',
+			autohide: true,
+			maxDate: new Date(),
+		});
 
+		toDatepicker = new Datepicker(dateTo, {
+			format: 'yyyy-mm-dd',
+			autohide: true,
+			maxDate: new Date(),
+		});
+	}
 	const PRESET_VALUES = ['7', '30', '90', '180', '365'];
 
 	let appliedState = {

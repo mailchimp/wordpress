@@ -15,7 +15,7 @@ describe('Analytics admin page', () => {
 
 		it('Can visit Analytics page and see the heading', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
-			cy.get('#wpbody h1.mailchimp-sf-settings-page-hero-title').contains('Analytics');
+			cy.get('#wpbody h1.mailchimp-sf-settings-page-header-title').contains('Analytics');
 		});
 
 		it('Analytics page loads required assets', () => {

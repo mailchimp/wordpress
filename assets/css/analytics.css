@@ -55,13 +55,13 @@
 	height: 40px;
 	padding: 0 10px;
 	border: 1px solid #c3ced5;
-    color: var(--mailchimp-color-text);;
+	color: var(--mailchimp-color-text);
 	border-radius: 6px;
 	font-size: 14px;
 	background-color: #fff;
 	cursor: pointer;
 	text-align: left;
-    transition: all 0.2s;
+	transition: all 0.2s;
 }
 
 .mailchimp-sf-date-picker-trigger:hover {
