@@ -351,7 +351,54 @@ import '../css/analytics.css';
 		}
 	});
 
+	/**
+	 * Fetch analytics data via AJAX and update the content area.
+	 *
+	 * @param {object} detail Event detail with from, to, listId.
+	 */
+	function fetchAnalyticsData(detail) {
+		if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
+			return;
+		}
+
+		const contentArea = document.getElementById('mailchimp-sf-analytics-content');
+		if (!contentArea) {
+			return;
+		}
+
+		const formData = new FormData();
+		formData.append('action', 'mailchimp_sf_get_analytics');
+		formData.append('nonce', window.mailchimpSFAnalytics.nonce);
+		formData.append('list_id', detail.listId);
+		formData.append('start_date', detail.from);
+		formData.append('end_date', detail.to);
+
+		fetch(window.mailchimpSFAnalytics.ajax_url, {
+			method: 'POST',
+			body: formData,
+			credentials: 'same-origin',
+		})
+			.then(function (response) {
+				return response.json();
+			})
+			.then(function (response) {
+				if (!response.success) {
+					return;
+				}
+
+				const { data } = response;
+				contentArea.innerHTML = JSON.stringify(data);
+			})
+			.catch(function () {});
+	}
+
+	// Listen for analytics refresh events.
+	document.addEventListener('mailchimp-analytics-refresh', function (e) {
+		fetchAnalyticsData(e.detail);
+	});
+
 	// Initialize.
 	updateTriggerLabel();
 	syncDateInputs();
+	refreshAnalytics();
 })();
