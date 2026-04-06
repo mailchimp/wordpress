@@ -133,7 +133,7 @@
 				method: 'POST',
 				body: formData,
 				credentials: 'same-origin',
-			});
+			}).catch(() => {});
 		}
 	}
 })();
