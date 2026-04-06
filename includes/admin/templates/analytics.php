@@ -85,9 +85,10 @@ $dc           = get_option( 'mc_datacenter', '' );
 
 			<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
 				<?php
-				$analytics_data = new Mailchimp_Analytics_Data();
-				$end_date       = current_time( 'Y-m-d' );
-				$start_date     = gmdate( 'Y-m-d', strtotime( '-30 days' ) );
+				$analytics_data   = new Mailchimp_Analytics_Data();
+				$current_timestamp = current_time( 'timestamp' );
+				$end_date          = wp_date( 'Y-m-d', $current_timestamp );
+				$start_date        = wp_date( 'Y-m-d', $current_timestamp - ( 30 * DAY_IN_SECONDS ) );
 
 				$totals = $analytics_data->get_totals( $current_list, $start_date, $end_date );
 				$daily  = $analytics_data->get_analytics_data( $current_list, $start_date, $end_date );
