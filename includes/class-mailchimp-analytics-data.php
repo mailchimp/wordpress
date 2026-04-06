@@ -20,7 +20,7 @@ class Mailchimp_Analytics_Data {
 	 *
 	 * @var string
 	 */
-	const DB_VERSION = '1.0';
+	const DB_VERSION = '1.0.0';
 
 	/**
 	 * Initialize the class.
