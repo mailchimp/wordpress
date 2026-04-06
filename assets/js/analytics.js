@@ -132,8 +132,8 @@ import '../css/analytics.css';
 		if (range && dateFrom && dateTo) {
 			dateFrom.value = range.from;
 			dateTo.value = range.to;
-			fromDatepicker.setDate(new Date(range.from));
-			toDatepicker.setDate(new Date(range.to));
+			fromDatepicker.setDate(range.from);
+			toDatepicker.setDate(range.to);
 		}
 	}
 
@@ -150,8 +150,8 @@ import '../css/analytics.css';
 		if (range) {
 			dateFrom.value = range.from;
 			dateTo.value = range.to;
-			fromDatepicker.setDate(new Date(range.from));
-			toDatepicker.setDate(new Date(range.to));
+			fromDatepicker.setDate(range.from);
+			toDatepicker.setDate(range.to);
 		}
 	}
 
@@ -166,8 +166,8 @@ import '../css/analytics.css';
 			return;
 		}
 
-		fromDatepicker.setDate(new Date(dateFrom.value));
-		toDatepicker.setDate(new Date(dateTo.value));
+		fromDatepicker.setDate(dateFrom.value);
+		toDatepicker.setDate(dateTo.value);
 
 		for (let i = 0; i < PRESET_VALUES.length; i++) {
 			const preset = PRESET_VALUES[i];
