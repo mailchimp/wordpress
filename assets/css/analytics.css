@@ -62,7 +62,6 @@
 	cursor: pointer;
 	text-align: left;
     transition: all 0.2s;
-    min-width: 200px;
 }
 
 .mailchimp-sf-date-picker-trigger:hover {
@@ -87,6 +86,18 @@
 	height: 18px;
 	line-height: 18px;
 	color: #50575e;
+}
+
+.mailchimp-sf-date-picker-trigger .indicator-date-picker {
+	display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    pointer-events: none;
+    justify-content: center;
+    padding: 0 8px;
+    width: 24px;
 }
 
 /* Date picker popover */
@@ -127,8 +138,32 @@
     color: #4A5565;
 }
 
+.mailchimp-sf-date-picker-input-wrap {
+	position: relative;
+	width: 100%;
+}
+
+.mailchimp-sf-date-picker-field-calendar {
+	align-items: center;
+	bottom: 0;
+	display: flex;
+	justify-content: center;
+	padding: 0 6px;
+	pointer-events: none;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.mailchimp-sf-date-picker-field-calendar svg {
+	display: block;
+	fill: #50575e;
+	height: 18px;
+	width: 18px;
+}
+
 #mailchimp-sf-settings-page .mailchimp-sf-date-picker-field select,
-#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="date"] {
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="text"] {
 	height: 36px;
 	font-size: 14px;
 	color: #1d2327;
@@ -136,8 +171,12 @@
 	width: 100%;
 }
 
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field .mailchimp-sf-date-picker-input-wrap input[type="text"] {
+	padding-right: 30px;
+}
+
 #mailchimp-sf-settings-page .mailchimp-sf-date-picker-field select:focus,
-#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="date"]:focus {
+#mailchimp-sf-settings-page .mailchimp-sf-date-picker-field input[type="text"]:focus {
 	border-color: var(--mailchimp-color-link, #017e89);
 	box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
 	outline: none;
@@ -184,6 +223,10 @@
 	gap: 6px;
 }
 
+.mailchimp-sf-analytics-deep-link a:hover {
+	color: var(--mailchimp-color-text, #1d2327);
+}
+
 .mailchimp-sf-analytics-deep-link .dashicons {
 	font-size: 16px;
 	width: 16px;
@@ -217,4 +260,10 @@
 		min-width: auto;
 		width: 100%;
 	}
+}
+
+/* Datepicker */
+.datepicker-cell.selected, .datepicker-cell.selected:hover {
+	background-color: var(--mailchimp-color-link, #017e89);
+	color: #fff;
 }

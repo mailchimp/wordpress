@@ -32,7 +32,11 @@ $dc           = get_option( 'mc_datacenter', '' );
 						<div class="mailchimp-sf-date-picker">
 							<button type="button" class="mailchimp-sf-date-picker-trigger" id="mailchimp-sf-date-picker-trigger" aria-expanded="false" aria-controls="mailchimp-sf-date-picker-popover">
 								<span id="mailchimp-sf-date-picker-label"><?php esc_html_e( 'Last 30 days', 'mailchimp' ); ?></span>
-								<span class="dashicons dashicons-calendar-alt" aria-hidden="true"></span>
+								<div class="indicator-date-picker" aria-hidden="true">
+									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+										<path d="M20.133 3.891a2.977 2.977 0 00-2.119-.882h-1a1 1 0 10-2 0l-6-.009a1 1 0 00-1-1 1 1 0 00-1 1h-1a3 3 0 00-3 3v1.992l-.023 9.994a3 3 0 002.995 3l12 .018a3 3 0 003-3l.018-12a2.98 2.98 0 00-.871-2.113zm-14.124 1.1h1a1 1 0 102 0l6 .009a1 1 0 002 0h1a1 1 0 011 1v.987l-14-.021v-.987a1 1 0 011-.988zm11.982 14.018l-12-.018a1 1 0 01-1-1L5 8.977 19 9l-.013 9.012a1 1 0 01-.996.997z"></path>
+									</svg>
+								</div>
 							</button>
 							<div class="mailchimp-sf-date-picker-popover" id="mailchimp-sf-date-picker-popover">
 								<div class="mailchimp-sf-date-picker-popover-row">
@@ -49,11 +53,25 @@ $dc           = get_option( 'mc_datacenter', '' );
 									</div>
 									<div class="mailchimp-sf-date-picker-field">
 										<label for="mailchimp-sf-date-from"><?php esc_html_e( 'Start date', 'mailchimp' ); ?></label>
-										<input type="date" id="mailchimp-sf-date-from" />
+										<div class="mailchimp-sf-date-picker-input-wrap">
+											<input type="text" id="mailchimp-sf-date-from" />
+											<span class="mailchimp-sf-date-picker-field-calendar" aria-hidden="true">
+												<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+													<path d="M20.133 3.891a2.977 2.977 0 00-2.119-.882h-1a1 1 0 10-2 0l-6-.009a1 1 0 00-1-1 1 1 0 00-1 1h-1a3 3 0 00-3 3v1.992l-.023 9.994a3 3 0 002.995 3l12 .018a3 3 0 003-3l.018-12a2.98 2.98 0 00-.871-2.113zm-14.124 1.1h1a1 1 0 102 0l6 .009a1 1 0 002 0h1a1 1 0 011 1v.987l-14-.021v-.987a1 1 0 011-.988zm11.982 14.018l-12-.018a1 1 0 01-1-1L5 8.977 19 9l-.013 9.012a1 1 0 01-.996.997z"></path>
+												</svg>
+											</span>
+										</div>
 									</div>
 									<div class="mailchimp-sf-date-picker-field">
 										<label for="mailchimp-sf-date-to"><?php esc_html_e( 'End date', 'mailchimp' ); ?></label>
-										<input type="date" id="mailchimp-sf-date-to" />
+										<div class="mailchimp-sf-date-picker-input-wrap">
+											<input type="text" id="mailchimp-sf-date-to" />
+											<span class="mailchimp-sf-date-picker-field-calendar" aria-hidden="true">
+												<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
+													<path d="M20.133 3.891a2.977 2.977 0 00-2.119-.882h-1a1 1 0 10-2 0l-6-.009a1 1 0 00-1-1 1 1 0 00-1 1h-1a3 3 0 00-3 3v1.992l-.023 9.994a3 3 0 002.995 3l12 .018a3 3 0 003-3l.018-12a2.98 2.98 0 00-.871-2.113zm-14.124 1.1h1a1 1 0 102 0l6 .009a1 1 0 002 0h1a1 1 0 011 1v.987l-14-.021v-.987a1 1 0 011-.988zm11.982 14.018l-12-.018a1 1 0 01-1-1L5 8.977 19 9l-.013 9.012a1 1 0 01-.996.997z"></path>
+												</svg>
+											</span>
+										</div>
 									</div>
 								</div>
 								<div class="mailchimp-sf-date-picker-actions">

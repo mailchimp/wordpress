@@ -4,6 +4,13 @@
  * @package Mailchimp
  */
 
+/*
+ * External dependencies
+ */
+import { Datepicker } from 'vanillajs-datepicker';
+import 'vanillajs-datepicker/css/datepicker.css'; // eslint-disable-line import/no-unresolved
+import '../css/analytics.css';
+
 (function () {
 	const dateRangeSelect = document.getElementById('mailchimp-sf-date-range');
 	const dateFrom = document.getElementById('mailchimp-sf-date-from');
@@ -15,6 +22,19 @@
 	const cancelBtn = document.getElementById('mailchimp-sf-date-picker-cancel');
 	const applyBtn = document.getElementById('mailchimp-sf-date-picker-apply');
 	const datePickerWrap = trigger ? trigger.closest('.mailchimp-sf-date-picker') : null;
+
+	// Initialize datepicker.
+	const fromDatepicker = new Datepicker(dateFrom, {
+		format: 'yyyy-mm-dd',
+		autohide: true,
+		maxDate: new Date(),
+	});
+
+	const toDatepicker = new Datepicker(dateTo, {
+		format: 'yyyy-mm-dd',
+		autohide: true,
+		maxDate: new Date(),
+	});
 
 	const PRESET_VALUES = ['7', '30', '90', '180', '365'];
 
@@ -38,14 +58,20 @@
 	}
 
 	/**
-	 * Format a date string (YYYY-MM-DD) to a display format (MM-DD-YYYY).
+	 * Format a date string (YYYY-MM-DD) for the trigger label (locale-aware).
+	 * Parses as local calendar date — avoids UTC midnight shifts from `new Date("YYYY-MM-DD")`.
 	 *
 	 * @param {string} dateStr Date string in YYYY-MM-DD format.
 	 * @returns {string} Formatted date string.
 	 */
 	function formatDisplayDate(dateStr) {
-		const parts = dateStr.split('-');
-		return `${parts[1]}-${parts[2]}-${parts[0]}`;
+		const parts = dateStr.split('-').map(Number);
+		const date = new Date(parts[0], parts[1] - 1, parts[2]);
+		return date.toLocaleDateString(undefined, {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric',
+		});
 	}
 
 	/**
@@ -106,6 +132,8 @@
 		if (range && dateFrom && dateTo) {
 			dateFrom.value = range.from;
 			dateTo.value = range.to;
+			fromDatepicker.setDate(new Date(range.from));
+			toDatepicker.setDate(new Date(range.to));
 		}
 	}
 
@@ -122,6 +150,8 @@
 		if (range) {
 			dateFrom.value = range.from;
 			dateTo.value = range.to;
+			fromDatepicker.setDate(new Date(range.from));
+			toDatepicker.setDate(new Date(range.to));
 		}
 	}
 
@@ -135,6 +165,10 @@
 		if (!dateFrom.value || !dateTo.value) {
 			return;
 		}
+
+		fromDatepicker.setDate(new Date(dateFrom.value));
+		toDatepicker.setDate(new Date(dateTo.value));
+
 		for (let i = 0; i < PRESET_VALUES.length; i++) {
 			const preset = PRESET_VALUES[i];
 			const range = getRangeForPreset(preset);
@@ -289,9 +323,11 @@
 
 	if (dateFrom) {
 		dateFrom.addEventListener('change', syncSelectFromDateInputs);
+		dateFrom.addEventListener('changeDate', syncSelectFromDateInputs);
 	}
 	if (dateTo) {
 		dateTo.addEventListener('change', syncSelectFromDateInputs);
+		dateTo.addEventListener('changeDate', syncSelectFromDateInputs);
 	}
 
 	if (listFilter) {
