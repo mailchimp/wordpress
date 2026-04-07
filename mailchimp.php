@@ -120,8 +120,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-d
 $analytics_data = new Mailchimp_Analytics_Data();
 $analytics_data->init();
 
-// Create analytics table on activation.
-register_activation_hook( __FILE__, array( 'Mailchimp_Analytics_Data', 'create_table' ) );
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
