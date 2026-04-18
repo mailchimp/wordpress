@@ -100,14 +100,137 @@ $dc           = get_option( 'mc_datacenter', '' );
 					</div>
 				</div>
 
-			<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
-			</div>
+				<section
+					class="mailchimp-sf-analytics-card mailchimp-sf-sa is-loading"
+					data-section="subscriber-activity"
+					aria-labelledby="mailchimp-sf-sa-title"
+				>
+					<header class="mailchimp-sf-analytics-card__header">
+						<h2 id="mailchimp-sf-sa-title" class="mailchimp-sf-analytics-card__title">
+							<?php esc_html_e( 'Subscriber change over time', 'mailchimp' ); ?>
+						</h2>
+						<p
+							id="mailchimp-sf-sa-daterange"
+							class="mailchimp-sf-analytics-card__subtitle"
+							aria-live="polite"
+						><?php esc_html_e( 'Loading subscriber activity…', 'mailchimp' ); ?></p>
+					</header>
 
-				<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
-					<div class="mailchimp-sf-analytics-placeholder">
-						<p><?php esc_html_e( 'Select a date range and list to view analytics.', 'mailchimp' ); ?></p>
+					<div
+						id="mailchimp-sf-sa-notice"
+						class="mailchimp-sf-sa__notice"
+						role="status"
+						hidden
+					></div>
+
+					<div class="mailchimp-sf-sa__chart-heading">
+						<h3 class="mailchimp-sf-sa__chart-title">
+							<?php esc_html_e( 'Subscriber Count', 'mailchimp' ); ?>
+						</h3>
+						<p class="mailchimp-sf-sa__chart-subtitle">
+							<?php esc_html_e( 'Subscribers gained vs lost', 'mailchimp' ); ?>
+						</p>
 					</div>
-				</div>
+
+					<div
+						id="mailchimp-sf-sa-error-banner"
+						class="mailchimp-sf-sa__error-banner"
+						role="alert"
+						hidden
+					>
+						<span class="mailchimp-sf-sa__error-banner-icon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" focusable="false" aria-hidden="true">
+								<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+								<line x1="12" y1="7.5" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								<circle cx="12" cy="16.5" r="1" fill="currentColor"/>
+							</svg>
+						</span>
+						<div class="mailchimp-sf-sa__error-banner-body">
+							<p class="mailchimp-sf-sa__error-banner-title">
+								<?php esc_html_e( 'API Disconnected', 'mailchimp' ); ?>
+							</p>
+							<p
+								id="mailchimp-sf-sa-error-message"
+								class="mailchimp-sf-sa__error-banner-message"
+							>
+								<?php esc_html_e( 'Unable to load data for the selected date range. Please check your connection and try again.', 'mailchimp' ); ?>
+							</p>
+						</div>
+						<button
+							type="button"
+							id="mailchimp-sf-sa-error-retry"
+							class="button mailchimp-sf-sa__error-banner-action"
+						>
+							<?php esc_html_e( 'Resolve error', 'mailchimp' ); ?>
+						</button>
+					</div>
+
+					<div class="mailchimp-sf-sa__body">
+						<div class="mailchimp-sf-sa__chart">
+							<div class="mailchimp-sf-sa__canvas-wrap">
+								<div class="mailchimp-sf-sa__skeleton-bars" aria-hidden="true">
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+								</div>
+								<canvas
+									id="mailchimp-sf-sa-bar"
+									class="mailchimp-sf-sa__canvas"
+									role="img"
+									aria-label="<?php esc_attr_e( 'Subscriber change bar chart', 'mailchimp' ); ?>"
+								></canvas>
+								<div
+									id="mailchimp-sf-sa-overlay"
+									class="mailchimp-sf-sa__overlay"
+									role="status"
+									aria-live="polite"
+								><?php esc_html_e( 'Loading subscriber activity…', 'mailchimp' ); ?></div>
+							</div>
+						</div>
+
+						<aside class="mailchimp-sf-sa__totals" aria-labelledby="mailchimp-sf-sa-totals-title">
+							<h3 id="mailchimp-sf-sa-totals-title" class="mailchimp-sf-sa__totals-title">
+								<?php esc_html_e( 'Totals for the selected date range', 'mailchimp' ); ?>
+							</h3>
+							<div class="mailchimp-sf-sa__donut-wrap">
+								<div class="mailchimp-sf-sa__skeleton-donut" aria-hidden="true"></div>
+								<canvas
+									id="mailchimp-sf-sa-donut"
+									class="mailchimp-sf-sa__canvas"
+									role="img"
+									aria-label="<?php esc_attr_e( 'Subscriber change donut chart', 'mailchimp' ); ?>"
+								></canvas>
+								<div class="mailchimp-sf-sa__donut-center">
+									<span id="mailchimp-sf-sa-net" class="mailchimp-sf-sa__net">&mdash;</span>
+								</div>
+							</div>
+							<ul class="mailchimp-sf-sa__legend">
+								<li class="mailchimp-sf-sa__legend-item is-new">
+									<span class="mailchimp-sf-sa__legend-swatch" aria-hidden="true"></span>
+									<span class="mailchimp-sf-sa__legend-label">
+										<?php esc_html_e( 'New Subscriber', 'mailchimp' ); ?>
+									</span>
+									<span
+										id="mailchimp-sf-sa-total-new"
+										class="mailchimp-sf-sa__legend-value"
+									>&mdash;</span>
+								</li>
+								<li class="mailchimp-sf-sa__legend-item is-unsub">
+									<span class="mailchimp-sf-sa__legend-swatch" aria-hidden="true"></span>
+									<span class="mailchimp-sf-sa__legend-label">
+										<?php esc_html_e( 'Unsubscribe', 'mailchimp' ); ?>
+									</span>
+									<span
+										id="mailchimp-sf-sa-total-unsubs"
+										class="mailchimp-sf-sa__legend-value"
+									>&mdash;</span>
+								</li>
+							</ul>
+						</aside>
+					</div>
+				</section>
 
 				<?php if ( $dc ) : ?>
 					<div class="mailchimp-sf-analytics-deep-link">
