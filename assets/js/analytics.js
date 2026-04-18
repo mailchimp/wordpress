@@ -9,7 +9,7 @@
  */
 import { Datepicker } from 'vanillajs-datepicker';
 import 'vanillajs-datepicker/css/datepicker.css'; // eslint-disable-line import/no-unresolved
-import '../css/analytics.css';
+import '../css/analytics.scss';
 
 (function () {
 	const dateRangeSelect = document.getElementById('mailchimp-sf-date-range');

@@ -62,8 +62,8 @@ class Mailchimp_Subscriber_Activity {
 		$date_from = isset( $_POST['date_from'] ) ? sanitize_text_field( wp_unslash( $_POST['date_from'] ) ) : '';
 		$date_to   = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
 
-		if ( '' === $list_id || ! preg_match( '/^[a-zA-Z0-9]+$/', $list_id ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Invalid list ID.', 'mailchimp' ) ), 400 );
+		if ( empty( $list_id ) ) {
+			wp_send_json_error( array( 'message' => esc_html__( 'Please select a list.', 'mailchimp' ) ), 400 );
 		}
 
 		if ( ! $this->is_valid_date( $date_from ) || ! $this->is_valid_date( $date_to ) ) {

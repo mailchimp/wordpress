@@ -159,7 +159,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 						<button
 							type="button"
 							id="mailchimp-sf-sa-error-retry"
-							class="button mailchimp-sf-sa__error-banner-action"
+							class="mailchimp-sf-button btn-secondary btn-small mailchimp-sf-sa__error-banner-action"
 						>
 							<?php esc_html_e( 'Resolve error', 'mailchimp' ); ?>
 						</button>
