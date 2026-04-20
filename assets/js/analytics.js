@@ -11,6 +11,11 @@ import { Datepicker } from 'vanillajs-datepicker';
 import 'vanillajs-datepicker/css/datepicker.css'; // eslint-disable-line import/no-unresolved
 import '../css/analytics.scss';
 
+/**
+ * WordPress dependencies
+ */
+import { __ } from '@wordpress/i18n';
+
 (function () {
 	const dateRangeSelect = document.getElementById('mailchimp-sf-date-range');
 	const dateFrom = document.getElementById('mailchimp-sf-date-from');
@@ -435,16 +440,20 @@ import '../css/analytics.scss';
 		const EM_DASH = '\u2014';
 
 		const STRINGS = {
-			loadingSubtitle: 'Loading subscriber activity…',
-			loadingOverlay: 'Loading subscriber activity…',
-			emptySubtitle: 'No data available for the selected date range',
-			emptyOverlay: 'No data available for this date range',
-			errorDefault:
+			loadingSubtitle: __('Loading subscriber activity…', 'mailchimp'),
+			loadingOverlay: __('Loading subscriber activity…', 'mailchimp'),
+			emptySubtitle: __('No data available for the selected date range', 'mailchimp'),
+			emptyOverlay: __('No data available for this date range', 'mailchimp'),
+			errorDefault: __(
 				'Unable to load data for the selected date range. Please check your connection and try again.',
-			limited:
+				'mailchimp',
+			),
+			limited: __(
 				'Mailchimp subscriber activity is only available for the last 180 days. Showing available data.',
-			newSubscribers: 'New Subscribers',
-			unsubscribes: 'Unsubscribes',
+				'mailchimp',
+			),
+			newSubscribers: __('New Subscribers', 'mailchimp'),
+			unsubscribes: __('Unsubscribes', 'mailchimp'),
 		};
 
 		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-empty', 'is-error'];
