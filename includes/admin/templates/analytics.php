@@ -237,7 +237,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 						<a href="<?php echo esc_url( 'https://' . $dc . '.admin.mailchimp.com/analytics/audience-analytics/' ); ?>"
 							target="_blank"
 							rel="noopener noreferrer"
-							class="mailchimp-sf-button btn-secondary">
+							class="mailchimp-sf-button btn-primary btn-small">
 							<?php esc_html_e( 'View detailed analytics in Mailchimp', 'mailchimp' ); ?>
 							<span class="dashicons dashicons-external" aria-hidden="true"></span>
 						</a>
