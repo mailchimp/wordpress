@@ -28,6 +28,7 @@ module.exports = defineConfig({
 			'tests/cypress/e2e/connect.test.js',
 			'tests/cypress/e2e/settings/list.test.js',
 			'tests/cypress/e2e/settings/settings.test.js',
+			'tests/cypress/e2e/settings/analytics.test.js',
 			'tests/cypress/e2e/submission/**.test.js',
 			'tests/cypress/e2e/validation/**.test.js',
 			'tests/cypress/e2e/block.test.js',
