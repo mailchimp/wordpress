@@ -29,12 +29,14 @@ import '../css/analytics.scss';
 
 	if (dateFrom && dateTo) {
 		fromDatepicker = new Datepicker(dateFrom, {
+			maxView: 0,
 			format: 'yyyy-mm-dd',
 			autohide: true,
 			maxDate: new Date(),
 		});
 
 		toDatepicker = new Datepicker(dateTo, {
+			maxView: 0,
 			format: 'yyyy-mm-dd',
 			autohide: true,
 			maxDate: new Date(),
