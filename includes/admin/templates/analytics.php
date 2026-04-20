@@ -210,7 +210,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 								<li class="mailchimp-sf-sa__legend-item is-new">
 									<span class="mailchimp-sf-sa__legend-swatch" aria-hidden="true"></span>
 									<span class="mailchimp-sf-sa__legend-label">
-										<?php esc_html_e( 'New Subscriber', 'mailchimp' ); ?>
+										<?php esc_html_e( 'New Subscribers', 'mailchimp' ); ?>
 									</span>
 									<span
 										id="mailchimp-sf-sa-total-new"
@@ -220,7 +220,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 								<li class="mailchimp-sf-sa__legend-item is-unsub">
 									<span class="mailchimp-sf-sa__legend-swatch" aria-hidden="true"></span>
 									<span class="mailchimp-sf-sa__legend-label">
-										<?php esc_html_e( 'Unsubscribe', 'mailchimp' ); ?>
+										<?php esc_html_e( 'Unsubscribes', 'mailchimp' ); ?>
 									</span>
 									<span
 										id="mailchimp-sf-sa-total-unsubs"
