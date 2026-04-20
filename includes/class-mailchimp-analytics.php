@@ -90,7 +90,7 @@ class Mailchimp_Analytics {
 			true
 		);
 
-		$dependencies = array( 'mailchimp_sf_chartjs' );
+		$dependencies = array( 'mailchimp_sf_chartjs', 'wp-i18n' );
 		$version      = MCSF_VER;
 		if ( file_exists( MCSF_DIR . '/dist/js/analytics.asset.php' ) ) {
 			$asset = require MCSF_DIR . '/dist/js/analytics.asset.php';
