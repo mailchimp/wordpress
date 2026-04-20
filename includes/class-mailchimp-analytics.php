@@ -90,11 +90,20 @@ class Mailchimp_Analytics {
 			true
 		);
 
+		$dependencies = array( 'mailchimp_sf_chartjs' );
+		$version      = MCSF_VER;
+		if ( file_exists( MCSF_DIR . '/dist/js/analytics.asset.php' ) ) {
+			$asset = require MCSF_DIR . '/dist/js/analytics.asset.php';
+			$dependencies = $asset['dependencies'] ?? array();
+			$dependencies = array_merge( $dependencies, array( 'mailchimp_sf_chartjs' ) );
+			$version      = $asset['version'] ?? MCSF_VER;
+		}
+
 		wp_enqueue_script(
 			'mailchimp_sf_analytics_js',
 			MCSF_URL . 'dist/js/analytics.js',
-			array( 'mailchimp_sf_chartjs' ),
-			MCSF_VER,
+			$dependencies,
+			$version,
 			true
 		);
 
