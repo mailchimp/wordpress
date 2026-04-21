@@ -125,6 +125,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-
 $subscriber_activity = new Mailchimp_Subscriber_Activity();
 $subscriber_activity->init();
 
+// Form performance (local analytics DB) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-performance.php';
+$form_performance = new Mailchimp_Form_Performance();
+$form_performance->init();
+
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';

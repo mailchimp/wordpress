@@ -359,50 +359,299 @@ import { __ } from '@wordpress/i18n';
 	});
 
 	/**
-	 * Fetch analytics data via AJAX and update the content area.
-	 *
-	 * @param {object} detail Event detail with from, to, listId.
+	 * Forms performance over time
 	 */
-	function fetchAnalyticsData(detail) {
-		if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
+	(function formPerformanceModule() {
+		const section = document.querySelector('[data-section="form-performance"]');
+		if (!section) {
 			return;
 		}
 
-		const contentArea = document.getElementById('mailchimp-sf-analytics-content');
-		if (!contentArea) {
-			return;
+		const lineCanvas = document.getElementById('mailchimp-sf-fp-line');
+		const dateRangeEl = document.getElementById('mailchimp-sf-fp-daterange');
+		const overlayEl = document.getElementById('mailchimp-sf-fp-overlay');
+		const errorBannerEl = document.getElementById('mailchimp-sf-fp-error-banner');
+		const errorMessageEl = document.getElementById('mailchimp-sf-fp-error-message');
+		const retryBtnEl = document.getElementById('mailchimp-sf-fp-error-retry');
+
+		const SERIES_COLORS = [
+			{ border: '#2B72FB', fill: 'rgba(43, 114, 251, 0.12)' },
+			{ border: '#17B890', fill: 'rgba(23, 184, 144, 0.12)' },
+			{ border: '#F59E0B', fill: 'rgba(245, 158, 11, 0.12)' },
+			{ border: '#8B5CF6', fill: 'rgba(139, 92, 246, 0.12)' },
+			{ border: '#EC4899', fill: 'rgba(236, 72, 153, 0.12)' },
+			{ border: '#14B8A6', fill: 'rgba(20, 184, 166, 0.12)' },
+		];
+
+		const COLORS = {
+			gridLine: 'rgba(0, 0, 0, 0.06)',
+			text: '#6B7280',
+		};
+
+		const STRINGS = {
+			loadingSubtitle: __('Loading form performance…', 'mailchimp'),
+			loadingOverlay: __('Loading form performance…', 'mailchimp'),
+			emptySubtitle: __('No submissions recorded for the selected date range', 'mailchimp'),
+			emptyOverlay: __('No data available for this date range', 'mailchimp'),
+			errorDefault: __(
+				'Unable to load data for the selected date range. Please check your connection and try again.',
+				'mailchimp',
+			),
+		};
+
+		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-empty', 'is-error'];
+
+		let lineChart = null;
+		let inFlight = null;
+		let lastDetail = null;
+
+		function setState(state) {
+			STATE_CLASSES.forEach(function (cls) {
+				section.classList.toggle(cls, cls === `is-${state}`);
+			});
 		}
 
-		const formData = new FormData();
-		formData.append('action', 'mailchimp_sf_get_analytics');
-		formData.append('nonce', window.mailchimpSFAnalytics.nonce);
-		formData.append('list_id', detail.listId);
-		formData.append('start_date', detail.from);
-		formData.append('end_date', detail.to);
+		function colorForIndex(i) {
+			return SERIES_COLORS[i % SERIES_COLORS.length];
+		}
 
-		fetch(window.mailchimpSFAnalytics.ajax_url, {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin',
-		})
-			.then(function (response) {
-				return response.json();
-			})
-			.then(function (response) {
-				if (!response.success) {
-					return;
+		function setOverlay(text) {
+			if (overlayEl) {
+				overlayEl.textContent = text || '';
+			}
+		}
+
+		function setSubtitle(text) {
+			if (dateRangeEl) {
+				dateRangeEl.textContent = text || '';
+			}
+		}
+
+		function destroyCharts() {
+			if (lineChart) {
+				lineChart.destroy();
+				lineChart = null;
+			}
+		}
+
+		function formatRangeLabel(from, to) {
+			try {
+				const fromDate = new Date(`${from}T00:00:00`);
+				const toDate = new Date(`${to}T00:00:00`);
+				const fmt = new Intl.DateTimeFormat(undefined, {
+					month: 'short',
+					day: 'numeric',
+					year: 'numeric',
+				});
+				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+			} catch (err) {
+				return `${from} – ${to}`;
+			}
+		}
+
+		function setErrorBanner(visible, message) {
+			if (!errorBannerEl) {
+				return;
+			}
+			if (visible) {
+				if (errorMessageEl) {
+					errorMessageEl.textContent = message || STRINGS.errorDefault;
 				}
+				errorBannerEl.hidden = false;
+			} else {
+				errorBannerEl.hidden = true;
+			}
+		}
 
-				const { data } = response;
-				contentArea.innerHTML = JSON.stringify(data);
+		function showLoading() {
+			destroyCharts();
+			setErrorBanner(false);
+			setOverlay(STRINGS.loadingOverlay);
+			setSubtitle(STRINGS.loadingSubtitle);
+			setState('loading');
+		}
+
+		function showEmpty() {
+			destroyCharts();
+			setErrorBanner(false);
+			setOverlay(STRINGS.emptyOverlay);
+			setSubtitle(STRINGS.emptySubtitle);
+			setState('empty');
+		}
+
+		function showError(message) {
+			destroyCharts();
+			setOverlay('');
+			if (lastDetail && lastDetail.from && lastDetail.to) {
+				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
+			}
+			setErrorBanner(true, message);
+			setState('error');
+		}
+
+		function renderLine(labels, series) {
+			if (!lineCanvas || typeof window.Chart === 'undefined') {
+				return;
+			}
+
+			const datasets = series.map(function (s, i) {
+				const color = colorForIndex(i);
+				return {
+					label: s.label,
+					data: s.values,
+					borderColor: color.border,
+					backgroundColor: color.fill,
+					borderWidth: 2,
+					pointBackgroundColor: color.border,
+					pointBorderColor: color.border,
+					pointRadius: 3,
+					pointHoverRadius: 5,
+					tension: 0.1,
+					fill: false,
+				};
+			});
+
+			lineChart = new window.Chart(lineCanvas.getContext('2d'), {
+				type: 'line',
+				data: { labels, datasets },
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					interaction: { mode: 'index', intersect: false },
+					plugins: {
+						legend: {
+							position: 'top',
+							align: 'center',
+							labels: {
+								usePointStyle: true,
+								pointStyle: 'rectRounded',
+								boxWidth: 10,
+								boxHeight: 10,
+								padding: 16,
+								color: COLORS.text,
+							},
+						},
+						tooltip: {
+							callbacks: {
+								label(ctx) {
+									const value = ctx.parsed.y || 0;
+									return `${ctx.dataset.label}: ${value}`;
+								},
+							},
+						},
+					},
+					scales: {
+						x: {
+							grid: {
+								color: COLORS.gridLine,
+								drawBorder: false,
+								drawTicks: false,
+							},
+							ticks: { color: COLORS.text },
+						},
+						y: {
+							beginAtZero: true,
+							grid: { color: COLORS.gridLine, drawBorder: false },
+							ticks: { color: COLORS.text, precision: 0 },
+						},
+					},
+				},
+			});
+		}
+
+		function render(payload, fromLabel, toLabel) {
+			destroyCharts();
+			setErrorBanner(false);
+
+			const series = Array.isArray(payload.series) ? payload.series : [];
+			const totalSubs = payload.total_subs || 0;
+
+			if (series.length === 0 || totalSubs === 0) {
+				showEmpty();
+				return;
+			}
+
+			setSubtitle(formatRangeLabel(fromLabel, toLabel));
+			setOverlay('');
+			setState('ready');
+			renderLine(payload.labels || [], series);
+		}
+
+		function fetchPerformance(detail) {
+			if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
+				showError();
+				return;
+			}
+			if (!detail || !detail.listId || !detail.from || !detail.to) {
+				showEmpty();
+				return;
+			}
+
+			lastDetail = {
+				listId: detail.listId,
+				from: detail.from,
+				to: detail.to,
+			};
+
+			if (inFlight && typeof inFlight.abort === 'function') {
+				inFlight.abort();
+			}
+
+			const controller =
+				typeof window.AbortController !== 'undefined' ? new AbortController() : null;
+			inFlight = controller;
+
+			const formData = new FormData();
+			formData.append('action', 'mailchimp_sf_get_form_performance');
+			formData.append('nonce', window.mailchimpSFAnalytics.nonce);
+			formData.append('list_id', detail.listId);
+			formData.append('date_from', detail.from);
+			formData.append('date_to', detail.to);
+
+			showLoading();
+
+			fetch(window.mailchimpSFAnalytics.ajax_url, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin',
+				signal: controller ? controller.signal : undefined,
 			})
-			.catch(function () {});
-	}
+				.then(function (response) {
+					return response.json().catch(function () {
+						return null;
+					});
+				})
+				.then(function (body) {
+					inFlight = null;
+					if (!body || body.success !== true || !body.data) {
+						const message =
+							body && body.data && body.data.message ? body.data.message : '';
+						showError(message);
+						return;
+					}
+					render(body.data, detail.from, detail.to);
+				})
+				.catch(function (err) {
+					if (err && err.name === 'AbortError') {
+						return;
+					}
+					inFlight = null;
+					showError();
+				});
+		}
 
-	// Listen for analytics refresh events.
-	document.addEventListener('mailchimp-analytics-refresh', function (e) {
-		fetchAnalyticsData(e.detail);
-	});
+		if (retryBtnEl) {
+			retryBtnEl.addEventListener('click', function () {
+				if (lastDetail) {
+					fetchPerformance(lastDetail);
+				}
+			});
+		}
+
+		document.addEventListener('mailchimp-analytics-refresh', function (e) {
+			fetchPerformance(e.detail);
+		});
+	})();
 
 	/**
 	 * Subscriber change over time — diverging bar + totals donut.
