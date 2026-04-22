@@ -367,25 +367,25 @@ import { __ } from '@wordpress/i18n';
 			return;
 		}
 
-		const lineCanvas = document.getElementById('mailchimp-sf-fp-line');
+		const chartCanvas = document.getElementById('mailchimp-sf-fp-line');
 		const dateRangeEl = document.getElementById('mailchimp-sf-fp-daterange');
 		const overlayEl = document.getElementById('mailchimp-sf-fp-overlay');
 		const errorBannerEl = document.getElementById('mailchimp-sf-fp-error-banner');
 		const errorMessageEl = document.getElementById('mailchimp-sf-fp-error-message');
 		const retryBtnEl = document.getElementById('mailchimp-sf-fp-error-retry');
 
-		const SERIES_COLORS = [
-			{ border: '#2B72FB', fill: 'rgba(43, 114, 251, 0.12)' },
-			{ border: '#17B890', fill: 'rgba(23, 184, 144, 0.12)' },
-			{ border: '#F59E0B', fill: 'rgba(245, 158, 11, 0.12)' },
-			{ border: '#8B5CF6', fill: 'rgba(139, 92, 246, 0.12)' },
-			{ border: '#EC4899', fill: 'rgba(236, 72, 153, 0.12)' },
-			{ border: '#14B8A6', fill: 'rgba(20, 184, 166, 0.12)' },
-		];
-
 		const COLORS = {
+			viewsFill: '#3B82F6',
+			viewsBorder: '#2563EB',
+			submissionsFill: '#2DD4BF',
+			submissionsBorder: '#14B8A6',
+			rateBorder: '#EAB308',
 			gridLine: 'rgba(0, 0, 0, 0.06)',
 			text: '#6B7280',
+			// Legend chip fills — translucent version of each bar color so the
+			// legend markers match the outlined-chip style from the Figma spec.
+			viewsLegendFill: 'rgba(59, 130, 246, 0.35)',
+			submissionsLegendFill: 'rgba(45, 212, 191, 0.35)',
 		};
 
 		const STRINGS = {
@@ -397,11 +397,14 @@ import { __ } from '@wordpress/i18n';
 				'Unable to load data for the selected date range. Please check your connection and try again.',
 				'mailchimp',
 			),
+			views: __('Form Views', 'mailchimp'),
+			submissions: __('Submissions', 'mailchimp'),
+			conversionRate: __('Conversion Rate', 'mailchimp'),
 		};
 
 		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-empty', 'is-error'];
 
-		let lineChart = null;
+		let chart = null;
 		let inFlight = null;
 		let lastDetail = null;
 
@@ -409,10 +412,6 @@ import { __ } from '@wordpress/i18n';
 			STATE_CLASSES.forEach(function (cls) {
 				section.classList.toggle(cls, cls === `is-${state}`);
 			});
-		}
-
-		function colorForIndex(i) {
-			return SERIES_COLORS[i % SERIES_COLORS.length];
 		}
 
 		function setOverlay(text) {
@@ -428,9 +427,9 @@ import { __ } from '@wordpress/i18n';
 		}
 
 		function destroyCharts() {
-			if (lineChart) {
-				lineChart.destroy();
-				lineChart = null;
+			if (chart) {
+				chart.destroy();
+				chart = null;
 			}
 		}
 
@@ -489,31 +488,74 @@ import { __ } from '@wordpress/i18n';
 			setState('error');
 		}
 
-		function renderLine(labels, series) {
-			if (!lineCanvas || typeof window.Chart === 'undefined') {
+		/**
+		 * @param {Array} rows Payload `data` rows from the API.
+		 */
+		function renderChart(rows) {
+			if (!chartCanvas || typeof window.Chart === 'undefined') {
 				return;
 			}
 
-			const datasets = series.map(function (s, i) {
-				const color = colorForIndex(i);
-				return {
-					label: s.label,
-					data: s.values,
-					borderColor: color.border,
-					backgroundColor: color.fill,
-					borderWidth: 2,
-					pointBackgroundColor: color.border,
-					pointBorderColor: color.border,
-					pointRadius: 3,
-					pointHoverRadius: 5,
-					tension: 0.1,
-					fill: false,
-				};
+			const labels = rows.map(function (r) {
+				return r.label;
+			});
+			const views = rows.map(function (r) {
+				return r.views || 0;
+			});
+			const submissions = rows.map(function (r) {
+				return r.submissions || 0;
+			});
+			const rate = rows.map(function (r) {
+				return r.conversion_rate || 0;
 			});
 
-			lineChart = new window.Chart(lineCanvas.getContext('2d'), {
-				type: 'line',
-				data: { labels, datasets },
+			chart = new window.Chart(chartCanvas.getContext('2d'), {
+				type: 'bar',
+				data: {
+					labels,
+					datasets: [
+						{
+							type: 'bar',
+							label: STRINGS.views,
+							data: views,
+							backgroundColor: COLORS.viewsFill,
+							borderColor: COLORS.viewsBorder,
+							borderWidth: 0,
+							borderRadius: 0,
+							maxBarThickness: 22,
+							order: 2,
+							yAxisID: 'y',
+						},
+						{
+							type: 'bar',
+							label: STRINGS.submissions,
+							data: submissions,
+							backgroundColor: COLORS.submissionsFill,
+							borderColor: COLORS.submissionsBorder,
+							borderWidth: 0,
+							borderRadius: 0,
+							maxBarThickness: 22,
+							order: 2,
+							yAxisID: 'y',
+						},
+						{
+							type: 'line',
+							label: STRINGS.conversionRate,
+							data: rate,
+							borderColor: COLORS.rateBorder,
+							backgroundColor: COLORS.rateBorder,
+							borderWidth: 2,
+							pointBackgroundColor: COLORS.rateBorder,
+							pointBorderColor: COLORS.rateBorder,
+							pointRadius: 3,
+							pointHoverRadius: 5,
+							tension: 0.1,
+							fill: false,
+							order: 1,
+							yAxisID: 'y1',
+						},
+					],
+				},
 				options: {
 					responsive: true,
 					maintainAspectRatio: false,
@@ -524,17 +566,41 @@ import { __ } from '@wordpress/i18n';
 							align: 'center',
 							labels: {
 								usePointStyle: true,
-								pointStyle: 'rectRounded',
-								boxWidth: 10,
-								boxHeight: 10,
-								padding: 16,
+								pointStyleWidth: 36,
+								boxHeight: 20,
+								padding: 24,
 								color: COLORS.text,
+								generateLabels(ci) {
+									const legendFills = [
+										COLORS.viewsLegendFill,
+										COLORS.submissionsLegendFill,
+									];
+									return ci.data.datasets.map(function (dataset, i) {
+										const isLine = dataset.type === 'line';
+										return {
+											text: dataset.label,
+											fillStyle: isLine
+												? 'transparent'
+												: legendFills[i] || dataset.backgroundColor,
+											strokeStyle: isLine
+												? dataset.borderColor
+												: dataset.backgroundColor,
+											lineWidth: 2,
+											pointStyle: isLine ? 'line' : 'rect',
+											hidden: !ci.isDatasetVisible(i),
+											datasetIndex: i,
+										};
+									});
+								},
 							},
 						},
 						tooltip: {
 							callbacks: {
 								label(ctx) {
 									const value = ctx.parsed.y || 0;
+									if (ctx.dataset.yAxisID === 'y1') {
+										return `${ctx.dataset.label}: ${value.toFixed(1)}%`;
+									}
 									return `${ctx.dataset.label}: ${value}`;
 								},
 							},
@@ -550,9 +616,25 @@ import { __ } from '@wordpress/i18n';
 							ticks: { color: COLORS.text },
 						},
 						y: {
+							type: 'linear',
+							position: 'left',
 							beginAtZero: true,
 							grid: { color: COLORS.gridLine, drawBorder: false },
 							ticks: { color: COLORS.text, precision: 0 },
+						},
+						y1: {
+							type: 'linear',
+							position: 'right',
+							beginAtZero: true,
+							max: 110,
+							grid: { drawOnChartArea: false },
+							ticks: {
+								color: COLORS.text,
+								stepSize: 10,
+								callback(value) {
+									return value > 100 ? '' : `${value}%`;
+								},
+							},
 						},
 					},
 				},
@@ -563,10 +645,12 @@ import { __ } from '@wordpress/i18n';
 			destroyCharts();
 			setErrorBanner(false);
 
-			const series = Array.isArray(payload.series) ? payload.series : [];
-			const totalSubs = payload.total_subs || 0;
+			const rows = Array.isArray(payload.data) ? payload.data : [];
+			const totalViews = payload.total_views || 0;
+			const totalSubs = payload.total_submissions || 0;
 
-			if (series.length === 0 || totalSubs === 0) {
+			// Empty when there's literally no tracked activity for the range.
+			if (rows.length === 0 || (totalViews === 0 && totalSubs === 0)) {
 				showEmpty();
 				return;
 			}
@@ -574,7 +658,7 @@ import { __ } from '@wordpress/i18n';
 			setSubtitle(formatRangeLabel(fromLabel, toLabel));
 			setOverlay('');
 			setState('ready');
-			renderLine(payload.labels || [], series);
+			renderChart(rows);
 		}
 
 		function fetchPerformance(detail) {

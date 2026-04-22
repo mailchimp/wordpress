@@ -121,7 +121,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 							<?php esc_html_e( 'Form Activity', 'mailchimp' ); ?>
 						</h3>
 						<p class="mailchimp-sf-fp__chart-subtitle">
-							<?php esc_html_e( 'Shows how many new subscribers each form generated', 'mailchimp' ); ?>
+							<?php esc_html_e( 'Views, submissions, and conversion rate over time', 'mailchimp' ); ?>
 						</p>
 					</div>
 
@@ -172,7 +172,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 									id="mailchimp-sf-fp-line"
 									class="mailchimp-sf-fp__canvas"
 									role="img"
-									aria-label="<?php esc_attr_e( 'Form submissions line chart', 'mailchimp' ); ?>"
+									aria-label="<?php esc_attr_e( 'Form views, submissions, and conversion rate chart', 'mailchimp' ); ?>"
 								></canvas>
 								<div
 									id="mailchimp-sf-fp-overlay"
