@@ -71,7 +71,7 @@ class Mailchimp_Form_Performance {
 	 * @param string $date_to   `Y-m-d`.
 	 * @return array|null Rows of `{ event_date, views, submissions }`, or null on DB error.
 	 */
-	public function fetch_rows( string $list_id, string $date_from, string $date_to ): ?array {
+	public function fetch_rows( string $list_id, string $date_from, string $date_to ) {
 		global $wpdb;
 
 		$table_name = Mailchimp_Analytics_Data::get_table_name();
