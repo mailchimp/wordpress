@@ -5,6 +5,12 @@ const {
 	wpJsonSuccess,
 	wpJsonError,
 } = require('../../support/functions/subscriberActivityAjax');
+const {
+	isFormPerformanceRequest,
+	buildSuccessData: buildFormPerformanceData,
+	wpJsonSuccess: wpJsonSuccessFp,
+	wpJsonError: wpJsonErrorFp,
+} = require('../../support/functions/formPerformanceAjax');
 
 describe('Analytics admin page', () => {
 	before(() => {
@@ -281,6 +287,162 @@ describe('Analytics admin page', () => {
 				cy.get('#mailchimp-sf-date-range').select('7');
 				cy.get('#mailchimp-sf-date-picker-apply').click();
 				cy.wait('@subscriberActivity');
+				cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
+			});
+		});
+
+		describe('Form performance chart (stubbed)', () => {
+			const analyticsUrl = '/wp-admin/admin.php?page=mailchimp_sf_analytics';
+
+			function stubFormPerformance(replyFn) {
+				cy.intercept('POST', '**/admin-ajax.php', (req) => {
+					if (!isFormPerformanceRequest(req)) {
+						req.continue();
+						return;
+					}
+					const payload = typeof replyFn === 'function' ? replyFn(req) : replyFn;
+					req.reply({
+						statusCode: 200,
+						headers: { 'content-type': 'application/json; charset=UTF-8' },
+						body: payload,
+					});
+				}).as('formPerformance');
+			}
+
+			it('Form performance section shell (title, subtitle, canvas)', () => {
+				stubFormPerformance(() => wpJsonSuccessFp(buildFormPerformanceData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('be.visible');
+				cy.get('#mailchimp-sf-fp-title').contains('Forms performance over time');
+				cy.get('.mailchimp-sf-fp__chart-title').contains('Form Activity');
+				cy.get('#mailchimp-sf-fp-line').should('exist');
+			});
+
+			it('Success payload shows ready state', () => {
+				stubFormPerformance(() =>
+					wpJsonSuccessFp(
+						buildFormPerformanceData({
+							total_views: 500,
+							total_submissions: 150,
+							total_conversion_rate: 30.0,
+							data: [
+								{
+									key: '2026-04-01',
+									label: 'Apr 1',
+									views: 500,
+									submissions: 150,
+									conversion_rate: 30.0,
+								},
+							],
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-ready');
+				cy.get('[data-section="form-performance"]').should(
+					'not.have.class',
+					'is-loading',
+				);
+				cy.get('[data-section="form-performance"]').should('not.have.class', 'is-error');
+			});
+
+			it('Empty data shows empty state', () => {
+				stubFormPerformance(() =>
+					wpJsonSuccessFp(
+						buildFormPerformanceData({
+							data: [],
+							total_views: 0,
+							total_submissions: 0,
+							total_conversion_rate: 0,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-empty');
+				cy.get('#mailchimp-sf-fp-daterange').contains(
+					'No submissions recorded for the selected date range',
+				);
+				cy.get('#mailchimp-sf-fp-overlay').contains(
+					'No data available for this date range',
+				);
+			});
+
+			it('Zero views and zero submissions shows empty state even when rows exist', () => {
+				stubFormPerformance(() =>
+					wpJsonSuccessFp(
+						buildFormPerformanceData({
+							data: [
+								{
+									key: '2026-04-01',
+									label: 'Apr 1',
+									views: 0,
+									submissions: 0,
+									conversion_rate: 0,
+								},
+							],
+							total_views: 0,
+							total_submissions: 0,
+							total_conversion_rate: 0,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-empty');
+			});
+
+			it('API error shows error banner', () => {
+				stubFormPerformance(() => wpJsonErrorFp('Form performance stub failure'));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-fp-error-banner').should('be.visible');
+				cy.get('#mailchimp-sf-fp-error-message').contains('Form performance stub failure');
+			});
+
+			it('Retry after error loads success', () => {
+				let n = 0;
+				stubFormPerformance(() => {
+					n += 1;
+					if (n === 1) {
+						return wpJsonErrorFp('First request fails');
+					}
+					return wpJsonSuccessFp(buildFormPerformanceData());
+				});
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-fp-error-retry').click();
+				cy.wait('@formPerformance');
+				cy.get('[data-section="form-performance"]').should('have.class', 'is-ready');
+				cy.get('#mailchimp-sf-fp-error-banner').should('have.attr', 'hidden');
+			});
+
+			it('Changing list filter triggers another form performance request', function () {
+				stubFormPerformance(() => wpJsonSuccessFp(buildFormPerformanceData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('#mailchimp-sf-list-filter option').then(function ($options) {
+					const values = [...$options].map((o) => o.value).filter(Boolean);
+					if (values.length < 2) {
+						this.skip();
+					}
+					cy.get('#mailchimp-sf-list-filter').select(values[1]);
+					cy.wait('@formPerformance');
+				});
+			});
+
+			it('Applying a different date preset triggers another form performance request', () => {
+				stubFormPerformance(() => wpJsonSuccessFp(buildFormPerformanceData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('#mailchimp-sf-date-picker-trigger').click();
+				cy.get('#mailchimp-sf-date-range').select('7');
+				cy.get('#mailchimp-sf-date-picker-apply').click();
+				cy.wait('@formPerformance');
 				cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
 			});
 		});
