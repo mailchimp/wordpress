@@ -54,7 +54,7 @@ class Mailchimp_Form_Performance {
 
 		$rows = $this->fetch_rows( $list_id, $date_from, $date_to );
 
-		if ( ! is_array( $rows ) ) {
+		if ( null === $rows ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'Unable to load form analytics.', 'mailchimp' ) ), 500 );
 		}
 
@@ -64,14 +64,14 @@ class Mailchimp_Form_Performance {
 	}
 
 	/**
-	 * Fetch raw daily rows from the analytics table grouped by form_id and date.
+	 * Fetch daily totals from the analytics table for the selected list/range.
 	 *
 	 * @param string $list_id   List ID.
 	 * @param string $date_from `Y-m-d`.
 	 * @param string $date_to   `Y-m-d`.
-	 * @return array Rows of `{ form_id, event_date, views, submissions }`.
+	 * @return array|null Rows of `{ event_date, views, submissions }`, or null on DB error.
 	 */
-	public function fetch_rows( string $list_id, string $date_from, string $date_to ): array {
+	public function fetch_rows( string $list_id, string $date_from, string $date_to ): ?array {
 		global $wpdb;
 
 		$table_name = Mailchimp_Analytics_Data::get_table_name();
@@ -79,10 +79,10 @@ class Mailchimp_Form_Performance {
 		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$results = $wpdb->get_results(
 			$wpdb->prepare(
-				"SELECT form_id, event_date, SUM(views) AS views, SUM(submissions) AS submissions
+				"SELECT event_date, SUM(views) AS views, SUM(submissions) AS submissions
 				FROM {$table_name}
 				WHERE list_id = %s AND event_date BETWEEN %s AND %s
-				GROUP BY form_id, event_date
+				GROUP BY event_date
 				ORDER BY event_date ASC",
 				$list_id,
 				$date_from,
@@ -92,15 +92,16 @@ class Mailchimp_Form_Performance {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
+		if ( null === $results || ! empty( $wpdb->last_error ) ) {
+			return null;
+		}
+
 		return is_array( $results ) ? $results : array();
 	}
 
 	/**
-	 * Filter raw rows into per-form series bucketed by interval.
-	 *
-	 * Missing bucket/form intersections are back-filled with zeros so every
-	 * series has the same length as the chart's x-axis — keeping line charts
-	 * aligned even when a given form had no submissions on some days.
+	 * Bucket daily rows into the chart's interval, back-filling missing days
+	 * with zeros so every bucket on the x-axis has a value
 	 *
 	 * @param array  $rows      Rows from `fetch_rows()`.
 	 * @param string $date_from `Y-m-d`.
@@ -115,27 +116,29 @@ class Mailchimp_Form_Performance {
 		$requested_days = (int) $from_dt->diff( $to_dt )->days + 1;
 		$interval       = $this->get_interval( $requested_days );
 
-		// Build the complete ordered set of bucket keys covering the range so
-		// every form series aligns with the same x-axis labels.
-		$labels_by_key = array();
-		$one_day       = new DateInterval( 'P1D' );
-		$cursor        = $from_dt;
+		// Build the complete ordered set of bucket keys covering the range.
+		$buckets = array();
+		$one_day = new DateInterval( 'P1D' );
+		$cursor  = $from_dt;
 		while ( $cursor <= $to_dt ) {
-			$date                   = $cursor->format( 'Y-m-d' );
-			$key                    = $this->get_bucket_key( $date, $interval, $tz );
-			$labels_by_key[ $key ]  = $this->get_bucket_label( $date, $interval, $tz );
-			$cursor                 = $cursor->add( $one_day );
+			$date = $cursor->format( 'Y-m-d' );
+			$key  = $this->get_bucket_key( $date, $interval, $tz );
+			if ( ! isset( $buckets[ $key ] ) ) {
+				$buckets[ $key ] = array(
+					'key'         => $key,
+					'label'       => $this->get_bucket_label( $date, $interval, $tz ),
+					'views'       => 0,
+					'submissions' => 0,
+				);
+			}
+			$cursor = $cursor->add( $one_day );
 		}
-		ksort( $labels_by_key );
+		ksort( $buckets );
 
-		$empty_buckets = array_fill_keys( array_keys( $labels_by_key ), 0 );
+		$total_views       = 0;
+		$total_submissions = 0;
 
-		// Group rows by form_id, summing submissions into the appropriate bucket.
-		$forms      = array();
-		$total_subs = 0;
-		$total_views = 0;
 		foreach ( $rows as $row ) {
-			$form_id     = isset( $row['form_id'] ) ? (string) $row['form_id'] : '';
 			$date        = isset( $row['event_date'] ) ? (string) $row['event_date'] : '';
 			$views       = isset( $row['views'] ) ? (int) $row['views'] : 0;
 			$submissions = isset( $row['submissions'] ) ? (int) $row['submissions'] : 0;
@@ -145,78 +148,44 @@ class Mailchimp_Form_Performance {
 			}
 
 			$key = $this->get_bucket_key( $date, $interval, $tz );
-			if ( ! array_key_exists( $key, $empty_buckets ) ) {
+			if ( ! isset( $buckets[ $key ] ) ) {
 				continue;
 			}
 
-			if ( ! isset( $forms[ $form_id ] ) ) {
-				$forms[ $form_id ] = array(
-					'form_id'           => $form_id,
-					'label'             => $this->get_form_label( $form_id ),
-					'values'            => $empty_buckets,
-					'total_submissions' => 0,
-					'total_views'       => 0,
-				);
-			}
-
-			$forms[ $form_id ]['values'][ $key ]    += $submissions;
-			$forms[ $form_id ]['total_submissions'] += $submissions;
-			$forms[ $form_id ]['total_views']       += $views;
-
-			$total_subs  += $submissions;
-			$total_views += $views;
+			$buckets[ $key ]['views']       += $views;
+			$buckets[ $key ]['submissions'] += $submissions;
+			$total_views                    += $views;
+			$total_submissions              += $submissions;
 		}
 
-		// Convert each form's bucket map into an ordered numeric array
-		$series = array();
-		foreach ( $forms as $form ) {
-			$series[] = array(
-				'form_id'           => $form['form_id'],
-				'label'             => $form['label'],
-				'total_submissions' => $form['total_submissions'],
-				'total_views'       => $form['total_views'],
-				'values'            => array_values( $form['values'] ),
-			);
+		$data = array();
+		foreach ( $buckets as $bucket ) {
+			$bucket['conversion_rate'] = $this->conversion_rate( $bucket['submissions'], $bucket['views'] );
+			$data[]                    = $bucket;
 		}
-
-		usort(
-			$series,
-			function ( $a, $b ) {
-				return $b['total_submissions'] <=> $a['total_submissions'];
-			}
-		);
 
 		return array(
-			'interval'    => $interval,
-			'labels'      => array_values( $labels_by_key ),
-			'series'      => $series,
-			'total_subs'  => $total_subs,
-			'total_views' => $total_views,
+			'interval'              => $interval,
+			'data'                  => $data,
+			'total_views'           => $total_views,
+			'total_submissions'     => $total_submissions,
+			'total_conversion_rate' => $this->conversion_rate( $total_submissions, $total_views ),
 		);
 	}
 
 	/**
-	 * Human-readable label for a form_id.
+	 * Submissions ÷ views, as a percentage (0–100, two decimals).
 	 *
-	 * Per-form identification is tracked via `form_id` in the analytics table
-	 * but the current tracking layer (shortcode + block forms) writes empty
-	 * IDs, so existing rows collapse into a single "All forms" series. Once
-	 * per-form tracking lands, this method is the single place to resolve a
-	 * form ID to its display label (block title / shortcode caption / etc.).
-	 *
-	 * @param string $form_id Form identifier.
-	 * @return string
+	 * @param int $submissions Submission count.
+	 * @param int $views       View count.
+	 * @return float
 	 */
-	private function get_form_label( string $form_id ): string {
-		if ( '' === $form_id ) {
-			return esc_html__( 'All forms', 'mailchimp' );
+	private function conversion_rate( int $submissions, int $views ): float {
+		if ( $views <= 0 ) {
+			return 0.0;
 		}
-
-		return sprintf(
-			/* translators: %s: form identifier */
-			esc_html__( 'Form %s', 'mailchimp' ),
-			$form_id
-		);
+		$rate = ( $submissions / $views ) * 100;
+		return round( min( 100.0, $rate ), 2 );
 	}
 
 	/**
