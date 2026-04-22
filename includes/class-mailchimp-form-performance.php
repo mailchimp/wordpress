@@ -1,6 +1,6 @@
 <?php
 /**
- * Form performance (per-form submissions over time) data provider for the
+ * Form performance (list-level submissions over time) data provider for the
  * Analytics page.
  *
  * @package Mailchimp
