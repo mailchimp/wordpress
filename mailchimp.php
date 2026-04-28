@@ -6,7 +6,7 @@
  * Text Domain:       mailchimp
  * Version:           2.0.1
  * Requires at least: 6.4
- * Requires PHP:      7.0
+ * Requires PHP:      7.4
  * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
@@ -109,6 +109,9 @@ $block->init();
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submission.php';
 $form_submission = new Mailchimp_Form_Submission();
 $form_submission->init();
+
+// Shared bucketing helpers used by both analytics chart data providers.
+require_once plugin_dir_path( __FILE__ ) . 'includes/trait-mailchimp-analytics-bucketing.php';
 
 // Init Analytics page.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.php';
