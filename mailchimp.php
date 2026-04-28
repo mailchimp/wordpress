@@ -133,6 +133,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-perfor
 $form_performance = new Mailchimp_Form_Performance();
 $form_performance->init();
 
+// Audience overview KPI block data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-audience-overview.php';
+$audience_overview = new Mailchimp_Audience_Overview();
+$audience_overview->init();
+
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
