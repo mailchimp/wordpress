@@ -175,19 +175,4 @@ class Mailchimp_Form_Performance {
 		);
 	}
 
-	/**
-	 * Submissions ÷ views, as a percentage (0–100, two decimals).
-	 *
-	 * @param int $submissions Submission count.
-	 * @param int $views       View count.
-	 * @return float
-	 */
-	private function conversion_rate( int $submissions, int $views ): float {
-		if ( $views <= 0 ) {
-			return 0.0;
-		}
-		$rate = ( $submissions / $views ) * 100;
-		return round( min( 100.0, $rate ), 2 );
-	}
-
 }
