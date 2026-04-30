@@ -428,10 +428,10 @@ import { __ } from '@wordpress/i18n';
 		const retryBtnEl = document.getElementById('mailchimp-sf-sa-error-retry');
 
 		const COLORS = {
-			newFill: 'rgba(96, 165, 250, 0.85)',
-			newBorder: '#3B82F6',
-			unsubFill: 'rgba(248, 113, 113, 0.85)',
-			unsubBorder: '#EF4444',
+			newFill: '#2b72fb',
+			newBorder: '#2b72fb',
+			unsubFill: '#fa4b42',
+			unsubBorder: '#fa4b42',
 			gridLine: 'rgba(0, 0, 0, 0.06)',
 			zeroLine: 'rgba(0, 0, 0, 0.25)',
 			text: '#6B7280',

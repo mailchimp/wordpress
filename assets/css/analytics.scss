@@ -76,7 +76,7 @@ $mq-xs: 600px;
 	gap: 8px;
 	height: 40px;
 	justify-content: space-between;
-	min-width: 220px;
+	min-width: 230px;
 	padding: 0 10px;
 	text-align: left;
 	transition: all 0.2s;
@@ -716,7 +716,7 @@ $mq-xs: 600px;
 	.mailchimp-sf-date-picker-popover {
 		left: 0;
 		min-width: auto;
-		width: calc(100vw - 60px);
+		width: calc(100vw - 84px);
 	}
 
 	.mailchimp-sf-date-picker-popover-row {
