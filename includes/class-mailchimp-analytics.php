@@ -97,5 +97,14 @@ class Mailchimp_Analytics {
 			MCSF_VER,
 			true
 		);
+
+		wp_localize_script(
+			'mailchimp_sf_analytics_js',
+			'mailchimpSFAnalytics',
+			array(
+				'dateFormat' => get_option( 'date_format', 'Y-m-d' ),
+				'startOfWeek' => (int) get_option( 'start_of_week', 0 ),
+			)
+		);
 	}
 }
