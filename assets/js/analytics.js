@@ -223,6 +223,13 @@ import '../css/analytics.css';
 			return;
 		}
 
+		if (dateFrom.value) {
+			fromDatepicker.setDate(dateFrom.value);
+		}
+		if (dateTo.value) {
+			toDatepicker.setDate(dateTo.value);
+		}
+
 		const fromIso = getDatepickerIso(fromDatepicker);
 		const toIso = getDatepickerIso(toDatepicker);
 		if (!fromIso || !toIso) {

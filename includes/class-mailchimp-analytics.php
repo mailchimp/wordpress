@@ -102,7 +102,7 @@ class Mailchimp_Analytics {
 			'mailchimp_sf_analytics_js',
 			'mailchimpSFAnalytics',
 			array(
-				'dateFormat' => get_option( 'date_format', 'Y-m-d' ),
+				'dateFormat'  => get_option( 'date_format', 'Y-m-d' ),
 				'startOfWeek' => (int) get_option( 'start_of_week', 0 ),
 			)
 		);
