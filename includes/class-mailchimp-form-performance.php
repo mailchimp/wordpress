@@ -18,6 +18,16 @@ class Mailchimp_Form_Performance {
 	use Mailchimp_Analytics_Bucketing;
 
 	/**
+	 * Transient key prefix for the cached total subscriber count.
+	 */
+	const SUBSCRIBERS_CACHE_PREFIX = 'mailchimp_sf_total_subscribers_';
+
+	/**
+	 * Transient TTL for the cached total subscriber count.
+	 */
+	const SUBSCRIBERS_CACHE_TTL = 15 * MINUTE_IN_SECONDS;
+
+	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -62,7 +72,48 @@ class Mailchimp_Form_Performance {
 
 		$response = $this->aggregate( $rows, $date_from, $date_to );
 
+		$response['total_subscribers'] = $this->fetch_total_subscribers( $list_id );
+
 		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Fetch (and cache) the current total subscriber count for a list.
+	 *
+	 * @param string $list_id List ID.
+	 * @return int|null
+	 */
+	public function fetch_total_subscribers( string $list_id ): ?int {
+		$cache_key = self::SUBSCRIBERS_CACHE_PREFIX . md5( $list_id );
+		$cached    = get_transient( $cache_key );
+
+		if ( false !== $cached ) {
+			return (int) $cached;
+		}
+
+		$api = mailchimp_sf_get_api();
+		if ( ! $api ) {
+			return null;
+		}
+
+		$response = $api->get(
+			'lists/' . rawurlencode( $list_id ),
+			1,
+			array( 'stats.member_count' )
+		);
+
+		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
+			return null;
+		}
+
+		if ( ! isset( $response['stats']['member_count'] ) ) {
+			return null;
+		}
+
+		$count = (int) $response['stats']['member_count'];
+		set_transient( $cache_key, $count, self::SUBSCRIBERS_CACHE_TTL );
+
+		return $count;
 	}
 
 	/**
