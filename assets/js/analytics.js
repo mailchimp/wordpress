@@ -663,9 +663,24 @@ import { __ } from '@wordpress/i18n';
 			renderChart(rows);
 		}
 
+		/**
+		 * Custom event so other analytics modules (Audience
+		 * Overview, etc.) can render from the same fetch without making
+		 * their own AJAX call.
+		 *
+		 * @param {string} name Event suffix — appended to `mailchimp-analytics-`.
+		 * @param {object} eventDetail Payload passed as the event's `detail`.
+		 */
+		function broadcast(name, eventDetail) {
+			document.dispatchEvent(
+				new CustomEvent(`mailchimp-analytics-${name}`, { detail: eventDetail }),
+			);
+		}
+
 		function fetchPerformance(detail) {
 			if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
 				showError();
+				broadcast('error', { message: STRINGS.errorDefault });
 				return;
 			}
 			if (!detail || !detail.listId || !detail.from || !detail.to) {
@@ -695,6 +710,7 @@ import { __ } from '@wordpress/i18n';
 			formData.append('date_to', detail.to);
 
 			showLoading();
+			broadcast('loading', { from: detail.from, to: detail.to });
 
 			fetch(window.mailchimpSFAnalytics.ajax_url, {
 				method: 'POST',
@@ -713,9 +729,15 @@ import { __ } from '@wordpress/i18n';
 						const message =
 							body && body.data && body.data.message ? body.data.message : '';
 						showError(message);
+						broadcast('error', { message: message || STRINGS.errorDefault });
 						return;
 					}
 					render(body.data, detail.from, detail.to);
+					broadcast('loaded', {
+						data: body.data,
+						from: detail.from,
+						to: detail.to,
+					});
 				})
 				.catch(function (err) {
 					if (err && err.name === 'AbortError') {
@@ -723,6 +745,7 @@ import { __ } from '@wordpress/i18n';
 					}
 					inFlight = null;
 					showError();
+					broadcast('error', { message: STRINGS.errorDefault });
 				});
 		}
 
@@ -1190,7 +1213,6 @@ import { __ } from '@wordpress/i18n';
 
 		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-error'];
 
-		let inFlight = null;
 		let lastDetail = null;
 
 		function setState(state) {
@@ -1293,79 +1315,41 @@ import { __ } from '@wordpress/i18n';
 			setState('ready');
 		}
 
-		function fetchOverview(detail) {
-			if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
-				showError();
-				return;
+		document.addEventListener('mailchimp-analytics-refresh', function (e) {
+			if (e.detail) {
+				lastDetail = {
+					listId: e.detail.listId,
+					from: e.detail.from,
+					to: e.detail.to,
+				};
 			}
-			if (!detail || !detail.listId || !detail.from || !detail.to) {
-				return;
-			}
+		});
 
-			lastDetail = {
-				listId: detail.listId,
-				from: detail.from,
-				to: detail.to,
-			};
-
-			if (inFlight && typeof inFlight.abort === 'function') {
-				inFlight.abort();
-			}
-
-			const controller =
-				typeof window.AbortController !== 'undefined' ? new AbortController() : null;
-			inFlight = controller;
-
-			const formData = new FormData();
-			formData.append('action', 'mailchimp_sf_get_audience_overview');
-			formData.append('nonce', window.mailchimpSFAnalytics.nonce);
-			formData.append('list_id', detail.listId);
-			formData.append('date_from', detail.from);
-			formData.append('date_to', detail.to);
-
+		document.addEventListener('mailchimp-analytics-loading', function () {
 			showLoading();
+		});
 
-			fetch(window.mailchimpSFAnalytics.ajax_url, {
-				method: 'POST',
-				body: formData,
-				credentials: 'same-origin',
-				signal: controller ? controller.signal : undefined,
-			})
-				.then(function (response) {
-					return response.json().catch(function () {
-						return null;
-					});
-				})
-				.then(function (body) {
-					inFlight = null;
-					if (!body || body.success !== true || !body.data) {
-						const message =
-							body && body.data && body.data.message ? body.data.message : '';
-						showError(message);
-						return;
-					}
-					render(body.data, detail.from, detail.to);
-				})
-				.catch(function (err) {
-					if (err && err.name === 'AbortError') {
-						return;
-					}
-					inFlight = null;
-					showError();
-				});
-		}
+		document.addEventListener('mailchimp-analytics-loaded', function (e) {
+			if (e.detail && e.detail.data) {
+				render(e.detail.data, e.detail.from, e.detail.to);
+			}
+		});
+
+		document.addEventListener('mailchimp-analytics-error', function (e) {
+			showError(e.detail && e.detail.message);
+		});
 
 		if (retryBtnEl) {
 			retryBtnEl.addEventListener('click', function () {
-				if (lastDetail) {
-					fetchOverview(lastDetail);
+				if (!lastDetail) {
+					return;
 				}
+
+				document.dispatchEvent(
+					new CustomEvent('mailchimp-analytics-refresh', { detail: lastDetail }),
+				);
 			});
 		}
-
-		document.addEventListener('mailchimp-analytics-refresh', function (e) {
-			fetchOverview(e.detail);
-		});
 	})();
 
 	// Initialize.
