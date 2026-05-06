@@ -98,11 +98,13 @@ trait Mailchimp_Analytics_Bucketing {
 	}
 
 	/**
-	 * Submissions ÷ views
+	 * Submissions ÷ views, expressed as a percentage (0–100, two decimals).
+	 *
+	 * Returns 0 when there were no views
 	 *
 	 * @param int $submissions Submission count.
 	 * @param int $views       View count.
-	 * @return float
+	 * @return float Conversion rate percentage in the range [0, 100].
 	 */
 	protected function conversion_rate( int $submissions, int $views ): float {
 		if ( $views <= 0 ) {

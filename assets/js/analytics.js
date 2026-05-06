@@ -1186,7 +1186,7 @@ import { __ } from '@wordpress/i18n';
 	})();
 
 	/**
-	 * Audience Overview KPI block
+	 * Audience Overview KPI block — Total subscribers, Form views, New submissions, Conversion rate.
 	 */
 	(function audienceOverviewModule() {
 		const section = document.querySelector('[data-section="audience-overview"]');

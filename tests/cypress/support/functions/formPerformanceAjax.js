@@ -40,6 +40,10 @@ function buildSuccessData(overrides = {}) {
 		total_views: 120,
 		total_submissions: 24,
 		total_conversion_rate: 20.0,
+		// `total_subscribers` is sourced from the Mailchimp List API and
+		// included in the same response so the Audience Overview KPI card
+		// can render from a single fetch shared with Form Performance.
+		total_subscribers: 5082,
 		...overrides,
 	};
 }
