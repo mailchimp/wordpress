@@ -1004,10 +1004,11 @@ function mailchimp_sf_get_lists() {
 	/**
 	 * Filter the limit of lists to fetch.
 	 *
-	 * @param int $limit The limit of lists to fetch. Defaults to 100.
-	 * @return int
+	 * This value is sanitized to a positive integer and clamped before the API request.
+	 * Defaults to 100. 1000 is the maximum allowed by the API. 1 is the minimum allowed.
 	 */
 	$limit = apply_filters( 'mailchimp_sf_list_limit', 100 ); // Default to 100.
+	$limit = max( 1, min( 1000, absint( $limit ) ) );
 
 	$api = mailchimp_sf_get_api();
 	if ( ! $api ) {
