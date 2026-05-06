@@ -103,12 +103,6 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			return $lists;
 		}
 
-		// If we don't have any lists, get them from the API.
-		$api = mailchimp_sf_get_api();
-		if ( ! $api ) {
-			return array();
-		}
-
 		$lists = mailchimp_sf_get_lists();
 		if ( is_wp_error( $lists ) ) {
 			return array();
