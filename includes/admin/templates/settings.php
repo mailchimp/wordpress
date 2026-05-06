@@ -51,8 +51,7 @@ $is_list_selected = false;
 						</p>
 						<form method="post" action="<?php echo esc_url( add_query_arg( array( 'page' => 'mailchimp_sf_options' ), admin_url( 'admin.php' ) ) ); ?>">
 							<?php
-							// we *could* support paging, but few users have that many lists (and shouldn't)
-							$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name' ) );
+							$lists = mailchimp_sf_get_lists();
 							if ( is_wp_error( $lists ) ) {
 								$msg = sprintf(
 									/* translators: %s: error message */

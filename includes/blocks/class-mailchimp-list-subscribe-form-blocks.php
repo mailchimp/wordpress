@@ -109,8 +109,7 @@ class Mailchimp_List_Subscribe_Form_Blocks {
 			return array();
 		}
 
-		// we *could* support paging, but 100 is more than enough for now.
-		$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
+		$lists = mailchimp_sf_get_lists();
 		if ( is_wp_error( $lists ) ) {
 			return array();
 		}
