@@ -546,11 +546,8 @@ function mailchimp_sf_change_list_if_necessary() {
 		return;
 	}
 
-	$api = mailchimp_sf_get_api();
-	if ( ! $api ) { return; }
-
 	$lists = mailchimp_sf_get_lists();
-	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
+	if ( is_wp_error( $lists ) || ! isset( $lists['lists'] ) ) {
 		return;
 	}
 
