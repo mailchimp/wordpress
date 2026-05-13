@@ -18,6 +18,16 @@ class Mailchimp_Form_Performance {
 	use Mailchimp_Analytics_Bucketing;
 
 	/**
+	 * Transient key prefix for the cached total subscriber count.
+	 */
+	const SUBSCRIBERS_CACHE_PREFIX = 'mailchimp_sf_total_subscribers_';
+
+	/**
+	 * Transient TTL for the cached total subscriber count.
+	 */
+	const SUBSCRIBERS_CACHE_TTL = 15 * MINUTE_IN_SECONDS;
+
+	/**
 	 * Register hooks.
 	 *
 	 * @return void
@@ -62,7 +72,48 @@ class Mailchimp_Form_Performance {
 
 		$response = $this->aggregate( $rows, $date_from, $date_to );
 
+		$response['total_subscribers'] = $this->fetch_total_subscribers( $list_id );
+
 		wp_send_json_success( $response );
+	}
+
+	/**
+	 * Fetch (and cache) the current total subscriber count for a list.
+	 *
+	 * @param string $list_id List ID.
+	 * @return int|null
+	 */
+	public function fetch_total_subscribers( string $list_id ): ?int {
+		$cache_key = self::SUBSCRIBERS_CACHE_PREFIX . md5( $list_id );
+		$cached    = get_transient( $cache_key );
+
+		if ( false !== $cached ) {
+			return (int) $cached;
+		}
+
+		$api = mailchimp_sf_get_api();
+		if ( ! $api ) {
+			return null;
+		}
+
+		$response = $api->get(
+			'lists/' . rawurlencode( $list_id ),
+			1,
+			array( 'stats.member_count' )
+		);
+
+		if ( is_wp_error( $response ) || ! is_array( $response ) ) {
+			return null;
+		}
+
+		if ( ! isset( $response['stats']['member_count'] ) ) {
+			return null;
+		}
+
+		$count = (int) $response['stats']['member_count'];
+		set_transient( $cache_key, $count, self::SUBSCRIBERS_CACHE_TTL );
+
+		return $count;
 	}
 
 	/**
@@ -173,21 +224,6 @@ class Mailchimp_Form_Performance {
 			'total_submissions'     => $total_submissions,
 			'total_conversion_rate' => $this->conversion_rate( $total_submissions, $total_views ),
 		);
-	}
-
-	/**
-	 * Submissions ÷ views, as a percentage (0–100, two decimals).
-	 *
-	 * @param int $submissions Submission count.
-	 * @param int $views       View count.
-	 * @return float
-	 */
-	private function conversion_rate( int $submissions, int $views ): float {
-		if ( $views <= 0 ) {
-			return 0.0;
-		}
-		$rate = ( $submissions / $views ) * 100;
-		return round( min( 100.0, $rate ), 2 );
 	}
 
 }

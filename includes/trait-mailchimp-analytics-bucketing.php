@@ -98,6 +98,23 @@ trait Mailchimp_Analytics_Bucketing {
 	}
 
 	/**
+	 * Submissions ÷ views, expressed as a percentage (0–100, two decimals).
+	 *
+	 * Returns 0 when there were no views
+	 *
+	 * @param int $submissions Submission count.
+	 * @param int $views       View count.
+	 * @return float Conversion rate percentage in the range [0, 100].
+	 */
+	protected function conversion_rate( int $submissions, int $views ): float {
+		if ( $views <= 0 ) {
+			return 0.0;
+		}
+		$rate = ( $submissions / $views ) * 100;
+		return round( min( 100.0, $rate ), 2 );
+	}
+
+	/**
 	 * Validate a `Y-m-d` date string.
 	 *
 	 * @param string $date Candidate date string.

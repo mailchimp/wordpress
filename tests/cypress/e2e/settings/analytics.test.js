@@ -446,6 +446,116 @@ describe('Analytics admin page', () => {
 				cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
 			});
 		});
+
+		describe('Audience Overview KPI block', () => {
+			const analyticsUrl = '/wp-admin/admin.php?page=mailchimp_sf_analytics';
+
+			function stubFormPerformance(replyFn) {
+				cy.intercept('POST', '**/admin-ajax.php', (req) => {
+					if (!isFormPerformanceRequest(req)) {
+						req.continue();
+						return;
+					}
+					const payload = typeof replyFn === 'function' ? replyFn(req) : replyFn;
+					req.reply({
+						statusCode: 200,
+						headers: { 'content-type': 'application/json; charset=UTF-8' },
+						body: payload,
+					});
+				}).as('formPerformance');
+			}
+
+			it('Audience Overview section shell (title, four KPIs)', () => {
+				stubFormPerformance(() => wpJsonSuccessFp(buildFormPerformanceData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('be.visible');
+				cy.get('#mailchimp-sf-ao-title').contains('Audience Overview');
+				cy.get('#mailchimp-sf-ao-total-subscribers').should('exist');
+				cy.get('#mailchimp-sf-ao-views').should('exist');
+				cy.get('#mailchimp-sf-ao-submissions').should('exist');
+				cy.get('#mailchimp-sf-ao-rate').should('exist');
+			});
+
+			it('Success payload renders all four KPIs from the shared response', () => {
+				stubFormPerformance(() =>
+					wpJsonSuccessFp(
+						buildFormPerformanceData({
+							total_subscribers: 5082,
+							total_views: 3138,
+							total_submissions: 938,
+							total_conversion_rate: 29.89,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('have.class', 'is-ready');
+				cy.get('#mailchimp-sf-ao-total-subscribers').should('contain', '5,082');
+				cy.get('#mailchimp-sf-ao-views').should('contain', '3,138');
+				cy.get('#mailchimp-sf-ao-submissions').should('contain', '938');
+				cy.get('#mailchimp-sf-ao-rate').should('contain', '29.89%');
+			});
+
+			it('Missing total_subscribers (API failure) renders an em dash', () => {
+				stubFormPerformance(() =>
+					wpJsonSuccessFp(
+						buildFormPerformanceData({
+							total_subscribers: null,
+							total_views: 100,
+							total_submissions: 25,
+							total_conversion_rate: 25.0,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('#mailchimp-sf-ao-total-subscribers').should('contain', '-');
+				cy.get('#mailchimp-sf-ao-views').should('contain', '100');
+			});
+
+			it('API error shows error banner on the Audience Overview card', () => {
+				stubFormPerformance(() => wpJsonErrorFp('Audience overview stub failure'));
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-ao-error-banner').should('be.visible');
+				cy.get('#mailchimp-sf-ao-error-message').contains('Audience overview stub failure');
+			});
+
+			it('Retry on Audience Overview triggers another shared request', () => {
+				let n = 0;
+				stubFormPerformance(() => {
+					n += 1;
+					if (n === 1) {
+						return wpJsonErrorFp('First request fails');
+					}
+					return wpJsonSuccessFp(buildFormPerformanceData());
+				});
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-ao-error-retry').click();
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('have.class', 'is-ready');
+				cy.get('#mailchimp-sf-ao-error-banner').should('have.attr', 'hidden');
+			});
+
+			it('Audience Overview does not fire its own AJAX action', () => {
+				stubFormPerformance(() => wpJsonSuccessFp(buildFormPerformanceData()));
+				cy.intercept('POST', '**/admin-ajax.php', (req) => {
+					if (
+						typeof req.body === 'string' &&
+						req.body.includes('mailchimp_sf_get_audience_overview')
+					) {
+						throw new Error('Audience Overview should not fire its own AJAX call');
+					}
+				});
+				cy.visit(analyticsUrl);
+				cy.wait('@formPerformance');
+				cy.get('[data-section="audience-overview"]').should('have.class', 'is-ready');
+			});
+		});
 	});
 
 	describe('When not connected', () => {

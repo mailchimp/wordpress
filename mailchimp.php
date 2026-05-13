@@ -133,7 +133,6 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-perfor
 $form_performance = new Mailchimp_Form_Performance();
 $form_performance->init();
 
-
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
 
