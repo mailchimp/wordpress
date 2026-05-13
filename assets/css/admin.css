@@ -788,7 +788,8 @@ body.toplevel_page_mailchimp_sf_options #footer-upgrade {
 
 @media screen and (max-width: 782px) {
 	.mailchimp-sf-header,
-	.mailchimp-sf-settings-page-hero-wrapper {
+	.mailchimp-sf-settings-page-hero-wrapper,
+	.mailchimp-sf-settings-page-header-wrapper {
 		margin-left: -10px;
 	}
 }
@@ -967,13 +968,15 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 }
 
 /* Settings Page Hero */
-.mailchimp-sf-settings-page-hero-wrapper {
+.mailchimp-sf-settings-page-hero-wrapper,
+.mailchimp-sf-settings-page-header-wrapper {
 	margin-left: -20px;
 	background-color: #fff;
 	border-bottom: 1px solid rgba(36, 28, 21, 0.15);
 }
 
-#mailchimp-sf-settings-page .mailchimp-sf-settings-page-hero {
+#mailchimp-sf-settings-page .mailchimp-sf-settings-page-hero,
+#mailchimp-sf-settings-page .mailchimp-sf-settings-page-header {
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -985,11 +988,13 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 }
 
 .mailchimp-sf-settings-page-hero-title-wrapper,
+.mailchimp-sf-settings-page-header-title-wrapper,
 .mailchimp-sf-settings-page-hero-content-wrapper {
 	flex: 1;
 }
 
-.mailchimp-sf-settings-page-hero-title {
+.mailchimp-sf-settings-page-hero-title,
+.mailchimp-sf-settings-page-header-title {
 	font-family: "Means Web", serif;
 	font-size: 36px;
 	line-height: 1.1em;
@@ -997,6 +1002,10 @@ a.mailchimp-sf-button.mailchimp-cancel-user-sync-button:hover {
 	margin-top: 0px;
 	font-weight: 300;
 	letter-spacing: -0.72px;
+}
+
+.mailchimp-sf-settings-page-header-title {
+	margin-bottom: 0px;
 }
 
 .mailchimp-sf-settings-page-hero-description,
@@ -1161,10 +1170,15 @@ body.toplevel_page_mailchimp_sf_options a.mailchimp-sf-button.btn-primary:hover 
 }
 
 /* Settings Page */
-.mailchimp-sf-settings-page {
+.mailchimp-sf-settings-page,
+.mailchimp-sf-analytics-page {
 	max-width: 1200px;
 	margin: 0 auto;
 	padding: 32px 20px;
+}
+
+.mailchimp-sf-analytics-page {
+	padding: 22px 20px 32px 20px;
 }
 
 .mailchimp-sf-settings-list-wrapper {
@@ -1589,12 +1603,14 @@ input:checked + .mailchimp-sf-toggle-slider:before {
 }
 
 @media screen and (max-width: 782px) {
-	#mailchimp-sf-settings-page .mailchimp-sf-settings-page-hero {
+	#mailchimp-sf-settings-page .mailchimp-sf-settings-page-hero,
+	#mailchimp-sf-settings-page .mailchimp-sf-settings-page-header {
 		flex-direction: column;
 		padding: 32px 20px 32px 30px;
 	}
 
-	.mailchimp-sf-settings-page {
+	.mailchimp-sf-settings-page,
+	.mailchimp-sf-analytics-page {
 		padding: 32px 10px;
 	}
 
