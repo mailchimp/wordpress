@@ -17,6 +17,14 @@ import '../css/analytics.scss';
 import { __ } from '@wordpress/i18n';
 
 (function () {
+	/**
+	 * `true` when the user has set the OS-level "Reduce motion" preference.
+	 * Used to disable Chart.js animations
+	 */
+	const PREFERS_REDUCED_MOTION =
+		typeof window.matchMedia === 'function' &&
+		window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 	const dateRangeSelect = document.getElementById('mailchimp-sf-date-range');
 	const dateFrom = document.getElementById('mailchimp-sf-date-from');
 	const dateTo = document.getElementById('mailchimp-sf-date-to');
@@ -421,6 +429,25 @@ import { __ } from '@wordpress/i18n';
 		}
 	});
 
+	// Close popover on Escape and return focus to the trigger button
+	document.addEventListener('keydown', function (e) {
+		if (e.key !== 'Escape') {
+			return;
+		}
+		if (!popover || !popover.classList.contains('is-open')) {
+			return;
+		}
+
+		const openCalendar = document.querySelector('.datepicker.active');
+		if (openCalendar) {
+			return;
+		}
+		closePopover();
+		if (trigger) {
+			trigger.focus();
+		}
+	});
+
 	/**
 	 * Forms performance over time
 	 */
@@ -436,19 +463,24 @@ import { __ } from '@wordpress/i18n';
 		const errorBannerEl = document.getElementById('mailchimp-sf-fp-error-banner');
 		const errorMessageEl = document.getElementById('mailchimp-sf-fp-error-message');
 		const retryBtnEl = document.getElementById('mailchimp-sf-fp-error-retry');
+		const dataTableEl = document.getElementById('mailchimp-sf-fp-data-table');
 
 		const COLORS = {
+			// Chart palette. Values darkened from the original design tokens
+			// to meet WCAG 2.1 1.4.11
 			viewsFill: '#3B82F6',
 			viewsBorder: '#2563EB',
-			submissionsFill: '#2DD4BF',
-			submissionsBorder: '#14B8A6',
-			rateBorder: '#EAB308',
+			submissionsFill: '#0E9384',
+			submissionsBorder: '#0B7A6E',
+			rateBorder: '#A88008',
 			gridLine: 'rgba(0, 0, 0, 0.06)',
 			text: '#6B7280',
 			// Legend chip fills — translucent version of each bar color so the
 			// legend markers match the outlined-chip style from the Figma spec.
+			// Translucent fills for the legend chips. RGB sourced from the
+			// new WCAG-compliant submissions teal (#0E9384)
 			viewsLegendFill: 'rgba(59, 130, 246, 0.35)',
-			submissionsLegendFill: 'rgba(45, 212, 191, 0.35)',
+			submissionsLegendFill: 'rgba(14, 147, 132, 0.35)',
 		};
 
 		const STRINGS = {
@@ -487,6 +519,76 @@ import { __ } from '@wordpress/i18n';
 			if (dateRangeEl) {
 				dateRangeEl.textContent = text || '';
 			}
+		}
+
+		/**
+		 * Build the visually-hidden screen-reader data table for the chart.
+		 *
+		 * @param {Array}  rows      Bucket rows from the payload.
+		 * @param {string} fromLabel Range start (Y-m-d).
+		 * @param {string} toLabel   Range end (Y-m-d).
+		 */
+		function renderDataTable(rows, fromLabel, toLabel) {
+			if (!dataTableEl) {
+				return;
+			}
+
+			const captionText = __(
+				'List performance over time: views, submissions, and conversion rate per bucket for %1$s to %2$s.',
+				'mailchimp',
+			)
+				.replace('%1$s', fromLabel)
+				.replace('%2$s', toLabel);
+
+			const headerCells = [
+				__('Period', 'mailchimp'),
+				__('Form Views', 'mailchimp'),
+				__('Submissions', 'mailchimp'),
+				__('Conversion Rate', 'mailchimp'),
+			];
+
+			const table = document.createElement('table');
+
+			const caption = document.createElement('caption');
+			caption.textContent = captionText;
+			table.appendChild(caption);
+
+			const thead = document.createElement('thead');
+			const headRow = document.createElement('tr');
+			headerCells.forEach(function (text) {
+				const th = document.createElement('th');
+				th.scope = 'col';
+				th.textContent = text;
+				headRow.appendChild(th);
+			});
+			thead.appendChild(headRow);
+			table.appendChild(thead);
+
+			const tbody = document.createElement('tbody');
+			rows.forEach(function (row) {
+				const tr = document.createElement('tr');
+
+				const rowHeader = document.createElement('th');
+				rowHeader.scope = 'row';
+				rowHeader.textContent = row.label || '';
+				tr.appendChild(rowHeader);
+
+				[
+					String(row.views || 0),
+					String(row.submissions || 0),
+					`${Number(row.conversion_rate || 0).toFixed(2)}%`,
+				].forEach(function (text) {
+					const td = document.createElement('td');
+					td.textContent = text;
+					tr.appendChild(td);
+				});
+
+				tbody.appendChild(tr);
+			});
+			table.appendChild(tbody);
+
+			dataTableEl.innerHTML = '';
+			dataTableEl.appendChild(table);
 		}
 
 		function destroyCharts() {
@@ -624,6 +726,7 @@ import { __ } from '@wordpress/i18n';
 				options: {
 					responsive: true,
 					maintainAspectRatio: false,
+					animation: PREFERS_REDUCED_MOTION ? false : undefined,
 					interaction: { mode: 'index', intersect: false },
 					plugins: {
 						legend: {
@@ -724,6 +827,7 @@ import { __ } from '@wordpress/i18n';
 			setOverlay('');
 			setState('ready');
 			renderChart(rows);
+			renderDataTable(rows, fromLabel, toLabel);
 		}
 
 		/**
@@ -847,6 +951,7 @@ import { __ } from '@wordpress/i18n';
 		const errorBannerEl = document.getElementById('mailchimp-sf-sa-error-banner');
 		const errorMessageEl = document.getElementById('mailchimp-sf-sa-error-message');
 		const retryBtnEl = document.getElementById('mailchimp-sf-sa-error-retry');
+		const dataTableEl = document.getElementById('mailchimp-sf-sa-data-table');
 
 		const COLORS = {
 			newFill: '#2b72fb',
@@ -926,6 +1031,74 @@ import { __ } from '@wordpress/i18n';
 			if (dateRangeEl) {
 				dateRangeEl.textContent = text || '';
 			}
+		}
+
+		/**
+		 * Build the visually-hidden screen-reader data table for the
+		 * subscriber activity chart
+		 *
+		 * @param {Array}  rows      Bucket rows from the payload.
+		 * @param {string} fromLabel Range start (Y-m-d).
+		 * @param {string} toLabel   Range end (Y-m-d).
+		 */
+		function renderDataTable(rows, fromLabel, toLabel) {
+			if (!dataTableEl) {
+				return;
+			}
+
+			const captionText = __(
+				'Subscriber change over time: new subscribers and unsubscribes per bucket for %1$s to %2$s.',
+				'mailchimp',
+			)
+				.replace('%1$s', fromLabel)
+				.replace('%2$s', toLabel);
+
+			const headerCells = [
+				__('Period', 'mailchimp'),
+				__('New Subscribers', 'mailchimp'),
+				__('Unsubscribes', 'mailchimp'),
+			];
+
+			const table = document.createElement('table');
+
+			const caption = document.createElement('caption');
+			caption.textContent = captionText;
+			table.appendChild(caption);
+
+			const thead = document.createElement('thead');
+			const headRow = document.createElement('tr');
+			headerCells.forEach(function (text) {
+				const th = document.createElement('th');
+				th.scope = 'col';
+				th.textContent = text;
+				headRow.appendChild(th);
+			});
+			thead.appendChild(headRow);
+			table.appendChild(thead);
+
+			const tbody = document.createElement('tbody');
+			rows.forEach(function (row) {
+				const tr = document.createElement('tr');
+
+				const rowHeader = document.createElement('th');
+				rowHeader.scope = 'row';
+				rowHeader.textContent = row.label || '';
+				tr.appendChild(rowHeader);
+
+				[String(row.new_subscribers || 0), String(row.unsubscribes || 0)].forEach(
+					function (text) {
+						const td = document.createElement('td');
+						td.textContent = text;
+						tr.appendChild(td);
+					},
+				);
+
+				tbody.appendChild(tr);
+			});
+			table.appendChild(tbody);
+
+			dataTableEl.innerHTML = '';
+			dataTableEl.appendChild(table);
 		}
 
 		function destroyCharts() {
@@ -1045,6 +1218,7 @@ import { __ } from '@wordpress/i18n';
 				options: {
 					responsive: true,
 					maintainAspectRatio: false,
+					animation: PREFERS_REDUCED_MOTION ? false : undefined,
 					interaction: { mode: 'index', intersect: false },
 					plugins: {
 						legend: {
@@ -1130,6 +1304,7 @@ import { __ } from '@wordpress/i18n';
 				options: {
 					responsive: true,
 					maintainAspectRatio: false,
+					animation: PREFERS_REDUCED_MOTION ? false : undefined,
 					plugins: {
 						legend: { display: false },
 						tooltip: { enabled: total > 0 },
@@ -1175,6 +1350,7 @@ import { __ } from '@wordpress/i18n';
 			renderBar(rows);
 			renderDonut(totalNew, totalUnsubs);
 			renderTotals(payload);
+			renderDataTable(rows, fromLabel, toLabel);
 		}
 
 		function fetchActivity(detail) {
