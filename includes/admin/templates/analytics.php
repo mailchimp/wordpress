@@ -100,6 +100,9 @@ $dc           = get_option( 'mc_datacenter', '' );
 					</div>
 				</div>
 
+			<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
+			</div>
+
 				<div class="mailchimp-sf-analytics-content" id="mailchimp-sf-analytics-content">
 					<div class="mailchimp-sf-analytics-placeholder">
 						<p><?php esc_html_e( 'Select a date range and list to view analytics.', 'mailchimp' ); ?></p>

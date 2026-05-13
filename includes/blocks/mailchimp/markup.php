@@ -105,7 +105,7 @@ if ( ! mailchimp_sf_should_display_form() ) {
 		}
 		?>
 		<div id="mc_signup_<?php echo esc_attr( $form_id ); ?>">
-			<form method="post" action="#mc_signup_<?php echo esc_attr( $form_id ); ?>" id="mc_signup_form_<?php echo esc_attr( $form_id ); ?>" class="mc_signup_form">
+			<form method="post" action="#mc_signup_<?php echo esc_attr( $form_id ); ?>" id="mc_signup_form_<?php echo esc_attr( $form_id ); ?>" class="mc_signup_form" data-list-id="<?php echo esc_attr( $list_id ); ?>">
 				<input type="hidden" class="mc_submit_type" name="mc_submit_type" value="html" />
 				<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 				<input type="hidden" name="mailchimp_sf_list_id" value="<?php echo esc_attr( $list_id ); ?>" />
