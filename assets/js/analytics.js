@@ -1095,7 +1095,12 @@ import { __ } from '@wordpress/i18n';
 			destroyCharts();
 			setErrorBanner(false);
 
-			if (!Array.isArray(payload.data) || payload.data.length === 0) {
+			const rows = Array.isArray(payload.data) ? payload.data : [];
+			const totalNew = payload.total_new || 0;
+			const totalUnsubs = payload.total_unsubs || 0;
+
+			// Match the Form Performance card's empty-state behavior
+			if (rows.length === 0 || (totalNew === 0 && totalUnsubs === 0)) {
 				showEmpty();
 				return;
 			}
@@ -1104,8 +1109,8 @@ import { __ } from '@wordpress/i18n';
 			setSubtitle(formatRangeLabel(fromLabel, toLabel));
 			setOverlay('');
 			setState('ready');
-			renderBar(payload.data);
-			renderDonut(payload.total_new, payload.total_unsubs);
+			renderBar(rows);
+			renderDonut(totalNew, totalUnsubs);
 			renderTotals(payload);
 		}
 

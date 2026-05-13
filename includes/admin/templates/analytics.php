@@ -197,7 +197,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 				>
 					<header class="mailchimp-sf-analytics-card__header">
 						<h2 id="mailchimp-sf-fp-title" class="mailchimp-sf-analytics-card__title">
-							<?php esc_html_e( 'Forms performance over time', 'mailchimp' ); ?>
+							<?php esc_html_e( 'List performance over time', 'mailchimp' ); ?>
 						</h2>
 						<p
 							id="mailchimp-sf-fp-daterange"
