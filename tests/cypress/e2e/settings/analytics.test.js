@@ -294,18 +294,34 @@ describe('Analytics admin page', () => {
 		describe('Form performance chart (stubbed)', () => {
 			const analyticsUrl = '/wp-admin/admin.php?page=mailchimp_sf_analytics';
 
+			// The Analytics page always fires both AJAX actions on refresh.
 			function stubFormPerformance(replyFn) {
 				cy.intercept('POST', '**/admin-ajax.php', (req) => {
-					if (!isFormPerformanceRequest(req)) {
-						req.continue();
+					if (isFormPerformanceRequest(req)) {
+						const payload = typeof replyFn === 'function' ? replyFn(req) : replyFn;
+						req.reply({
+							statusCode: 200,
+							headers: { 'content-type': 'application/json; charset=UTF-8' },
+							body: payload,
+						});
 						return;
 					}
-					const payload = typeof replyFn === 'function' ? replyFn(req) : replyFn;
-					req.reply({
-						statusCode: 200,
-						headers: { 'content-type': 'application/json; charset=UTF-8' },
-						body: payload,
-					});
+					if (isSubscriberActivityRequest(req)) {
+						req.reply({
+							statusCode: 200,
+							headers: { 'content-type': 'application/json; charset=UTF-8' },
+							body: wpJsonSuccess(
+								buildSuccessData({
+									data: [],
+									total_new: 0,
+									total_unsubs: 0,
+									net_change: 0,
+								}),
+							),
+						});
+						return;
+					}
+					req.continue();
 				}).as('formPerformance');
 			}
 
