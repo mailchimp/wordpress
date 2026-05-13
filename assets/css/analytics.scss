@@ -326,24 +326,146 @@ body.mailchimp_page_mailchimp_sf_analytics {
 }
 
 // -----------------------------------------------------------------------------
-// Subscriber activity section
+// Audience Overview KPI block
 // -----------------------------------------------------------------------------
-.mailchimp-sf-sa {
+.mailchimp-sf-ao {
 
-	// Body grid — chart column + totals column
-	&__body {
-		align-items: stretch;
+	&__metrics {
 		display: grid;
-		gap: 32px;
-		grid-template-columns: minmax(0, 1fr) 320px;
-		margin-top: 32px;
+		gap: 24px;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		margin: 0 0 16px;
+	}
+
+	&__metric {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	&__metric-label {
+		align-self: flex-start;
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+		color: var(--mc-sa-text-strong);
+		font-size: 14px;
+		font-weight: 600;
+		margin: 0;
+
+		&::after {
+			background-image: linear-gradient(
+				90deg,
+				color-mix(in srgb, var(--mailchimp-color-link, #017e89) 45%, #ffffff) 5px,
+				transparent 5px
+			);
+			background-repeat: repeat-x;
+			background-size: 9px 2px;
+			content: "";
+			display: block;
+			height: 2px;
+			margin-top: 6px;
+		}
+	}
+
+	&__metric-value {
+		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+		color: var(--mc-sa-text-strong);
+		font-size: 32px;
+		font-weight: 700;
+		letter-spacing: -0.01em;
+		line-height: 1.1;
+		margin: 8px 0 0;
+	}
+
+	&.is-loading &__metric-value,
+	&.is-error &__metric-value {
+		color: var(--mc-sa-grey);
+		opacity: 0.85;
+	}
+
+	&__error-banner {
+		align-items: center;
+		background: var(--mc-sa-error-bg);
+		border: 1px solid var(--mc-sa-error-border);
+		border-radius: 8px;
+		display: flex;
+		gap: 12px;
+		margin: 4px 0 16px;
+		padding: 12px 14px;
 
 		&[hidden] {
 			display: none;
 		}
 	}
 
-	// Chart column
+	&__error-banner-icon {
+		align-items: center;
+		color: var(--mc-sa-error-text);
+		display: inline-flex;
+		flex-shrink: 0;
+		justify-content: center;
+		line-height: 0;
+	}
+
+	&__error-banner-body {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	&__error-banner-title {
+		color: var(--mc-sa-error-title);
+		font-size: 13px;
+		font-weight: 600;
+		line-height: 1.3;
+		margin: 0 0 2px;
+	}
+
+	&__error-banner-message {
+		color: var(--mc-sa-error-text);
+		font-size: 13px;
+		line-height: 1.4;
+		margin: 0;
+	}
+
+	&__error-banner-action {
+		flex-shrink: 0;
+	}
+
+	button#mailchimp-sf-ao-error-retry {
+		background-color: #fff;
+		border: 1px solid #ccd6dc;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: #f6f7f7;
+		}
+	}
+}
+
+@media screen and (max-width: $mq-medium) {
+
+	.mailchimp-sf-ao__metrics {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+}
+
+@media screen and (max-width: $mq-xs) {
+
+	.mailchimp-sf-ao__metrics {
+		grid-template-columns: 1fr;
+	}
+
+	.mailchimp-sf-ao__metric-value {
+		font-size: 28px;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Shared analytics chart-card
+// -----------------------------------------------------------------------------
+.mailchimp-sf-fp,
+.mailchimp-sf-sa {
+
 	&__chart {
 		min-width: 0;
 	}
@@ -363,7 +485,6 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		margin: 0 0 16px;
 	}
 
-	// Canvas area (hosts the real canvas + skeleton + overlay + background grid)
 	&__canvas-wrap {
 		height: 340px;
 		position: relative;
@@ -380,6 +501,196 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		position: relative;
 		transition: opacity 150ms ease;
 		z-index: 1;
+	}
+
+	&__skeleton-bars {
+		align-items: flex-end;
+		bottom: 42%;
+		display: none;
+		gap: 16px;
+		justify-content: center;
+		left: 0;
+		padding: 4px 0 0;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		top: 0;
+
+		span {
+			background: var(--mc-sa-border);
+			border-radius: 2px;
+			display: block;
+			width: 18px;
+		}
+
+		span:nth-child(1) { height: 96px; }
+		span:nth-child(2) { height: 53px; }
+		span:nth-child(3) { height: 122px; }
+		span:nth-child(4) { height: 80px; }
+		span:nth-child(5) { height: 40px; }
+	}
+
+	&__error-banner {
+		align-items: center;
+		background: var(--mc-sa-error-bg);
+		border: 1px solid var(--mc-sa-error-border);
+		border-radius: 8px;
+		display: flex;
+		gap: 12px;
+		margin: 4px 0 16px;
+		padding: 12px 14px;
+
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	&__error-banner-icon {
+		align-items: center;
+		color: var(--mc-sa-error-text);
+		display: inline-flex;
+		flex-shrink: 0;
+		justify-content: center;
+		line-height: 0;
+	}
+
+	&__error-banner-body {
+		flex: 1 1 auto;
+		min-width: 0;
+	}
+
+	&__error-banner-title {
+		color: var(--mc-sa-error-title);
+		font-size: 13px;
+		font-weight: 600;
+		line-height: 1.3;
+		margin: 0 0 2px;
+	}
+
+	&__error-banner-message {
+		color: var(--mc-sa-error-text);
+		font-size: 13px;
+		line-height: 1.4;
+		margin: 0;
+	}
+
+	&__error-banner-action {
+		flex-shrink: 0;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Form performance — card-specific rules
+// -----------------------------------------------------------------------------
+.mailchimp-sf-fp {
+
+	&__body {
+		margin-top: 24px;
+
+		&[hidden] {
+			display: none;
+		}
+	}
+
+	&__chart-heading {
+		margin-bottom: 8px;
+	}
+
+	// Centered overlay (used for empty / error). Loading state below
+	// repositions it below the skeleton bars.
+	&__overlay {
+		align-items: center;
+		bottom: 0;
+		color: #666666;
+		display: none;
+		font-size: 14px;
+		font-weight: 500;
+		justify-content: center;
+		left: 0;
+		padding: 16px;
+		pointer-events: none;
+		position: absolute;
+		right: 0;
+		text-align: center;
+		top: 0;
+		z-index: 2;
+	}
+
+	&.is-loading,
+	&.is-empty,
+	&.is-error {
+
+		.mailchimp-sf-fp__canvas {
+			opacity: 0;
+		}
+
+		.mailchimp-sf-fp__canvas-wrap {
+			background-image:
+				linear-gradient(to right, var(--mc-sa-skeleton-grid) 1px, transparent 1px),
+				linear-gradient(to bottom, var(--mc-sa-skeleton-grid) 1px, transparent 1px);
+			background-position: 0 100%;
+			background-size: calc(100% / 7) calc(100% / 8);
+		}
+
+		.mailchimp-sf-fp__skeleton-bars {
+			display: flex;
+		}
+	}
+
+	&.is-loading,
+	&.is-empty {
+
+		.mailchimp-sf-fp__overlay {
+			align-items: flex-start;
+			padding-top: 28px;
+			top: 60%;
+			display: flex;
+		}
+	}
+
+	&.is-loading {
+
+		.mailchimp-sf-fp__skeleton-bars span,
+		.mailchimp-sf-fp__overlay {
+			animation: mailchimp-sf-sa-pulse 1.4s ease-in-out infinite;
+		}
+	}
+
+	button#mailchimp-sf-fp-error-retry {
+		background-color: #fff;
+		border: 1px solid #ccd6dc;
+
+		&:hover,
+		&:focus,
+		&:active {
+			background-color: #f6f7f7;
+		}
+	}
+}
+
+@media screen and (max-width: $mq-xs) {
+
+	.mailchimp-sf-fp__canvas-wrap {
+		height: 240px;
+	}
+}
+
+// -----------------------------------------------------------------------------
+// Subscriber activity section
+// -----------------------------------------------------------------------------
+.mailchimp-sf-sa {
+
+	// Body grid — chart column + totals column
+	&__body {
+		align-items: stretch;
+		display: grid;
+		gap: 32px;
+		grid-template-columns: minmax(0, 1fr) 320px;
+		margin-top: 32px;
+
+		&[hidden] {
+			display: none;
+		}
 	}
 
 	// Totals column
@@ -488,52 +799,6 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		padding: 10px 14px;
 	}
 
-	/*
-	 * Skeleton bars — live in the top ~60% of the canvas-wrap so the overlay
-	 * copy below isn't covered. No background grid here; the grid lives on
-	 * canvas-wrap itself so it spans the full chart area, not just the bars.
-	 */
-	&__skeleton-bars {
-		align-items: flex-end;
-		bottom: 42%;
-		display: none;
-		gap: 16px;
-		justify-content: center;
-		left: 0;
-		padding: 4px 0 0;
-		pointer-events: none;
-		position: absolute;
-		right: 0;
-		top: 0;
-
-		span {
-			background: var(--mc-sa-border);
-			border-radius: 2px;
-			display: block;
-			width: 18px;
-		}
-
-		span:nth-child(1) {
-			height: 96px;
-		}
-
-		span:nth-child(2) {
-			height: 53px;
-		}
-
-		span:nth-child(3) {
-			height: 122px;
-		}
-
-		span:nth-child(4) {
-			height: 80px;
-		}
-
-		span:nth-child(5) {
-			height: 40px;
-		}
-	}
-
 	// Skeleton donut — outlined grey ring, same size as the real donut
 	&__skeleton-donut {
 		border: 20px solid var(--mc-sa-border);
@@ -568,57 +833,6 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		right: 0;
 		text-align: center;
 		z-index: 2;
-	}
-
-	// -------------------------------------------------------------------------
-	// Error banner (shown in place of the chart overlay in the error state).
-	// -------------------------------------------------------------------------
-	&__error-banner {
-		align-items: center;
-		background: var(--mc-sa-error-bg);
-		border: 1px solid var(--mc-sa-error-border);
-		border-radius: 8px;
-		display: flex;
-		gap: 12px;
-		margin: 4px 0 16px;
-		padding: 12px 14px;
-
-		&[hidden] {
-			display: none;
-		}
-	}
-
-	&__error-banner-icon {
-		align-items: center;
-		color: var(--mc-sa-error-text);
-		display: inline-flex;
-		flex-shrink: 0;
-		justify-content: center;
-		line-height: 0;
-	}
-
-	&__error-banner-body {
-		flex: 1 1 auto;
-		min-width: 0;
-	}
-
-	&__error-banner-title {
-		color: var(--mc-sa-error-title);
-		font-size: 13px;
-		font-weight: 600;
-		line-height: 1.3;
-		margin: 0 0 2px;
-	}
-
-	&__error-banner-message {
-		color: var(--mc-sa-error-text);
-		font-size: 13px;
-		line-height: 1.4;
-		margin: 0;
-	}
-
-	&__error-banner-action {
-		flex-shrink: 0;
 	}
 
 	// -------------------------------------------------------------------------
@@ -710,6 +924,8 @@ body.mailchimp_page_mailchimp_sf_analytics {
 
 @media (prefers-reduced-motion: reduce) {
 
+	.mailchimp-sf-fp.is-loading .mailchimp-sf-fp__skeleton-bars span,
+	.mailchimp-sf-fp.is-loading .mailchimp-sf-fp__overlay,
 	.mailchimp-sf-sa.is-loading .mailchimp-sf-sa__skeleton-bars span,
 	.mailchimp-sf-sa.is-loading .mailchimp-sf-sa__skeleton-donut,
 	.mailchimp-sf-sa.is-loading .mailchimp-sf-sa__overlay {

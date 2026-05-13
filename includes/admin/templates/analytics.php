@@ -101,6 +101,181 @@ $dc           = get_option( 'mc_datacenter', '' );
 				</div>
 
 				<section
+					class="mailchimp-sf-analytics-card mailchimp-sf-ao is-loading"
+					data-section="audience-overview"
+					aria-labelledby="mailchimp-sf-ao-title"
+				>
+					<header class="mailchimp-sf-analytics-card__header">
+						<h2 id="mailchimp-sf-ao-title" class="mailchimp-sf-analytics-card__title">
+							<?php esc_html_e( 'Audience Overview', 'mailchimp' ); ?>
+						</h2>
+						<p
+							id="mailchimp-sf-ao-daterange"
+							class="mailchimp-sf-analytics-card__subtitle"
+							aria-live="polite"
+						><?php esc_html_e( 'Loading audience overview…', 'mailchimp' ); ?></p>
+					</header>
+
+					<div
+						id="mailchimp-sf-ao-error-banner"
+						class="mailchimp-sf-ao__error-banner"
+						role="alert"
+						hidden
+					>
+						<span class="mailchimp-sf-ao__error-banner-icon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" focusable="false" aria-hidden="true">
+								<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+								<line x1="12" y1="7.5" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								<circle cx="12" cy="16.5" r="1" fill="currentColor"/>
+							</svg>
+						</span>
+						<div class="mailchimp-sf-ao__error-banner-body">
+							<p class="mailchimp-sf-ao__error-banner-title">
+								<?php esc_html_e( 'Unable to load audience overview', 'mailchimp' ); ?>
+							</p>
+							<p
+								id="mailchimp-sf-ao-error-message"
+								class="mailchimp-sf-ao__error-banner-message"
+							>
+								<?php esc_html_e( 'Unable to load data for the selected date range. Please check your connection and try again.', 'mailchimp' ); ?>
+							</p>
+						</div>
+						<button
+							type="button"
+							id="mailchimp-sf-ao-error-retry"
+							class="mailchimp-sf-button btn-secondary btn-small mailchimp-sf-ao__error-banner-action"
+						>
+							<?php esc_html_e( 'Resolve error', 'mailchimp' ); ?>
+						</button>
+					</div>
+
+					<dl class="mailchimp-sf-ao__metrics">
+						<div class="mailchimp-sf-ao__metric">
+							<dt class="mailchimp-sf-ao__metric-label">
+								<?php esc_html_e( 'Total subscribers', 'mailchimp' ); ?>
+							</dt>
+							<dd
+								id="mailchimp-sf-ao-total-subscribers"
+								class="mailchimp-sf-ao__metric-value"
+							>&mdash;</dd>
+						</div>
+						<div class="mailchimp-sf-ao__metric">
+							<dt class="mailchimp-sf-ao__metric-label">
+								<?php esc_html_e( 'Form views', 'mailchimp' ); ?>
+							</dt>
+							<dd
+								id="mailchimp-sf-ao-views"
+								class="mailchimp-sf-ao__metric-value"
+							>&mdash;</dd>
+						</div>
+						<div class="mailchimp-sf-ao__metric">
+							<dt class="mailchimp-sf-ao__metric-label">
+								<?php esc_html_e( 'New submissions', 'mailchimp' ); ?>
+							</dt>
+							<dd
+								id="mailchimp-sf-ao-submissions"
+								class="mailchimp-sf-ao__metric-value"
+							>&mdash;</dd>
+						</div>
+						<div class="mailchimp-sf-ao__metric">
+							<dt class="mailchimp-sf-ao__metric-label">
+								<?php esc_html_e( 'Conversion rate', 'mailchimp' ); ?>
+							</dt>
+							<dd
+								id="mailchimp-sf-ao-rate"
+								class="mailchimp-sf-ao__metric-value"
+							>&mdash;</dd>
+						</div>
+					</dl>
+
+				</section>
+
+				<section
+					class="mailchimp-sf-analytics-card mailchimp-sf-fp is-loading"
+					data-section="form-performance"
+					aria-labelledby="mailchimp-sf-fp-title"
+				>
+					<header class="mailchimp-sf-analytics-card__header">
+						<h2 id="mailchimp-sf-fp-title" class="mailchimp-sf-analytics-card__title">
+							<?php esc_html_e( 'List performance over time', 'mailchimp' ); ?>
+						</h2>
+						<p
+							id="mailchimp-sf-fp-daterange"
+							class="mailchimp-sf-analytics-card__subtitle"
+							aria-live="polite"
+						><?php esc_html_e( 'Loading form performance…', 'mailchimp' ); ?></p>
+					</header>
+
+					<div class="mailchimp-sf-fp__chart-heading">
+						<h3 class="mailchimp-sf-fp__chart-title">
+							<?php esc_html_e( 'Form Activity', 'mailchimp' ); ?>
+						</h3>
+						<p class="mailchimp-sf-fp__chart-subtitle">
+							<?php esc_html_e( 'Views, submissions, and conversion rate over time', 'mailchimp' ); ?>
+						</p>
+					</div>
+
+					<div
+						id="mailchimp-sf-fp-error-banner"
+						class="mailchimp-sf-fp__error-banner"
+						role="alert"
+						hidden
+					>
+						<span class="mailchimp-sf-fp__error-banner-icon" aria-hidden="true">
+							<svg viewBox="0 0 24 24" width="20" height="20" focusable="false" aria-hidden="true">
+								<circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+								<line x1="12" y1="7.5" x2="12" y2="13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+								<circle cx="12" cy="16.5" r="1" fill="currentColor"/>
+							</svg>
+						</span>
+						<div class="mailchimp-sf-fp__error-banner-body">
+							<p class="mailchimp-sf-fp__error-banner-title">
+								<?php esc_html_e( 'Unable to load form performance', 'mailchimp' ); ?>
+							</p>
+							<p
+								id="mailchimp-sf-fp-error-message"
+								class="mailchimp-sf-fp__error-banner-message"
+							>
+								<?php esc_html_e( 'Unable to load data for the selected date range. Please check your connection and try again.', 'mailchimp' ); ?>
+							</p>
+						</div>
+						<button
+							type="button"
+							id="mailchimp-sf-fp-error-retry"
+							class="mailchimp-sf-button btn-secondary btn-small mailchimp-sf-fp__error-banner-action"
+						>
+							<?php esc_html_e( 'Resolve error', 'mailchimp' ); ?>
+						</button>
+					</div>
+
+					<div class="mailchimp-sf-fp__body">
+						<div class="mailchimp-sf-fp__chart">
+							<div class="mailchimp-sf-fp__canvas-wrap">
+								<div class="mailchimp-sf-fp__skeleton-bars" aria-hidden="true">
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+									<span></span>
+								</div>
+								<canvas
+									id="mailchimp-sf-fp-line"
+									class="mailchimp-sf-fp__canvas"
+									role="img"
+									aria-label="<?php esc_attr_e( 'Form views, submissions, and conversion rate chart', 'mailchimp' ); ?>"
+								></canvas>
+								<div
+									id="mailchimp-sf-fp-overlay"
+									class="mailchimp-sf-fp__overlay"
+									role="status"
+									aria-live="polite"
+								><?php esc_html_e( 'Loading form performance…', 'mailchimp' ); ?></div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section
 					class="mailchimp-sf-analytics-card mailchimp-sf-sa is-loading"
 					data-section="subscriber-activity"
 					aria-labelledby="mailchimp-sf-sa-title"

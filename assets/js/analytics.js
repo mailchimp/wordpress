@@ -422,50 +422,408 @@ import { __ } from '@wordpress/i18n';
 	});
 
 	/**
-	 * Fetch analytics data via AJAX and update the content area.
-	 *
-	 * @param {object} detail Event detail with from, to, listId.
+	 * Forms performance over time
 	 */
-	function fetchAnalyticsData(detail) {
-		if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
+	(function formPerformanceModule() {
+		const section = document.querySelector('[data-section="form-performance"]');
+		if (!section) {
 			return;
 		}
 
-		const contentArea = document.getElementById('mailchimp-sf-analytics-content');
-		if (!contentArea) {
-			return;
+		const chartCanvas = document.getElementById('mailchimp-sf-fp-line');
+		const dateRangeEl = document.getElementById('mailchimp-sf-fp-daterange');
+		const overlayEl = document.getElementById('mailchimp-sf-fp-overlay');
+		const errorBannerEl = document.getElementById('mailchimp-sf-fp-error-banner');
+		const errorMessageEl = document.getElementById('mailchimp-sf-fp-error-message');
+		const retryBtnEl = document.getElementById('mailchimp-sf-fp-error-retry');
+
+		const COLORS = {
+			viewsFill: '#3B82F6',
+			viewsBorder: '#2563EB',
+			submissionsFill: '#2DD4BF',
+			submissionsBorder: '#14B8A6',
+			rateBorder: '#EAB308',
+			gridLine: 'rgba(0, 0, 0, 0.06)',
+			text: '#6B7280',
+			// Legend chip fills — translucent version of each bar color so the
+			// legend markers match the outlined-chip style from the Figma spec.
+			viewsLegendFill: 'rgba(59, 130, 246, 0.35)',
+			submissionsLegendFill: 'rgba(45, 212, 191, 0.35)',
+		};
+
+		const STRINGS = {
+			loadingSubtitle: __('Loading form performance…', 'mailchimp'),
+			loadingOverlay: __('Loading form performance…', 'mailchimp'),
+			emptySubtitle: __('No submissions recorded for the selected date range', 'mailchimp'),
+			emptyOverlay: __('No data available for this date range', 'mailchimp'),
+			errorDefault: __(
+				'Unable to load data for the selected date range. Please check your connection and try again.',
+				'mailchimp',
+			),
+			views: __('Form Views', 'mailchimp'),
+			submissions: __('Submissions', 'mailchimp'),
+			conversionRate: __('Conversion Rate', 'mailchimp'),
+		};
+
+		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-empty', 'is-error'];
+
+		let chart = null;
+		let inFlight = null;
+		let lastDetail = null;
+
+		function setState(state) {
+			STATE_CLASSES.forEach(function (cls) {
+				section.classList.toggle(cls, cls === `is-${state}`);
+			});
 		}
 
-		const formData = new FormData();
-		formData.append('action', 'mailchimp_sf_get_analytics');
-		formData.append('nonce', window.mailchimpSFAnalytics.nonce);
-		formData.append('list_id', detail.listId);
-		formData.append('start_date', detail.from);
-		formData.append('end_date', detail.to);
+		function setOverlay(text) {
+			if (overlayEl) {
+				overlayEl.textContent = text || '';
+			}
+		}
 
-		fetch(window.mailchimpSFAnalytics.ajax_url, {
-			method: 'POST',
-			body: formData,
-			credentials: 'same-origin',
-		})
-			.then(function (response) {
-				return response.json();
-			})
-			.then(function (response) {
-				if (!response.success) {
-					return;
+		function setSubtitle(text) {
+			if (dateRangeEl) {
+				dateRangeEl.textContent = text || '';
+			}
+		}
+
+		function destroyCharts() {
+			if (chart) {
+				chart.destroy();
+				chart = null;
+			}
+		}
+
+		function formatRangeLabel(from, to) {
+			try {
+				const fromDate = new Date(`${from}T00:00:00`);
+				const toDate = new Date(`${to}T00:00:00`);
+				const fmt = new Intl.DateTimeFormat(undefined, {
+					month: 'short',
+					day: 'numeric',
+					year: 'numeric',
+				});
+				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+			} catch (err) {
+				return `${from} – ${to}`;
+			}
+		}
+
+		function setErrorBanner(visible, message) {
+			if (!errorBannerEl) {
+				return;
+			}
+			if (visible) {
+				if (errorMessageEl) {
+					errorMessageEl.textContent = message || STRINGS.errorDefault;
 				}
+				errorBannerEl.hidden = false;
+			} else {
+				errorBannerEl.hidden = true;
+			}
+		}
 
-				const { data } = response;
-				contentArea.innerHTML = JSON.stringify(data);
+		function showLoading() {
+			destroyCharts();
+			setErrorBanner(false);
+			setOverlay(STRINGS.loadingOverlay);
+			setSubtitle(STRINGS.loadingSubtitle);
+			setState('loading');
+		}
+
+		function showEmpty() {
+			destroyCharts();
+			setErrorBanner(false);
+			setOverlay(STRINGS.emptyOverlay);
+			setSubtitle(STRINGS.emptySubtitle);
+			setState('empty');
+		}
+
+		function showError(message) {
+			destroyCharts();
+			setOverlay('');
+			if (lastDetail && lastDetail.from && lastDetail.to) {
+				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
+			}
+			setErrorBanner(true, message);
+			setState('error');
+		}
+
+		/**
+		 * Render the bar+line chart from API rows.
+		 *
+		 * @param {Array} rows Payload `data` rows from the API.
+		 */
+		function renderChart(rows) {
+			if (!chartCanvas || typeof window.Chart === 'undefined') {
+				return;
+			}
+
+			const labels = rows.map(function (r) {
+				return r.label;
+			});
+			const views = rows.map(function (r) {
+				return r.views || 0;
+			});
+			const submissions = rows.map(function (r) {
+				return r.submissions || 0;
+			});
+			const rate = rows.map(function (r) {
+				return r.conversion_rate || 0;
+			});
+
+			chart = new window.Chart(chartCanvas.getContext('2d'), {
+				type: 'bar',
+				data: {
+					labels,
+					datasets: [
+						{
+							type: 'bar',
+							label: STRINGS.views,
+							data: views,
+							backgroundColor: COLORS.viewsFill,
+							borderColor: COLORS.viewsBorder,
+							borderWidth: 0,
+							borderRadius: 0,
+							maxBarThickness: 22,
+							order: 2,
+							yAxisID: 'y',
+						},
+						{
+							type: 'bar',
+							label: STRINGS.submissions,
+							data: submissions,
+							backgroundColor: COLORS.submissionsFill,
+							borderColor: COLORS.submissionsBorder,
+							borderWidth: 0,
+							borderRadius: 0,
+							maxBarThickness: 22,
+							order: 2,
+							yAxisID: 'y',
+						},
+						{
+							type: 'line',
+							label: STRINGS.conversionRate,
+							data: rate,
+							borderColor: COLORS.rateBorder,
+							backgroundColor: COLORS.rateBorder,
+							borderWidth: 2,
+							pointBackgroundColor: COLORS.rateBorder,
+							pointBorderColor: COLORS.rateBorder,
+							pointRadius: 3,
+							pointHoverRadius: 5,
+							tension: 0.1,
+							fill: false,
+							order: 1,
+							yAxisID: 'y1',
+						},
+					],
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					interaction: { mode: 'index', intersect: false },
+					plugins: {
+						legend: {
+							position: 'top',
+							align: 'center',
+							labels: {
+								usePointStyle: true,
+								pointStyleWidth: 36,
+								boxHeight: 20,
+								padding: 24,
+								color: COLORS.text,
+								generateLabels(ci) {
+									const legendFills = [
+										COLORS.viewsLegendFill,
+										COLORS.submissionsLegendFill,
+									];
+									return ci.data.datasets.map(function (dataset, i) {
+										const isLine = dataset.type === 'line';
+										return {
+											text: dataset.label,
+											fillStyle: isLine
+												? 'transparent'
+												: legendFills[i] || dataset.backgroundColor,
+											strokeStyle: isLine
+												? dataset.borderColor
+												: dataset.backgroundColor,
+											lineWidth: 2,
+											pointStyle: isLine ? 'line' : 'rect',
+											hidden: !ci.isDatasetVisible(i),
+											datasetIndex: i,
+										};
+									});
+								},
+							},
+						},
+						tooltip: {
+							callbacks: {
+								label(ctx) {
+									const value = ctx.parsed.y || 0;
+									if (ctx.dataset.yAxisID === 'y1') {
+										return `${ctx.dataset.label}: ${value.toFixed(1)}%`;
+									}
+									return `${ctx.dataset.label}: ${value}`;
+								},
+							},
+						},
+					},
+					scales: {
+						x: {
+							grid: {
+								color: COLORS.gridLine,
+								drawBorder: false,
+								drawTicks: false,
+							},
+							ticks: { color: COLORS.text },
+						},
+						y: {
+							type: 'linear',
+							position: 'left',
+							beginAtZero: true,
+							grid: { color: COLORS.gridLine, drawBorder: false },
+							ticks: { color: COLORS.text, precision: 0 },
+						},
+						y1: {
+							type: 'linear',
+							position: 'right',
+							beginAtZero: true,
+							max: 110,
+							grid: { drawOnChartArea: false },
+							ticks: {
+								color: COLORS.text,
+								stepSize: 10,
+								callback(value) {
+									return value > 100 ? '' : `${value}%`;
+								},
+							},
+						},
+					},
+				},
+			});
+		}
+
+		function render(payload, fromLabel, toLabel) {
+			destroyCharts();
+			setErrorBanner(false);
+
+			const rows = Array.isArray(payload.data) ? payload.data : [];
+			const totalViews = payload.total_views || 0;
+			const totalSubs = payload.total_submissions || 0;
+
+			// Empty when there's literally no tracked activity for the range.
+			if (rows.length === 0 || (totalViews === 0 && totalSubs === 0)) {
+				showEmpty();
+				return;
+			}
+
+			setSubtitle(formatRangeLabel(fromLabel, toLabel));
+			setOverlay('');
+			setState('ready');
+			renderChart(rows);
+		}
+
+		/**
+		 * Custom event so other analytics modules (Audience
+		 * Overview, etc.) can render from the same fetch without making
+		 * their own AJAX call.
+		 *
+		 * @param {string} name Event suffix — appended to `mailchimp-analytics-`.
+		 * @param {object} eventDetail Payload passed as the event's `detail`.
+		 */
+		function broadcast(name, eventDetail) {
+			document.dispatchEvent(
+				new CustomEvent(`mailchimp-analytics-${name}`, { detail: eventDetail }),
+			);
+		}
+
+		function fetchPerformance(detail) {
+			if (!window.mailchimpSFAnalytics || !window.mailchimpSFAnalytics.ajax_url) {
+				showError();
+				broadcast('error', { message: STRINGS.errorDefault });
+				return;
+			}
+			if (!detail || !detail.listId || !detail.from || !detail.to) {
+				showEmpty();
+				return;
+			}
+
+			lastDetail = {
+				listId: detail.listId,
+				from: detail.from,
+				to: detail.to,
+			};
+
+			if (inFlight && typeof inFlight.abort === 'function') {
+				inFlight.abort();
+			}
+
+			const controller =
+				typeof window.AbortController !== 'undefined' ? new AbortController() : null;
+			inFlight = controller;
+
+			const formData = new FormData();
+			formData.append('action', 'mailchimp_sf_get_form_performance');
+			formData.append('nonce', window.mailchimpSFAnalytics.nonce);
+			formData.append('list_id', detail.listId);
+			formData.append('date_from', detail.from);
+			formData.append('date_to', detail.to);
+
+			showLoading();
+			broadcast('loading', { from: detail.from, to: detail.to });
+
+			fetch(window.mailchimpSFAnalytics.ajax_url, {
+				method: 'POST',
+				body: formData,
+				credentials: 'same-origin',
+				signal: controller ? controller.signal : undefined,
 			})
-			.catch(function () {});
-	}
+				.then(function (response) {
+					return response.json().catch(function () {
+						return null;
+					});
+				})
+				.then(function (body) {
+					inFlight = null;
+					if (!body || body.success !== true || !body.data) {
+						const message =
+							body && body.data && body.data.message ? body.data.message : '';
+						showError(message);
+						broadcast('error', { message: message || STRINGS.errorDefault });
+						return;
+					}
+					render(body.data, detail.from, detail.to);
+					broadcast('loaded', {
+						data: body.data,
+						from: detail.from,
+						to: detail.to,
+					});
+				})
+				.catch(function (err) {
+					if (err && err.name === 'AbortError') {
+						return;
+					}
+					inFlight = null;
+					showError();
+					broadcast('error', { message: STRINGS.errorDefault });
+				});
+		}
 
-	// Listen for analytics refresh events.
-	document.addEventListener('mailchimp-analytics-refresh', function (e) {
-		fetchAnalyticsData(e.detail);
-	});
+		if (retryBtnEl) {
+			retryBtnEl.addEventListener('click', function () {
+				if (lastDetail) {
+					fetchPerformance(lastDetail);
+				}
+			});
+		}
+
+		document.addEventListener('mailchimp-analytics-refresh', function (e) {
+			fetchPerformance(e.detail);
+		});
+	})();
 
 	/**
 	 * Subscriber change over time — diverging bar + totals donut.
@@ -800,7 +1158,12 @@ import { __ } from '@wordpress/i18n';
 			destroyCharts();
 			setErrorBanner(false);
 
-			if (!Array.isArray(payload.data) || payload.data.length === 0) {
+			const rows = Array.isArray(payload.data) ? payload.data : [];
+			const totalNew = payload.total_new || 0;
+			const totalUnsubs = payload.total_unsubs || 0;
+
+			// Match the Form Performance card's empty-state behavior
+			if (rows.length === 0 || (totalNew === 0 && totalUnsubs === 0)) {
 				showEmpty();
 				return;
 			}
@@ -809,8 +1172,8 @@ import { __ } from '@wordpress/i18n';
 			setSubtitle(formatRangeLabel(fromLabel, toLabel));
 			setOverlay('');
 			setState('ready');
-			renderBar(payload.data);
-			renderDonut(payload.total_new, payload.total_unsubs);
+			renderBar(rows);
+			renderDonut(totalNew, totalUnsubs);
 			renderTotals(payload);
 		}
 
@@ -888,6 +1251,173 @@ import { __ } from '@wordpress/i18n';
 		document.addEventListener('mailchimp-analytics-refresh', function (e) {
 			fetchActivity(e.detail);
 		});
+	})();
+
+	/**
+	 * Audience Overview KPI block — Total subscribers, Form views, New submissions, Conversion rate.
+	 */
+	(function audienceOverviewModule() {
+		const section = document.querySelector('[data-section="audience-overview"]');
+		if (!section) {
+			return;
+		}
+
+		const subscribersEl = document.getElementById('mailchimp-sf-ao-total-subscribers');
+		const viewsEl = document.getElementById('mailchimp-sf-ao-views');
+		const submissionsEl = document.getElementById('mailchimp-sf-ao-submissions');
+		const rateEl = document.getElementById('mailchimp-sf-ao-rate');
+		const dateRangeEl = document.getElementById('mailchimp-sf-ao-daterange');
+		const errorBannerEl = document.getElementById('mailchimp-sf-ao-error-banner');
+		const errorMessageEl = document.getElementById('mailchimp-sf-ao-error-message');
+		const retryBtnEl = document.getElementById('mailchimp-sf-ao-error-retry');
+
+		const STRINGS = {
+			loadingSubtitle: __('Loading audience overview…', 'mailchimp'),
+			errorDefault: __(
+				'Unable to load audience overview. Please check your connection and try again.',
+				'mailchimp',
+			),
+		};
+
+		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-error'];
+
+		let lastDetail = null;
+
+		function setState(state) {
+			STATE_CLASSES.forEach(function (cls) {
+				section.classList.toggle(cls, cls === `is-${state}`);
+			});
+		}
+
+		function setSubtitle(text) {
+			if (dateRangeEl) {
+				dateRangeEl.textContent = text || '';
+			}
+		}
+
+		function setErrorBanner(visible, message) {
+			if (!errorBannerEl) {
+				return;
+			}
+			if (visible) {
+				if (errorMessageEl) {
+					errorMessageEl.textContent = message || STRINGS.errorDefault;
+				}
+				errorBannerEl.hidden = false;
+			} else {
+				errorBannerEl.hidden = true;
+			}
+		}
+
+		function setPlaceholders() {
+			[subscribersEl, viewsEl, submissionsEl, rateEl].forEach(function (el) {
+				if (el) {
+					el.textContent = '-';
+				}
+			});
+		}
+
+		function formatRangeLabel(from, to) {
+			try {
+				const fromDate = new Date(`${from}T00:00:00`);
+				const toDate = new Date(`${to}T00:00:00`);
+				const fmt = new Intl.DateTimeFormat(undefined, {
+					month: 'short',
+					day: 'numeric',
+					year: 'numeric',
+				});
+				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+			} catch (err) {
+				return `${from} – ${to}`;
+			}
+		}
+
+		function formatNumber(n) {
+			if (n === null || typeof n === 'undefined') {
+				return '-';
+			}
+			try {
+				return new Intl.NumberFormat().format(n);
+			} catch (err) {
+				return String(n);
+			}
+		}
+
+		function showLoading() {
+			setErrorBanner(false);
+			setSubtitle(STRINGS.loadingSubtitle);
+			setPlaceholders();
+			setState('loading');
+		}
+
+		function showError(message) {
+			if (lastDetail && lastDetail.from && lastDetail.to) {
+				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
+			}
+			setPlaceholders();
+			setErrorBanner(true, message);
+			setState('error');
+		}
+
+		function render(data, fromLabel, toLabel) {
+			setErrorBanner(false);
+			setSubtitle(formatRangeLabel(fromLabel, toLabel));
+
+			if (subscribersEl) {
+				subscribersEl.textContent = formatNumber(data.total_subscribers);
+			}
+			if (viewsEl) {
+				viewsEl.textContent = formatNumber(data.total_views);
+			}
+			if (submissionsEl) {
+				submissionsEl.textContent = formatNumber(data.total_submissions);
+			}
+			if (rateEl) {
+				const rate = data.total_conversion_rate;
+				rateEl.textContent =
+					rate === null || typeof rate === 'undefined'
+						? '-'
+						: `${Number(rate).toFixed(2)}%`;
+			}
+
+			setState('ready');
+		}
+
+		document.addEventListener('mailchimp-analytics-refresh', function (e) {
+			if (e.detail) {
+				lastDetail = {
+					listId: e.detail.listId,
+					from: e.detail.from,
+					to: e.detail.to,
+				};
+			}
+		});
+
+		document.addEventListener('mailchimp-analytics-loading', function () {
+			showLoading();
+		});
+
+		document.addEventListener('mailchimp-analytics-loaded', function (e) {
+			if (e.detail && e.detail.data) {
+				render(e.detail.data, e.detail.from, e.detail.to);
+			}
+		});
+
+		document.addEventListener('mailchimp-analytics-error', function (e) {
+			showError(e.detail && e.detail.message);
+		});
+
+		if (retryBtnEl) {
+			retryBtnEl.addEventListener('click', function () {
+				if (!lastDetail) {
+					return;
+				}
+
+				document.dispatchEvent(
+					new CustomEvent('mailchimp-analytics-refresh', { detail: lastDetail }),
+				);
+			});
+		}
 	})();
 
 	// Initialize.

@@ -6,7 +6,7 @@
  * Text Domain:       mailchimp
  * Version:           2.0.1
  * Requires at least: 6.4
- * Requires PHP:      7.0
+ * Requires PHP:      7.4
  * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
@@ -110,6 +110,9 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submis
 $form_submission = new Mailchimp_Form_Submission();
 $form_submission->init();
 
+// Shared bucketing helpers used by both analytics chart data providers.
+require_once plugin_dir_path( __FILE__ ) . 'includes/trait-mailchimp-analytics-bucketing.php';
+
 // Init Analytics page.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.php';
 $analytics = new Mailchimp_Analytics();
@@ -125,6 +128,10 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-
 $subscriber_activity = new Mailchimp_Subscriber_Activity();
 $subscriber_activity->init();
 
+// Form performance (local analytics DB) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-performance.php';
+$form_performance = new Mailchimp_Form_Performance();
+$form_performance->init();
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
