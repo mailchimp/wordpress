@@ -113,6 +113,8 @@ class Mailchimp_Analytics {
 			array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'nonce'    => wp_create_nonce( 'mailchimp_sf_analytics_admin_nonce' ),
+				'dateFormat'  => get_option( 'date_format', 'Y-m-d' ),
+				'startOfWeek' => (int) get_option( 'start_of_week', 0 ),
 			)
 		);
 	}

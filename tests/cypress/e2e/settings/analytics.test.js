@@ -9,6 +9,7 @@ const {
 describe('Analytics admin page', () => {
 	before(() => {
 		cy.login();
+		cy.wpCli('wp option update date_format "Y-m-d"');
 	});
 
 	describe('When connected', () => {

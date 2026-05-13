@@ -11,6 +11,10 @@ $mq-small: 782px;
 $mq-medium: 900px;
 $mq-xs: 600px;
 
+body.mailchimp_page_mailchimp_sf_analytics {
+	background-color: #f6f7f7;
+}
+
 // -----------------------------------------------------------------------------
 // Filters toolbar
 // -----------------------------------------------------------------------------
@@ -76,10 +80,13 @@ $mq-xs: 600px;
 	gap: 8px;
 	height: 40px;
 	justify-content: space-between;
-	min-width: 230px;
-	padding: 0 10px;
-	text-align: left;
+	min-width: 290px;
+	padding-block: 0;
+	padding-inline-start: 12px;
+	padding-inline-end: 44px; /* room for the absolutely-positioned indicator */
+	text-align: start; /* RTL-aware */
 	transition: all 0.2s;
+	white-space: nowrap;
 
 	&:hover {
 		border-color: var(--mailchimp-color-link, #017e89);
@@ -100,15 +107,22 @@ $mq-xs: 600px;
 	}
 
 	.indicator-date-picker {
-		bottom: 0;
+		align-items: center;
 		display: flex;
-		justify-content: center;
-		padding: 0 8px;
-		pointer-events: none;
 		position: absolute;
-		right: 0;
 		top: 0;
-		width: 24px;
+		bottom: 0;
+		inset-inline-end: 0; /* RTL-aware */
+		pointer-events: none;
+		justify-content: center;
+		padding: 0 10px;
+		width: 36px;
+		border-inline-start: 1px solid #c3ced5; /* visual separator between text and icon */
+	}
+
+	#mailchimp-sf-date-picker-label {
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 }
 
@@ -118,7 +132,7 @@ $mq-xs: 600px;
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 	display: none;
-	left: 0;
+	inset-inline-start: 0; /* RTL-aware */
 	min-width: 480px;
 	padding: 20px;
 	position: absolute;
@@ -162,7 +176,7 @@ $mq-xs: 600px;
 	padding: 0 6px;
 	pointer-events: none;
 	position: absolute;
-	right: 0;
+	inset-inline-end: 0; /* RTL-aware */
 	top: 0;
 
 	svg {
@@ -191,7 +205,7 @@ $mq-xs: 600px;
 	}
 
 	.mailchimp-sf-date-picker-input-wrap input[type="text"] {
-		padding-right: 30px;
+		padding-inline-end: 30px; /* RTL-aware: leave room for the calendar icon */
 	}
 }
 
@@ -714,7 +728,7 @@ $mq-xs: 600px;
 	}
 
 	.mailchimp-sf-date-picker-popover {
-		left: 0;
+		inset-inline-start: 0; /* RTL-aware */
 		min-width: auto;
 		width: calc(100vw - 84px);
 	}
@@ -766,5 +780,44 @@ $mq-xs: 600px;
 
 	.mailchimp-sf-sa__net {
 		font-size: 28px;
+	}
+}
+
+
+/* RTL overrides */
+
+[dir="rtl"] .mailchimp-sf-date-picker-trigger {
+	padding-inline-end: 44px;
+	padding-inline-start: 12px;
+	text-align: start;
+}
+
+[dir="rtl"] .mailchimp-sf-date-picker-trigger .indicator-date-picker {
+	border-left: 0;
+	border-right: 1px solid #c3ced5;
+	left: 0;
+	right: auto;
+}
+
+[dir="rtl"] .mailchimp-sf-date-picker-popover {
+	left: auto;
+	right: 0;
+}
+
+[dir="rtl"] .mailchimp-sf-date-picker-field-calendar {
+	left: 0;
+	right: auto;
+}
+
+[dir="rtl"] #mailchimp-sf-settings-page .mailchimp-sf-date-picker-field .mailchimp-sf-date-picker-input-wrap input[type="text"] {
+	padding-left: 30px;
+	padding-right: 0;
+}
+
+@media screen and (max-width: 782px) {
+
+	[dir="rtl"] .mailchimp-sf-date-picker-popover {
+		left: auto;
+		right: 0;
 	}
 }
