@@ -1,4 +1,11 @@
 /* eslint-disable no-undef */
+const {
+	isSubscriberActivityRequest,
+	buildSuccessData,
+	wpJsonSuccess,
+	wpJsonError,
+} = require('../../support/functions/subscriberActivityAjax');
+
 describe('Analytics admin page', () => {
 	before(() => {
 		cy.login();
@@ -123,6 +130,161 @@ describe('Analytics admin page', () => {
 			cy.get('#mailchimp-sf-list-filter').should('exist');
 			cy.get('#mailchimp-sf-list-filter option').should('have.length.greaterThan', 0);
 		});
+
+		describe('Subscriber activity chart (stubbed)', () => {
+			const analyticsUrl = '/wp-admin/admin.php?page=mailchimp_sf_analytics';
+
+			function stubSubscriberActivity(replyFn) {
+				cy.intercept('POST', '**/admin-ajax.php', (req) => {
+					if (!isSubscriberActivityRequest(req)) {
+						req.continue();
+						return;
+					}
+					const payload = typeof replyFn === 'function' ? replyFn(req) : replyFn;
+					req.reply({
+						statusCode: 200,
+						headers: { 'content-type': 'application/json; charset=UTF-8' },
+						body: payload,
+					});
+				}).as('subscriberActivity');
+			}
+
+			it('Subscriber activity section shell (headings, canvases)', () => {
+				stubSubscriberActivity(() => wpJsonSuccess(buildSuccessData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('be.visible');
+				cy.get('#mailchimp-sf-sa-title').contains('Subscriber change over time');
+				cy.get('#mailchimp-sf-sa-totals-title').contains(
+					'Totals for the selected date range',
+				);
+				cy.get('#mailchimp-sf-sa-bar').should('exist');
+				cy.get('#mailchimp-sf-sa-donut').should('exist');
+			});
+
+			it('Success payload shows ready state and numeric totals', () => {
+				stubSubscriberActivity(() =>
+					wpJsonSuccess(
+						buildSuccessData({
+							total_new: 12,
+							total_unsubs: 4,
+							net_change: 8,
+							data: [
+								{
+									key: '2026-04-01',
+									label: 'Apr 1',
+									new_subscribers: 12,
+									unsubscribes: 4,
+								},
+							],
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('have.class', 'is-ready');
+				cy.get('[data-section="subscriber-activity"]').should(
+					'not.have.class',
+					'is-loading',
+				);
+				cy.get('[data-section="subscriber-activity"]').should('not.have.class', 'is-error');
+				cy.get('#mailchimp-sf-sa-net').should('contain', '+8');
+				cy.get('#mailchimp-sf-sa-total-new').should('have.text', '12');
+				cy.get('#mailchimp-sf-sa-total-unsubs').should('have.text', '4');
+			});
+
+			it('Empty data shows empty state', () => {
+				stubSubscriberActivity(() =>
+					wpJsonSuccess(
+						buildSuccessData({
+							data: [],
+							total_new: 0,
+							total_unsubs: 0,
+							net_change: 0,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('have.class', 'is-empty');
+				cy.get('#mailchimp-sf-sa-daterange').contains(
+					'No data available for the selected date range',
+				);
+				cy.get('#mailchimp-sf-sa-overlay').contains(
+					'No data available for this date range',
+				);
+			});
+
+			it('API error shows error banner', () => {
+				stubSubscriberActivity(() => wpJsonError('Stub API failure'));
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-sa-error-banner').should('be.visible');
+				cy.get('#mailchimp-sf-sa-error-message').contains('Stub API failure');
+			});
+
+			it('Retry after error loads success', () => {
+				let n = 0;
+				stubSubscriberActivity(() => {
+					n += 1;
+					if (n === 1) {
+						return wpJsonError('First request fails');
+					}
+					return wpJsonSuccess(buildSuccessData());
+				});
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('have.class', 'is-error');
+				cy.get('#mailchimp-sf-sa-error-retry').click();
+				cy.wait('@subscriberActivity');
+				cy.get('[data-section="subscriber-activity"]').should('have.class', 'is-ready');
+				cy.get('#mailchimp-sf-sa-error-banner').should('have.attr', 'hidden');
+			});
+
+			it('Limited range shows notice', () => {
+				stubSubscriberActivity(() =>
+					wpJsonSuccess(
+						buildSuccessData({
+							limited: true,
+						}),
+					),
+				);
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('#mailchimp-sf-sa-notice')
+					.should('be.visible')
+					.and(
+						'contain',
+						'Mailchimp subscriber activity is only available for the last 180 days. Showing available data.',
+					);
+			});
+
+			it('Changing list filter triggers another subscriber activity request', function () {
+				stubSubscriberActivity(() => wpJsonSuccess(buildSuccessData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('#mailchimp-sf-list-filter option').then(function ($options) {
+					const values = [...$options].map((o) => o.value).filter(Boolean);
+					if (values.length < 2) {
+						this.skip();
+					}
+					cy.get('#mailchimp-sf-list-filter').select(values[1]);
+					cy.wait('@subscriberActivity');
+				});
+			});
+
+			it('Applying a different date preset triggers another subscriber activity request', () => {
+				stubSubscriberActivity(() => wpJsonSuccess(buildSuccessData()));
+				cy.visit(analyticsUrl);
+				cy.wait('@subscriberActivity');
+				cy.get('#mailchimp-sf-date-picker-trigger').click();
+				cy.get('#mailchimp-sf-date-range').select('7');
+				cy.get('#mailchimp-sf-date-picker-apply').click();
+				cy.wait('@subscriberActivity');
+				cy.get('#mailchimp-sf-date-picker-label').should('have.text', 'Last 7 days');
+			});
+		});
 	});
 
 	describe('When not connected', () => {
@@ -135,8 +297,10 @@ describe('Analytics admin page', () => {
 		it('Analytics submenu is not visible', () => {
 			cy.visit('/wp-admin/');
 			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options').click();
-			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options .wp-submenu')
-				.should('not.contain', 'Analytics');
+			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options .wp-submenu').should(
+				'not.contain',
+				'Analytics',
+			);
 		});
 
 		after(() => {

@@ -1320,7 +1320,7 @@ table.widefat.mailchimp-sf-settings-table ul {
 /* Input fields */
 #mailchimp-sf-settings-page select {
 	font-size: 14px;
-	padding: 10px 32px 10px 10px;
+	padding: 8px 32px 8px 10px;
 	height: 40px;
 	background-color: #fff;
 	border-radius: 6px;

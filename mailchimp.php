@@ -120,6 +120,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-d
 $analytics_data = new Mailchimp_Analytics_Data();
 $analytics_data->init();
 
+// Subscriber activity (Mailchimp Activity API) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-activity.php';
+$subscriber_activity = new Mailchimp_Subscriber_Activity();
+$subscriber_activity->init();
+
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
