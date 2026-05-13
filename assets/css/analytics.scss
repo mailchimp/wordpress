@@ -617,27 +617,24 @@ $mq-xs: 600px;
 			background-position: 0 100%;
 			background-size: calc(100% / 7) calc(100% / 8);
 		}
+
+		.mailchimp-sf-fp__skeleton-bars {
+			display: flex;
+		}
 	}
 
 	&.is-loading,
 	&.is-empty {
 
 		.mailchimp-sf-fp__overlay {
+			align-items: flex-start;
+			padding-top: 28px;
+			top: 60%;
 			display: flex;
 		}
 	}
 
 	&.is-loading {
-
-		.mailchimp-sf-fp__skeleton-bars {
-			display: flex;
-		}
-
-		.mailchimp-sf-fp__overlay {
-			align-items: flex-start;
-			padding-top: 28px;
-			top: 60%;
-		}
 
 		.mailchimp-sf-fp__skeleton-bars span,
 		.mailchimp-sf-fp__overlay {
