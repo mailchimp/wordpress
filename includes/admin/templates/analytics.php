@@ -400,8 +400,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 								<canvas
 									id="mailchimp-sf-sa-donut"
 									class="mailchimp-sf-sa__canvas"
-									role="img"
-									aria-label="<?php esc_attr_e( 'Subscriber change donut chart', 'mailchimp' ); ?>"
+									aria-hidden="true"
 								></canvas>
 								<div class="mailchimp-sf-sa__donut-center">
 									<span id="mailchimp-sf-sa-net" class="mailchimp-sf-sa__net">&mdash;</span>
