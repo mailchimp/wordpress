@@ -505,9 +505,9 @@ import { __ } from '@wordpress/i18n';
 					day: 'numeric',
 					year: 'numeric',
 				});
-				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+				return `\u2066${fmt.format(fromDate)} – ${fmt.format(toDate)}\u2069`;
 			} catch (err) {
-				return `${from} – ${to}`;
+				return `\u2066${from} – ${to}\u2069`;
 			}
 		}
 
@@ -948,9 +948,9 @@ import { __ } from '@wordpress/i18n';
 					day: 'numeric',
 					year: 'numeric',
 				});
-				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+				return `\u2066${fmt.format(fromDate)} – ${fmt.format(toDate)}\u2069`;
 			} catch (err) {
-				return `${from} – ${to}`;
+				return `\u2066${from} – ${to}\u2069`;
 			}
 		}
 
@@ -1326,9 +1326,9 @@ import { __ } from '@wordpress/i18n';
 					day: 'numeric',
 					year: 'numeric',
 				});
-				return `${fmt.format(fromDate)} – ${fmt.format(toDate)}`;
+				return `\u2066${fmt.format(fromDate)} – ${fmt.format(toDate)}\u2069`;
 			} catch (err) {
-				return `${from} – ${to}`;
+				return `\u2066${from} – ${to}\u2069`;
 			}
 		}
 
