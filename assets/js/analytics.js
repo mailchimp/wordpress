@@ -466,8 +466,6 @@ import { __ } from '@wordpress/i18n';
 		const dataTableEl = document.getElementById('mailchimp-sf-fp-data-table');
 
 		const COLORS = {
-			// Chart palette. Values darkened from the original design tokens
-			// to meet WCAG 2.1 1.4.11
 			viewsFill: '#3B82F6',
 			viewsBorder: '#2563EB',
 			submissionsFill: '#0E9384',
@@ -477,8 +475,6 @@ import { __ } from '@wordpress/i18n';
 			text: '#6B7280',
 			// Legend chip fills — translucent version of each bar color so the
 			// legend markers match the outlined-chip style from the Figma spec.
-			// Translucent fills for the legend chips. RGB sourced from the
-			// new WCAG-compliant submissions teal (#0E9384)
 			viewsLegendFill: 'rgba(59, 130, 246, 0.35)',
 			submissionsLegendFill: 'rgba(14, 147, 132, 0.35)',
 		};
@@ -591,6 +587,15 @@ import { __ } from '@wordpress/i18n';
 			dataTableEl.appendChild(table);
 		}
 
+		/**
+		 * Empty the screen-reader data table
+		 */
+		function clearDataTable() {
+			if (dataTableEl) {
+				dataTableEl.innerHTML = '';
+			}
+		}
+
 		function destroyCharts() {
 			if (chart) {
 				chart.destroy();
@@ -629,6 +634,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showLoading() {
 			destroyCharts();
+			clearDataTable();
 			setErrorBanner(false);
 			setOverlay(STRINGS.loadingOverlay);
 			setSubtitle(STRINGS.loadingSubtitle);
@@ -637,6 +643,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showEmpty() {
 			destroyCharts();
+			clearDataTable();
 			setErrorBanner(false);
 			setOverlay(STRINGS.emptyOverlay);
 			setSubtitle(STRINGS.emptySubtitle);
@@ -645,6 +652,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showError(message) {
 			destroyCharts();
+			clearDataTable();
 			setOverlay('');
 			if (lastDetail && lastDetail.from && lastDetail.to) {
 				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
@@ -1101,6 +1109,15 @@ import { __ } from '@wordpress/i18n';
 			dataTableEl.appendChild(table);
 		}
 
+		/**
+		 * Empty the screen-reader data table
+		 */
+		function clearDataTable() {
+			if (dataTableEl) {
+				dataTableEl.innerHTML = '';
+			}
+		}
+
 		function destroyCharts() {
 			if (barChart) {
 				barChart.destroy();
@@ -1143,6 +1160,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showLoading() {
 			destroyCharts();
+			clearDataTable();
 			showNotice('');
 			setErrorBanner(false);
 			setOverlay(STRINGS.loadingOverlay);
@@ -1153,6 +1171,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showEmpty() {
 			destroyCharts();
+			clearDataTable();
 			setErrorBanner(false);
 			setOverlay(STRINGS.emptyOverlay);
 			setSubtitle(STRINGS.emptySubtitle);
@@ -1162,6 +1181,7 @@ import { __ } from '@wordpress/i18n';
 
 		function showError(message) {
 			destroyCharts();
+			clearDataTable();
 			showNotice('');
 			setOverlay('');
 			// Keep subtitle showing the last attempted date range if we have one.
