@@ -22,7 +22,7 @@ body.mailchimp_page_mailchimp_sf_analytics {
 // while keeping it readable by assistive tech. Defined locally so the
 // styles still apply if WP core's stylesheet load order changes.
 // -----------------------------------------------------------------------------
-.screen-reader-text {
+.mailchimp_page_mailchimp_sf_analytics .screen-reader-text {
 	border: 0;
 	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
@@ -45,7 +45,8 @@ body.mailchimp_page_mailchimp_sf_analytics {
 .mailchimp_page_mailchimp_sf_analytics .mailchimp-sf-button:focus-visible,
 .mailchimp_page_mailchimp_sf_analytics button:focus-visible {
 	box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
-	outline: none;
+	outline: 2px solid transparent;
+	outline-offset: 2px;
 }
 
 // -----------------------------------------------------------------------------
@@ -83,7 +84,8 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		&:focus-visible {
 			border-color: var(--mailchimp-color-link, #017e89);
 			box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
-			outline: none;
+			outline: 2px solid transparent;
+			outline-offset: 2px;
 		}
 	}
 }
@@ -128,7 +130,8 @@ body.mailchimp_page_mailchimp_sf_analytics {
 	&:focus-visible {
 		border-color: var(--mailchimp-color-link, #017e89);
 		box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
-		outline: none;
+		outline: 2px solid transparent;
+		outline-offset: 2px;
 	}
 
 	.dashicons {
@@ -233,7 +236,8 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		&:focus-visible {
 			border-color: var(--mailchimp-color-link, #017e89);
 			box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
-			outline: none;
+			outline: 2px solid transparent;
+			outline-offset: 2px;
 		}
 	}
 
@@ -411,8 +415,6 @@ body.mailchimp_page_mailchimp_sf_analytics {
 
 	&.is-loading &__metric-value,
 	&.is-error &__metric-value {
-		// `#6b7280` (~4.83:1 on white) passes WCAG 1.4.3 for normal text.
-		// `--mc-sa-grey` × 0.85 opacity rendered as ~2.15:1 which fails AA.
 		color: #6b7280;
 	}
 
