@@ -131,6 +131,20 @@ describe('Analytics admin page', () => {
 			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
 		});
 
+		it('Pressing Escape closes the popover and returns focus to the trigger', () => {
+			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
+			cy.get('#mailchimp-sf-date-picker-trigger').click();
+			cy.get('#mailchimp-sf-date-picker-popover').should('be.visible');
+			cy.get('body').trigger('keydown', { key: 'Escape' });
+			cy.get('#mailchimp-sf-date-picker-popover').should('not.be.visible');
+			cy.get('#mailchimp-sf-date-picker-trigger').should('have.focus');
+			cy.get('#mailchimp-sf-date-picker-trigger').should(
+				'have.attr',
+				'aria-expanded',
+				'false',
+			);
+		});
+
 		it('List filter is present with options', () => {
 			cy.visit('/wp-admin/admin.php?page=mailchimp_sf_analytics');
 			cy.get('#mailchimp-sf-list-filter').should('exist');
