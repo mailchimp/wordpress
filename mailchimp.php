@@ -96,6 +96,7 @@ require_once 'mailchimp_upgrade.php';
 // Init Admin functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-user-sync-backgroud-process.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mailchimp-user-sync.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mailchimp-admin-notices.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
