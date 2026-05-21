@@ -1449,6 +1449,7 @@ input[type=radio].mailchimp-sf-radio {
 
 input[type=radio].mailchimp-sf-radio:checked {
 	border: 2px solid var(--mailchimp-color-link);
+	background-color: #fff;
 }
 
 input[type=radio].mailchimp-sf-radio:checked:before {
