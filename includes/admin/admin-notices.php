@@ -17,7 +17,7 @@ namespace Mailchimp\WordPress\Includes\Admin;
  * @param string $msg The message to display.
  * @return void
  */
-function admin_notice_success( string $msg ): void {
+function admin_notice_success( string $msg ) {
 	\Mailchimp_Admin_Notices::instance()->add( $msg, 'success' );
 }
 
@@ -31,6 +31,6 @@ function admin_notice_success( string $msg ): void {
  * @param string $msg The message to display.
  * @return void
  */
-function admin_notice_error( string $msg ): void {
+function admin_notice_error( string $msg ) {
 	\Mailchimp_Admin_Notices::instance()->add( $msg, 'error' );
 }

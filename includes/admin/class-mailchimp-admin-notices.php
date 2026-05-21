@@ -53,7 +53,7 @@ class Mailchimp_Admin_Notices {
 	 *
 	 * @return void
 	 */
-	public function init(): void {
+	public function init() {
 		add_action( 'admin_notices', array( $this, 'render' ) );
 	}
 
@@ -64,7 +64,7 @@ class Mailchimp_Admin_Notices {
 	 * @param string $type    Notice type: success or error.
 	 * @return void
 	 */
-	public function add( string $message, string $type ): void {
+	public function add( string $message, string $type ) {
 		if ( ! is_admin() ) {
 			return;
 		}
@@ -85,7 +85,7 @@ class Mailchimp_Admin_Notices {
 	 *
 	 * @return void
 	 */
-	public function render(): void {
+	public function render() {
 		foreach ( $this->notices as $notice ) {
 			$this->print_notice( $notice['message'], $notice['type'] );
 		}
@@ -100,7 +100,7 @@ class Mailchimp_Admin_Notices {
 	 * @param string $type    Notice type: success or error.
 	 * @return void
 	 */
-	private function print_notice( string $message, string $type ): void {
+	private function print_notice( string $message, string $type ) {
 		$classes = array( 'notice', 'notice-' . sanitize_html_class( $type ) );
 
 		if ( 'success' === $type ) {
