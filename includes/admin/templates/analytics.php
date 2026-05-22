@@ -28,9 +28,20 @@ $dc           = get_option( 'mc_datacenter', '' );
 				<hr class="wp-header-end" />
 				<div class="mailchimp-sf-analytics-filters">
 					<div class="mailchimp-sf-analytics-filter-group">
-						<label><?php esc_html_e( 'Date range', 'mailchimp' ); ?></label>
+						<span
+							id="mailchimp-sf-date-range-label"
+							class="mailchimp-sf-analytics-filter-group__label"
+						><?php esc_html_e( 'Date range', 'mailchimp' ); ?></span>
 						<div class="mailchimp-sf-date-picker">
-							<button type="button" class="mailchimp-sf-date-picker-trigger" id="mailchimp-sf-date-picker-trigger" aria-expanded="false" aria-controls="mailchimp-sf-date-picker-popover">
+							<button
+								type="button"
+								class="mailchimp-sf-date-picker-trigger"
+								id="mailchimp-sf-date-picker-trigger"
+								aria-expanded="false"
+								aria-haspopup="dialog"
+								aria-controls="mailchimp-sf-date-picker-popover"
+								aria-labelledby="mailchimp-sf-date-range-label mailchimp-sf-date-picker-label"
+							>
 								<span id="mailchimp-sf-date-picker-label"><?php esc_html_e( 'Last 30 days', 'mailchimp' ); ?></span>
 								<div class="indicator-date-picker" aria-hidden="true">
 									<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" focusable="false">
@@ -38,7 +49,12 @@ $dc           = get_option( 'mc_datacenter', '' );
 									</svg>
 								</div>
 							</button>
-							<div class="mailchimp-sf-date-picker-popover" id="mailchimp-sf-date-picker-popover">
+							<div
+								class="mailchimp-sf-date-picker-popover"
+								id="mailchimp-sf-date-picker-popover"
+								role="dialog"
+								aria-labelledby="mailchimp-sf-date-range-label"
+							>
 								<div class="mailchimp-sf-date-picker-popover-row">
 									<div class="mailchimp-sf-date-picker-field">
 										<label for="mailchimp-sf-date-range"><?php esc_html_e( 'Date range', 'mailchimp' ); ?></label>
@@ -263,6 +279,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 									class="mailchimp-sf-fp__canvas"
 									role="img"
 									aria-label="<?php esc_attr_e( 'Form views, submissions, and conversion rate chart', 'mailchimp' ); ?>"
+									aria-describedby="mailchimp-sf-fp-data-table"
 								></canvas>
 								<div
 									id="mailchimp-sf-fp-overlay"
@@ -272,6 +289,10 @@ $dc           = get_option( 'mc_datacenter', '' );
 								><?php esc_html_e( 'Loading form performance…', 'mailchimp' ); ?></div>
 							</div>
 						</div>
+						<div
+							id="mailchimp-sf-fp-data-table"
+							class="mailchimp-sf-fp__data-table screen-reader-text"
+						></div>
 					</div>
 				</section>
 
@@ -355,6 +376,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 									class="mailchimp-sf-sa__canvas"
 									role="img"
 									aria-label="<?php esc_attr_e( 'Subscriber change bar chart', 'mailchimp' ); ?>"
+									aria-describedby="mailchimp-sf-sa-data-table"
 								></canvas>
 								<div
 									id="mailchimp-sf-sa-overlay"
@@ -363,6 +385,10 @@ $dc           = get_option( 'mc_datacenter', '' );
 									aria-live="polite"
 								><?php esc_html_e( 'Loading subscriber activity…', 'mailchimp' ); ?></div>
 							</div>
+							<div
+								id="mailchimp-sf-sa-data-table"
+								class="mailchimp-sf-sa__data-table screen-reader-text"
+							></div>
 						</div>
 
 						<aside class="mailchimp-sf-sa__totals" aria-labelledby="mailchimp-sf-sa-totals-title">
@@ -374,8 +400,7 @@ $dc           = get_option( 'mc_datacenter', '' );
 								<canvas
 									id="mailchimp-sf-sa-donut"
 									class="mailchimp-sf-sa__canvas"
-									role="img"
-									aria-label="<?php esc_attr_e( 'Subscriber change donut chart', 'mailchimp' ); ?>"
+									aria-hidden="true"
 								></canvas>
 								<div class="mailchimp-sf-sa__donut-center">
 									<span id="mailchimp-sf-sa-net" class="mailchimp-sf-sa__net">&mdash;</span>

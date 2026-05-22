@@ -16,6 +16,40 @@ body.mailchimp_page_mailchimp_sf_analytics {
 }
 
 // -----------------------------------------------------------------------------
+// Accessibility utilities
+//
+// `screen-reader-text` mirrors WP core's utility, visually hides content
+// while keeping it readable by assistive tech. Defined locally so the
+// styles still apply if WP core's stylesheet load order changes.
+// -----------------------------------------------------------------------------
+.mailchimp_page_mailchimp_sf_analytics .screen-reader-text {
+	border: 0;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+	word-wrap: normal !important;
+}
+
+.mailchimp-sf-analytics-filter-group__label {
+	color: #1d2327;
+	font-size: 14px;
+	font-weight: 400;
+}
+
+// Consistent keyboard-only focus ring across every interactive control on the analytics page.
+.mailchimp_page_mailchimp_sf_analytics .mailchimp-sf-button:focus-visible,
+.mailchimp_page_mailchimp_sf_analytics button:focus-visible {
+	box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
+	outline: 2px solid transparent;
+	outline-offset: 2px;
+}
+
+// -----------------------------------------------------------------------------
 // Filters toolbar
 // -----------------------------------------------------------------------------
 .mailchimp-sf-analytics-filters {
@@ -47,10 +81,11 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		min-width: 180px;
 		padding: 0 8px;
 
-		&:focus {
+		&:focus-visible {
 			border-color: var(--mailchimp-color-link, #017e89);
-			box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
-			outline: none;
+			box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
+			outline: 2px solid transparent;
+			outline-offset: 2px;
 		}
 	}
 }
@@ -92,10 +127,11 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		border-color: var(--mailchimp-color-link, #017e89);
 	}
 
-	&:focus {
+	&:focus-visible {
 		border-color: var(--mailchimp-color-link, #017e89);
-		box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
-		outline: none;
+		box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
+		outline: 2px solid transparent;
+		outline-offset: 2px;
 	}
 
 	.dashicons {
@@ -204,10 +240,11 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		height: 36px;
 		width: 100%;
 
-		&:focus {
+		&:focus-visible {
 			border-color: var(--mailchimp-color-link, #017e89);
-			box-shadow: 0 0 0 1px var(--mailchimp-color-link, #017e89);
-			outline: none;
+			box-shadow: 0 0 0 2px var(--mailchimp-color-link, #017e89);
+			outline: 2px solid transparent;
+			outline-offset: 2px;
 		}
 	}
 
@@ -386,8 +423,7 @@ body.mailchimp_page_mailchimp_sf_analytics {
 
 	&.is-loading &__metric-value,
 	&.is-error &__metric-value {
-		color: var(--mc-sa-grey);
-		opacity: 0.85;
+		color: #6b7280;
 	}
 
 	&__error-banner {
@@ -876,8 +912,7 @@ body.mailchimp_page_mailchimp_sf_analytics {
 		.mailchimp-sf-sa__net,
 		.mailchimp-sf-sa__legend-label,
 		.mailchimp-sf-sa__legend-value {
-			color: var(--mc-sa-grey);
-			opacity: 0.85;
+			color: #6b7280;
 		}
 
 		.mailchimp-sf-sa__legend-swatch {
