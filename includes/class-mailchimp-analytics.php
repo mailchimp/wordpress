@@ -93,7 +93,7 @@ class Mailchimp_Analytics {
 		$dependencies = array( 'mailchimp_sf_chartjs', 'wp-i18n' );
 		$version      = MCSF_VER;
 		if ( file_exists( MCSF_DIR . '/dist/js/analytics.asset.php' ) ) {
-			$asset = require MCSF_DIR . '/dist/js/analytics.asset.php';
+			$asset        = require MCSF_DIR . '/dist/js/analytics.asset.php';
 			$dependencies = $asset['dependencies'] ?? array();
 			$dependencies = array_merge( $dependencies, array( 'mailchimp_sf_chartjs' ) );
 			$version      = $asset['version'] ?? MCSF_VER;
@@ -111,8 +111,8 @@ class Mailchimp_Analytics {
 			'mailchimp_sf_analytics_js',
 			'mailchimpSFAnalytics',
 			array(
-				'ajax_url' => admin_url( 'admin-ajax.php' ),
-				'nonce'    => wp_create_nonce( 'mailchimp_sf_analytics_admin_nonce' ),
+				'ajax_url'    => admin_url( 'admin-ajax.php' ),
+				'nonce'       => wp_create_nonce( 'mailchimp_sf_analytics_admin_nonce' ),
 				'dateFormat'  => get_option( 'date_format', 'Y-m-d' ),
 				'startOfWeek' => (int) get_option( 'start_of_week', 0 ),
 			)

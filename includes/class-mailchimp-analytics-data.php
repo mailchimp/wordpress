@@ -92,7 +92,8 @@ class Mailchimp_Analytics_Data {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		if ( false === $result ) {
+		if ( false === $result && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'Mailchimp Analytics: Failed to increment views for list_id ' . sanitize_text_field( $list_id ) . '. DB error: ' . $wpdb->last_error );
 		}
 	}
@@ -121,7 +122,8 @@ class Mailchimp_Analytics_Data {
 		);
 		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 
-		if ( false === $result ) {
+		if ( false === $result && defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log
 			error_log( 'Mailchimp Analytics: Failed to increment submissions for list_id ' . sanitize_text_field( $list_id ) . '. DB error: ' . $wpdb->last_error );
 		}
 	}
