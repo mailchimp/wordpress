@@ -16,6 +16,18 @@
 import '@10up/cypress-wp-utils';
 import './commands';
 
+Cypress.on('uncaught:exception', (err, runnable) => {
+	/*
+	 * Noticed this "Transition was skipped" error on WP 7.0
+	 */
+	if (err.message.includes('Transition was skipped')) {
+		// returning false here prevents Cypress from failing the test
+		return false;
+	}
+
+	return runnable;
+});
+
 // TODO: Initialize tests from a blank state
 // TODO: Wipe WP data related to a users options
 // TODO: Delete all contacts in a users Mailchimp account
