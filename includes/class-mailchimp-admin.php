@@ -372,7 +372,7 @@ class Mailchimp_Admin {
 			update_option( 'mc_user', $this->sanitize_data( $user ) );
 
 			// Clear Mailchimp List ID if saved list is not available.
-			$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
+			$lists = mailchimp_sf_get_lists();
 			if ( ! is_wp_error( $lists ) ) {
 				$lists         = $lists['lists'] ?? array();
 				$saved_list_id = get_option( 'mc_list_id' );

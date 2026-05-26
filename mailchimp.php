@@ -576,13 +576,8 @@ function mailchimp_sf_change_list_if_necessary() {
 		return;
 	}
 
-	$api = mailchimp_sf_get_api();
-	if ( ! $api ) { return; }
-
-	// we *could* support paging, but few users have that many lists (and shouldn't)
-	$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
-
-	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
+	$lists = mailchimp_sf_get_lists();
+	if ( is_wp_error( $lists ) || ! isset( $lists['lists'] ) ) {
 		return;
 	}
 
@@ -1027,4 +1022,28 @@ function mailchimp_sf_get_access_token() {
  */
 function mailchimp_sf_should_display_form() {
 	return mailchimp_sf_get_api() && ! get_option( 'mailchimp_sf_auth_error' ) && get_option( 'mc_list_id' );
+}
+
+/**
+ * Get Mailchimp Lists.
+ *
+ * @since x.x.x
+ * @return array|WP_Error|false List of Mailchimp lists, or an error/false from the API request.
+ */
+function mailchimp_sf_get_lists() {
+	/**
+	 * Filter the limit of lists to fetch.
+	 *
+	 * This value is sanitized to a positive integer and clamped before the API request.
+	 * Defaults to 100. 1000 is the maximum allowed by the API. 1 is the minimum allowed.
+	 */
+	$limit = apply_filters( 'mailchimp_sf_list_limit', 100 ); // Default to 100.
+	$limit = max( 1, min( 1000, absint( $limit ) ) );
+
+	$api = mailchimp_sf_get_api();
+	if ( ! $api ) {
+		return array();
+	}
+
+	return $api->get( 'lists', $limit, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 }
