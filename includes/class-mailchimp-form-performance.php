@@ -225,5 +225,4 @@ class Mailchimp_Form_Performance {
 			'total_conversion_rate' => $this->conversion_rate( $total_submissions, $total_views ),
 		);
 	}
-
 }

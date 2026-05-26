@@ -230,5 +230,4 @@ class Mailchimp_Subscriber_Activity {
 			'limited'      => $limited,
 		);
 	}
-
 }
