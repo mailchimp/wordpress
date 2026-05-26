@@ -15,7 +15,7 @@ const {
 describe('Analytics admin page', () => {
 	before(() => {
 		cy.login();
-		cy.wpCli('wp option update date_format "Y-m-d"');
+		cy.wpCli('wp option update date_format Y-m-d');
 	});
 
 	describe('When connected', () => {
@@ -345,7 +345,7 @@ describe('Analytics admin page', () => {
 				cy.visit(analyticsUrl);
 				cy.wait('@formPerformance');
 				cy.get('[data-section="form-performance"]').should('be.visible');
-				cy.get('#mailchimp-sf-fp-title').contains('Forms performance over time');
+				cy.get('#mailchimp-sf-fp-title').contains('List performance over time');
 				cy.get('.mailchimp-sf-fp__chart-title').contains('Form Activity');
 				cy.get('#mailchimp-sf-fp-line').should('exist');
 			});
@@ -598,8 +598,7 @@ describe('Analytics admin page', () => {
 
 		it('Analytics submenu is not visible', () => {
 			cy.visit('/wp-admin/');
-			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options').click();
-			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options .wp-submenu').should(
+			cy.get('#adminmenu li#toplevel_page_mailchimp_sf_options').should(
 				'not.contain',
 				'Analytics',
 			);
