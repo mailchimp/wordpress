@@ -13,5 +13,5 @@
 	<exclude-pattern>*/vendor/*</exclude-pattern>
 
 	<config name="minimum_supported_wp_version" value="6.6"/>
-	<config name="testVersion" value="7.0-"/>
+	<config name="testVersion" value="7.4-"/>
 </ruleset>

@@ -6,7 +6,7 @@
  * Text Domain:       mailchimp
  * Version:           2.0.1
  * Requires at least: 6.6
- * Requires PHP:      7.0
+ * Requires PHP:      7.4
  * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
@@ -111,6 +111,29 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submis
 $form_submission = new Mailchimp_Form_Submission();
 $form_submission->init();
 
+// Shared bucketing helpers used by both analytics chart data providers.
+require_once plugin_dir_path( __FILE__ ) . 'includes/trait-mailchimp-analytics-bucketing.php';
+
+// Init Analytics page.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.php';
+$analytics = new Mailchimp_Analytics();
+$analytics->init();
+
+// Analytics data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-data.php';
+$analytics_data = new Mailchimp_Analytics_Data();
+$analytics_data->init();
+
+// Subscriber activity (Mailchimp Activity API) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-activity.php';
+$subscriber_activity = new Mailchimp_Subscriber_Activity();
+$subscriber_activity->init();
+
+// Form performance (local analytics DB) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-performance.php';
+$form_performance = new Mailchimp_Form_Performance();
+$form_performance->init();
+
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
 
@@ -161,13 +184,20 @@ function mailchimp_sf_load_resources() {
 	wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form', 'jquery-ui-datepicker' ), MCSF_VER, true );
 	// some javascript to get ajax version submitting to the proper location
 	global $wp_scripts;
+	$localize_data = array(
+		'ajax_url'               => trailingslashit( home_url() ),
+		'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
+	);
+
+	if ( ! is_admin() ) {
+		$localize_data['analytics_ajax_url'] = admin_url( 'admin-ajax.php' );
+		$localize_data['analytics_nonce']    = wp_create_nonce( 'mailchimp_sf_analytics_nonce' );
+	}
+
 	$wp_scripts->localize(
 		'mailchimp_sf_main_js',
 		'mailchimpSF',
-		array(
-			'ajax_url'               => trailingslashit( home_url() ),
-			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
-		)
+		$localize_data
 	);
 
 	// Datepicker theme
