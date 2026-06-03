@@ -6,6 +6,8 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [2.1.0] - 2026-06-03
 
+**Note that this release bumps the WordPress minimum from 6.4 to 6.6 and the PHP minimum version to 7.4.**
+
 ### Added
 
 - Introduce a simple analytics dashboard with an audience overview, list performance over time, and subscriber change-over-time charts (props [@alaca](https://github.com/alaca), [@iamdharmesh](https://github.com/iamdharmesh), [@builtbytay](https://github.com/builtbytay), [@ankitguptaindia](https://github.com/ankitguptaindia), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@bezierer](https://github.com/bezierer), [April Domingo](), [@vikrampm1](https://github.com/vikrampm1) via [#212](https://github.com/mailchimp/wordpress/pull/212)).
@@ -15,6 +17,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 - Bump WordPress "tested up to" version 7.0 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
 - Bump WordPress minimum supported version from 6.4 to 6.6 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
+- Bump PHP minimum supported version from 7.0 to 7.4 (props [@alaca](https://github.com/alaca), [@iamdharmesh](https://github.com/iamdharmesh), [@builtbytay](https://github.com/builtbytay), [@ankitguptaindia](https://github.com/ankitguptaindia), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@bezierer](https://github.com/bezierer), [April Domingo](), [@vikrampm1](https://github.com/vikrampm1) via [#212](https://github.com/mailchimp/wordpress/pull/212)).
 
 ## [2.0.1] - 2026-01-08
 

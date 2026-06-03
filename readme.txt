@@ -73,6 +73,8 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 6. Configuring extra fields on your Signup Form (optional).
 7. Creating a new Mailchimp account.
 8. Configuring user synchronization settings.
+9. Analytics: Audience Overview and List performance over time
+10. Analytics: Subscriber change over time
 
 == Changelog ==
 
@@ -81,6 +83,7 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 * **Added:** The `mailchimp_sf_list_limit` filter to allow modifying the list limit (props [@jonjennings](https://github.com/jonjennings), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia), [@builtbytay](https://github.com/builtbytay) via [#210](https://github.com/mailchimp/wordpress/pull/210)).
 * **Changed:** Bump WordPress "tested up to" version 7.0 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
 * **Changed:** Bump WordPress minimum supported version from 6.4 to 6.6 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
+* **Changed:** Bump PHP minimum supported version from 7.0 to 7.4 (props [@alaca](https://github.com/alaca), [@iamdharmesh](https://github.com/iamdharmesh), [@builtbytay](https://github.com/builtbytay), [@ankitguptaindia](https://github.com/ankitguptaindia), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@bezierer](https://github.com/bezierer), [April Domingo](), [@vikrampm1](https://github.com/vikrampm1) via [#212](https://github.com/mailchimp/wordpress/pull/212)).
 
 = 2.0.1 - 2026-01-08 =
 * **Fixed:** Provide CSRF hardening for Mailchimp List changes (props [@iamdharmesh](https://github.com/iamdharmesh), [@joemcgill](https://github.com/joemcgill), [@dkotter](https://github.com/dkotter), [@qasumitbagthariya](https://github.com/qasumitbagthariya)).
