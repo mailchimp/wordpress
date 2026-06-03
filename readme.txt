@@ -200,6 +200,9 @@ If you are upgrading to version 1.2.1 and you used the widget in your sidebar pr
 
 == Upgrade Notice ==
 
+= 2.1.0 =
+This version increased the WordPress minimum version to from 6.4 to 6.4 and the PHP minimum version to 7.4.
+
 = 2.0.0 =
 This release updates the form ID attribute and form field ID attributes. If you're using ID selectors for custom styling, please update the selectors accordingly.
 
