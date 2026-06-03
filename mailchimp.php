@@ -1028,7 +1028,7 @@ function mailchimp_sf_should_display_form() {
 /**
  * Get Mailchimp Lists.
  *
- * @since x.x.x
+ * @since 2.1.0
  * @return array|WP_Error|false List of Mailchimp lists, or an error/false from the API request.
  */
 function mailchimp_sf_get_lists() {

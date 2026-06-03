@@ -4,7 +4,7 @@
  *
  * Registers notices and renders them on the admin_notices hook in the same request.
  *
- * @since x.x.x
+ * @since 2.1.0
  *
  * @package Mailchimp
  */
@@ -17,7 +17,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Mailchimp_Admin_Notices
  *
- * @since x.x.x
+ * @since 2.1.0
  */
 class Mailchimp_Admin_Notices {
 
