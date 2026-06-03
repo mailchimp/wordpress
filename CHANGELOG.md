@@ -4,6 +4,18 @@ All notable changes to this project will be documented in this file, per [the Ke
 
 ## [Unreleased] - TBD
 
+## [2.1.0] - 2026-06-03
+
+### Added
+
+- Introduce a simple analytics dashboard with an audience overview, list performance over time, and subscriber change-over-time charts (props [@alaca](https://github.com/alaca), [@iamdharmesh](https://github.com/iamdharmesh), [@builtbytay](https://github.com/builtbytay), [@ankitguptaindia](https://github.com/ankitguptaindia), [Romain Deville](https://www.linkedin.com/in/devilleromain/), [@bezierer](https://github.com/bezierer), [April Domingo](), [@vikrampm1](https://github.com/vikrampm1) via [#212](https://github.com/mailchimp/wordpress/pull/212)).
+- The `mailchimp_sf_list_limit` filter to allow modifying the list limit (props [@jonjennings](https://github.com/jonjennings), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia), [@builtbytay](https://github.com/builtbytay) via [#210](https://github.com/mailchimp/wordpress/pull/210)).
+
+### Changed
+
+- Bump WordPress "tested up to" version 7.0 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
+- Bump WordPress minimum supported version from 6.4 to 6.6 (props [@qasumitbagthariya](https://github.com/qasumitbagthariya), [@iamdharmesh](https://github.com/iamdharmesh), [@alaca](https://github.com/alaca), [@ankitguptaindia](https://github.com/ankitguptaindia) via [#205](https://github.com/mailchimp/wordpress/pull/205)).
+
 ## [2.0.1] - 2026-01-08
 
 ### Fixed
@@ -395,6 +407,7 @@ All notable changes to this project will be documented in this file, per [the Ke
 - Security and various other improvements
 
 [Unreleased]: https://github.com/mailchimp/wordpress/compare/main...develop
+[2.1.0]: https://github.com/mailchimp/wordpress/compare/2.0.1...2.1.0
 [2.0.1]: https://github.com/mailchimp/wordpress/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/mailchimp/wordpress/compare/1.9.0...2.0.0
 [1.9.1]: https://github.com/mailchimp/wordpress/compare/1.9.0...1.9.1
