@@ -55,7 +55,13 @@ class Mailchimp_Subscriber_Activity {
 	 */
 	public function handle_get() {
 		if ( ! current_user_can( MCSF_CAP_THRESHOLD ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Unauthorized.', 'mailchimp' ) ), 403 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Unauthorized.', 'mailchimp' ),
+					'error_code' => 'unauthorized',
+				),
+				403
+			);
 		}
 
 		check_ajax_referer( 'mailchimp_sf_analytics_admin_nonce', 'nonce' );
@@ -65,25 +71,60 @@ class Mailchimp_Subscriber_Activity {
 		$date_to   = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
 
 		if ( empty( $list_id ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Please select a list.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Please select a list.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		if ( ! $this->is_valid_date( $date_from ) || ! $this->is_valid_date( $date_to ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Invalid date range.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Invalid date range.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		if ( strtotime( $date_from ) > strtotime( $date_to ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Start date must be before end date.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Start date must be before end date.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		$raw = $this->fetch_activity( $list_id );
 
 		if ( is_wp_error( $raw ) ) {
-			wp_send_json_error( array( 'message' => $raw->get_error_message() ), 502 );
+			$is_disconnected = in_array(
+				$raw->get_error_code(),
+				array( 'mailchimp_sf_not_connected', 'mailchimp-auth-error' ),
+				true
+			);
+			wp_send_json_error(
+				array(
+					'message'    => $raw->get_error_message(),
+					'error_code' => $is_disconnected ? 'not_connected' : 'api_error',
+				),
+				$is_disconnected ? 401 : 502
+			);
 		}
 
 		if ( ! is_array( $raw ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Unable to reach Mailchimp.', 'mailchimp' ) ), 502 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Unable to reach Mailchimp.', 'mailchimp' ),
+					'error_code' => 'api_error',
+				),
+				502
+			);
 		}
 
 		$response = $this->filter_and_aggregate( $raw, $date_from, $date_to );

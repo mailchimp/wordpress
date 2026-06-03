@@ -224,10 +224,10 @@ $dc           = get_option( 'mc_datacenter', '' );
 
 					<div class="mailchimp-sf-fp__chart-heading">
 						<h3 class="mailchimp-sf-fp__chart-title">
-							<?php esc_html_e( 'Form Activity', 'mailchimp' ); ?>
+							<?php esc_html_e( 'List Activity', 'mailchimp' ); ?>
 						</h3>
 						<p class="mailchimp-sf-fp__chart-subtitle">
-							<?php esc_html_e( 'Views, submissions, and conversion rate over time', 'mailchimp' ); ?>
+							<?php esc_html_e( 'All form views, submissions, and conversion rate over time', 'mailchimp' ); ?>
 						</p>
 					</div>
 

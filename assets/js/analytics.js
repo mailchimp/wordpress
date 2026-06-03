@@ -488,10 +488,13 @@ import { __ } from '@wordpress/i18n';
 				'Unable to load data for the selected date range. Please check your connection and try again.',
 				'mailchimp',
 			),
+			reconnect: __('Reconnect Mailchimp Account', 'mailchimp'),
 			views: __('Form Views', 'mailchimp'),
 			submissions: __('Submissions', 'mailchimp'),
 			conversionRate: __('Conversion Rate', 'mailchimp'),
 		};
+
+		let lastErrorCode = '';
 
 		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-empty', 'is-error'];
 
@@ -618,16 +621,31 @@ import { __ } from '@wordpress/i18n';
 			}
 		}
 
-		function setErrorBanner(visible, message) {
+		function setErrorBanner(visible, message, errorCode) {
 			if (!errorBannerEl) {
 				return;
 			}
+			lastErrorCode = visible ? errorCode || '' : '';
 			if (visible) {
 				if (errorMessageEl) {
 					errorMessageEl.textContent = message || STRINGS.errorDefault;
 				}
+				if (retryBtnEl) {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (lastErrorCode === 'not_connected' && settingsUrl) {
+						retryBtnEl.textContent = STRINGS.reconnect;
+						retryBtnEl.hidden = false;
+					} else {
+						retryBtnEl.hidden = true;
+					}
+				}
 				errorBannerEl.hidden = false;
 			} else {
+				if (retryBtnEl) {
+					retryBtnEl.hidden = true;
+				}
 				errorBannerEl.hidden = true;
 			}
 		}
@@ -650,14 +668,14 @@ import { __ } from '@wordpress/i18n';
 			setState('empty');
 		}
 
-		function showError(message) {
+		function showError(message, errorCode) {
 			destroyCharts();
 			clearDataTable();
 			setOverlay('');
 			if (lastDetail && lastDetail.from && lastDetail.to) {
 				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
 			}
-			setErrorBanner(true, message);
+			setErrorBanner(true, message, errorCode);
 			setState('error');
 		}
 
@@ -903,8 +921,13 @@ import { __ } from '@wordpress/i18n';
 					if (!body || body.success !== true || !body.data) {
 						const message =
 							body && body.data && body.data.message ? body.data.message : '';
-						showError(message);
-						broadcast('error', { message: message || STRINGS.errorDefault });
+						const errorCode =
+							body && body.data && body.data.error_code ? body.data.error_code : '';
+						showError(message, errorCode);
+						broadcast('error', {
+							message: message || STRINGS.errorDefault,
+							errorCode,
+						});
 						return;
 					}
 					render(body.data, detail.from, detail.to);
@@ -926,6 +949,15 @@ import { __ } from '@wordpress/i18n';
 
 		if (retryBtnEl) {
 			retryBtnEl.addEventListener('click', function () {
+				if (lastErrorCode === 'not_connected') {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (settingsUrl) {
+						window.location.href = settingsUrl;
+					}
+					return;
+				}
 				if (lastDetail) {
 					fetchPerformance(lastDetail);
 				}
@@ -986,6 +1018,7 @@ import { __ } from '@wordpress/i18n';
 				'Mailchimp subscriber activity is only available for the last 180 days. Showing available data.',
 				'mailchimp',
 			),
+			reconnect: __('Reconnect Mailchimp Account', 'mailchimp'),
 			newSubscribers: __('New Subscribers', 'mailchimp'),
 			unsubscribes: __('Unsubscribes', 'mailchimp'),
 		};
@@ -996,6 +1029,7 @@ import { __ } from '@wordpress/i18n';
 		let donutChart = null;
 		let inFlight = null;
 		let lastDetail = null;
+		let lastErrorCode = '';
 
 		function setState(state) {
 			STATE_CLASSES.forEach(function (cls) {
@@ -1144,16 +1178,31 @@ import { __ } from '@wordpress/i18n';
 			}
 		}
 
-		function setErrorBanner(visible, message) {
+		function setErrorBanner(visible, message, errorCode) {
 			if (!errorBannerEl) {
 				return;
 			}
+			lastErrorCode = visible ? errorCode || '' : '';
 			if (visible) {
 				if (errorMessageEl) {
 					errorMessageEl.textContent = message || STRINGS.errorDefault;
 				}
+				if (retryBtnEl) {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (lastErrorCode === 'not_connected' && settingsUrl) {
+						retryBtnEl.textContent = STRINGS.reconnect;
+						retryBtnEl.hidden = false;
+					} else {
+						retryBtnEl.hidden = true;
+					}
+				}
 				errorBannerEl.hidden = false;
 			} else {
+				if (retryBtnEl) {
+					retryBtnEl.hidden = true;
+				}
 				errorBannerEl.hidden = true;
 			}
 		}
@@ -1179,7 +1228,7 @@ import { __ } from '@wordpress/i18n';
 			setState('empty');
 		}
 
-		function showError(message) {
+		function showError(message, errorCode) {
 			destroyCharts();
 			clearDataTable();
 			showNotice('');
@@ -1189,7 +1238,7 @@ import { __ } from '@wordpress/i18n';
 				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
 			}
 			setPlaceholderTotals();
-			setErrorBanner(true, message);
+			setErrorBanner(true, message, errorCode);
 			setState('error');
 		}
 
@@ -1422,7 +1471,9 @@ import { __ } from '@wordpress/i18n';
 					if (!body || body.success !== true || !body.data) {
 						const message =
 							body && body.data && body.data.message ? body.data.message : '';
-						showError(message);
+						const errorCode =
+							body && body.data && body.data.error_code ? body.data.error_code : '';
+						showError(message, errorCode);
 						return;
 					}
 					render(body.data, detail.from, detail.to);
@@ -1438,6 +1489,15 @@ import { __ } from '@wordpress/i18n';
 
 		if (retryBtnEl) {
 			retryBtnEl.addEventListener('click', function () {
+				if (lastErrorCode === 'not_connected') {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (settingsUrl) {
+						window.location.href = settingsUrl;
+					}
+					return;
+				}
 				if (lastDetail) {
 					fetchActivity(lastDetail);
 				}
@@ -1473,11 +1533,13 @@ import { __ } from '@wordpress/i18n';
 				'Unable to load audience overview. Please check your connection and try again.',
 				'mailchimp',
 			),
+			reconnect: __('Reconnect Mailchimp Account', 'mailchimp'),
 		};
 
 		const STATE_CLASSES = ['is-loading', 'is-ready', 'is-error'];
 
 		let lastDetail = null;
+		let lastErrorCode = '';
 
 		function setState(state) {
 			STATE_CLASSES.forEach(function (cls) {
@@ -1491,16 +1553,31 @@ import { __ } from '@wordpress/i18n';
 			}
 		}
 
-		function setErrorBanner(visible, message) {
+		function setErrorBanner(visible, message, errorCode) {
 			if (!errorBannerEl) {
 				return;
 			}
+			lastErrorCode = visible ? errorCode || '' : '';
 			if (visible) {
 				if (errorMessageEl) {
 					errorMessageEl.textContent = message || STRINGS.errorDefault;
 				}
+				if (retryBtnEl) {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (lastErrorCode === 'not_connected' && settingsUrl) {
+						retryBtnEl.textContent = STRINGS.reconnect;
+						retryBtnEl.hidden = false;
+					} else {
+						retryBtnEl.hidden = true;
+					}
+				}
 				errorBannerEl.hidden = false;
 			} else {
+				if (retryBtnEl) {
+					retryBtnEl.hidden = true;
+				}
 				errorBannerEl.hidden = true;
 			}
 		}
@@ -1546,12 +1623,12 @@ import { __ } from '@wordpress/i18n';
 			setState('loading');
 		}
 
-		function showError(message) {
+		function showError(message, errorCode) {
 			if (lastDetail && lastDetail.from && lastDetail.to) {
 				setSubtitle(formatRangeLabel(lastDetail.from, lastDetail.to));
 			}
 			setPlaceholders();
-			setErrorBanner(true, message);
+			setErrorBanner(true, message, errorCode);
 			setState('error');
 		}
 
@@ -1600,11 +1677,20 @@ import { __ } from '@wordpress/i18n';
 		});
 
 		document.addEventListener('mailchimp-analytics-error', function (e) {
-			showError(e.detail && e.detail.message);
+			showError(e.detail && e.detail.message, e.detail && e.detail.errorCode);
 		});
 
 		if (retryBtnEl) {
 			retryBtnEl.addEventListener('click', function () {
+				if (lastErrorCode === 'not_connected') {
+					const settingsUrl =
+						(window.mailchimpSFAnalytics && window.mailchimpSFAnalytics.settingsUrl) ||
+						'';
+					if (settingsUrl) {
+						window.location.href = settingsUrl;
+					}
+					return;
+				}
 				if (!lastDetail) {
 					return;
 				}

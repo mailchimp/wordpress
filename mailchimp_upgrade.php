@@ -26,16 +26,29 @@ function mailchimp_version_check() {
 		mailchimp_update_1_7_0();
 	}
 
-	// Create analytics table if it doesn't exist.
-	$analytics_db_version = get_option( 'mailchimp_sf_analytics_db_version' );
-	if ( false === $analytics_db_version || version_compare( Mailchimp_Analytics_Data::DB_VERSION, $analytics_db_version, '>' ) ) {
-		Mailchimp_Analytics_Data::create_table();
-	}
-
 	update_option( 'mc_version', MCSF_VER );
 }
 
 add_action( 'plugins_loaded', 'mailchimp_version_check' );
+
+/**
+ * Ensure the analytics table exists and is at the current schema version.
+ *
+ * Runs independently of mailchimp_version_check().
+ *
+ * @return void
+ */
+function mailchimp_sf_maybe_create_analytics_table() {
+	if ( ! class_exists( 'Mailchimp_Analytics_Data' ) ) {
+		return;
+	}
+	if ( Mailchimp_Analytics_Data::DB_VERSION === get_option( 'mailchimp_sf_analytics_db_version' ) ) {
+		return;
+	}
+	Mailchimp_Analytics_Data::create_table();
+}
+
+add_action( 'plugins_loaded', 'mailchimp_sf_maybe_create_analytics_table', 20 );
 
 /**
  * Version 1.6.0 update routine

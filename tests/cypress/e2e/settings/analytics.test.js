@@ -346,7 +346,7 @@ describe('Analytics admin page', () => {
 				cy.wait('@formPerformance');
 				cy.get('[data-section="form-performance"]').should('be.visible');
 				cy.get('#mailchimp-sf-fp-title').contains('List performance over time');
-				cy.get('.mailchimp-sf-fp__chart-title').contains('Form Activity');
+				cy.get('.mailchimp-sf-fp__chart-title').contains('List Activity');
 				cy.get('#mailchimp-sf-fp-line').should('exist');
 			});
 

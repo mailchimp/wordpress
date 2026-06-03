@@ -43,7 +43,13 @@ class Mailchimp_Form_Performance {
 	 */
 	public function handle_get() {
 		if ( ! current_user_can( MCSF_CAP_THRESHOLD ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Unauthorized.', 'mailchimp' ) ), 403 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Unauthorized.', 'mailchimp' ),
+					'error_code' => 'unauthorized',
+				),
+				403
+			);
 		}
 
 		check_ajax_referer( 'mailchimp_sf_analytics_admin_nonce', 'nonce' );
@@ -53,21 +59,45 @@ class Mailchimp_Form_Performance {
 		$date_to   = isset( $_POST['date_to'] ) ? sanitize_text_field( wp_unslash( $_POST['date_to'] ) ) : '';
 
 		if ( empty( $list_id ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Please select a list.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Please select a list.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		if ( ! $this->is_valid_date( $date_from ) || ! $this->is_valid_date( $date_to ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Invalid date range.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Invalid date range.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		if ( strtotime( $date_from ) > strtotime( $date_to ) ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Start date must be before end date.', 'mailchimp' ) ), 400 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'Start date must be before end date.', 'mailchimp' ),
+					'error_code' => 'invalid_request',
+				),
+				400
+			);
 		}
 
 		$rows = $this->fetch_rows( $list_id, $date_from, $date_to );
 
 		if ( null === $rows ) {
-			wp_send_json_error( array( 'message' => esc_html__( 'Unable to load form analytics.', 'mailchimp' ) ), 500 );
+			wp_send_json_error(
+				array(
+					'message'    => esc_html__( 'An internal error occurred while loading analytics. Please contact support if this persists.', 'mailchimp' ),
+					'error_code' => 'db_error',
+				),
+				500
+			);
 		}
 
 		$response = $this->aggregate( $rows, $date_from, $date_to );

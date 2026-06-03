@@ -115,6 +115,7 @@ class Mailchimp_Analytics {
 				'nonce'       => wp_create_nonce( 'mailchimp_sf_analytics_admin_nonce' ),
 				'dateFormat'  => get_option( 'date_format', 'Y-m-d' ),
 				'startOfWeek' => (int) get_option( 'start_of_week', 0 ),
+				'settingsUrl' => admin_url( 'admin.php?page=mailchimp_sf_options' ),
 			)
 		);
 	}
