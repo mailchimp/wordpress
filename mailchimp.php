@@ -4,9 +4,9 @@
  * Plugin URI:        https://mailchimp.com/help/connect-or-disconnect-list-subscribe-for-wordpress/
  * Description:       Add a Mailchimp signup form block, widget or shortcode to your WordPress site.
  * Text Domain:       mailchimp
- * Version:           2.0.1
- * Requires at least: 6.4
- * Requires PHP:      7.0
+ * Version:           2.1.0
+ * Requires at least: 6.6
+ * Requires PHP:      7.4
  * PHP tested up to:  8.3
  * Author:            Mailchimp
  * Author URI:        https://mailchimp.com/
@@ -67,7 +67,7 @@ if ( is_readable( __DIR__ . '/vendor/autoload.php' ) ) {
 use function Mailchimp\WordPress\Includes\Admin\{admin_notice_error, admin_notice_success};
 
 // Version constant for easy CSS refreshes
-define( 'MCSF_VER', '2.0.1' );
+define( 'MCSF_VER', '2.1.0' );
 
 // What's our permission (capability) threshold
 define( 'MCSF_CAP_THRESHOLD', 'manage_options' );
@@ -96,6 +96,7 @@ require_once 'mailchimp_upgrade.php';
 // Init Admin functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-user-sync-backgroud-process.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mailchimp-user-sync.php';
+require_once plugin_dir_path( __FILE__ ) . 'includes/admin/class-mailchimp-admin-notices.php';
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-admin.php';
 $admin = new Mailchimp_Admin();
 $admin->init();
@@ -109,6 +110,29 @@ $block->init();
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-submission.php';
 $form_submission = new Mailchimp_Form_Submission();
 $form_submission->init();
+
+// Shared bucketing helpers used by both analytics chart data providers.
+require_once plugin_dir_path( __FILE__ ) . 'includes/trait-mailchimp-analytics-bucketing.php';
+
+// Init Analytics page.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics.php';
+$analytics = new Mailchimp_Analytics();
+$analytics->init();
+
+// Analytics data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-data.php';
+$analytics_data = new Mailchimp_Analytics_Data();
+$analytics_data->init();
+
+// Subscriber activity (Mailchimp Activity API) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-activity.php';
+$subscriber_activity = new Mailchimp_Subscriber_Activity();
+$subscriber_activity->init();
+
+// Form performance (local analytics DB) data class.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-form-performance.php';
+$form_performance = new Mailchimp_Form_Performance();
+$form_performance->init();
 
 // Deprecated functions.
 require_once plugin_dir_path( __FILE__ ) . 'includes/mailchimp-deprecated-functions.php';
@@ -160,13 +184,20 @@ function mailchimp_sf_load_resources() {
 	wp_enqueue_script( 'mailchimp_sf_main_js', MCSF_URL . 'assets/js/mailchimp.js', array( 'jquery', 'jquery-form', 'jquery-ui-datepicker' ), MCSF_VER, true );
 	// some javascript to get ajax version submitting to the proper location
 	global $wp_scripts;
+	$localize_data = array(
+		'ajax_url'               => trailingslashit( home_url() ),
+		'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
+	);
+
+	if ( ! is_admin() ) {
+		$localize_data['analytics_ajax_url'] = admin_url( 'admin-ajax.php' );
+		$localize_data['analytics_nonce']    = wp_create_nonce( 'mailchimp_sf_analytics_nonce' );
+	}
+
 	$wp_scripts->localize(
 		'mailchimp_sf_main_js',
 		'mailchimpSF',
-		array(
-			'ajax_url'               => trailingslashit( home_url() ),
-			'phone_validation_error' => esc_html__( 'Please enter a valid phone number.', 'mailchimp' ),
-		)
+		$localize_data
 	);
 
 	// Datepicker theme
@@ -546,13 +577,8 @@ function mailchimp_sf_change_list_if_necessary() {
 		return;
 	}
 
-	$api = mailchimp_sf_get_api();
-	if ( ! $api ) { return; }
-
-	// we *could* support paging, but few users have that many lists (and shouldn't)
-	$lists = $api->get( 'lists', 100, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
-
-	if ( ! isset( $lists['lists'] ) || is_wp_error( $lists['lists'] ) ) {
+	$lists = mailchimp_sf_get_lists();
+	if ( is_wp_error( $lists ) || ! isset( $lists['lists'] ) ) {
 		return;
 	}
 
@@ -997,4 +1023,28 @@ function mailchimp_sf_get_access_token() {
  */
 function mailchimp_sf_should_display_form() {
 	return mailchimp_sf_get_api() && ! get_option( 'mailchimp_sf_auth_error' ) && get_option( 'mc_list_id' );
+}
+
+/**
+ * Get Mailchimp Lists.
+ *
+ * @since 2.1.0
+ * @return array|WP_Error|false List of Mailchimp lists, or an error/false from the API request.
+ */
+function mailchimp_sf_get_lists() {
+	/**
+	 * Filter the limit of lists to fetch.
+	 *
+	 * This value is sanitized to a positive integer and clamped before the API request.
+	 * Defaults to 100. 1000 is the maximum allowed by the API. 1 is the minimum allowed.
+	 */
+	$limit = apply_filters( 'mailchimp_sf_list_limit', 100 ); // Default to 100.
+	$limit = max( 1, min( 1000, absint( $limit ) ) );
+
+	$api = mailchimp_sf_get_api();
+	if ( ! $api ) {
+		return array();
+	}
+
+	return $api->get( 'lists', $limit, array( 'fields' => 'lists.id,lists.name,lists.email_type_option' ) );
 }
