@@ -176,12 +176,16 @@ class Mailchimp_Form_Submission {
 			$message = __( 'Success, you\'ve been signed up! Please look for our confirmation email.', 'mailchimp' );
 		}
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Nonce check is already done in the request_handler() function.
+		$form_id = isset( $_POST['mailchimp_sf_form_id'] ) ? Mailchimp_Forms_Registry::sanitize_form_id( sanitize_text_field( wp_unslash( $_POST['mailchimp_sf_form_id'] ) ) ) : '';
+
 		/**
 		 * Fires after a successful form submission.
 		 *
 		 * @param string $list_id The list ID the user subscribed to.
+		 * @param string $form_id The form ID, or '' for legacy/untracked forms.
 		 */
-		do_action( 'mailchimp_sf_form_submission_success', $list_id );
+		do_action( 'mailchimp_sf_form_submission_success', $list_id, $form_id );
 
 		// Return success message.
 		return $message;
