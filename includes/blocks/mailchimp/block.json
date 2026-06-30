@@ -6,6 +6,14 @@
   "category": "widgets",
   "description": "Mailchimp List Subscribe Form",
   "attributes": {
+    "formId": {
+      "type": "string",
+      "default": ""
+    },
+    "formTitle": {
+      "type": "string",
+      "default": ""
+    },
     "list_id": {
       "type": "string"
     },

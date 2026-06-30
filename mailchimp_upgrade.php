@@ -51,6 +51,25 @@ function mailchimp_sf_maybe_create_analytics_table() {
 add_action( 'plugins_loaded', 'mailchimp_sf_maybe_create_analytics_table', 20 );
 
 /**
+ * Ensure the forms registry table exists and is at the current schema version.
+ *
+ * Runs independently of mailchimp_version_check().
+ *
+ * @return void
+ */
+function mailchimp_sf_maybe_create_forms_table() {
+	if ( ! class_exists( 'Mailchimp_Forms_Registry' ) ) {
+		return;
+	}
+	if ( Mailchimp_Forms_Registry::DB_VERSION === get_option( 'mailchimp_sf_forms_db_version' ) ) {
+		return;
+	}
+	Mailchimp_Forms_Registry::create_table();
+}
+
+add_action( 'plugins_loaded', 'mailchimp_sf_maybe_create_forms_table', 20 );
+
+/**
  * Version 1.6.0 update routine
  *   - Remove MonkeyRewards checkbox option
  *

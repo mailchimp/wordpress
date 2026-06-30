@@ -29,7 +29,7 @@ class Mailchimp_Analytics_Data {
 		add_action( 'wp_ajax_mailchimp_sf_track_form_view', array( $this, 'handle_form_view' ) );
 		add_action( 'wp_ajax_nopriv_mailchimp_sf_track_form_view', array( $this, 'handle_form_view' ) );
 		add_action( 'wp_ajax_mailchimp_sf_get_analytics', array( $this, 'handle_get_analytics' ) );
-		add_action( 'mailchimp_sf_form_submission_success', array( $this, 'track_submission' ) );
+		add_action( 'mailchimp_sf_form_submission_success', array( $this, 'track_submission' ), 10, 2 );
 	}
 
 	/**
@@ -218,7 +218,12 @@ class Mailchimp_Analytics_Data {
 			wp_send_json_error( 'Invalid list_id.', 400 );
 		}
 
-		$this->increment_views( $list_id );
+		// Optional per-form ID. Invalid/missing values fall back to the empty string
+		$form_id = isset( $_POST['form_id'] )
+			? Mailchimp_Forms_Registry::sanitize_form_id( sanitize_text_field( wp_unslash( $_POST['form_id'] ) ) )
+			: '';
+
+		$this->increment_views( $list_id, $form_id );
 		wp_send_json_success();
 	}
 
@@ -305,10 +310,11 @@ class Mailchimp_Analytics_Data {
 	 * Track a successful form submission.
 	 *
 	 * @param string $list_id The list ID.
+	 * @param string $form_id The form ID (optional).
 	 */
-	public function track_submission( $list_id ) {
+	public function track_submission( $list_id, $form_id = '' ) {
 		if ( ! empty( $list_id ) ) {
-			$this->increment_submissions( $list_id );
+			$this->increment_submissions( $list_id, Mailchimp_Forms_Registry::sanitize_form_id( $form_id ) );
 		}
 	}
 }

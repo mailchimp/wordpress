@@ -40,6 +40,41 @@ describe('Block Tests', () => {
 		});
 	});
 
+	it('Block form has a stable analytics form ID wired through tracking', () => {
+		const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
+
+		cy.intercept('POST', '**/admin-ajax.php').as('ajax');
+		cy.visit(`/?p=${postId}`);
+
+		// Rendered form carries a UUID data-form-id and a matching hidden input.
+		cy.get('.mc_signup_form')
+			.should('have.attr', 'data-form-id')
+			.and('match', uuid);
+
+		cy.get('.mc_signup_form')
+			.invoke('attr', 'data-form-id')
+			.then((formId) => {
+				cy.get('input[name="mailchimp_sf_form_id"]').should('have.value', formId);
+
+				// The view ping includes the form_id.
+				cy.wait('@ajax').then((interception) => {
+					expect(interception.request.body).to.include('mailchimp_sf_track_form_view');
+					expect(interception.request.body).to.include(formId);
+				});
+
+				// The registry table has a row for this form.
+				cy.wpCli(
+					`wp db query "SELECT COUNT(*) FROM wp_mailchimp_sf_forms WHERE form_id = '${formId}'" --skip-column-names`,
+				).then((res) => {
+					expect(res.stdout.trim()).to.eq('1');
+				});
+
+				// The ID survives a reload (persisted in post content).
+				cy.reload();
+				cy.get('.mc_signup_form').should('have.attr', 'data-form-id', formId);
+			});
+	});
+
 	it('Admin can set header and sub-header in block', () => {
 		cy.visit(`/wp-admin/post.php?post=${postId}&action=edit`);
 

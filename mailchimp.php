@@ -124,6 +124,11 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-analytics-d
 $analytics_data = new Mailchimp_Analytics_Data();
 $analytics_data->init();
 
+// Forms registry (form_id -> title) for per-form analytics labels.
+require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-forms-registry.php';
+$forms_registry = new Mailchimp_Forms_Registry();
+$forms_registry->init();
+
 // Subscriber activity (Mailchimp Activity API) data class.
 require_once plugin_dir_path( __FILE__ ) . 'includes/class-mailchimp-subscriber-activity.php';
 $subscriber_activity = new Mailchimp_Subscriber_Activity();

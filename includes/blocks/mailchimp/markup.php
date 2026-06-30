@@ -25,10 +25,14 @@ if ( ! mailchimp_sf_should_display_form() ) {
 	}
 
 	// Make sure we have a list ID and it's valid.
-	$list_id  = $attributes['list_id'] ?? '';
-	$form_id  = wp_unique_id( $list_id . '_' );
-	$lists    = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
-	$list_ids = array_map(
+	$list_id = $attributes['list_id'] ?? '';
+	$form_id = wp_unique_id( $list_id . '_' );
+
+	// Stable per-form analytics id from the block attribute. Empty for legacy
+	// blocks not yet re-saved
+	$mc_analytics_form_id = Mailchimp_Forms_Registry::sanitize_form_id( $attributes['formId'] ?? '' );
+	$lists                = ( new Mailchimp_List_Subscribe_Form_Blocks() )->get_lists();
+	$list_ids             = array_map(
 		function ( $single_list ) {
 			return $single_list['id'];
 		},
@@ -105,8 +109,11 @@ if ( ! mailchimp_sf_should_display_form() ) {
 		}
 		?>
 		<div id="mc_signup_<?php echo esc_attr( $form_id ); ?>">
-			<form method="post" action="#mc_signup_<?php echo esc_attr( $form_id ); ?>" id="mc_signup_form_<?php echo esc_attr( $form_id ); ?>" class="mc_signup_form" data-list-id="<?php echo esc_attr( $list_id ); ?>">
+			<form method="post" action="#mc_signup_<?php echo esc_attr( $form_id ); ?>" id="mc_signup_form_<?php echo esc_attr( $form_id ); ?>" class="mc_signup_form" data-list-id="<?php echo esc_attr( $list_id ); ?>"<?php echo $mc_analytics_form_id ? ' data-form-id="' . esc_attr( $mc_analytics_form_id ) . '"' : ''; ?>>
 				<input type="hidden" class="mc_submit_type" name="mc_submit_type" value="html" />
+				<?php if ( $mc_analytics_form_id ) : ?>
+				<input type="hidden" name="mailchimp_sf_form_id" value="<?php echo esc_attr( $mc_analytics_form_id ); ?>" />
+				<?php endif; ?>
 				<input type="hidden" name="mcsf_action" value="mc_submit_signup_form" />
 				<input type="hidden" name="mailchimp_sf_list_id" value="<?php echo esc_attr( $list_id ); ?>" />
 				<input type="hidden" name="mailchimp_sf_update_existing_subscribers" value="<?php echo esc_attr( $update_existing_subscribers ); ?>" />

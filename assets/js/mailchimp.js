@@ -121,12 +121,18 @@
 
 	for (let i = 0; i < forms.length; i++) {
 		const listId = forms[i].getAttribute('data-list-id');
-		if (listId && !tracked[listId]) {
-			tracked[listId] = true;
+		const formId = forms[i].getAttribute('data-form-id') || '';
+		const key = `${listId}|${formId}`;
+
+		if (listId && !tracked[key]) {
+			tracked[key] = true;
 
 			const formData = new FormData();
 			formData.append('action', 'mailchimp_sf_track_form_view');
 			formData.append('list_id', listId);
+			if (formId) {
+				formData.append('form_id', formId);
+			}
 			formData.append('mailchimp_sf_nonce', window.mailchimpSF.analytics_nonce);
 
 			fetch(window.mailchimpSF.analytics_ajax_url, {

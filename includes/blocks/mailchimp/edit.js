@@ -10,6 +10,7 @@ import {
 	PanelBody,
 	ToggleControl,
 	SelectControl,
+	TextControl,
 	Spinner,
 	Placeholder,
 } from '@wordpress/components';
@@ -61,7 +62,16 @@ export const BlockEdit = (props) => {
 		show_required_indicator = true,
 		required_indicator_text,
 		template = 'default',
+		formTitle = '',
 	} = attributes;
+
+	// Give every block instance a stable analytics ID. Generated once when
+	// empty and persisted with the post, so it survives edits and reordering.
+	useEffect(() => {
+		if (!attributes.formId && typeof window.crypto?.randomUUID === 'function') {
+			setAttributes({ formId: window.crypto.randomUUID() });
+		}
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps -- Only run on mount.
 
 	const [listData, setListData] = useState({});
 	const [isLoading, setIsLoading] = useState(true);
@@ -412,6 +422,20 @@ export const BlockEdit = (props) => {
 						}}
 						help={__(
 							"Please select the Mailchimp list you'd like to connect to your form.",
+							'mailchimp',
+						)}
+						__nextHasNoMarginBottom
+					/>
+				</PanelBody>
+				<PanelBody title={__('Analytics', 'mailchimp')} initialOpen={false}>
+					<TextControl
+						label={__('Form name', 'mailchimp')}
+						value={formTitle}
+						maxLength={50}
+						className="mailchimp-form-title"
+						onChange={(value) => setAttributes({ formTitle: value })}
+						help={__(
+							'Used to identify this form in the Analytics dashboard. Defaults to the form header if left blank.',
 							'mailchimp',
 						)}
 						__nextHasNoMarginBottom
